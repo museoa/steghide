@@ -69,67 +69,79 @@ td.ssecleft {
 td.ssecrightfirstclosed {
   background: #DED6C6;
   border: solid thin black;
+  padding: 3px;
 }
 td.ssecrightdefaultclosed {
   background: #DED6C6;
   border-left: solid thin black;
   border-right: solid thin black;
   border-bottom: solid thin black;
+  padding: 3px;
 }
 td.ssecrightlastclosed {
   background: #DED6C6;
   border-left: solid thin black;
   border-right: solid thin black;
+  padding: 3px;
 }
 td.ssecrightonlyclosed {
   background: #DED6C6;
   border-top: solid thin black;
   border-left: solid thin black;
   border-right: solid thin black;
+  padding: 3px;
 }
 
 td.ssecrightfirstclosed:hover {
   background: #DDDDDD;
   border: solid thin black;
+  padding: 3px;
 }
 td.ssecrightdefaultclosed:hover {
   background: #DDDDDD;
   border-left: solid thin black;
   border-right: solid thin black;
   border-bottom: solid thin black;
+  padding: 3px;
 }
 td.ssecrightlastclosed:hover {
   background: #DDDDDD;
   border-left: solid thin black;
   border-right: solid thin black;
+  padding: 3px;
 }
 td.ssecrightonlyclosed:hover {
   background: #DDDDDD;
   border-top: solid thin black;
   border-left: solid thin black;
   border-right: solid thin black;
+  padding: 3px;
 }
 
 td.ssecrightfirstopen {
   background: #DED6C6;
   border: solid thin black;
+  padding: 3px;
 }
 td.ssecrightdefaultopen {
   background: #DED6C6;
   border-left: solid thin black;
   border-right: solid thin black;
   border-bottom: solid thin black;
+  padding: 3px;
 }
 td.ssecrightlastopen {
   background: #DED6C6;
   border-left: solid thin black;
   border-right: solid thin black;
+  padding: 3px;
 }
 td.ssecrightonlyopen {
   background: #DED6C6;
   border-top: solid thin black;
   border-left: solid thin black;
   border-right: solid thin black;
+  padding: 3px;
 }
 
 /* a section link */

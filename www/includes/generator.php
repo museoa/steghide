@@ -173,7 +173,7 @@ function psection ($sec, $sectioninfo, $activesecid, $isfirst, $spc)
 			}
 
 			// dark area on the left - &nbsp; to make mozilla draw the left border
-			echo "$spc<tr><td class=\"ssecleft\" rowspan=\"$numsubsections\" width=\"20%\">&nbsp;</td>\n";
+			echo "$spc<tr><td class=\"ssecleft\" rowspan=\"$numsubsections\" width=\"30\">&nbsp;</td>\n";
 
 			// print subsections
 			$ssections = $sectioninfo["subsections"];
@@ -181,7 +181,8 @@ function psection ($sec, $sectioninfo, $activesecid, $isfirst, $spc)
 			if (count($ssections) == 1) {
 				// the only subsection
 				$ssinfo = current($ssections);
-				psseclinktd ($ssinfo["link"], $ssinfo["linkname"], "only", (key($ssinfo) == $activessec), $spc);
+				echo "<!-- key(ssections): " . key($ssections) . ", activessec: " . $activessec . " -->\n" ;
+				psseclinktd ($ssinfo["link"], $ssinfo["linkname"], "only", (key($ssections) == $activessec), $spc);
 			}
 			else {
 				$firstssec = array_splice ($ssections, 0, 1);
@@ -289,7 +290,7 @@ function pBodyEpilogue ($ts_lastupdate)
 	echo "   </td>\n";
 	echo "  </tr>\n"; // end of second row in 3,2 table
 	echo "  <tr>\n"; // lower area (lastupdate)
-	echo "   <td id=\"lastupdate\" valign=\"bottom\">\n" ;
+	echo "   <td id=\"lastupdate\" align=\"center\" valign=\"bottom\">\n" ;
 	echo "    hosted by:<br>\n";
 	include "sflogo.html";
 	echo "<p>\n";
