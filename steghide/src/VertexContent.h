@@ -101,8 +101,8 @@ class VertexContent : private GraphAccess {
 	private:
 	/// the sample values of this vertex content
 	SampleValue** SampleValues ;
-	/// the number of loop edges vertices with this content _would_ have
-	unsigned long SelfDegree ;
+	/// the number of loop edges vertices with this content _would_ have - FIXME time/memory ?
+	unsigned short SelfDegree ;
 	/// the vertices whose content is this vertex content
 	std::list<Vertex*> Occurences ;
 	/// the vertices that have been delted from Occurences

@@ -20,6 +20,9 @@
 
 #include <iostream>
 
+#include "BmpPaletteSampleValue.h"
+#include "BmpRGBSampleValue.h"
+
 #include "utcommon.h"
 #include "BmpOS2FileTest.h"
 
@@ -32,18 +35,22 @@ BmpOS2FileTest::BmpOS2FileTest (TestSuite* s)
 	bs3 = new BitString (std::string ("yet another test")) ;
 	bs4 = new BitString (std::string ("last test")) ;
 
+	f1 = CvrStgFile::readFile (*datadir + "os21x1_std.bmp") ;
+	f2 = CvrStgFile::readFile (*datadir + "os21x4_std.bmp") ;
+	f3 = CvrStgFile::readFile (*datadir + "os21x8_std.bmp") ;
+	f4 = CvrStgFile::readFile (*datadir + "os21x24_std.bmp") ;
+
 	ADDTESTCATEGORY (BmpOS2FileTest, testReadWrite) ;
 	ADDTESTCATEGORY (BmpOS2FileTest, testReadEmbedExtract) ;
 	ADDTESTCATEGORY (BmpOS2FileTest, testReadEmbedWriteReadExtract) ;
+	ADDTESTCATEGORY (BmpOS2FileTest, testPosition) ;
 }
 
 BmpOS2FileTest::~BmpOS2FileTest()
 {
 	delete datadir ;
-	delete bs1 ;
-	delete bs2 ;
-	delete bs3 ;
-	delete bs4 ;
+	delete bs1 ; delete bs2 ; delete bs3 ; delete bs4 ;
+	delete f1 ; delete f2 ; delete f3 ; delete f4 ;
 }
 
 void BmpOS2FileTest::testReadWrite (void)
@@ -68,4 +75,21 @@ void BmpOS2FileTest::testReadEmbedWriteReadExtract (void)
 	addTestResult(genericTestReadEmbedWriteReadExtract(*datadir + "os21x4_std.bmp", *bs3)) ;
 	addTestResult(genericTestReadEmbedWriteReadExtract(*datadir + "os21x8_std.bmp", *bs4)) ;
 	addTestResult(genericTestReadEmbedWriteReadExtract(*datadir + "os21x24_std.bmp", *bs1)) ;
+}
+
+void BmpOS2FileTest::testPosition()
+{
+	addTestResult (genericTestPosition (f1, 0, new BmpPaletteSampleValue (f1, 0))) ;
+	addTestResult (genericTestPosition (f1, 1, new BmpPaletteSampleValue (f1, 1))) ;
+	addTestResult (genericTestPosition (f1, 2, new BmpPaletteSampleValue (f1, 0))) ;
+	addTestResult (genericTestPosition (f1, 47, new BmpPaletteSampleValue (f1, 1))) ;
+	addTestResult (genericTestPosition (f1, 48, new BmpPaletteSampleValue (f1, 1))) ;
+	addTestResult (genericTestPosition (f1, 2299, new BmpPaletteSampleValue (f1, 0))) ;
+	addTestResult (genericTestPosition (f1, 2303, new BmpPaletteSampleValue (f1, 1))) ;
+
+	addTestResult (genericTestPosition (f2, 0, new BmpPaletteSampleValue (f2, 3))) ;
+	addTestResult (genericTestPosition (f2, 10, new BmpPaletteSampleValue (f2, 1))) ;
+	addTestResult (genericTestPosition (f2, 95, new BmpPaletteSampleValue (f2, 5))) ;
+	addTestResult (genericTestPosition (f2, 96, new BmpPaletteSampleValue (f2, 2))) ;
+	addTestResult (genericTestPosition (f2, 2208, new BmpPaletteSampleValue (f2, 7))) ;
 }

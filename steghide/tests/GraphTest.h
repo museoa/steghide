@@ -37,6 +37,7 @@ class GraphTest : public UnitTest {
 	void testVertices (void) ;
 	void testSampleValues (void) ;
 	void testVertexContents (void) ;
+	void testSampleOccurences (void) ;
 	void testSampleValueOppNeighs (void) ;
 	
 	private:

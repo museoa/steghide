@@ -265,10 +265,11 @@ void Graph::printVerboseInfo()
 bool Graph::check() const
 {
 	bool retval = true ;
-
-	retval = retval && check_SampleValues() ;
-	retval = retval && SampleValueOppNeighs.check() ;
-
+	retval = check_Vertices() && retval ;
+	retval = check_SampleValues() && retval ;
+	retval = check_VertexContents() && retval ;
+	retval = check_SampleOccurences() && retval ;
+	retval = SampleValueOppNeighs.check() && retval ;
 	return retval ;
 }
 
@@ -276,7 +277,7 @@ bool Graph::check_Vertices() const
 {
 	bool label_consistency = true ;
 	for (unsigned long i = 0 ; i < Vertices.size() ; i++) {
-		label_consistency = label_consistency && (Vertices[i]->getLabel() == i) ;
+		label_consistency = (Vertices[i]->getLabel() == i) && label_consistency ;
 	}
 	return label_consistency ;
 }
@@ -287,14 +288,14 @@ bool Graph::check_SampleValues() const
 
 	bool label_consistency = true ;
 	for (unsigned long i = 0 ; i < n ; i++) {
-		label_consistency = label_consistency && (SampleValues[i]->getLabel() == i) ;
+		label_consistency = (SampleValues[i]->getLabel() == i) && label_consistency ;
 	}
 
 	bool sv_uniqueness = true ;
 	for (unsigned long i = 0 ; i < n ; i++) {
 		for (unsigned long j = 0 ; j < n ; j++) {
 			if (i != j) {
-				sv_uniqueness = sv_uniqueness && (*(SampleValues[i]) != *(SampleValues[j])) ;
+				sv_uniqueness = (*(SampleValues[i]) != *(SampleValues[j])) && sv_uniqueness ;
 			}
 		}
 	}
@@ -304,10 +305,12 @@ bool Graph::check_SampleValues() const
 
 bool Graph::check_VertexContents() const
 {
-	return ((VertexContents.size() == SampleValues.size()) &&
-			check_VertexContents_soundness() &&
-			check_VertexContents_completeness() &&
-			check_VertexContents_pointerequiv()) ;
+	bool retval = true ;
+	retval = (VertexContents.size() == SampleValues.size()) && retval ;
+	retval = check_VertexContents_soundness() && retval ;
+	retval = check_VertexContents_completeness() && retval ;
+	retval = check_VertexContents_pointerequiv() && retval ;
+	return retval ;
 }
 
 bool Graph::check_VertexContents_soundness() const
@@ -324,7 +327,7 @@ bool Graph::check_VertexContents_soundness() const
 					found = true ;
 				}
 			}
-			soundness = soundness && found ;
+			soundness = found && soundness ;
 		}
 	}
 
@@ -347,7 +350,7 @@ bool Graph::check_VertexContents_completeness() const
 					found = true ;
 				}
 			}
-			completeness = completeness && found ;
+			completeness = found && completeness ;
 		}
 	}
 
@@ -363,11 +366,49 @@ bool Graph::check_VertexContents_pointerequiv() const
 		for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
 			SampleValue* s = vc->getSampleValue(j) ;
 			SampleValueLabel lbl = s->getLabel() ;
-			pointerequiv = pointerequiv && (SampleValues[lbl] == s) ;
+			pointerequiv = (SampleValues[lbl] == s) && pointerequiv ;
 		}
 	}
 
 	return pointerequiv ;
+}
+
+bool Graph::check_SampleOccurences (void) const
+{
+	bool retval = true ;
+	retval = check_SampleOccurences_correctness() && retval ;
+	retval = check_SampleOccurences_completeness() && retval ;
+	return retval ;
+}
+
+bool Graph::check_SampleOccurences_correctness (void) const
+{
+	bool correctness = true ;
+
+	for (unsigned long lbl = 0 ; lbl < SampleValues.size() ; lbl++) {
+		for (std::list<SampleOccurence>::const_iterator socit = SampleOccurences[lbl].begin() ; socit != SampleOccurences[lbl].end() ; socit++) {
+			Vertex *v = socit->getVertex() ;
+			unsigned short idx = socit->getIndex() ;
+			correctness = (v->getSampleValue(idx) == SampleValues[lbl]) && correctness ; // pointer equivalence
+		}
+	}
+
+	return correctness ;
+}
+
+bool Graph::check_SampleOccurences_completeness (void) const
+{
+	bool completeness = true ;
+
+	for (unsigned long vlbl = 0 ; vlbl < Vertices.size() ; vlbl++) {
+		for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
+			SampleOccurence soc (Vertices[vlbl], j) ;
+			SampleValueLabel svlbl = Vertices[vlbl]->getSampleValue(j)->getLabel() ;
+			completeness = (find(SampleOccurences[svlbl].begin(), SampleOccurences[svlbl].end(), soc) != SampleOccurences[svlbl].end()) && completeness ;
+		}
+	}
+
+	return completeness ;
 }
 
 
@@ -519,67 +560,6 @@ bool Graph::check_degrees (void) const
 	return retval ;
 }
 
-
-bool Graph::check_SampleOccurences (void) const
-{
-	bool retval = true ;
-	std::cerr << "checking SampleOccurences:" << std::endl ;
-	retval = check_SampleOccurences_correctness() && retval ;
-	retval = check_SampleOccurences_completeness() && retval ;
-	return retval ;
-}
-
-bool Graph::check_SampleOccurences_correctness (void) const
-{
-	bool err = false ;
-
-	unsigned long numsvs = SampleValues.size() ;
-	for (unsigned long lbl = 0 ; lbl < numsvs ; lbl++) {
-		for (std::list<SampleOccurence>::const_iterator it = SampleOccurences[lbl].begin() ; it != SampleOccurences[lbl].end() ; it++) {
-			Vertex *v = it->getVertex() ;
-			unsigned short idx = it->getIndex() ;
-			if (v->getSampleValue(idx) != SampleValues[lbl]) { // pointer equivalence
-				err = true ;
-			}
-		}
-	}
-
-	if (err) {
-		std::cerr << "FAILED: there exists a SampleOccurence in SampleOccurences which is not correct" << std::endl ;
-	}
-
-	return !err ;
-}
-
-bool Graph::check_SampleOccurences_completeness (void) const
-{
-	bool err = false ;
-
-	unsigned long numvertices = Vertices.size() ;
-	for (unsigned long vlbl = 0 ; vlbl < numvertices ; vlbl++) {
-		for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
-			SampleValueLabel svlbl = Vertices[vlbl]->getSampleValue(j)->getLabel() ;
-			// SampleOccurence(v,j) must be in SampleOccurences[svlbl]
-			bool found = false ;
-			for (std::list<SampleOccurence>::const_iterator it = SampleOccurences[svlbl].begin() ; it != SampleOccurences[svlbl].end() ; it++) {
-				if (it->getVertex() == Vertices[vlbl] && it->getIndex() == j) { // pointer equivalence
-					found = true ;
-					break ;
-				}
-			}
-			if (!found) {
-				err = true ;
-			}
-		}
-	}
-
-	if (err) {
-		std::cerr << "FAILED: there is a vertex which is not fully represented in SampleOccurences" << std::endl ;
-	}
-
-	return !err ;
-
-}
 
 #if 0
 // move to Matching - TODO

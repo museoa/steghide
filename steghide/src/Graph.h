@@ -81,14 +81,32 @@ class Graph {
 
 	void printVerboseInfo (void) ;
 
-	/// check the integrity of the data structures - only used for debugging and testing
+	/**
+	 * check the integrity of all data structures,
+	 * only used for debugging and testing
+	 **/
 	bool check (void) const ;
-	/// check the integrity of the Vertices data structure - only used for debugging and testing
+	/**
+	 * check the integrity of the Vertices data structure,
+	 * only used for debugging and testing
+	 **/
 	bool check_Vertices (void) const ;
-	/// check the integrity of the SampleValues data structure - only used for debugging and testing
+	/**
+	 * check the integrity of the SampleValues data structure,
+	 * only used for debugging and testing
+	 **/
 	bool check_SampleValues (void) const ;
-	/// check the integrity of the VertexContents data structure - only used for debugging and testing
+	/**
+	 * check the integrity of the VertexContents data structure,
+	 * only used for debugging and testing
+	 **/
 	bool check_VertexContents (void) const ;
+	/**
+	 * check the integrity of the SampleOccurences data structure,
+	 * it is assumed that DeletedSampleOccurences is empty,
+	 * only used for debugging and testing
+	 **/
+	bool check_SampleOccurences (void) const ;
 
 	private:
 	//
@@ -170,6 +188,8 @@ class Graph {
 	bool check_VertexContents_soundness (void) const ;
 	bool check_VertexContents_completeness (void) const ;
 	bool check_VertexContents_pointerequiv (void) const ;
+	bool check_SampleOccurences_correctness (void) const ;
+	bool check_SampleOccurences_completeness (void) const ;
 
 #ifdef DEBUG
 	unsigned long NumVertexContents ;
@@ -198,9 +218,6 @@ class Graph {
 	bool check_degrees (void) const ;
 	bool check_vertexcontents (void) const ;
 
-	bool check_SampleOccurences (void) const ;
-	bool check_SampleOccurences_correctness (void) const ;
-	bool check_SampleOccurences_completeness (void) const ;
 #endif
 } ;
 

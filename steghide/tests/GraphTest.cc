@@ -84,6 +84,7 @@ GraphTest::GraphTest (TestSuite* s)
 	ADDTESTCATEGORY (GraphTest, testSampleValues) ;
 	ADDTESTCATEGORY (GraphTest, testVertexContents) ;
 	ADDTESTCATEGORY (GraphTest, testSampleValueOppNeighs) ;
+	ADDTESTCATEGORY (GraphTest, testSampleOccurences) ;
 }
 
 GraphTest::~GraphTest()
@@ -146,6 +147,18 @@ void GraphTest::testVertexContents()
 	addTestResult (g8->check_VertexContents()) ;
 
 	// TODO - violate pointer equivalence
+}
+
+void GraphTest::testSampleOccurences()
+{
+	addTestResult (g1->check_SampleOccurences()) ;
+	addTestResult (g2->check_SampleOccurences()) ;
+	addTestResult (g3->check_SampleOccurences()) ;
+	addTestResult (g4->check_SampleOccurences()) ;
+	addTestResult (g5->check_SampleOccurences()) ;
+	addTestResult (g6->check_SampleOccurences()) ;
+	addTestResult (g7->check_SampleOccurences()) ;
+	addTestResult (g8->check_SampleOccurences()) ;
 }
 
 void GraphTest::testSampleValueOppNeighs()

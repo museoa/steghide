@@ -28,8 +28,17 @@
 #include "MHashTest.h"
 #include "PermutationTest.h"
 
-int main (void)
+bool ArgVerbose ;
+
+int main (int argc, char *argv[])
 {
+	ArgVerbose = false ;
+	if (argc > 1) {
+		if (std::string(argv[1]) == "-v" || std::string(argv[1]) == "--verbose") {
+			ArgVerbose = true ;
+		}
+	}
+
 	TestSuite ts ;
 
 	// basic classes

@@ -25,4 +25,6 @@
 #define REMOVE	"rm -f"
 #define COMPARE	"cmp -s"
 
+extern bool ArgVerbose ;
+
 #endif // ndef SH_UTCOMMON_H

@@ -23,6 +23,8 @@
 
 #include "BmpSampleValue.h"
 
+class ColorPalette ;
+
 /**
  * \class BmpPaletteSampleValue
  * \brief a sample in a bmp palette (i.e. 1-,4- or 8-bit) file

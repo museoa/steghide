@@ -108,6 +108,21 @@ bool CvrStgFileTest::genericTestReadEmbedWriteReadExtract (const std::string& cv
 	return retval ;
 }
 
+bool CvrStgFileTest::genericTestPosition (const CvrStgFile* f, const SamplePos pos, SampleValue* sv_r) const
+{
+	SampleValue* sv_o = f->getSampleValue (pos) ;
+	bool retval = (*sv_o == *sv_r) ;
+	if (ArgVerbose && !retval) {
+		std::cerr << std::endl << "---- FAILED: genericTestPosition ----" << std::endl ;
+		std::cerr << "file->getSampleValue (" << pos << ") has key: " << std::hex << sv_o->getKey() << std::dec << std::endl ;
+		std::cerr << "should be: " << std::hex << sv_r->getKey() << std::dec << std::endl ;
+		std::cerr << "-------------------------------------" << std::endl ;
+	}
+	delete sv_o ;
+	delete sv_r ;
+	return retval ;
+}
+
 bool CvrStgFileTest::areEqual (const std::string& fn1, const std::string& fn2) const
 {
 	char command[256] ;

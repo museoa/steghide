@@ -21,7 +21,7 @@
 #ifndef SH_SAMPLEOCCURENCE_H
 #define SH_SAMPLEOCCURENCE_H
 
-class Vertex ;
+#include "Vertex.h"
 
 class SampleOccurence {
 	public:
@@ -39,6 +39,9 @@ class SampleOccurence {
 
 	void setIndex (unsigned short i)
 		{ Index = i ; } ;
+
+	bool operator== (const SampleOccurence& soc) const
+		{ return ((*TheVertex == *(soc.TheVertex)) && (Index == soc.Index)) ; } ;
 
 	private:
 	Vertex *TheVertex ;

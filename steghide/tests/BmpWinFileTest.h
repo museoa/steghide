@@ -36,10 +36,12 @@ class BmpWinFileTest : public CvrStgFileTest {
 	void testReadWrite (void) ;
 	void testReadEmbedExtract (void) ;
 	void testReadEmbedWriteReadExtract (void) ;
+	void testPosition (void) ;
 
 	private:
 	std::string *datadir ;
 	BitString *bs1, *bs2, *bs3, *bs4 ;
+	CvrStgFile *f1, *f2, *f3, *f4 ;
 } ;
 
 #endif // ndef SH_BMPWINFILETEST_H

@@ -145,7 +145,7 @@ SampleValue *BmpFile::getSampleValue (SamplePos pos) const
 		break ; }
 
 		case 24: {
-			retval = (SampleValue*) new BmpRGBSampleValue (this, bitmap[row][column], bitmap[row][column + 1], bitmap[row][column + 2]) ;
+			retval = (SampleValue*) new BmpRGBSampleValue (this, bitmap[row][column + 2], bitmap[row][column + 1], bitmap[row][column]) ;
 		break ; }
 	}
 	return retval ;

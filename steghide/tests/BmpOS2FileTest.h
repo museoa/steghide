@@ -21,11 +21,8 @@
 #ifndef SH_BMPOS2FILETEST_H
 #define SH_BMPOS2FILETEST_H
 
-#define private public
-#define protected public
 #include "BmpFile.h"
-#undef private
-#undef protected
+
 #include "CvrStgFileTest.h"
 
 class BmpOS2FileTest : public CvrStgFileTest {
@@ -36,10 +33,12 @@ class BmpOS2FileTest : public CvrStgFileTest {
 	void testReadWrite (void) ;
 	void testReadEmbedExtract (void) ;
 	void testReadEmbedWriteReadExtract (void) ;
+	void testPosition (void) ;
 
 	private:
 	std::string *datadir ;
 	BitString *bs1, *bs2, *bs3, *bs4 ;
+	CvrStgFile *f1, *f2, *f3, *f4 ;
 } ;
 
 #endif // ndef SH_BMPOS2FILETEST_H
