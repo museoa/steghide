@@ -41,7 +41,7 @@ class SampleOccurence {
 		{ Index = i ; } ;
 
 	bool operator== (const SampleOccurence& soc) const
-		{ return ((*TheVertex == *(soc.TheVertex)) && (Index == soc.Index)) ; } ;
+		{ return ((TheVertex->getLabel() == soc.TheVertex->getLabel()) && (Index == soc.Index)) ; } ;
 
 	private:
 	Vertex *TheVertex ;

@@ -102,7 +102,8 @@ float WavPCMSampleValue::calcDistance (const SampleValue *s) const
         But calcDistance is called very often, a dynamic_cast costs a lot of time and
         it does not make sense to pass anything but a WavPCMSampleValue as s anyway. */
 
-	return (fabs ((float) Value - (float) sample->getValue())) ;
+	int d = Value - sample->Value ;
+	return ((d >= 0) ? ((float) d) : ((float) -d)) ;
 }
 
 float WavPCMSampleValue::getRadius () const

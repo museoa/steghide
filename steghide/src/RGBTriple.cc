@@ -24,10 +24,10 @@
 
 float RGBTriple::calcDistance (const RGBTriple& t) const
 {
-	float dr = (float) Red - (float) t.Red ;
-	float dg = (float) Green - (float) t.Green ;
-	float db = (float) Blue - (float) t.Blue ;
-	return (sqrt (dr*dr + dg*dg + db*db)) ;
+	int dr = (int) Red - (int) t.Red ;
+	int dg = (int) Green - (int) t.Green ;
+	int db = (int) Blue - (int) t.Blue ;
+	return (sqrt ((float) (dr*dr + dg*dg + db*db))) ;
 }
 
 bool RGBTriple::operator== (const RGBTriple& t) const

@@ -110,10 +110,6 @@ std::vector<Edge*>* AugmentingPathHeuristic::searchAugmentingPath (Vertex *v0)
 
 				// unmatched edge: pop from path and delete (has been created only for path)
 				Edge *delme = path->back() ;
-				if (TheMatching->includesEdge(delme)) {
-					std::cerr << "I'm about to delete the following matched edge:" << std::endl ;
-					delme->print(1) ;
-				}
 				myassert (!TheMatching->includesEdge(delme)) ;
 				path->pop_back() ;
 				delete delme ;
@@ -165,7 +161,7 @@ Edge *AugmentingPathHeuristic::getNextEdge (Vertex *v)
 		}
 		else {
 			VertexLabel pvlbl = EdgeIterators[v->getLabel()].getPartnerVertexLabel() ;
-			if (!(isVisited (pvlbl) && VertexOnPath[pvlbl])) {
+			if (!(VertexOnPath[pvlbl] && isVisited(pvlbl))) {
 				// edge is admissible
 				e = *EdgeIterators[v->getLabel()] ;
 				found = true ;

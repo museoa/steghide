@@ -403,7 +403,7 @@ bool Graph::check_VertexContents_degrees (bool verbose) const
 			for (std::vector<SampleValue*>::const_iterator nit = oppneighs.begin() ; nit != oppneighs.end() ; nit++) {
 				for (std::list<SampleOccurence>::const_iterator occit = SampleOccurences[(*nit)->getLabel()].begin() ;
 						occit != SampleOccurences[(*nit)->getLabel()].end() ; occit++) {
-					if (*(occit->getVertex()) != **vit) {
+					if (occit->getVertex()->getLabel() != (*vit)->getLabel()) {
 						degree_socc++ ;
 					}
 				}

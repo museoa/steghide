@@ -57,7 +57,8 @@ float JpegSampleValue::calcDistance (const SampleValue *s) const
 	But calcDistance is called very often, a dynamic_cast costs a lot of time and
 	it does not make sense to pass anything but a JpegSampleValue as s anyway. */
 
-	return (fabs (((float) DctCoeff) - ((float) sample->getDctCoeff()))) ;
+	int d = DctCoeff - sample->DctCoeff ;
+	return ((d >= 0) ? ((float) d) : ((float) -d)) ;
 }
 
 float JpegSampleValue::Radius = JpegSampleValue::DefaultRadius ;

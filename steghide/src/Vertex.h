@@ -99,12 +99,6 @@ class Vertex : private GraphAccess {
 	 **/
 	void unmarkDeleted (void) ;
 
-	bool operator== (const Vertex& v) const
-		{ return (Label == v.Label) ; } ;
-
-	bool operator!= (const Vertex& v) const
-		{ return (Label != v.Label) ; } ;
-
 	VertexLabel getLabel (void) const
 		{ return Label ; } ;
 

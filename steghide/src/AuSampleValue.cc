@@ -56,7 +56,8 @@ float AuSampleValue::calcDistance (const SampleValue *s) const
 	But calcDistance is called very often, a dynamic_cast costs a lot of time and
 	it does not make sense to pass anything but an AuSampleValue as s anyway. */
 
-	return (fabs (((float) Value) - ((float) sample->getValue()))) ;
+	int d = (int) Value - (int) sample->Value ;
+	return ((d >= 0) ? ((float) d) : ((float) -d)) ;
 }
 
 float AuSampleValue::getRadius () const
