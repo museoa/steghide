@@ -66,13 +66,15 @@ void Session::run ()
 			}
 
 			VerboseMessage vwe ;
+			bool printdone = true ;
 			if (fn == "") {
 				vwe.setMessage (_("writing extracted data to standard output...")) ;
+				printdone = false ;
 			}
 			else {
 				vwe.setMessage (_("writing extracted data to \"%s\"..."), fn.c_str()) ;
+				vwe.setNewline (false) ;
 			}
-			vwe.setNewline (false) ;
 			vwe.printMessage() ;
 
 			BinaryIO io (fn, BinaryIO::WRITE) ;
@@ -82,12 +84,16 @@ void Session::run ()
 			}
 			io.close() ;
 
-			VerboseMessage vdone (_(" done")) ;
-			vdone.printMessage() ;
+			if (printdone) {
+				VerboseMessage vdone (_(" done")) ;
+				vdone.printMessage() ;
+			}
 
 			if (Args.Verbosity.getValue() < VERBOSE) {
-				Message m (_("wrote extracted data to \"%s\"."), fn.c_str()) ;
-				m.printMessage() ;
+				if (fn != "") {
+					Message m (_("wrote extracted data to \"%s\"."), fn.c_str()) ;
+					m.printMessage() ;
+				}
 			}
 		break ; }
 
