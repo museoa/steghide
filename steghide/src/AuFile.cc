@@ -23,18 +23,13 @@
 #include <cstring>
 #include <vector>
 
+#include "AuData.h"
 #include "AuFile.h"
-#include "AuSampleValue.h"
-#include "common.h"
+#include "AuSampleValues.h"
 #include "CvrStgFile.h"
 #include "CvrStgObject.h"
+#include "common.h"
 #include "error.h"
-
-AuFile::AuFile (void)
-	: CvrStgFile()
-{
-	// empty
-}
 
 AuFile::AuFile (BinaryIO *io)
 	: CvrStgFile()
@@ -44,68 +39,63 @@ AuFile::AuFile (BinaryIO *io)
 
 AuFile::~AuFile (void)
 {
+	delete Data ;
 }
 
 void AuFile::read (BinaryIO *io)
 {
 	CvrStgFile::read (io) ;
 
-	readheaders () ;
-	readdata () ;
-}
-
-void AuFile::write()
-{
-	CvrStgFile::write () ;
-
-	writeheaders () ;
-	writedata () ;
-}
-
-unsigned int AuFile::getSamplesPerEBit() const
-{
-	return 2 ;
-}
-
-unsigned long AuFile::getNumSamples () const
-{
-	return data.size() ;
-}
-
-void AuFile::replaceSample (const SamplePos pos, const SampleValue* s)
-{
-	const AuSampleValue* sample = dynamic_cast<const AuSampleValue*> (s) ;
-	myassert (sample) ;
-	myassert (pos < getNumSamples()) ;
-	data[pos] = sample->getValue() ;
-}
-
-SampleValue *AuFile::getSampleValue (SamplePos pos) const
-{
-	myassert (pos < getNumSamples()) ;
-	return ((SampleValue *) new AuSampleValue (this, data[pos])) ;
-}
-
-void AuFile::readheaders (void)
-{
 	try {
-		header.id[0] = '.' ;
-		header.id[1] = 's' ;
-		header.id[2] = 'n' ;
-		header.id[3] = 'd' ;
+		Header.id[0] = '.' ;
+		Header.id[1] = 's' ;
+		Header.id[2] = 'n' ;
+		Header.id[3] = 'd' ;
 
-		header.offset = getBinIO()->read32_be() ;
-		header.size = getBinIO()->read32_be() ;
-		header.encoding = getBinIO()->read32_be() ;
-		header.samplerate = getBinIO()->read32_be() ;
-		header.channels = getBinIO()->read32_be() ;
+		// read header
+		Header.offset = getBinIO()->read32_be() ;
+		Header.size = getBinIO()->read32_be() ;
+		UWORD32 encoding = getBinIO()->read32_be() ;
+		Header.samplerate = getBinIO()->read32_be() ;
+		Header.channels = getBinIO()->read32_be() ;
 
-		if ((len_infofield = (header.offset - HeaderSize)) != 0) {
-			infofield.clear() ;
-			for (unsigned long i = 0 ; i < len_infofield ; i++) {
-				infofield.push_back (getBinIO()->read8()) ;
+		// read infofield
+		unsigned long leninfofield = Header.offset - AuHeader::HeaderSize ;
+		if (leninfofield > 0) {
+			Infofield.resize (leninfofield) ;
+			for (unsigned long i = 0 ; i < leninfofield ; i++) {
+				Infofield[i] = getBinIO()->read8() ;
 			}
 		}
+
+		// read data
+		switch (encoding) {
+			case MULAW8:
+			Data = new AuMuLawAudioData (this) ;
+			break ;
+
+			case PCM8:
+			Data = new AuPCM8AudioData (this) ;
+			break ;
+
+			case PCM16:
+			Data = new AuPCM16AudioData (this) ;
+			break ;
+
+			case PCM32:
+			Data = new AuPCM32AudioData (this) ;
+			break ;
+
+			default:
+			if (getBinIO()->is_std()) {
+				throw NotImplementedError (_("the au file on standard input uses the unkown encoding %d."), encoding) ;
+			}
+			else {
+				throw NotImplementedError (_("the au file \"%s\" uses the unknown encoding %d."), getBinIO()->getName().c_str(), encoding) ;
+			}
+			break ;
+		} ;
+		Header.encoding = (ENCODING) encoding ;
 	}
 	catch (BinaryInputError e) {
 		switch (e.getType()) {
@@ -135,26 +125,34 @@ void AuFile::readheaders (void)
 		}
 	}
 
-	return ;
+	// if available, use size of audio data, else read until eof
+	unsigned long n = AudioData::NoLimit ;
+	if (Header.size != AuHeader::SizeUnknown) {
+		myassert (Header.size % Header.getBytesPerSample() == 0) ;
+		n = Header.size / Header.getBytesPerSample() ;
+	}
+	Data->read (getBinIO(), n) ;
 }
 
-void AuFile::writeheaders (void)
+void AuFile::write()
 {
-	try {
-		getBinIO()->write8 (header.id[0]) ;
-		getBinIO()->write8 (header.id[1]) ;
-		getBinIO()->write8 (header.id[2]) ;
-		getBinIO()->write8 (header.id[3]) ;
-		getBinIO()->write32_be (header.offset) ;
-		getBinIO()->write32_be (header.size) ;
-		getBinIO()->write32_be (header.encoding) ;
-		getBinIO()->write32_be (header.samplerate) ;
-		getBinIO()->write32_be (header.channels) ;
+	CvrStgFile::write () ;
 
-		if (len_infofield != 0) {
-			for (unsigned long i = 0 ; i < len_infofield ; i++) {
-				getBinIO()->write8 (infofield[i]) ;
-			}
+	try {
+		// write header
+		getBinIO()->write8 (Header.id[0]) ;
+		getBinIO()->write8 (Header.id[1]) ;
+		getBinIO()->write8 (Header.id[2]) ;
+		getBinIO()->write8 (Header.id[3]) ;
+		getBinIO()->write32_be (Header.offset) ;
+		getBinIO()->write32_be (Header.size) ;
+		getBinIO()->write32_be ((UWORD32) Header.encoding) ;
+		getBinIO()->write32_be (Header.samplerate) ;
+		getBinIO()->write32_be (Header.channels) ;
+
+		// write infofield
+		for (unsigned long i = 0 ; i < Infofield.size() ; i++) {
+			getBinIO()->write8 (Infofield[i]) ;
 		}
 	}
 	catch (BinaryOutputError e) {
@@ -173,75 +171,32 @@ void AuFile::writeheaders (void)
 		}
 	}
 
-	return ;
+	Data->write (getBinIO(), AudioData::NoLimit) ;
 }
 
-void AuFile::readdata (void)
+unsigned short AuFile::AuHeader::getBytesPerSample () const
 {
-	try {
-		/* if available, use size of audio data (in bytes) to create buffer */
-		data.clear() ;
-		if (header.size != 0xFFFFFFFF) {
-			data.reserve (header.size) ;
-		}
+	unsigned short retval = 0 ;
+	switch (encoding) {
+		case MULAW8:
+		retval = 1 ;
+		break ;
 
-		while (!getBinIO()->eof()) {
-			data.push_back (getBinIO()->read8()) ;
-		}
+		case PCM8:
+		retval = 1 ;
+		break ;
+
+		case PCM16:
+		retval = 2 ;
+		break ;
+
+		case PCM32:
+		retval = 4 ;
+		break ;
+
+		default:
+		myassert(0) ;
+		break ;
 	}
-	catch (BinaryInputError e) {
-		switch (e.getType()) {
-			case BinaryInputError::FILE_ERR:
-			{
-				throw SteghideError (_("an error occured while reading the audio data from the file \"%s\"."), getBinIO()->getName().c_str()) ;
-				break ;
-			}
-
-			case BinaryInputError::FILE_EOF:
-			{
-				throw SteghideError (_("premature end of file \"%s\" while reading audio data."), getBinIO()->getName().c_str()) ;
-				break ;
-			}
-
-			case BinaryInputError::STDIN_ERR:
-			{
-				throw SteghideError (_("an error occured while reading the audio data from standard input.")) ;
-				break ;
-			}
-
-			case BinaryInputError::STDIN_EOF:
-			{
-				throw SteghideError (_("premature end of data from standard input while reading audio data.")) ;
-				break ;
-			}
-		}
-	}
-
-	return ;
-}
-
-void AuFile::writedata (void)
-{
-	try {
-		for (std::vector<unsigned char>::iterator i = data.begin() ; i != data.end() ; i++) {
-			getBinIO()->write8 (*i) ;
-		}
-	}
-	catch (BinaryOutputError e) {
-		switch (e.getType()) {
-			case BinaryOutputError::FILE_ERR:
-			{
-				throw SteghideError (_("an error occured while writing the audio data to the file \"%s\"."), getBinIO()->getName().c_str()) ;
-				break ;
-			}
-
-			case BinaryOutputError::STDOUT_ERR:
-			{
-				throw SteghideError (_("an error occured while writing the audio data to standard output.")) ;
-				break ;
-			}
-		}
-	}
-
-	return ;
+	return retval ;
 }

@@ -23,49 +23,57 @@
 
 #include <vector>
 
+#include "AudioData.h"
 #include "CvrStgFile.h"
 
 class BinaryIO ;
 
+/**
+ * \class AuFile
+ * \brief a CvrStgFile in Sun .au format
+ **/
 class AuFile : public CvrStgFile {
 	public:
-	AuFile (void) ;
 	AuFile (BinaryIO *io) ;
 	~AuFile (void) ;
 
 	void read (BinaryIO *io) ;
 	void write (void) ;
 
-	unsigned long getNumSamples (void) const ;
-	void replaceSample (const SamplePos pos, const SampleValue* s) ;
-	SampleValue* getSampleValue (SamplePos pos) const ;
-	unsigned int getSamplesPerEBit (void) const ;
+	unsigned long getNumSamples (void) const
+		{ return Data->getNumSamples() ; } ;
 
-	protected:
-	typedef struct struct_AuHeader {
-		char			id[4] ;
-		unsigned long	offset ;
-		unsigned long	size ;
-		unsigned long	encoding ;
-		unsigned long	samplerate ;
-		unsigned long	channels ;
-	} AuHeader ;
+	void replaceSample (const SamplePos pos, const SampleValue* s)
+		{ return Data->replaceSample(pos, s) ; } ;
 
-	std::vector<unsigned char> getData (void) ;
-	void setData (std::vector<unsigned char> d) ;
+	SampleValue* getSampleValue (SamplePos pos) const
+		{ return Data->getSampleValue(pos) ; } ;
+
+	unsigned short getSamplesPerEBit (void) const
+		{ return SamplesPerEBit ; } ;
 
 	private:
-	static const int HeaderSize = 24 ;
+	enum ENCODING { MULAW8 = 1, PCM8 = 2, PCM16 = 3, PCM32 = 5 } ;
+	class AuHeader {
+		public:
+		char		id[4] ;
+		UWORD32		offset ;
+		UWORD32		size ;
+		ENCODING	encoding ;
+		UWORD32		samplerate ;
+		UWORD32		channels ;
 
-	AuHeader header ;
-	unsigned long len_infofield ;
-	std::vector<unsigned char> infofield ;
-	std::vector<unsigned char> data ;
+		static const UWORD32 SizeUnknown = 0xFFFFFFFF ;
+		static const unsigned short HeaderSize = 24 ;
 
-	void readheaders (void) ;
-	void readdata (void) ;
-	void writeheaders (void) ;
-	void writedata (void) ;
+		unsigned short getBytesPerSample (void) const ;
+	} ;
+
+	static const unsigned short SamplesPerEBit = 2 ;
+
+	AuHeader Header ;
+	std::vector<BYTE> Infofield ;
+	AudioData* Data ;
 } ;
 
 #endif /* ndef SH_AUFILE_H */

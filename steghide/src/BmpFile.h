@@ -40,7 +40,7 @@ class BmpFile : public CvrStgFile {
 	unsigned long getNumSamples (void) const ;
 	void replaceSample (const SamplePos pos, const SampleValue* s) ;
 	SampleValue* getSampleValue (SamplePos pos) const ;
-	unsigned int getSamplesPerEBit (void) const ;
+	unsigned short getSamplesPerEBit (void) const ;
 
 	unsigned short getBitCount (void) const ;
 	unsigned long getWidth (void) const ;

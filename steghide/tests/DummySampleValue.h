@@ -34,12 +34,6 @@ class DummySampleValue : public SampleValue {
 		{ return Value ; } ;
 
 	/**
-	 * return 0 as there is no radius for DummySampleValue
-	 **/
-	UWORD32 getRadius (void) const
-		{ return 0 ; } ;
-
-	/**
 	 * calculate the distance as | Value - s->Value |
 	 **/
 	UWORD32 calcDistance (const SampleValue* s) const ;

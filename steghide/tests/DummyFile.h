@@ -48,7 +48,7 @@ class DummyFile : public CvrStgFile {
 
 	SampleValue* getSampleValue (const SamplePos pos) const ;
 
-	unsigned int getSamplesPerEBit (void) const
+	unsigned short getSamplesPerEBit (void) const
 		{ return 2 ; } ;
 
 	std::vector<std::vector<bool> >* getSampleValueAdjacencyMatrix() const

@@ -33,10 +33,7 @@ class BmpSampleValue : public SampleValue {
 	BmpSampleValue (void) ;
 	BmpSampleValue (const CvrStgFile* f) ;
 
-	bool isNeighbour (const SampleValue *s) const ;
 	UWORD32 calcDistance (const SampleValue *s) const ;
-
-	UWORD32 getRadius (void) const ;
 
 	/**
 	 * get the red color component
@@ -56,7 +53,6 @@ class BmpSampleValue : public SampleValue {
 	protected:
 	// set the default radius to 20^2 = 400
 	static const UWORD32 DefaultRadius = 400 ;
-	static UWORD32 Radius ;
 } ;
 
 

@@ -30,11 +30,7 @@ JpegSampleValue::JpegSampleValue (const CvrStgFile* f, int c)
 	int dctcoeff = ((DctCoeff >= 0) ? DctCoeff : -DctCoeff) ;
 	SBit = (BIT) (dctcoeff % 2) ;
 	Key = (unsigned long) DctCoeff ;
-}
-
-bool JpegSampleValue::isNeighbour (const SampleValue *s) const
-{
-	return (calcDistance(s) <= Radius) ;
+	setRadius (DefaultRadius) ;
 }
 
 // FIXME - it is assumed that the maximum and the minimum values are never touched (also in getOppositeNeighbours)
@@ -60,5 +56,3 @@ UWORD32 JpegSampleValue::calcDistance (const SampleValue *s) const
 	int d = DctCoeff - sample->DctCoeff ;
 	return ((d >= 0) ? ((UWORD32) d) : ((UWORD32) -d)) ;
 }
-
-UWORD32 JpegSampleValue::Radius = JpegSampleValue::DefaultRadius ;

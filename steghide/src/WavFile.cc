@@ -94,7 +94,7 @@ void WavFile::replaceSample (const SamplePos pos, const SampleValue* s)
 	}
 }
 
-unsigned int WavFile::getSamplesPerEBit() const
+unsigned short WavFile::getSamplesPerEBit() const
 {
 	return 2 ;
 }

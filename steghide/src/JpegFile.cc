@@ -72,7 +72,7 @@ void JpegFile::replaceSample (const SamplePos pos, const SampleValue* s)
 	frame->replaceSample (pos, s) ;
 }
 
-unsigned int JpegFile::getSamplesPerEBit() const
+unsigned short JpegFile::getSamplesPerEBit() const
 {
 	return 2 ;
 }

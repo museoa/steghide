@@ -60,7 +60,7 @@ class CvrStgFile : public CvrStgObject {
 	unsigned long getCapacity (void) const
 		{ return (getNumSamples() / getSamplesPerEBit()) / 8 ; } ;
 
-	virtual unsigned int getSamplesPerEBit (void) const = 0 ;
+	virtual unsigned short getSamplesPerEBit (void) const = 0 ;
 
 	/**
 	 * get the bit that is embedded in the Sample pos

@@ -27,10 +27,27 @@ SampleValue::SampleValue (const CvrStgFile* f)
 	File = f ;
 }
 
+bool SampleValue::isNeighbour (const SampleValue *s) const
+{
+	return (calcDistance (s) <= Radius) ;
+}
+
 void SampleValue::decNumEdges ()
 {
 	myassert (NumEdges > 0) ;
 	NumEdges-- ;
+}
+
+void SampleValue::setRadius (UWORD32 dr)
+{
+	if (Radius == 0) {
+		if (Args.Radius.is_set()) {
+			Radius = Args.Radius.getValue() ;
+		}
+		else {
+			Radius = dr ;
+		}
+	}
 }
 
 void SampleValue::print (unsigned short spc) const
@@ -45,3 +62,5 @@ void SampleValue::print (unsigned short spc) const
 	std::cerr << space << " Key(hex): " << std::hex << getKey() << std::dec << std::endl ;
 	std::cerr << space << " Bit: " << getBit() << std::endl ;
 }
+
+UWORD32 SampleValue::Radius = 0 ;

@@ -37,15 +37,28 @@
 typedef TYPE_UWORD32	UWORD32 ;
 typedef TYPE_UWORD16	UWORD16 ;
 typedef TYPE_BYTE		BYTE ;
+typedef TYPE_SWORD32	SWORD32 ;
+typedef TYPE_SWORD16	SWORD16 ;
+typedef TYPE_SBYTE		SBYTE ;
 #else
 // use types that are at least the correct size
 typedef unsigned long	UWORD32 ;
 typedef unsigned short	UWORD16 ;
 typedef unsigned char	BYTE ;
+typedef long			SWORD32 ;
+typedef short			SWORD16 ;
+typedef char			SBYTE ;
 #endif
+
 #define UWORD32_MAX		0xFFFFFFFFUL
 #define UWORD16_MAX		0xFFFF
 #define BYTE_MAX		0xFF
+#define SWORD32_MIN		-2147483648L
+#define SWORD32_MAX		2147483647L
+#define SWORD16_MIN		-32768
+#define SWORD16_MAX		32767
+#define SBYTE_MIN		-128
+#define SBYTE_MAX		127
 
 //
 // specialised type definitions

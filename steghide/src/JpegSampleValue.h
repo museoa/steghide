@@ -26,22 +26,17 @@
 class JpegSampleValue : public SampleValue {
 	public:
 	JpegSampleValue (void)
-		: SampleValue(NULL) {} ;
+		: SampleValue(NULL) { setRadius (DefaultRadius) ; } ;
 	JpegSampleValue (const CvrStgFile* f, int c) ;
 
-	bool isNeighbour (const SampleValue *s) const ;
 	SampleValue* getNearestOppositeSampleValue (void) const ;
 	UWORD32 calcDistance (const SampleValue *s) const ;
-
-	UWORD32 getRadius (void) const
-		{ return Radius ; } ;
 
 	int getDctCoeff (void) const
 		{ return DctCoeff ; } ;
 
 	private:
 	static const UWORD32 DefaultRadius = 1 ;
-	static UWORD32 Radius ;
 
 	int DctCoeff ;
 } ;

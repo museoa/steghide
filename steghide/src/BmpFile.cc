@@ -112,9 +112,9 @@ void BmpFile::replaceSample (const SamplePos pos, const SampleValue* s)
 	}
 }
 
-unsigned int BmpFile::getSamplesPerEBit() const
+unsigned short BmpFile::getSamplesPerEBit() const
 {
-	unsigned int retval = 0 ;
+	unsigned short retval = 0 ;
 	switch (getBitCount()) {
 		case 1: case 4: case 8: {
 			retval = 2 ;

@@ -14,22 +14,22 @@ SampleValueTest.cc BmpRGBSampleValueTest.cc SelectorTest.cc VertexContentTest.cc
 SampleValueOppositeNeighbourhoodTest.cc main.cc
 unittests_LDADD = \
 ../src/Arg.o ../src/Arguments.o ../src/AssertionFailed.o ../src/AuFile.o \
-../src/AuSampleValue.o ../src/AugmentingPathHeuristic.o ../src/BinaryIO.o \
-../src/BitString.o ../src/BmpFile.o ../src/BmpPaletteSampleValue.o \
-../src/BmpRGBSampleValue.o ../src/BmpSampleValue.o ../src/ColorPalette.o \
-../src/ConstructionHeuristic.o ../src/CvrStgFile.o ../src/Edge.o \
-../src/EdgeIterator.o ../src/EmbData.o ../src/Embedder.o \
-../src/EncryptionAlgorithm.o ../src/EncryptionMode.o ../src/Extractor.o \
-../src/Graph.o ../src/JpegFile.o ../src/JpegSampleValue.o ../src/MCryptPP.o \
-../src/MHashKeyGen.o ../src/MHashPP.o ../src/Matching.o \
-../src/PseudoRandomSource.o ../src/RGBTriple.o ../src/RandomSource.o \
-../src/SampleValue.o ../src/SampleValueOppositeNeighbourhood.o \
-../src/Selector.o ../src/Session.o ../src/SteghideError.o ../src/Terminal.o \
-../src/ProgressOutput.o ../src/Vertex.o ../src/VertexContent.o ../src/WavChunk.o \
-../src/WavChunkHeader.o ../src/WavChunkUnused.o ../src/WavFile.o \
-../src/WavFormatChunk.o ../src/WavPCMSampleValue.o ../src/error.o \
-../src/jpegbase.o ../src/jpegentropycoded.o ../src/jpegframe.o \
-../src/jpegframehdr.o ../src/jpeghufftable.o ../src/jpegjfifapp0.o \
-../src/jpegrestart.o ../src/jpegscan.o ../src/jpegscanhdr.o \
-../src/jpegunusedseg.o ../src/msg.o
+../src/AugmentingPathHeuristic.o \
+../src/BinaryIO.o ../src/BitString.o ../src/BmpFile.o \
+../src/BmpPaletteSampleValue.o ../src/BmpRGBSampleValue.o \
+../src/BmpSampleValue.o ../src/ColorPalette.o ../src/ConstructionHeuristic.o \
+../src/CvrStgFile.o ../src/Edge.o ../src/EdgeIterator.o ../src/EmbData.o \
+../src/Embedder.o ../src/EncryptionAlgorithm.o ../src/EncryptionMode.o \
+../src/Extractor.o ../src/Graph.o ../src/JpegFile.o ../src/JpegSampleValue.o \
+../src/MCryptPP.o ../src/MHashKeyGen.o ../src/MHashPP.o ../src/Matching.o \
+../src/ProgressOutput.o ../src/PseudoRandomSource.o ../src/RGBTriple.o \
+../src/RandomSource.o ../src/SampleValue.o \
+../src/SampleValueOppositeNeighbourhood.o ../src/Selector.o ../src/Session.o \
+../src/SteghideError.o ../src/Terminal.o ../src/Vertex.o \
+../src/VertexContent.o ../src/WavChunk.o ../src/WavChunkHeader.o \
+../src/WavChunkUnused.o ../src/WavFile.o ../src/WavFormatChunk.o \
+../src/WavPCMSampleValue.o ../src/error.o ../src/jpegbase.o \
+../src/jpegentropycoded.o ../src/jpegframe.o ../src/jpegframehdr.o \
+../src/jpeghufftable.o ../src/jpegjfifapp0.o ../src/jpegrestart.o \
+../src/jpegscan.o ../src/jpegscanhdr.o ../src/jpegunusedseg.o ../src/msg.o
 MAINTAINERCLEANFILES = Makefile.in

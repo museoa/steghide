@@ -60,12 +60,6 @@ class SampleValue {
 	SampleValue (const CvrStgFile* f) ;
 
 	/**
-	 * is the sample value s a neighbour of this sample value ?
-	 * \return true iff this and s are neighbours
-	 **/
-	virtual bool isNeighbour (const SampleValue* s) const = 0 ;
-
-	/**
 	 * get the nearest (with the least distance) opposite sample value that can be used in this file
 	 * \return the nearest opposite sample value
 	 *
@@ -86,6 +80,15 @@ class SampleValue {
 	virtual UWORD32 calcDistance (const SampleValue *s) const = 0 ;
 
 	/**
+	 * is the sample value s a neighbour of this sample value ?
+	 * \return true iff this and s are neighbours
+	 *
+	 * This is implemented as (calcDistance() <= Radius) but may be overridden by
+	 * derived classes.
+	 **/
+	virtual bool isNeighbour (const SampleValue* s) const ;
+
+	/**
 	 * get the bit that is embedded in this sample value
 	 * \return the embedded bit
 	 **/
@@ -96,45 +99,30 @@ class SampleValue {
 	 * get the key for this sample
 	 * \return a key which must be different for two different samples values.
 	 **/
-	unsigned long getKey (void) const
+	UWORD32 getKey (void) const
 		{ return Key ; } ;
 
 	/**
 	 * two sample values are equal iff their keys are equal
 	 **/
-	bool operator== (const SampleValue& sv) const
-		{ return (getKey() == sv.getKey()) ; } ;
-
-	bool operator!= (const SampleValue& sv) const
-		{ return (getKey() != sv.getKey()) ; } ;
-
-	virtual UWORD32 getRadius (void) const = 0 ;
+	bool operator== (const SampleValue& sv) const { return (getKey() == sv.getKey()) ; } ;
+	bool operator!= (const SampleValue& sv) const { return (getKey() != sv.getKey()) ; } ;
 
 	/**
 	 * get the number of edges that this sample value contributes to a vertex
 	 **/
-	unsigned long getNumEdges (void) const
-		{ return NumEdges ; } ;
-
-	void setNumEdges (unsigned long ne)
-		{ NumEdges = ne ; } ;
-
+	unsigned long getNumEdges (void) const { return NumEdges ; } ;
+	void setNumEdges (unsigned long ne) { NumEdges = ne ; } ;
+	void incNumEdges (void) { NumEdges++ ; } ;
 	void decNumEdges (void) ;
 
-	void incNumEdges (void)
-		{ NumEdges++ ; } ;
+	UWORD32 getRadius (void) const { return Radius ; } ;
 
-	const CvrStgFile* getFile (void) const
-		{ return File ; } ;
+	void setFile (CvrStgFile* f) { File = f ; } ;
+	const CvrStgFile* getFile (void) const { return File ; } ;
 
-	void setFile (CvrStgFile* f)
-		{ File = f ; } ;
-
-	unsigned long getLabel (void) const
-		{ return Label ; } ;
-
-	void setLabel (unsigned long l)
-		{ Label = l ; } ;
+	void setLabel (unsigned long l) { Label = l ; } ;
+	unsigned long getLabel (void) const { return Label ; } ;
 
 	void print (unsigned short spc = 0) const ;
 
@@ -145,11 +133,24 @@ class SampleValue {
 	BIT SBit ;
 
 	/// the key of this sample value - must be different for two different sample values - must be set in constructor of derived class
-	unsigned long Key ;
+	UWORD32 Key ;
+
+	/// the radius of all sample values - must be set in constructor of derived class using the setRadius method
+	static UWORD32 Radius ;
+
+	/**
+	 * set the static variable Radius either to the value specified by the user or to dr
+	 * \param dr the default (if no value has been specified by the user)
+	 *
+	 * This method should be called from the constructor of the derived class
+	 * with a class-specific constant for the default radius. The Radius variable
+	 * is only set if it contains the value 0 (indicating that it has not been set yet).
+	 **/
+	void setRadius (UWORD32 dr) ;
 
 	private:
 	/// the CvrStgFile this sample value belongs to
-	const CvrStgFile* File ;
+	const CvrStgFile* File ; // FIXME - static ?
 
 	unsigned long Label ;
 
@@ -157,12 +158,14 @@ class SampleValue {
 	unsigned long NumEdges ;
 } ;
 
+
 struct SampleValuesEqual : std::binary_function<SampleValue*, SampleValue*, bool> {
 	bool operator() (const SampleValue* s1, const SampleValue *s2) const
 	{
 		return (*s1 == *s2) ;
 	}
 } ;
+
 
 namespace NAMESPACE_SGI
 {

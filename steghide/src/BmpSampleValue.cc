@@ -24,22 +24,13 @@
 BmpSampleValue::BmpSampleValue (void)
 		: SampleValue()
 {
-	if (Radius == 0) {
-		Radius = getRadius() ;
-	}
+	setRadius (DefaultRadius) ;
 }
 
 BmpSampleValue::BmpSampleValue (const CvrStgFile* f)
 		: SampleValue (f)
 {
-	if (Radius == 0) {
-		Radius = getRadius() ;
-	}
-}
-
-bool BmpSampleValue::isNeighbour (const SampleValue *s) const
-{
-	return (calcDistance(s) <= Radius) ;
+	setRadius (DefaultRadius) ;
 }
 
 UWORD32 BmpSampleValue::calcDistance (const SampleValue *s) const
@@ -54,17 +45,3 @@ UWORD32 BmpSampleValue::calcDistance (const SampleValue *s) const
 	int db = (int) getBlue() - (int) sample->getBlue() ;
 	return (UWORD32) (dr*dr + dg*dg + db*db) ;
 }
-
-UWORD32 BmpSampleValue::getRadius () const
-{
-	UWORD32 retval ;
-	if (Args.Radius.is_set()) {
-		retval = Args.Radius.getValue() ;
-	}
-	else {
-		retval = DefaultRadius ;
-	}
-	return retval ;
-}
-
-UWORD32 BmpSampleValue::Radius = 0 ;

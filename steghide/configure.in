@@ -76,12 +76,17 @@ dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 AC_TYPE_SIZE_T
 
-dnl Check size of unsigned types
+dnl Check size of types
 AC_CHECK_SIZEOF(unsigned long int)
+AC_CHECK_SIZEOF(long int)
 AC_CHECK_SIZEOF(unsigned int)
+AC_CHECK_SIZEOF(int)
 AC_CHECK_SIZEOF(unsigned short int)
+AC_CHECK_SIZEOF(short int)
 AC_CHECK_SIZEOF(unsigned char)
+AC_CHECK_SIZEOF(signed char)
 
+dnl searching for unsigned 32 bit integer
 if test "$ac_cv_sizeof_unsigned_int" = 4;
 then
 	AC_DEFINE(TYPE_UWORD32,[unsigned int],[type of unsigned word with 32 bits])
@@ -94,6 +99,20 @@ else
 fi
 fi	
 
+dnl searching for signed 32 bit integer
+if test "$ac_cv_sizeof_int" = 4;
+then
+	AC_DEFINE(TYPE_SWORD32,[int],[type of signed word with 32 bits])
+else
+if test "$ac_cv_sizeof_long_int" = 4;
+then
+	AC_DEFINE(TYPE_SWORD32,[long int],[type of signed word with 32 bits])
+else
+	AC_MSG_ERROR([[There is no signed integer type with a size of 32 bits on your system. Cannot compile.]])
+fi
+fi	
+
+dnl searching for unsigned 16 bit integer
 if test "$ac_cv_sizeof_unsigned_short_int" = 2;
 then
 	AC_DEFINE(TYPE_UWORD16,[unsigned short int],[type of unsigned word with 16 bits])
@@ -106,11 +125,33 @@ else
 fi
 fi	
 
+dnl searching for signed 16 bit integer
+if test "$ac_cv_sizeof_short_int" = 2;
+then
+	AC_DEFINE(TYPE_SWORD16,[short int],[type of signed word with 16 bits])
+else
+if test "$ac_cv_sizeof_int" = 2;
+then
+	AC_DEFINE(TYPE_SWORD16,[int],[type of signed word with 16 bits])
+else
+	AC_MSG_ERROR([[There is no signed integer type with a size of 16 bits on your system. Cannot compile.]])
+fi
+fi	
+
+dnl searching for unsigned 8 bit character
 if test "$ac_cv_sizeof_unsigned_char" = 1;
 then
 	AC_DEFINE(TYPE_BYTE,[unsigned char],[type of unsigned byte])
 else
 	AC_MSG_ERROR([[There is no unsigned character type with a size of 8 bits on your system. Cannot compile.]])
+fi	
+
+dnl searching for signed 8 bit character
+if test "$ac_cv_sizeof_signed_char" = 1;
+then
+	AC_DEFINE(TYPE_SBYTE,[signed char],[type of signed byte])
+else
+	AC_MSG_ERROR([[There is no signed character type with a size of 8 bits on your system. Cannot compile.]])
 fi	
 
 dnl check for doxygen

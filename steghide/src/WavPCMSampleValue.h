@@ -32,11 +32,8 @@ class WavPCMSampleValue : public SampleValue {
 	WavPCMSampleValue (void) : SampleValue(NULL) {} ;
 	WavPCMSampleValue (const CvrStgFile* f, int v) ;
 
-	bool isNeighbour (const SampleValue *s) const ;
 	SampleValue* getNearestOppositeSampleValue (void) const ;
 	UWORD32 calcDistance (const SampleValue *s) const ;
-
-	UWORD32 getRadius (void) const ;
 
 	int getValue (void) const
 		{ return Value ; } ;
@@ -46,7 +43,6 @@ class WavPCMSampleValue : public SampleValue {
 	 * every pair of wav samples whose distance is smaller than this constant are neighbours
 	 **/
 	static const UWORD32 DefaultRadius = 20 ;
-	static UWORD32 Radius ;
 
 	int Value ;
 	int MaxValue ;

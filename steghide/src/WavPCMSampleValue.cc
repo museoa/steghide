@@ -25,8 +25,6 @@
 #include "WavFile.h"
 #include "WavPCMSampleValue.h"
 
-// TODO - ? derive WavPCMsmallSampleValue and WavPCMlargeSampleValue from WavPCMSampleValueValue
-
 WavPCMSampleValue::WavPCMSampleValue (const CvrStgFile* f, int v)
 	: SampleValue(f), Value(v)
 {
@@ -65,14 +63,7 @@ WavPCMSampleValue::WavPCMSampleValue (const CvrStgFile* f, int v)
 
 	SBit = (BIT) (Value & 1) ;
 	Key = (unsigned long) Value ;
-	if (Radius == 0.0) {
-		Radius = getRadius() ;
-	}
-}
-
-bool WavPCMSampleValue::isNeighbour (const SampleValue *s) const
-{
-	return (calcDistance (s) <= Radius) ;
+	setRadius (DefaultRadius) ;
 }
 
 SampleValue *WavPCMSampleValue::getNearestOppositeSampleValue () const
@@ -97,25 +88,11 @@ SampleValue *WavPCMSampleValue::getNearestOppositeSampleValue () const
 
 UWORD32 WavPCMSampleValue::calcDistance (const SampleValue *s) const
 {
-        const WavPCMSampleValue *sample = (const WavPCMSampleValue*) s ;
-        /* If s is not a WavPCMSampleValue then we get into real trouble here.
-        But calcDistance is called very often, a dynamic_cast costs a lot of time and
-        it does not make sense to pass anything but a WavPCMSampleValue as s anyway. */
+	const WavPCMSampleValue *sample = (const WavPCMSampleValue*) s ;
+	/* If s is not a WavPCMSampleValue then we get into real trouble here.
+	But calcDistance is called very often, a dynamic_cast costs a lot of time and
+	it does not make sense to pass anything but a WavPCMSampleValue as s anyway. */
 
 	int d = Value - sample->Value ;
 	return ((d >= 0) ? ((UWORD32) d) : ((UWORD32) -d)) ;
 }
-
-UWORD32 WavPCMSampleValue::getRadius () const
-{
-	UWORD32 retval ;
-	if (Args.Radius.is_set()) {
-		retval = Args.Radius.getValue() ;
-	}
-	else {
-		retval = DefaultRadius ;
-	}
-	return retval ;
-}
-
-UWORD32 WavPCMSampleValue::Radius = 0 ;
