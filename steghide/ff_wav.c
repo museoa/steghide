@@ -150,11 +150,11 @@ void wav_readfile (CVRFILE *file)
 	noncvrbytes = (file->headers->wav.fmtch.BitsPerSample / 8) - 1 ;
 
 	while ((cvrpos + noncvrpos) < file->headers->wav.datachhdr.len) {
-		bufsetbyte (file->cvrbuflhead, cvrpos, getc (file->stream)) ;
+		bufsetbyte (file->cvrdata, cvrpos, getc (file->stream)) ;
 		cvrpos++ ;
 
 		for (i = 0; i < noncvrbytes; i++) {
-			bufsetbyte (file->noncvrbuflhead, noncvrpos, getc (file->stream)) ;
+			bufsetbyte (file->noncvrdata, noncvrpos, getc (file->stream)) ;
 			noncvrpos++ ;
 		}
 	}
@@ -198,11 +198,11 @@ void wav_writefile (CVRFILE *file)
 	noncvrbytes = (file->headers->wav.fmtch.BitsPerSample / 8) - 1 ;
 
 	while ((cvrpos + noncvrpos) < file->headers->wav.datachhdr.len) {
-		putc (bufgetbyte (file->cvrbuflhead, cvrpos), file->stream) ;
+		putc (bufgetbyte (file->cvrdata, cvrpos), file->stream) ;
 		cvrpos++ ;
 
 		for (i = 0; i < noncvrbytes; i++) {
-			putc (bufgetbyte (file->noncvrbuflhead, noncvrpos), file->stream) ;
+			putc (bufgetbyte (file->noncvrdata, noncvrpos), file->stream) ;
 			noncvrpos++ ;
 		}
 	}

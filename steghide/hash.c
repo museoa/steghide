@@ -60,9 +60,9 @@ void *getcrc32 (PLNFILE *plnfile)
 		exit_err ("could not initialize libmhash CRC32 algorithm.") ;
 	}
 
-	n = buflength (plnfile->plnbuflhead) ;
+	n = plnfile->plndata->length ;
 	for (i = 0 ; i < n ; i++) {
-		c = (char) bufgetbyte (plnfile->plnbuflhead, i) ;
+		c = (char) bufgetbyte (plnfile->plndata, i) ;
 		mhash (hashd, &c, 1) ;
 	}
 

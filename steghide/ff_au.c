@@ -101,7 +101,7 @@ void au_readfile (CVRFILE *file)
 	unsigned long bufpos = 0 ;
 
 	while ((c = getc (file->stream)) != EOF) {
-		bufsetbyte (file->cvrbuflhead, bufpos, c) ;
+		bufsetbyte (file->cvrdata, bufpos, c) ;
 		bufpos++ ;
 	}
 
@@ -124,7 +124,7 @@ void au_writefile (CVRFILE *file)
 
 	au_writeheaders (file) ;
 
-	while ((c = bufgetbyte (file->cvrbuflhead, bufpos)) != ENDOFBUF) {
+	while ((c = bufgetbyte (file->cvrdata, bufpos)) != ENDOFBUF) {
 		putc (c, file->stream) ;
 		bufpos++ ;
 	}

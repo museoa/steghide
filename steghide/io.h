@@ -23,6 +23,12 @@
 
 #include <stdio.h>
 
+extern int noncvrbufuse[] ;
+
+/* is used for parameter freesubstructs of cleanupcvrfile */
+#define FSS_NO	0
+#define FSS_YES	1
+
 /*** au file format ***/
 typedef struct struct_AUHEADERS {
 	char			id[4] ;
@@ -133,10 +139,10 @@ typedef struct struct_CVRFILE {
 	/* length of data of unsupported header structures 2 (in bytes) */
 	int			unsupdata2len ;
 	/* first element of linked list of buffers that contain the coverbytes of the file */
-	BUFFER		*cvrbuflhead ;
+	BUFFER		*cvrdata ;
 	/* first element of linked list of buffers that contain all other bytes of the file
 	   these buffers contain all bytes in which data must not be hidden */
-	BUFFER		*noncvrbuflhead ;
+	BUFFER		*noncvrdata ;
 } CVRFILE ;
 
 /* PLNFILE describes a plaindata file */
@@ -146,7 +152,7 @@ typedef struct struct_PLNFILE {
 	/* name of file */
 	char	*filename ;
 	/* first element of linked list of buffers that contain the data of the file */
-	BUFFER	*plnbuflhead ;
+	BUFFER	*plndata ;
 } PLNFILE ;
 
 /* general io function prototypes */

@@ -31,6 +31,13 @@
 #include "stegano.h"
 #include "hash.h"
 
+/* defines use or non-use of the noncvr buffer per file format
+the array indices are the values of the FF_XXX constants */
+int noncvrbufuse[] = {	0,	/* FF_UNKNOWN ; not used */
+						0,	/* FF_BMP */
+						1,	/* FF_WAV */
+						0,	/* FF_AU */	} ;
+
 /* auto-detects file format while reading headers into file->headers */
 void readheaders (CVRFILE *file)
 {
@@ -114,12 +121,12 @@ CVRFILE *createstgfile (CVRFILE *cvrfile, char *stgfilename)
 	stgfile->unsupdata1len = cvrfile->unsupdata1len ;
 	stgfile->unsupdata2 = cvrfile->unsupdata2 ;
 	stgfile->unsupdata2len = cvrfile->unsupdata2len ;
-	stgfile->cvrbuflhead = cvrfile->cvrbuflhead ;
+	stgfile->cvrdata = cvrfile->cvrdata ;
 	if (noncvrbufuse[stgfile->fileformat]) {
-		stgfile->noncvrbuflhead = cvrfile->noncvrbuflhead ;
+		stgfile->noncvrdata = cvrfile->noncvrdata ;
 	}
 	else {
-		stgfile->noncvrbuflhead = NULL ;
+		stgfile->noncvrdata = NULL ;
 	}
 
 	return stgfile ;
@@ -133,7 +140,7 @@ void assemble_plndata (PLNFILE *plnfile)
 	int nbytes_plnfilename = 0 ;
 	int i = 0 ;
 
-	buf = createbuflist () ;
+	buf = bufcreate (1) ;
 	
 	if ((args.plnfn.value == NULL) || (!args.embedplnfn.value)) {
 		/* standard input is used or plain file name embedding has
@@ -163,10 +170,10 @@ void assemble_plndata (PLNFILE *plnfile)
 		bufsetbyte (buf, pos++, (int) uc_crc32[3]) ;
 	}
 
-	tmpbuf = bufcat (buf, plnfile->plnbuflhead) ;
-	buffree (plnfile->plnbuflhead) ;
+	tmpbuf = bufappend (buf, plnfile->plndata) ;
+	buffree (plnfile->plndata) ;
 	buffree (buf) ;
-	plnfile->plnbuflhead = tmpbuf ;
+	plnfile->plndata = tmpbuf ;
 
 	return ;
 }
@@ -181,9 +188,9 @@ void deassemble_plndata (PLNFILE *plnfile)
 	unsigned char *uc_crc32 = NULL ;
 
 	/* read plain file name embedded in stego file */
-	nbytes_plnfilename = bufgetbyte (plnfile->plnbuflhead, pos++) ;
+	nbytes_plnfilename = bufgetbyte (plnfile->plndata, pos++) ;
 	for (i = 0 ; i < nbytes_plnfilename ; i++) {
-		plnfilename[i] = (char) bufgetbyte (plnfile->plnbuflhead, pos++) ;
+		plnfilename[i] = (char) bufgetbyte (plnfile->plndata, pos++) ;
 	}
 	plnfilename[i] = '\0' ;
 
@@ -212,15 +219,15 @@ void deassemble_plndata (PLNFILE *plnfile)
 
 	if (sthdr.checksum == CHECKSUM_CRC32) {
 		uc_crc32 = s_malloc (4) ;
-		uc_crc32[0] = (unsigned char) bufgetbyte (plnfile->plnbuflhead, pos++) ;
-		uc_crc32[1] = (unsigned char) bufgetbyte (plnfile->plnbuflhead, pos++) ;
-		uc_crc32[2] = (unsigned char) bufgetbyte (plnfile->plnbuflhead, pos++) ;
-		uc_crc32[3] = (unsigned char) bufgetbyte (plnfile->plnbuflhead, pos++) ;
+		uc_crc32[0] = (unsigned char) bufgetbyte (plnfile->plndata, pos++) ;
+		uc_crc32[1] = (unsigned char) bufgetbyte (plnfile->plndata, pos++) ;
+		uc_crc32[2] = (unsigned char) bufgetbyte (plnfile->plndata, pos++) ;
+		uc_crc32[3] = (unsigned char) bufgetbyte (plnfile->plndata, pos++) ;
 	}
 
-	tmp = bufcut (plnfile->plnbuflhead, pos, buflength (plnfile->plnbuflhead) + 1) ;
-	buffree (plnfile->plnbuflhead) ;
-	plnfile->plnbuflhead = tmp ;
+	tmp = bufcut (plnfile->plndata, pos, plnfile->plndata->length - 1) ;
+	buffree (plnfile->plndata) ;
+	plnfile->plndata = tmp ;
 
 	if (sthdr.checksum == CHECKSUM_CRC32) {
 		if (checkcrc32 (plnfile, uc_crc32)) {
@@ -243,7 +250,7 @@ PLNFILE *createplnfile (void)
 
 	plnfile->filename = NULL ;	/* will be filled later by deassemble_plndata() */
 	plnfile->stream = NULL ;	/* will be filled later be deassemble_plndata() */
-	plnfile->plnbuflhead = NULL ;	/* will be filled later by extractdata() */
+	plnfile->plndata = NULL ;	/* will be filled later by extractdata() */
 
 	return plnfile ;
 }
@@ -259,9 +266,9 @@ void cleanupcvrfile (CVRFILE *cvrfile, int freesubstructs)
 		if (cvrfile->unsupdata2len != 0) {
 			free (cvrfile->unsupdata2) ;
 		}
-		buffree (cvrfile->cvrbuflhead) ;
+		buffree (cvrfile->cvrdata) ;
 		if (noncvrbufuse[cvrfile->fileformat]) {
-			buffree (cvrfile->noncvrbuflhead) ;
+			buffree (cvrfile->noncvrdata) ;
 		}
 	}
 	
@@ -282,8 +289,8 @@ void cleanupplnfile (PLNFILE *plnfile)
 	if (plnfile->filename != NULL) {
 		free (plnfile->filename) ;
 	}
-	if (plnfile->plnbuflhead != NULL) {
-		buffree (plnfile->plnbuflhead) ;
+	if (plnfile->plndata != NULL) {
+		buffree (plnfile->plndata) ;
 	}
 	free (plnfile) ;
 }
@@ -333,12 +340,12 @@ CVRFILE *readcvrfile (char *filename)
 	readheaders (cvrfile) ;
 
 	/* read the file (this fills the rest of cvrfile) */
-	cvrfile->cvrbuflhead = createbuflist () ;
+	cvrfile->cvrdata = bufcreate (0) ; /* FIXME - length should be set intelligently in ???_readfile */
 	if (noncvrbufuse[cvrfile->fileformat]) {
-		cvrfile->noncvrbuflhead = createbuflist () ;
+		cvrfile->noncvrdata = bufcreate (0) ;
 	}
 	else {
-		cvrfile->noncvrbuflhead = NULL ;
+		cvrfile->noncvrdata = NULL ;
 	}
 
 	switch (cvrfile->fileformat) {
@@ -448,10 +455,10 @@ PLNFILE *readplnfile (char *filename)
 		plnfile->filename = filename ;
 	}
 
-	plnfile->plnbuflhead = createbuflist () ;
+	plnfile->plndata = bufcreate (0) ; /* FIXME - ? set length more intelligently */
 
 	while ((c = getc (plnfile->stream)) != EOF) {
-		bufsetbyte (plnfile->plnbuflhead, bufpos, c) ;
+		bufsetbyte (plnfile->plndata, bufpos, c) ;
 		bufpos++ ;
 	}
 
@@ -503,7 +510,7 @@ void writeplnfile (PLNFILE *plnfile)
 		}
 	}
 
-	while ((c = bufgetbyte (plnfile->plnbuflhead, bufpos)) != ENDOFBUF) {
+	while ((c = bufgetbyte (plnfile->plndata, bufpos)) != ENDOFBUF) {
 		putc (c, plnfile->stream) ;
 		bufpos++ ;
 	}

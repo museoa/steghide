@@ -22,39 +22,26 @@
 #define SH_BUFMANAG_H
 
 typedef struct struct_BUFFER {
-	/* pointer to the data of this BUFFER structure */
-	void	*ptr ;
-	/* number of allocated bytes that are filled with data */
-	long	nbytes ;
-	/* number of bytes that have been allocated */
-	long	nbytesalloc ;
-	/* pointer to previous buffer in linked list ((x->prev == NULL) indicates first element) */
-	struct struct_BUFFER	*prev ;
-	/* pointer to next buffer in linked list ((x->next == NULL) indicates last element) */
-	struct struct_BUFFER	*next ;
+	/* number of bytes stored in this buffer */
+	unsigned long length ;
+	/* length of one subbuffer (in bytes) */
+	unsigned long subbuflength ;
+	/* array of pointers to subbuffers */
+	void **subbufs ;
 } BUFFER ;
 
-#define ENDOFBUF		-1
+#define ENDOFBUF -1
 
-/* is used for parameter freesubstructs of cleanupcvrfile */
-#define FSS_NO	0
-#define FSS_YES	1
-
-
-extern int bufsize ;
-extern int noncvrbufuse[] ;
+extern int subbuflength ;
 
 /* function prototypes */
-BUFFER *createbuflist(void) ;
-BUFFER *bufcat (BUFFER *dest, BUFFER *src) ;
+BUFFER *bufcreate (unsigned long length) ;
+int bufgetbyte (BUFFER *buf, unsigned long pos) ;
+void bufsetbyte (BUFFER *buf, unsigned long pos, int byteval) ;
+int bufgetbit (BUFFER *buf, unsigned long bytepos, int bitpos) ;
+void bufsetbit (BUFFER *buf, unsigned long bytepos, int bitpos, int bitval) ;
+BUFFER *bufappend (BUFFER *first, BUFFER *second) ;
 BUFFER *bufcut (BUFFER *buf, unsigned long from, unsigned long to) ;
-unsigned long bufget32_be(BUFFER *buflhead, unsigned long startpos) ;
-void bufset32_be(BUFFER *buflhead, unsigned long startpos, unsigned long val) ;
-int bufgetbyte(BUFFER *buflhead, unsigned long pos) ;
-void bufsetbyte(BUFFER *buflhead, unsigned long pos, int byteval) ;
-int bufgetbit(BUFFER *buflhead, unsigned long bytepos, int bitpos) ;
-void bufsetbit(BUFFER *buflhead, unsigned long bytepos, int bitpos, int bitval) ;
-unsigned long buflength(BUFFER *buflhead) ;
-void buffree(BUFFER *buflhead) ;
+void buffree (BUFFER *buf) ;
 
 #endif /* ndef SH_BUFMANAG_H */

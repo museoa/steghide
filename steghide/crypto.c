@@ -96,13 +96,20 @@ void encrypt_plnfile (PLNFILE *plnfile, char *passphrase)
 	void *key = NULL ;
 	BUFFER *result = NULL ;
 	unsigned char buf[BLOCKSIZE_BLOWFISH] ;
-	unsigned long blocknum = 0, plnpos = 0, bufpos = 0 ;
+	unsigned long nblocks_src = 0, blocknum = 0, plnpos = 0, bufpos = 0 ;
 	unsigned char IV[BLOCKSIZE_BLOWFISH] ;
 	int i = 0, err = -1 ;
 
 	pverbose ("encrypting plain data.") ;
 
-	result = createbuflist () ;
+	if (plnfile->plndata->length % BLOCKSIZE_BLOWFISH == 0) {
+		nblocks_src = plnfile->plndata->length / BLOCKSIZE_BLOWFISH ;
+	}
+	else {
+		nblocks_src = (plnfile->plndata->length / BLOCKSIZE_BLOWFISH) + 1 ;
+	}
+	result = bufcreate ((nblocks_src + 1 /* IV ! */) * BLOCKSIZE_BLOWFISH) ;
+
 	for (i = 0 ; i < BLOCKSIZE_BLOWFISH ; i++) {
 		IV[i] = (unsigned char) (256.0 * rand() / (RAND_MAX + 1.0)) ;
 		bufsetbyte (result, i, IV[i]) ;
@@ -119,15 +126,15 @@ void encrypt_plnfile (PLNFILE *plnfile, char *passphrase)
 		exit_err ("could not initialize libmcrypt encryption. see above error messages if any.") ;
 	}
 
-	while (plnpos < buflength (plnfile->plnbuflhead)) {
+	while (plnpos < plnfile->plndata->length) {
 		bufpos = 0 ;
-		while ((bufpos < BLOCKSIZE_BLOWFISH) && (plnpos < buflength (plnfile->plnbuflhead))) {
-			buf[bufpos] = (unsigned char) bufgetbyte (plnfile->plnbuflhead, plnpos) ;
+		while ((bufpos < BLOCKSIZE_BLOWFISH) && (plnpos < plnfile->plndata->length)) {
+			buf[bufpos] = (unsigned char) bufgetbyte (plnfile->plndata, plnpos) ;
 			bufpos++ ;
 			plnpos++ ;
 		}
 
-		if (plnpos == buflength (plnfile->plnbuflhead)) {
+		if (plnpos == plnfile->plndata->length) {
 			for ( ; bufpos < BLOCKSIZE_BLOWFISH ; bufpos++) {
 				buf[bufpos] = (unsigned char) (256.0 * rand() / (RAND_MAX + 1.0)) ;
 			}
@@ -148,8 +155,8 @@ void encrypt_plnfile (PLNFILE *plnfile, char *passphrase)
 		exit_err ("could not finish encryption of plain data.") ;
 	}
 
-	buffree (plnfile->plnbuflhead) ;
-	plnfile->plnbuflhead = result ;
+	buffree (plnfile->plndata) ;
+	plnfile->plndata = result ;
 }
 
 void decrypt_plnfile (PLNFILE *plnfile, char *passphrase)
@@ -163,12 +170,12 @@ void decrypt_plnfile (PLNFILE *plnfile, char *passphrase)
 
 	pverbose ("decrypting plain data.") ;
 
-	assert (buflength (plnfile->plnbuflhead) % BLOCKSIZE_BLOWFISH == 0) ;
+	assert (plnfile->plndata->length % BLOCKSIZE_BLOWFISH == 0) ;
 
-	result = createbuflist () ;
+	result = bufcreate (sthdr.nbytesplain) ;
 
 	for ( ; plnpos < BLOCKSIZE_BLOWFISH ; plnpos++) {
-		IV[plnpos] = bufgetbyte (plnfile->plnbuflhead, plnpos) ;
+		IV[plnpos] = bufgetbyte (plnfile->plndata, plnpos) ;
 	}
 
 	if ((mcryptd = mcrypt_module_open (CRYPTOALGO_DATA, CRYPTOALGODIR, CRYPTOMODE_DATA, CRYPTOMODEDIR)) == MCRYPT_FAILED) {
@@ -182,9 +189,9 @@ void decrypt_plnfile (PLNFILE *plnfile, char *passphrase)
 		exit_err ("could not initialize libmcrypt decryption. see above error messages if any.") ;
 	}
 
-	while (plnpos < buflength (plnfile->plnbuflhead)) {
+	while (plnpos < plnfile->plndata->length) {
 		for (bufpos = 0 ; bufpos < BLOCKSIZE_BLOWFISH ; bufpos++) {
-			buf[bufpos] = bufgetbyte (plnfile->plnbuflhead, plnpos) ;
+			buf[bufpos] = bufgetbyte (plnfile->plndata, plnpos) ;
 			plnpos++ ;
 		}
 
@@ -205,7 +212,7 @@ void decrypt_plnfile (PLNFILE *plnfile, char *passphrase)
 		exit_err ("could not finish decryption of plain data.") ;
 	}
 	
-	buffree (plnfile->plnbuflhead) ;
-	plnfile->plnbuflhead = result ;
+	buffree (plnfile->plndata) ;
+	plnfile->plndata = result ;
 }
 

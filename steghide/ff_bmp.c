@@ -177,7 +177,7 @@ void bmp_readfile (CVRFILE *file)
 					exit_err ("premature end of bmp file \"%s\".", file->filename) ;
 				}
 			}
-			bufsetbyte (file->cvrbuflhead, bufpos, c) ;
+			bufsetbyte (file->cvrdata, bufpos, c) ;
 			bufpos++ ;
 			posinline++ ;
 		}
@@ -213,7 +213,7 @@ void bmp_writefile (CVRFILE *file)
 
 	while (line < file->headers->bmp.bmxh.Height) {
 		while (posinline < file->headers->bmp.bmxh.BitCount * file->headers->bmp.bmxh.Width / 8) {
-			putc (bufgetbyte (file->cvrbuflhead, bufpos), file->stream) ;
+			putc (bufgetbyte (file->cvrdata, bufpos), file->stream) ;
 			bufpos++ ;
 			posinline++ ;
 		}
