@@ -29,6 +29,11 @@ class BinaryIO {
 	enum MODE { READ, WRITE } ;
 
 	BinaryIO (void) ;
+	/**
+	 * construct a BinaryIO object
+	 * \param fn the filename (can be "" to indicate stdin/stdout)
+	 * \m the Mode (BinaryIO::READ or BinaryIO::WRITE)
+	 **/
 	BinaryIO (string fn, MODE m) ;
 	~BinaryIO (void) ;
 

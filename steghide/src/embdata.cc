@@ -88,8 +88,14 @@ void EmbData::addBits (BitString bits)
 		break ; }
 
 		case READENCRYPTED: {
-			MCryptpp crypto (CryptAlgo, CryptMode) ;
-			BitString decrypted = crypto.decrypt (bits, Args.Passphrase.getValue()) ;
+			BitString decrypted ;
+			if (CryptAlgo == MCryptpp::NONE) {
+				decrypted = bits ;
+			}
+			else {
+				MCryptpp crypto (CryptAlgo, CryptMode) ;
+				decrypted = crypto.decrypt (bits, Args.Passphrase.getValue()) ;
+			}
 
 			unsigned long pos = 0 ;
 
@@ -217,7 +223,6 @@ bool EmbData::getChecksum (void)
 void EmbData::read ()
 {
 	assert (Mode == EMBED) ;
-	assert (FileName != "") ;
 
 	BinaryIO io (FileName, BinaryIO::READ) ;
 	while (!io.eof()) {

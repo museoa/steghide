@@ -22,6 +22,9 @@
 #include "common.h"
 #include "randomsource.h"
 
+#define BITPOS(n) (n % 8)
+#define BYTEPOS(n) (n / 8)
+
 BitString::BitString ()
 {
 	length = 0 ;
@@ -70,46 +73,46 @@ BitString& BitString::clear()
 BitString& BitString::append (Bit v)
 {
 	assert (v == 0 || v == 1) ;
+	_append (v) ;
+	return *this ;
+}
 
+void BitString::_append (Bit v)
+{
 	if (length % 8 == 0) {
 		data.push_back (0) ;
 	}
-
-	data[calcBytePos (length)] |= (v << calcBitPos (length)) ;
+	data[BYTEPOS (length)] |= (v << BITPOS (length)) ;
 	length++ ;
-
-	return *this ;
 }
 
 BitString& BitString::append (bool v)
 {
-	return (append ((Bit) (v ? 1 : 0))) ;
+	_append ((Bit) (v ? 1 : 0)) ;
+	return *this ;
 }
 
 BitString& BitString::append (unsigned char v, unsigned int n)
 {
 	for (int i = n - 1 ; i >= 0 ; i--) {
-		append ((Bit) ((v & (1 << i)) >> i)) ;
+		_append ((Bit) ((v & (1 << i)) >> i)) ;
 	}
-
 	return *this ;
 }
 
 BitString& BitString::append (unsigned int v, unsigned int n)
 {
 	for (int i = n - 1 ; i >= 0 ; i--) {
-		append ((Bit) ((v & (1 << i)) >> i)) ;
+		_append ((Bit) ((v & (1 << i)) >> i)) ;
 	}
-
 	return *this ;
 }
 
 BitString& BitString::append (unsigned long v, unsigned int n)
 {
 	for (int i = n - 1 ; i >= 0 ; i--) {
-		append ((Bit) ((v & (1 << i)) >> i)) ;
+		_append ((Bit) ((v & (1 << i)) >> i)) ;
 	}
-
 	return *this ;
 }
 
@@ -117,9 +120,8 @@ BitString& BitString::append (const BitString &v)
 {
 	unsigned long n = v.getLength() ;
 	for (unsigned long i = 0 ; i < n ; i++) {
-		append (v[i]) ;
+		_append (v[i]) ;
 	}
-
 	return *this ;
 }
 
@@ -142,8 +144,7 @@ BitString& BitString::append (const string &v)
 Bit BitString::operator[] (unsigned long i) const
 {
 	assert (i < length) ;
-	Bit bit = (data[calcBytePos(i)] & (1 << calcBitPos(i))) >> calcBitPos(i) ;
-	return bit ;
+	return ((data[BYTEPOS(i)] >> BITPOS(i)) & 1) ;
 }
 
 BitString BitString::getBits (unsigned long s, unsigned long e) const
@@ -174,8 +175,9 @@ vector<unsigned char> BitString::getBytes() const
 
 BitString& BitString::pad (unsigned long mult, Bit v)
 {
+	assert (v == 0 || v == 1) ;
 	while (length % mult != 0) {
-		append (v) ;
+		_append (v) ;
 	}
 	return *this ;
 }
@@ -210,21 +212,11 @@ bool BitString::operator== (const BitString &v) const
 BitString& BitString::operator^= (const BitString &v)
 {
 	for (unsigned long i = 0 ; i < length ; i++) {
-		unsigned long bytepos = calcBytePos (i) ;
-		unsigned int bitpos = calcBitPos (i) ;
+		unsigned long bytepos = BYTEPOS (i) ;
+		unsigned int bitpos = BITPOS (i) ;
 		Bit bit = (data[bytepos] & (1 << bitpos)) >> bitpos ;
 		bit ^= v[i] ;
 		data[bytepos] = (data[bytepos] & ~(1 << bitpos)) | (bit << bitpos) ;
 	}
 	return *this ;
-}
-
-unsigned long BitString::calcBytePos (unsigned long n) const
-{
-	return n / 8 ;
-}
-
-unsigned int BitString::calcBitPos (unsigned long n) const
-{
-	return n % 8 ;
 }

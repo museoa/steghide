@@ -75,8 +75,8 @@ void MCryptpp::close ()
 
 BitString MCryptpp::encrypt (BitString p, string pp)
 {
-	//DEBUG p.padRandom (8 * mcrypt_enc_get_block_size (MCryptD)) ; // blocksize is 1 for stream algorithms
-	p.pad (8 * mcrypt_enc_get_block_size (MCryptD), 0) ;
+	p.padRandom (8 * mcrypt_enc_get_block_size (MCryptD)) ; // blocksize is 1 for stream algorithms
+	//DEBUG p.pad (8 * mcrypt_enc_get_block_size (MCryptD), 0) ;
 	vector<unsigned char> ciphertext = _encrypt (p.getBytes(), pp) ;
 	return BitString (ciphertext) ;
 }
@@ -107,8 +107,8 @@ vector<unsigned char> MCryptpp::_encrypt (vector<unsigned char> p, string pp)
 	unsigned char *IV = NULL ;
 	if (mcrypt_enc_mode_has_iv (MCryptD)) {
 		unsigned int ivsize = mcrypt_enc_get_iv_size (MCryptD) ;
-		//DEBUG vector<unsigned char> rndIV = RndSrc.getBytes (ivsize) ;
-		vector<unsigned char> rndIV = vector<unsigned char> (ivsize, 0) ;
+		vector<unsigned char> rndIV = RndSrc.getBytes (ivsize) ;
+		//DEBUG vector<unsigned char> rndIV = vector<unsigned char> (ivsize, 0) ;
 		IV = (unsigned char *) s_malloc (ivsize) ;
 		for (unsigned int i = 0 ; i < ivsize ; i++) {
 			IV[i] = rndIV[i] ;
@@ -176,9 +176,7 @@ vector<unsigned char> MCryptpp::_decrypt (vector<unsigned char> c, string pp)
 		unsigned int ivsize = mcrypt_enc_get_iv_size (MCryptD) ;
 		IV = (unsigned char *) s_malloc (ivsize) ;
 		for (unsigned int i = 0 ; i < ivsize ; i++) {
-			//DEBUG
-			assert (c[i] == 0) ;
-
+			//DEBUG assert (c[i] == 0) ;
 			IV[i] = c[i] ;
 		}
 		cstart = ivsize ;
@@ -300,32 +298,38 @@ MCryptpp::Mode MCryptpp::getMode (string name)
 
 unsigned long MCryptpp::getEncryptedSize (Algorithm a, Mode m, unsigned long plnsize)
 {
-	string tmp1 = getAlgorithmName (a), tmp2 = getModeName (m) ;
-	char algo[tmp1.size() + 1], mode[tmp2.size() + 1] ;
-	strcpy (algo, tmp1.c_str()) ;
-	strcpy (mode, tmp2.c_str()) ;
-
-	MCRYPT td ;
-	if ((td = mcrypt_module_open (algo, MCRYPTPP_LIBDIR, mode, MCRYPTPP_LIBDIR)) == MCRYPT_FAILED) {
-		throw SteghideError (_("could not open libmcrypt module \"%s\",\"%s\"."), algo, mode) ;
-	}
-
 	unsigned long retval = 0 ;
-	if (mcrypt_enc_mode_has_iv (td)) {
-		retval += (8 * mcrypt_enc_get_iv_size(td)) ;
-	}
 
-	unsigned long blocks = 0 ;
-	const unsigned long blocksize = 8 * mcrypt_enc_get_block_size(td) ; // is 1 for stream algorithms
-	if (plnsize % blocksize == 0) {
-		blocks = plnsize / blocksize ;
+	if (a == NONE) {
+		retval = plnsize ;
 	}
 	else {
-		blocks = (plnsize / blocksize) + 1;
-	}
-	retval += (blocks * blocksize) ;
+		string tmp1 = getAlgorithmName (a), tmp2 = getModeName (m) ;
+		char algo[tmp1.size() + 1], mode[tmp2.size() + 1] ;
+		strcpy (algo, tmp1.c_str()) ;
+		strcpy (mode, tmp2.c_str()) ;
 
-	mcrypt_module_close (td) ;
+		MCRYPT td ;
+		if ((td = mcrypt_module_open (algo, MCRYPTPP_LIBDIR, mode, MCRYPTPP_LIBDIR)) == MCRYPT_FAILED) {
+			throw SteghideError (_("could not open libmcrypt module \"%s\",\"%s\"."), algo, mode) ;
+		}
+
+		if (mcrypt_enc_mode_has_iv (td)) {
+			retval += (8 * mcrypt_enc_get_iv_size(td)) ;
+		}
+
+		unsigned long blocks = 0 ;
+		const unsigned long blocksize = 8 * mcrypt_enc_get_block_size(td) ; // is 1 for stream algorithms
+		if (plnsize % blocksize == 0) {
+			blocks = plnsize / blocksize ;
+		}
+		else {
+			blocks = (plnsize / blocksize) + 1;
+		}
+		retval += (blocks * blocksize) ;
+
+		mcrypt_module_close (td) ;
+	}
 
 	return retval ;
 }
@@ -397,7 +401,7 @@ void *MCryptpp::s_malloc (size_t size)
 }
 
 const MCryptpp::AlgoTranslation MCryptpp::AlgoTranslations[] = {
-	{ NONE, "no encryption" },
+	{ NONE, "none" },
 	{ TWOFISH, "twofish" },
 	{ RIJNDAEL128, "rijndael-128" },
 	{ RIJNDAEL192, "rijndael-192" },

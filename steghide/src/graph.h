@@ -74,6 +74,9 @@ class Graph {
 	 **/
 	void insertInMatching (Edge *e) ;
 
+	/// contains the calculated matching
+	vector<Edge*> Matching ;
+
 	/// contains the vertices in this graph - Vertices[i] is the vertex with label i
 	vector<Vertex*> Vertices ;
 
@@ -114,10 +117,17 @@ class Graph {
 	unsigned short SamplesPerEBit ;
 
 #ifdef DEBUG
+	void printUnmatchedVertices (void) const ;
+
+	unsigned long check_degree (Vertex *v) const ;
+
+	bool check_matching (void) const ;
+
 	bool check_ds (void) const ;
 	bool check_sizes (void) const ;
 	bool check_samples (void) const ;
 	bool check_vertices (void) const ;
+	bool check_degrees (void) const ;
 	bool check_sampleoppositeneighbourhood (void) const ;
 	bool check_vertexcontents (void) const ;
 	bool check_sampleoccurences (void) const ;

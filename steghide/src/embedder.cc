@@ -25,6 +25,8 @@
 #include "cvrstgfile.h"
 #include "embdata.h"
 #include "embedder.h"
+#include "error.h"
+#include "msg.h"
 #include "permutation.h"
 #include "vertex.h"
 
@@ -47,6 +49,13 @@ void Embedder::embed ()
 
 	BitString toembed = embdata.getBitString() ;
 	unsigned long n = toembed.getLength() ;
+
+	if ((n * cvrstgfile->getSamplesPerEBit()) > cvrstgfile->getNumSamples()) {
+		throw SteghideError (_("the cover file is too short to embed the data.")) ;
+	}
+
+	VerboseMessage vmsg (_("embedding %lu bits in %lu samples."), n, cvrstgfile->getNumSamples()) ;
+	vmsg.printMessage() ;
 
 	calculate (cvrstgfile, toembed) ;
 
@@ -110,5 +119,7 @@ void Embedder::embedVertex (CvrStgFile *csf, Vertex *v)
 		newsample = v->getSample(rnd)->getNearestOppositeNeighbour() ;
 	}
 
+	Bit oldbit = csf->getSampleBit (samplepos) ;
 	csf->replaceSample (samplepos, newsample) ;
+	assert (oldbit != csf->getSampleBit (samplepos)) ;
 }

@@ -40,20 +40,40 @@ Permutation& Permutation::operator++ ()
 {
 	do {
 		CurArg++ ;
-		BitString curarg ;
-		curarg.append (CurArg, nBits) ;
-		BitString y = curarg.getBits (0, (nBits / 2) - 1) ;
-		BitString x = curarg.getBits (nBits / 2, nBits - 1) ;
+		assert (CurArg <= MaxArg) ;
 
-		y ^= keyhash (Key1, x) ;
-		x ^= keyhash (Key2, y) ;
-		y ^= keyhash (Key3, x) ;
-		x ^= keyhash (Key4, y) ;
+		unsigned long x = lower (CurArg) ;
+		unsigned long y = higher (CurArg) ;
 
-		CurValue = y.append(x).getValue(0, nBits) ;
+		y = shortxor (y, keyhash (Key1, x)) ;
+		x = shortxor (x, keyhash (Key2, y)) ;
+		y = shortxor (y, keyhash (Key3, x)) ;
+		x = shortxor (x, keyhash (Key4, y)) ;
+
+		CurValue = concat (x, y) ;
 	} while (CurValue >= Width) ;
 
 	return *this ;
+}
+
+unsigned long Permutation::higher (unsigned long a)
+{
+	return (a >> (NBits / 2)) ;
+}
+
+unsigned long Permutation::lower (unsigned long a)
+{
+	return (a & Mask) ;
+}
+
+unsigned long Permutation::shortxor (unsigned long a, unsigned long b)
+{
+	return ((a ^ b) & Mask) ;
+}
+
+unsigned long Permutation::concat (unsigned long l, unsigned long h)
+{
+	return ((h << (NBits / 2)) | l) ;
 }
 
 unsigned long Permutation::operator* ()
@@ -72,18 +92,17 @@ void Permutation::reset()
 		else {
 			CurArg++ ;
 		}
+		assert (CurArg <= MaxArg) ;
 
-		BitString curarg ;
-		curarg.append (CurArg, nBits) ;
-		BitString y = curarg.getBits (0, (nBits / 2) - 1) ;
-		BitString x = curarg.getBits (nBits / 2, nBits - 1) ;
+		unsigned long x = lower (CurArg) ;
+		unsigned long y = higher (CurArg) ;
 
-		y ^= keyhash (Key1, x) ;
-		x ^= keyhash (Key2, y) ;
-		y ^= keyhash (Key3, x) ;
-		x ^= keyhash (Key4, y) ;
+		y = shortxor (y, keyhash (Key1, x)) ;
+		x = shortxor (x, keyhash (Key2, y)) ;
+		y = shortxor (y, keyhash (Key3, x)) ;
+		x = shortxor (x, keyhash (Key4, y)) ;
 
-		CurValue = y.append(x).getValue(0, nBits) ;
+		CurValue = concat (x, y) ;
 	} while (CurValue >= Width) ;
 }
 
@@ -92,48 +111,71 @@ void Permutation::setWidth (unsigned long w)
 	assert (w > 0) ;
 	Width = w ;
 
-	nBits = 1 ;
+	NBits = 1 ;
 	unsigned long tmp = Width - 1;
 	while (tmp > 1) {
 		tmp /= 2 ;
-		nBits++ ;
+		NBits++ ;
 	}
 
-	if (nBits % 2 == 1) {
-		nBits++ ;
+	if (NBits % 2 == 1) {
+		NBits++ ;
+	}
+
+	assert (NBits % 2 == 0) ;
+	assert (NBits <= 32) ;
+
+	Mask = 0 ;
+	for (unsigned short i = 0 ; i < (NBits / 2) ; i++) {
+		Mask <<= 1 ;
+		Mask |= 1 ;
+	}
+
+	MaxArg = 0 ;
+	for (unsigned short i = 0 ; i < NBits ; i++) {
+		MaxArg <<= 1 ;
+		MaxArg |= 1 ;
 	}
 }
 
 void Permutation::setKey (string pp)
 {
-	// FIXME - use mhash_key_generation here ?
 	MHashpp hash (MHASH_MD5) ;
 	hash << pp << endhash ;
 	BitString hashbits = hash.getHashBits() ;
 
-	//DEBUG
 	assert (hashbits.getLength() == 128) ;
-
-	Key1 = hashbits.getBits (0, 31) ;
-	Key2 = hashbits.getBits (32, 63) ;
-	Key3 = hashbits.getBits (64, 95) ;
-	Key4 = hashbits.getBits (96, 127) ;
+	Key1 = hashbits.getValue (0, 32) ;
+	Key2 = hashbits.getValue (32, 32) ;
+	Key3 = hashbits.getValue (64, 32) ;
+	Key4 = hashbits.getValue (96, 32) ;
 }
 
-BitString Permutation::keyhash (BitString key, BitString arg)
+unsigned long Permutation::keyhash (unsigned long key, unsigned long arg)
 {
+	// hash the concatenation of key and arg with md5
 	MHashpp hash (MHASH_MD5) ;
-	key.append(arg).pad(8, 0) ;
-	assert (key.getLength() % 8 == 0) ;
-	hash << key << endhash ;
-	BitString hashbits = hash.getHashBits() ;
+	for (unsigned short i = 0 ; i < 32 ; i += 8) {
+		hash << (unsigned char) ((key >> i) & 0xFF) ;
+	}
+	assert (arg <= 0xFFFF) ;
+	for (unsigned short i = 0 ; i < (NBits / 2) ; i+= 8) {
+		hash << (unsigned char) ((arg >> i) & 0xFF) ;
+	}
+	hash << endhash ;
+	vector<unsigned char> hashbytes = hash.getHashBytes() ;
+	assert (hashbytes.size() == 16) ;
 
-	assert (hashbits.getLength() == 128) ;
-	BitString retval ;
-	// 32 is maximal length of width (in bits)
-	for (unsigned int i = 0 ; i < 32 ; i++) {
-		retval.append (hashbits[i] ^ hashbits[32 + i] ^ hashbits[64 + i] ^ hashbits [96 + i]) ;
+	// compose a 16 bit return value from the 128 bit md5 hash
+	unsigned long retval = 0 ;
+	for (unsigned short i = 0 ; i < 8 ; i++) {
+		retval ^= hashbytes[i] ;
+	}
+	retval <<= 8 ;
+	for (unsigned short i = 8 ; i < 16 ; i++) {
+		retval ^= hashbytes[i] ;
 	}
 
+	assert (retval <= 0xFFFF) ;
 	return retval ;
 }

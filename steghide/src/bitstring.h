@@ -150,10 +150,10 @@ class BitString {
 	 **/
 	bool operator== (const BitString &v) const ;
 
-	private:
-	unsigned long calcBytePos (unsigned long n) const ;
-	unsigned int calcBitPos (unsigned long n) const ;
+	protected:
+	void _append (Bit v) ;
 
+	private:
 	unsigned long length ;
 	vector<unsigned char> data ;
 } ;

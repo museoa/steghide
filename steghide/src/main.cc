@@ -55,10 +55,6 @@ LCIDENTRY LCIDTable[] = {
 #define LOCALEDIR	"./locale/"
 
 #endif // WIN32
- 
-#ifdef DEBUG
-#include "test.h"
-#endif
 
 static void gettext_init (void) ;
 

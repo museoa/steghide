@@ -28,8 +28,7 @@ class Vertex ;
 
 class Edge {
 	public:
-	Edge (Vertex *v1, unsigned short idx1, Vertex *v2, unsigned short idx2, unsigned long w)
-		: Vertex1(v1), Index1(idx1), Vertex2(v2), Index2(idx2), Weight(w) {}
+	Edge (Vertex *v1, unsigned short idx1, Vertex *v2, unsigned short idx2, unsigned long w) ;
 
 	Vertex *getVertex1 (void) const ;
 	Vertex *getVertex2 (void) const ;

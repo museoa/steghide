@@ -25,7 +25,6 @@
 #include "wavfile.h"
 #include "wavsample.h"
 
-//DEBUG
 WavPCMSample::WavPCMSample (CvrStgFile *f, int v)
 	: CvrStgSample(f), Value(v)
 {
@@ -61,11 +60,6 @@ WavPCMSample::WavPCMSample (CvrStgFile *f, int v)
 	MinValue = minvalue ;
 
 	assert (MinValue <= Value) ;
-	if (Value > MaxValue) {
-		cerr << "samplesize: " << samplesize << endl ;
-		cerr << "Value: " << Value << endl ;
-		cerr << "MaxValue: " << MaxValue << endl ;
-	}
 	assert (Value <= MaxValue) ;
 }
 

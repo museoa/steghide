@@ -26,6 +26,8 @@
 /**
  * \class Permutation
  * \brief constructs a permutation of {0,...,Width - 1}
+ *
+ * The maximum value of width is 2^32.
  **/
 class Permutation {
 	public:
@@ -60,15 +62,25 @@ class Permutation {
 	 * the smallest even number with 2^nBits >= Width
 	 * this is the length of the argument and the value
 	 **/
-	unsigned int nBits ;
-	/// the key (as derived from passphrase)
-	BitString Key1 ;
-	BitString Key2 ;
-	BitString Key3 ;
-	BitString Key4 ;
+	unsigned int NBits ;
 
-	// FIXME - pass values by reference - it is rather slow now
-	BitString keyhash (BitString key, BitString arg) ;
+	/// the maximum for curarg - this is (2^NBits) - 1
+	unsigned long MaxArg ;
+
+	/// contains (NBits / 2) 1s in the lsbs
+	unsigned long Mask ;
+
+	/// the keys (as derived from passphrase)
+	unsigned long Key1 ;
+	unsigned long Key2 ;
+	unsigned long Key3 ;
+	unsigned long Key4 ;
+
+	unsigned long higher (unsigned long a) ;
+	unsigned long lower (unsigned long b) ;
+	unsigned long shortxor (unsigned long a, unsigned long b) ;
+	unsigned long concat (unsigned long l, unsigned long h) ;
+	unsigned long keyhash (unsigned long key, unsigned long arg) ;
 } ;
 
 #endif //ndef SH_PERMUTATION_H

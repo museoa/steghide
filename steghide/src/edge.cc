@@ -18,8 +18,15 @@
  *
  */
 
+#include "common.h"
 #include "edge.h"
 #include "vertex.h"
+
+Edge::Edge (Vertex *v1, unsigned short idx1, Vertex *v2, unsigned short idx2, unsigned long w)
+	: Vertex1(v1), Index1(idx1), Vertex2(v2), Index2(idx2), Weight(w)
+{
+	assert (v1->getLabel() != v2->getLabel()) ;
+}
 
 Vertex *Edge::getVertex1() const
 {
@@ -36,12 +43,8 @@ unsigned long Edge::getWeight() const
 	return Weight ;
 }
 
-//DEBUG
 SamplePos Edge::getSamplePos (Vertex *v) const
 {
-	//cerr << "in Edge::getSamplePos" << endl << "v->getLabel(): " << v->getLabel() << endl ;
-//	cerr << "Vertex1->getLabel(): " << Vertex1->getLabel() << endl ;
-//	cerr << "Vertex2->getLabel(): " << Vertex2->getLabel() << endl ;
 	SamplePos retval = 0 ;
 	if (v->getLabel() == Vertex1->getLabel()) {
 		retval = Vertex1->getSamplePos (Index1) ;

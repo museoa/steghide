@@ -34,7 +34,7 @@ class MHashpp {
 
 	void init (hashid a) ;
 
-	BitString end (void) ;
+	vector<unsigned char> end (void) ;
 
 	/**
 	 * feed the string v to the hashing algorithm
@@ -66,6 +66,8 @@ class MHashpp {
 	 **/
 	BitString getHashBits (void) ;
 
+	vector<unsigned char> getHashBytes (void) ;
+
 	/**
 	 * get the hash size
 	 * \return the size of the value returned by getHashBits in bytes
@@ -77,9 +79,9 @@ class MHashpp {
 	bool hashing ;
 	MHASH HashD ;
 
-	/// true iff HashBits is a BitString containing a hash value
-	bool HashBitsValid ;
-	BitString HashBits ;
+	/// true iff HashBytes contains a valid hash value
+	bool HashBytesValid ;
+	vector<unsigned char> HashBytes ;
 
 	string getAlgorithmName (void) ;
 	static string getAlgorithmName (hashid id) ;

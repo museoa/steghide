@@ -177,7 +177,7 @@ void BmpFile::calcRCB (SamplePos pos, unsigned long *row, unsigned long *column,
 		}
 		assert (*column < bytesperline) ;
 
-		*firstbit = pos % samplesperbyte ;
+		*firstbit = (pos % samplesperbyte) * bitcount ;
 		assert (*firstbit < 8) ;
 	}
 }

@@ -122,7 +122,7 @@ Edge *Vertex::getShortestEdge() const
 void Vertex::replaceShortestEdge (Edge *e)
 {
 	if (MatchingEdge != NULL) {
-		delete ShortestEdge ;	// FIXME - is it ok to always delete shortest edge?
+		delete ShortestEdge ;
 	}
 	ShortestEdge = e ;
 }

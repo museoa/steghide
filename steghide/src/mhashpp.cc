@@ -31,7 +31,7 @@
 MHashpp::MHashpp ()
 {
 	hashing = false ;
-	HashBitsValid = false ;
+	HashBytesValid = false ;
 }
 
 MHashpp::MHashpp (hashid id)
@@ -45,24 +45,24 @@ void MHashpp::init (hashid id)
 		throw SteghideError (_("could not initialize libmhash %s algorithm."), getAlgorithmName(id).c_str()) ;
 	}
 	hashing = true ;
-	HashBitsValid = false ;
+	HashBytesValid = false ;
 }
 
-BitString MHashpp::end ()
+vector<unsigned char> MHashpp::end ()
 {
 	assert (hashing) ;
 
 	unsigned char *hash = (unsigned char*) mhash_end (HashD) ;
-	HashBits.clear() ;
 	unsigned int n = getHashSize() ;
+	HashBytes = vector<unsigned char> (n) ;
 	for (unsigned int i = 0 ; i < n ; i++) {
-		HashBits.append (hash[i]) ;
+		HashBytes[i] = hash[i] ;
 	}
 
 	hashing = false ;
-	HashBitsValid = true ;
+	HashBytesValid = true ;
 
-	return HashBits ;
+	return HashBytes ;
 }
 
 unsigned int MHashpp::getHashSize (void)
@@ -102,7 +102,7 @@ MHashpp& MHashpp::operator<< (MHashppCommand c)
 {
 	switch (c) {
 		case endhash:
-		HashBits = end() ;
+		HashBytes = end() ;
 		break ;
 
 		default:
@@ -134,6 +134,12 @@ string MHashpp::getAlgorithmName (hashid id)
 
 BitString MHashpp::getHashBits ()
 {
-	assert (HashBitsValid) ;
-	return HashBits ;
+	assert (HashBytesValid) ;
+	return BitString (HashBytes) ;
+}
+
+vector<unsigned char> MHashpp::getHashBytes()
+{
+	assert (HashBytesValid) ;
+	return HashBytes ;
 }

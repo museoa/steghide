@@ -123,9 +123,14 @@ void Arguments::parse (int argc, char *argv[])
 			}
 			else {
 				s1 = string (argv[i]) ;
-				if (argv[i + 1][0] != '-') {
-					s2 = string (argv[i + 1]) ;
-					i++ ;
+				if (i + 1 == argc) {
+					s2 = "" ;
+				}
+				else {
+					if (argv[i + 1][0] != '-') {
+						s2 = string (argv[i + 1]) ;
+						i++ ;
+					}
 				}
 			}
 
