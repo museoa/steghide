@@ -6,7 +6,7 @@ file by replacing some of the least significant bits of the cover file with bits
 of the secret message. After that, the secret message is imperceptible and can
 only be extracted with the correct passphrase.
 
-The current version of steghide is 0.4.5.
+The current version of steghide is 0.4.6.
 Features:
 support for bmp, wav and au files
 encryption of plain data before embedding (blowfish encryption algorithm)
@@ -56,8 +56,8 @@ The easiest way is to download the precompiled binary (including Windows
 versions of the necessary libraries) from the steghide website at:
 http://steghide.sourceforge.net/index.html
 
-If you want to compile the sources yourself you need a C compiler. How you need
-to compile the source code depends on the compiler you are using: Please
+If you want to compile the sources yourself you need a C++ compiler. How you
+need to compile the source code depends on the compiler you are using: Please
 consult your compiler's documentation.
 
 Steghide can be compiled with gcc in the cygwin environment

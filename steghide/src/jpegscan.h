@@ -18,39 +18,26 @@
  *
  */
 
-#include <assert.h>
+#ifndef SH_JPEGSCAN_H
+#define SH_JPEGSCAN_H
 
 #include "binaryio.h"
-#include "jpegelement.h"
+#include "jpegbase.h"
 
-JpegElement::JpegElement ()
-{
-	marker_isset = false ;
-}
+/**
+ * \class JpegScan
+ * \brief a jpeg scan
+ **/
+class JpegScan : public JpegContainer {
+	public:
+	JpegScan (void) ;
+	JpegScan (BinaryIO *io) ;
+	~JpegScan (void) ;
 
-JpegElement::JpegElement (JpegMarker m)
-{
-	setMarker (m) ;
-}
+	void read (BinaryIO *io) ;
 
-JpegElement::~JpegElement ()
-{
-}
+	private:
+	//JpegScanHeader *hdr ;
+} ;
 
-void JpegElement::write (BinaryIO *io)
-{
-	io->write8 (0xFF) ;
-	io->write8 ((unsigned char) getMarker()) ;
-}
-
-JpegMarker JpegElement::getMarker ()
-{
-	assert (marker_isset) ;
-	return marker ;
-}
-
-void JpegElement::setMarker (JpegMarker m)
-{
-	marker = m ;
-	marker_isset = true ;
-}
+#endif // ndef SH_JPEGSCAN_H

@@ -22,8 +22,7 @@
 
 #include "binaryio.h"
 #include "error.h"
-#include "jpegelement.h"
-#include "jpegsegment.h"
+#include "jpegbase.h"
 #include "jpegjfifapp0.h"
 
 JpegJFIFAPP0::JpegJFIFAPP0 ()

@@ -20,21 +20,14 @@
 
 #include <iostream>
 
-#include <libintl.h>
-#define _(S) gettext (S)
-
-#include "binaryio.h"
-#include "error.h"
-#include "jpegcomment.h"
-#include "jpegelement.h"
+#include "cvrstgfile.h"
+#include "jpegbase.h"
 #include "jpegfile.h"
-#include "jpegjfifapp0.h"
-#include "jpegquanttable.h"
 
 JpegFile::JpegFile ()
 	: CvrStgFile()
 {
-	// empty
+	frame = NULL ;
 }
 
 JpegFile::JpegFile (BinaryIO *io)
@@ -45,8 +38,8 @@ JpegFile::JpegFile (BinaryIO *io)
 
 JpegFile::~JpegFile ()
 {
-	for (vector<JpegElement*>::iterator i = elements.begin() ; i != elements.end() ; i++) {
-		delete *i ;
+	if (frame != NULL) {
+		delete frame ;
 	}
 }
 
@@ -54,76 +47,34 @@ void JpegFile::read (BinaryIO *io)
 {
 	CvrStgFile::read (io) ;
 
-	// has been read in guesff
-	elements.push_back (new JpegElement (JpegElement::MarkerSOI)) ;
-
-	bool eoifound = false ;
-	while (!eoifound) {
-		unsigned char marker[2] ;
-		if ((marker[0] = BinIO->read8()) != 0xff) {
-			if (io->is_std()) {
-				throw SteghideError (_("corrupt jpeg file on standard input. could not find start of marker (0xff).")) ;
-			}
-			else {
-				throw SteghideError (_("corrupt jpeg file \"%s\". could not find start of marker (0xff)."), io->getName().c_str()) ;
-			}
-		}
-		marker[1] = BinIO->read8() ;
-
-		JpegElement* next = NULL ;
-		switch (marker[1]) {
-			case JpegElement::MarkerAPP0:
-			next = new JpegJFIFAPP0 (BinIO) ;
-			break ;
-
-			case JpegElement::MarkerCOM:
-			next = new JpegComment (BinIO) ;
-			break ;
-
-			case JpegElement::MarkerDQT:
-			next = new JpegQuantizationTable (BinIO) ;
-			break ;	
-
-			case JpegElement::MarkerEOI:
-			next = new JpegElement (JpegElement::MarkerEOI) ;
-			eoifound = true ;
-			break ;
-
-			default:
-			if (io->is_std()) {
-				throw SteghideError (_("encountered unknown marker code 0x%x in jpeg file on standard input."), marker[1]) ;
-			}
-			else {
-				throw SteghideError (_("encountered unknown marker code 0x%x in jpeg file \"%s\"."), marker[1], io->getName().c_str()) ;
-			}
-			break ;
-		}
-
-		elements.push_back (next) ;
-	}
-
-	// FIXME - check: first must be soi
+	// SOI has been read in guesff
+	frame = new JpegFrame (io) ;
+	// EOI is read in JpegFrame
 }
 
 void JpegFile::write ()
 {
 	CvrStgFile::write() ;
 
-	for (vector<JpegElement*>::iterator i = elements.begin() ; i != elements.end() ; i++) {
-		(*i)->write (BinIO) ;
-	}
+	JpegElement SOI (JpegElement::MarkerSOI) ;
+	SOI.write (BinIO) ;
+	frame->write (BinIO) ;
+	JpegElement EOI (JpegElement::MarkerEOI) ;
+	EOI.write (BinIO) ;
 }
 
 unsigned long JpegFile::getCapacity (void)
 {
-	return 0 ;
+	return frame->getCapacity() ;
 }
 
 void JpegFile::embedBit (unsigned long pos, int bit)
 {
+	frame->embedBit (pos, bit) ;
+	return ;
 }
 
 int JpegFile::extractBit (unsigned long pos)
 {
-	return 0 ;
+	return frame->extractBit (pos) ;
 }

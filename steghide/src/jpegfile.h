@@ -24,9 +24,8 @@
 #include <vector>
 
 #include "binaryio.h"
-#include "bufmanag.h"
 #include "cvrstgfile.h"
-#include "jpegelement.h"
+#include "jpegframe.h"
 
 /**
  * \class JpegFile
@@ -44,12 +43,9 @@ class JpegFile : public CvrStgFile {
 	void embedBit (unsigned long pos, int bit) ;
 	int extractBit (unsigned long pos) ;
 
-	protected:
-
 	private:
-	vector<JpegElement*> elements ;
-	//vector</*??*/> datasegments ;
-	
+	/// the frameof the jpeg file
+	JpegFrame *frame ;
 } ;
 
 #endif // ndef SH_JPEGFILE_H

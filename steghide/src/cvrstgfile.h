@@ -24,8 +24,9 @@
 #include <string>
 
 #include "binaryio.h"
+#include "cvrstgobject.h"
 
-class CvrStgFile {
+class CvrStgFile : public CvrStgObject {
 	public:
 	CvrStgFile (void) ;
 	CvrStgFile (BinaryIO *io) ;
@@ -34,10 +35,6 @@ class CvrStgFile {
 	virtual void read (BinaryIO *io) ;
 	virtual void write (void) ;
 	void transform (string fn) ;
-
-	virtual unsigned long getCapacity (void) = 0 ;
-	virtual void embedBit (unsigned long pos, int bit) = 0 ;
-	virtual int extractBit (unsigned long pos) = 0 ;
 
 	protected:
 	BinaryIO *BinIO ;

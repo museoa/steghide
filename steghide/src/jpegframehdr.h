@@ -18,39 +18,49 @@
  *
  */
 
-#ifndef SH_JPEGQUANTTABLE_H
-#define SH_JPEGQUANTTABLE_H
+#ifndef SH_JPEGFRAMEHDR_H
+#define SH_JPEGFRAMEHDR_H
 
 #include "jpegbase.h"
 
 /**
- * \class JpegQuantizationTable
- * \brief a segment containing a quantization table
+ * \class JpegFrameHeader
+ * \brief the header of a frame
  **/
-class JpegQuantizationTable : public JpegSegment {
+class JpegFrameHeader : public JpegSegment {
 	public:
-	JpegQuantizationTable (void) ;
-	JpegQuantizationTable (BinaryIO *io) ;
-	virtual ~JpegQuantizationTable (void) ;
+	JpegFrameHeader (void) ;
+	JpegFrameHeader (JpegMarker m, BinaryIO *io) ;
+	virtual ~JpegFrameHeader (void) ;
 
 	/**
-	 * read a quantization table marker segment
+	 * read a frame header marker segment
 	 * \param io the jpeg stream
 	 **/
 	void read (BinaryIO *io) ;
 
 	/**
-	 * write a quantization table marker segment
+	 * write a frame header marker segment
 	 * \param io the jpeg stream
 	 **/
 	void write (BinaryIO *io) ;
 
 	private:
-	static const unsigned char SizeQuantTable = 64 ;
-
+	struct Component {
+		unsigned char id ;
+		unsigned char horizsampling ;
+		unsigned char vertsampling ;
+		unsigned char quanttable ;
+	} ;
+	/// sample precision (in bits)
 	unsigned char precision ;
-	unsigned char destination ;
-	unsigned int quanttable[SizeQuantTable] ;
+	/// number of lines
+	unsigned int Ysize ;
+	/// number of samples per line
+	unsigned int Xsize ;
+	/// number of components in frame
+	unsigned char numcomponents ;
+	Component *components ;
 } ;
 
-#endif // ndef SH_JPEGQUANTTABLE_H
+#endif // ndef SH_JPEGFRAMEHDR_H

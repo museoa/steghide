@@ -24,7 +24,8 @@
 #include <string>
 
 #include "binaryio.h"
-#include "jpegsegment.h"
+#include "bufmanag.h"
+#include "jpegbase.h"
 
 /**
  * \class JpegJFIFAPP0

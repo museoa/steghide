@@ -24,7 +24,7 @@
 #include <string>
 
 #include "binaryio.h"
-#include "jpegsegment.h"
+#include "jpegbase.h"
 
 /**
  * \class JpegComment

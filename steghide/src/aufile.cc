@@ -102,6 +102,8 @@ unsigned long AuFile::getCapacity (void)
 void AuFile::embedBit (unsigned long pos, int value)
 {
 	assert (value == 0 || value == 1) ;
+	assert (pos <= getCapacity()) ;
+
 	bufsetbit (data, pos, 0, value) ;
 
 	return ;
@@ -109,6 +111,8 @@ void AuFile::embedBit (unsigned long pos, int value)
 
 int AuFile::extractBit (unsigned long pos)
 {
+	assert (pos <= getCapacity()) ;
+
 	return bufgetbit (data, pos, 0) ;
 }
 

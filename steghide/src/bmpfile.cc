@@ -169,18 +169,19 @@ unsigned long BmpFile::getCapacity ()
 
 void BmpFile::embedBit (unsigned long pos, int value)
 {
-	unsigned long row = 0, column = 0 ;
-
+	assert (pos <= getCapacity()) ;
 	assert (value == 0 || value == 1) ;
 
+	unsigned long row = 0, column = 0 ;
 	calcRC (pos, &row, &column) ;
 	bitmap[row][column] = (bitmap[row][column] & (unsigned char) ~1) | value ;
 }
 
 int BmpFile::extractBit (unsigned long pos)
 {
-	unsigned long row = 0, column = 0 ;
+	assert (pos <= getCapacity()) ;
 
+	unsigned long row = 0, column = 0 ;
 	calcRC (pos, &row, &column) ;
 	return (bitmap[row][column] & 1) ;
 }

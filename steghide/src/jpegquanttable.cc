@@ -23,8 +23,7 @@
 
 #include "error.h"
 #include "binaryio.h"
-#include "jpegelement.h"
-#include "jpegsegment.h"
+#include "jpegbase.h"
 #include "jpegquanttable.h"
 
 JpegQuantizationTable::JpegQuantizationTable ()

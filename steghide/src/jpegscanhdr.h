@@ -18,39 +18,50 @@
  *
  */
 
-#ifndef SH_JPEGQUANTTABLE_H
-#define SH_JPEGQUANTTABLE_H
+#ifndef SH_JPEGSCANHDR_H
+#define SH_JPEGSCANHDR_H
 
 #include "jpegbase.h"
 
 /**
- * \class JpegQuantizationTable
- * \brief a segment containing a quantization table
+ * \class JpegScanHeader
+ * \brief the header of a scan (as determined by the SOS marker)
  **/
-class JpegQuantizationTable : public JpegSegment {
+class JpegScanHeader : public JpegSegment {
 	public:
-	JpegQuantizationTable (void) ;
-	JpegQuantizationTable (BinaryIO *io) ;
-	virtual ~JpegQuantizationTable (void) ;
+	JpegScanHeader (void) ;
+	JpegScanHeader (BinaryIO *io) ;
+	virtual ~JpegScanHeader (void) ;
 
 	/**
-	 * read a quantization table marker segment
+	 * read a scan header
 	 * \param io the jpeg stream
 	 **/
 	void read (BinaryIO *io) ;
 
 	/**
-	 * write a quantization table marker segment
+	 * write a scan header
 	 * \param io the jpeg stream
 	 **/
 	void write (BinaryIO *io) ;
 
 	private:
-	static const unsigned char SizeQuantTable = 64 ;
-
-	unsigned char precision ;
-	unsigned char destination ;
-	unsigned int quanttable[SizeQuantTable] ;
+	struct Component {
+		unsigned char id ;
+		unsigned char DCTable ;
+		unsigned char ACTable ;
+	} ;
+	/// number of image components in scan
+	unsigned char numcomponents ;
+	/// start of spectral or predictor selection
+	unsigned char sospectral ;
+	/// end of spectral selection
+	unsigned char eospectral ;
+	/// sucessive approximation bit position high
+	unsigned char ah ;
+	/// sucessive approximation bit position low or point transform
+	unsigned char al ;
+	Component *components ;
 } ;
 
-#endif // ndef SH_JPEGQUANTTABLE_H
+#endif // ndef SH_JPEGSCANHDR_H

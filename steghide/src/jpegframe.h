@@ -18,39 +18,29 @@
  *
  */
 
-#ifndef SH_JPEGQUANTTABLE_H
-#define SH_JPEGQUANTTABLE_H
+#ifndef SH_JPEGFRAME_H
+#define SH_JPEGFRAME_H
 
+#include "binaryio.h"
 #include "jpegbase.h"
 
 /**
- * \class JpegQuantizationTable
- * \brief a segment containing a quantization table
+ * \class JpegFrame
+ * \brief a jpeg frame
  **/
-class JpegQuantizationTable : public JpegSegment {
+class JpegFrame : public JpegContainer {
 	public:
-	JpegQuantizationTable (void) ;
-	JpegQuantizationTable (BinaryIO *io) ;
-	virtual ~JpegQuantizationTable (void) ;
+	JpegFrame (void) ;
+	JpegFrame (BinaryIO *io) ;
+	~JpegFrame (void) ;
 
-	/**
-	 * read a quantization table marker segment
-	 * \param io the jpeg stream
-	 **/
 	void read (BinaryIO *io) ;
 
-	/**
-	 * write a quantization table marker segment
-	 * \param io the jpeg stream
-	 **/
-	void write (BinaryIO *io) ;
-
 	private:
-	static const unsigned char SizeQuantTable = 64 ;
-
-	unsigned char precision ;
-	unsigned char destination ;
-	unsigned int quanttable[SizeQuantTable] ;
+	// ? tables ?
+	// ? dnl ?
+	// JpegFrameHeader *hdr ;
+	// vector<JpegScan*> scans ;
 } ;
 
-#endif // ndef SH_JPEGQUANTTABLE_H
+#endif // ndef SH_JEPGFRAME_H

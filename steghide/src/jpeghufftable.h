@@ -18,39 +18,43 @@
  *
  */
 
-#ifndef SH_JPEGQUANTTABLE_H
-#define SH_JPEGQUANTTABLE_H
+#ifndef SH_JPEGHUFFTABLE_H
+#define SH_JPEGHUFFTABLE_H
 
+#include <vector>
+
+#include "binaryio.h"
 #include "jpegbase.h"
 
 /**
- * \class JpegQuantizationTable
- * \brief a segment containing a quantization table
+ * \class JpegHuffmanTable
+ * \brief a jpeg segment containing a huffman table specification
  **/
-class JpegQuantizationTable : public JpegSegment {
+class JpegHuffmanTable : public JpegSegment {
 	public:
-	JpegQuantizationTable (void) ;
-	JpegQuantizationTable (BinaryIO *io) ;
-	virtual ~JpegQuantizationTable (void) ;
+	JpegHuffmanTable (void) ;
+	JpegHuffmanTable (BinaryIO *io) ;
+	virtual ~JpegHuffmanTable (void) ;
 
 	/**
-	 * read a quantization table marker segment
+	 * read a huffman table specification marker segment
 	 * \param io the jpeg stream
 	 **/
 	void read (BinaryIO *io) ;
 
 	/**
-	 * write a quantization table marker segment
+	 * write this object's huffman table into a marker segment
 	 * \param io the jpeg stream
 	 **/
 	void write (BinaryIO *io) ;
 
 	private:
-	static const unsigned char SizeQuantTable = 64 ;
+	static const unsigned char Numnumcodes = 16 ;
 
-	unsigned char precision ;
-	unsigned char destination ;
-	unsigned int quanttable[SizeQuantTable] ;
+	unsigned char tableclass ;
+	unsigned char tableid ;
+	vector<unsigned char> numcodes ;
+	vector<unsigned char> huffval ;
 } ;
 
-#endif // ndef SH_JPEGQUANTTABLE_H
+#endif // ndef SH_JPEGHUFFTABLE_H

@@ -87,20 +87,21 @@ unsigned long WavFile::getCapacity ()
 
 void WavFile::embedBit (unsigned long pos, int value)
 {
+	assert (value == 0 || value == 1) ;
+	assert (pos <= getCapacity()) ;
+
 	unsigned long bytepos = 0 ;
 	unsigned int bitpos = 0 ;
-
-	assert (value == 0 || value == 1) ;
-
 	calcpos (pos, &bytepos, &bitpos) ;
 	bufsetbit (data, bytepos, bitpos, value) ;
 }
 
 int WavFile::extractBit (unsigned long pos)
 {
+	assert (pos <= getCapacity()) ;
+
 	unsigned long bytepos = 0 ;
 	unsigned int bitpos = 0 ;
-
 	calcpos (pos, &bytepos, &bitpos) ;
 	return bufgetbit (data, bytepos, bitpos) ;
 }

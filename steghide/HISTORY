@@ -1,3 +1,11 @@
+steghide 0.4.6 :
+================
+
+* switch to C++
+
+* support for the jpeg file format
+
+
 steghide 0.4.5 :
 ================
 
