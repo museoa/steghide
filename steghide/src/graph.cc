@@ -312,9 +312,7 @@ void Graph::calcMatching()
 {
 	unsigned long nvertices = Vertices.size() ;
 
-#if 0
 	if (Args.Verbosity.getValue() == VERBOSE) { // don't do something needing linear time if it is not useful
-#endif
 		VerboseMessage vmsg1 (_("number of distinct samples: %lu"), Samples.size()) ;
 		vmsg1.printMessage() ;
 
@@ -338,7 +336,6 @@ void Graph::calcMatching()
 
 		VerboseMessage vmsg3 (_("average vertex degree: %.1f"), ((float) sumdeg / (float) nvertices)) ;
 		vmsg3.printMessage() ;
-		printf ("%.1f", ((float) sumdeg / (float) nvertices)) ;
 		VerboseMessage vmsg4 (_("minimum vertex degree: %lu"), mindeg) ;
 		vmsg4.printMessage() ;
 		VerboseMessage vmsg5 (_("maximum vertex degree: %lu"), maxdeg) ;
@@ -350,9 +347,7 @@ void Graph::calcMatching()
 		vmsg6.printMessage() ;
 		VerboseMessage vmsg7 (_("calculating the matching...")) ;
 		vmsg7.printMessage() ;
-#if 0
 	}
-#endif
 
 	setupConstrHeuristic() ;
 	doConstrHeuristic() ;
@@ -361,9 +356,7 @@ void Graph::calcMatching()
 	//check_matching() ;
 #endif
 
-#if 0
 	if (Args.Verbosity.getValue() == VERBOSE) {
-#endif
 		VerboseMessage vmsg8 (_("size of the matching after construction heuristic: %lu"), Matching.size()) ;
 		vmsg8.printMessage() ;
 		unsigned long numvertices = nvertices - (2 * Matching.size()) ;
@@ -377,12 +370,7 @@ void Graph::calcMatching()
 
 		VerboseMessage vmsg10 (_("average edge weight: %.1f"), ((float) sumweights / (float) Matching.size())) ;
 		vmsg10.printMessage() ;
-
-		printf (":%.1f", ((float) sumweights / (float) Matching.size())) ; 
-		printf (":%.3f:", ((float) numvertices / (float) nvertices)) ;
-#if 0
 	}
-#endif
 }
 
 //
