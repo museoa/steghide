@@ -222,7 +222,6 @@ class Matching {
 	 **/
 	void setCardinality (unsigned long c) ;
 
-#ifdef DEBUG
 	public:
 	bool check (void) const ;
 	bool check_MatchingEdges_vs_VertexInformation (void) const ;
@@ -230,7 +229,6 @@ class Matching {
 	bool check_VertexInformation_Integrity (void) const ;
 
 	bool check_ValidAugPath (const std::vector<Edge*>& path) const ;
-#endif
 } ;
 
 #endif // ndef SH_MATCHING_H

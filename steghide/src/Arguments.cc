@@ -722,6 +722,13 @@ bool Arguments::parse_Debug (ArgIt& curarg)
 		found = true ;
 		++curarg ;
 	}
+	else if (*curarg == "--check") {
+		// TODO usual error checking (omitted due to message freeze)
+		Check.setValue (true) ;
+
+		found = true ;
+		++curarg ;
+	}
 
 	return found ;
 }
@@ -800,12 +807,11 @@ void Arguments::setDefaults (void)
 	Verbosity.setValue (Default_Verbosity, false) ;
 	Radius.setValue (Default_Radius, false) ;
 	Goal.setValue (Default_Goal, false) ;
-#ifdef DEBUG
+	Check.setValue (Default_Check, false) ;
 	DebugCommand.setValue (Default_DebugCommand, false) ;
 	DebugLevel.setValue (Default_DebugLevel, false) ;
 	GmlGraphRecDepth.setValue (Default_GmlGraphRecDepth, false) ;
 	GmlStartVertex.setValue (Default_GmlStartVertex, false) ;
-#endif
 }
 
 #ifdef USE_LIBMCRYPT

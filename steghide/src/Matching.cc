@@ -225,10 +225,8 @@ void Matching::setCardinality (unsigned long c)
 	}
 }
 
-#ifdef DEBUG
 bool Matching::check () const
 {
-	std::cerr << "checking Matching" << std::endl ;
 	bool retval = true ;
 	retval = check_MatchingEdges_vs_VertexInformation() && retval ;
 	retval = check_ExposedVertices_vs_VertexInformation() && retval ;
@@ -360,5 +358,3 @@ bool Matching::check_ValidAugPath (const std::vector<Edge*>& path) const
 
 	return cohesion && !hasloop && isaugmenting ;
 }
-
-#endif

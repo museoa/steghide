@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 use STSupport;
 
-use constant EMPTY => {e => "none", Z => "", K => ""} ;
+use constant EMPTY => {e => "none", Z => "", K => "", "-check" => ""} ;
 
 sub runEncryption {
 	startSubCategory("Encryption") ;

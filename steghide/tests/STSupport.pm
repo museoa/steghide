@@ -10,7 +10,9 @@ use File::Compare;
 	runEmbExtCmp
 );
 
-# wether test script should print verbose output
+#
+# set this to 1 if you want the test script to print verbose output
+#
 $Arg_Verbosity = 0 ;
 
 $curcategory = "";

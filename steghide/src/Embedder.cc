@@ -106,6 +106,12 @@ Embedder::Embedder ()
 	v.printMessage() ;
 	new Graph (Globs.TheCvrStgFile, ToEmbed, sel) ;
 	Globs.TheGraph->printVerboseInfo() ;
+	if (Args.Check.getValue()) {
+		if (!Globs.TheGraph->check()) {
+			CriticalWarning w ("integrity checking of graph data structures failed!") ; // TODO: internationalize this
+			w.printMessage() ;
+		}
+	}
 
 #ifdef DEBUG
 	if (Args.DebugCommand.getValue() == PRINTGRAPH) {
@@ -217,6 +223,13 @@ const Matching* Embedder::calculateMatching (ProgressOutput* prout)
 
 		if (Args.Verbosity.getValue() == VERBOSE) {
 			prout->done (matching->getMatchedRate(), matching->getAvgEdgeWeight()) ;
+		}
+	}
+
+	if (Args.Check.getValue()) {
+		if (!matching->check()) {
+			CriticalWarning w ("integrity checking of matching data structures failed!") ; // TODO: internationalize this
+			w.printMessage() ;
 		}
 	}
 

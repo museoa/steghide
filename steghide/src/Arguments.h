@@ -78,6 +78,7 @@ class Arguments {
 	ArgBool			Force ;
 	ArgVerbosity	Verbosity ;
 	ArgDebugCommand	DebugCommand ;
+	ArgBool			Check ;
 	ArgStringList	FileList ;
 	ArgUInt			DebugLevel ;
 	ArgUInt			GmlGraphRecDepth ;
@@ -101,6 +102,7 @@ class Arguments {
 	static const unsigned int	Max_Algorithm = 3 ;
 	static const float		Default_Goal = 100.0 ;
 	static const DEBUGCOMMAND	Default_DebugCommand = NONE ;
+	static const bool		Default_Check = false ;
 	static const unsigned int	Default_DebugLevel = 0 ;
 	static const unsigned int	Default_GmlGraphRecDepth = 0 ;
 	static const unsigned int	Default_GmlStartVertex = 0 ;
