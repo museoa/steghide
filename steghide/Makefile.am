@@ -1,4 +1,4 @@
 EXTRA_DIST = ABOUT-NLS BUGS CREDITS HISTORY depcomp
 SUBDIRS = doc intl po src
-docdir = $(prefix)/doc/$(PACKAGE)-$(VERSION)
+docdir = $(prefix)/doc/$(PACKAGE)
 doc_DATA = ABOUT-NLS BUGS COPYING CREDITS HISTORY INSTALL README TODO
