@@ -29,18 +29,10 @@ Edge::Edge (Vertex *v1, unsigned short idx1, Vertex *v2, unsigned short idx2)
 	myassert (v1->getLabel() != v2->getLabel()) ;
 }
 
-Edge::Edge (Vertex *v1, unsigned short idx1, Vertex *v2, unsigned short idx2, UWORD32 w)
-	: Vertex1(v1), Index1(idx1), Vertex2(v2), Index2(idx2), Weight(w)
-{
-	myassert (v1->getLabel() != v2->getLabel()) ;
-}
-
-UWORD32 Edge::getWeight (void)
+UWORD32 Edge::getWeight ()
 {
 	if (Weight == UWORD32_MAX) {
-		SampleValue *sv1 = Vertex1->getSampleValue(Index1) ;
-		SampleValue *sv2 = Vertex2->getSampleValue(Index2) ;
-		Weight = sv1->calcDistance(sv2) ;
+		Weight = Vertex1->getSampleValue(Index1)->calcDistance(Vertex2->getSampleValue(Index2)) ;
 	}
 	return Weight ;
 }

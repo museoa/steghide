@@ -21,18 +21,16 @@
 #ifndef SH_EDGE_H
 #define SH_EDGE_H
 
+#include "SampleValue.h"
+#include "Vertex.h"
 #include "common.h"
-
-class SampleValue ;
-class Vertex ;
 
 class Edge {
 	public:
 	/**
-	 * constructs an edge object (calculates the weight)
+	 * constructs an edge object
 	 **/
 	Edge (Vertex *v1, unsigned short idx1, Vertex *v2, unsigned short idx2) ;
-	Edge (Vertex *v1, unsigned short idx1, Vertex *v2, unsigned short idx2, UWORD32 w) ;
 
 	Vertex *getVertex1 (void) const
 		{ return Vertex1 ; } ;
@@ -93,7 +91,6 @@ class Edge {
 	/// contains the index of the sample (of those in Vertex2) that will be changed (if this edge is used)
 	unsigned short Index2 ;
 
-	/// contains the weight of this edge or UWORD32_MAX if it has not been calculated yet
 	UWORD32 Weight ;
 } ;
 
