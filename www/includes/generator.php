@@ -242,7 +242,7 @@ function pnavarea ($activesec, $spc)
 {
 	global $DefSections, $ToRoot;
 
-	echo "$spc<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\"> <!-- start of navigation area -->\n";
+	echo "$spc<table width=\"100%\" height=\"100%\" cellspacing=\"0\" cellpadding=\"0\"> <!-- start of navigation area -->\n";
 	$isfirst = TRUE ;
 	foreach ($DefSections as $sectionid => $sectioninfo) {
 		psection ($sectionid, $sectioninfo, $activesec, $isfirst, $spc . " ");
