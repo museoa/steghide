@@ -369,7 +369,7 @@ void BmpFile::bmpwin_readheaders ()
 				Warning w (_("maybe corrupted windows bmp data (Reserved in RGBQUAD is non-zero).")) ;
 				w.printMessage() ;
 			}
-			Palette->addEntry (r, g, b) ;
+			Palette->addEntry(r, g, b) ;
 		}
 	}
 }
@@ -479,9 +479,9 @@ void BmpFile::bmpwin_writeheaders ()
 
 	if (Palette != NULL) {
 		for (unsigned int i = 0 ; i < Palette->getSize() ; i++) {
-			getBinIO()->write8 (Palette->getBlue(i)) ;
-			getBinIO()->write8 (Palette->getGreen(i)) ;
-			getBinIO()->write8 (Palette->getRed(i)) ;
+			getBinIO()->write8 ((*Palette)[i].Blue) ;
+			getBinIO()->write8 ((*Palette)[i].Green) ;
+			getBinIO()->write8 ((*Palette)[i].Red) ;
 			getBinIO()->write8 (0) ;
 		}
 	}
@@ -497,9 +497,9 @@ void BmpFile::bmpos2_writeheaders ()
 
 	if (Palette != NULL) {
 		for (unsigned int i = 0 ; i < Palette->getSize() ; i++) {
-			getBinIO()->write8 (Palette->getBlue(i)) ;
-			getBinIO()->write8 (Palette->getGreen(i)) ;
-			getBinIO()->write8 (Palette->getRed(i)) ;
+			getBinIO()->write8 ((*Palette)[i].Blue) ;
+			getBinIO()->write8 ((*Palette)[i].Green) ;
+			getBinIO()->write8 ((*Palette)[i].Red) ;
 		}
 	}
 }

@@ -34,15 +34,15 @@ BmpPaletteSampleValue::BmpPaletteSampleValue (const CvrStgFile* f, unsigned char
 		  ((unsigned long) getGreen() << 8) | ((unsigned long) getBlue()) ;
 }
 
-SampleValue *BmpPaletteSampleValue::getNearestOppositeSampleValue () const
+SampleValue* BmpPaletteSampleValue::getNearestOppositeSampleValue () const
 {
-	RGBTriple thistriple = Palette->getEntry (Index) ;
+	RGBTriple thistriple = (*Palette)[Index] ;
 
 	unsigned int idx_nearest = 0 ;
 	float mindist = FLT_MAX ;
 	unsigned int n = Palette->getSize() ;
 	for (unsigned int i = ((getBit() == 1) ? 0 : 1) ; i < n ; i += 2) {
-		RGBTriple curtriple = Palette->getEntry (i) ;
+		const RGBTriple& curtriple = (*Palette)[i] ;
 		float curdist = thistriple.calcDistance (curtriple) ;
 		if (curdist < mindist) {
 			mindist = curdist ;
@@ -60,15 +60,15 @@ unsigned char BmpPaletteSampleValue::getIndex() const
 
 unsigned char BmpPaletteSampleValue::getRed() const
 {
-	return Palette->getEntry(Index).Red ;
+	return (*Palette)[Index].Red ;
 }
 
 unsigned char BmpPaletteSampleValue::getGreen() const
 {
-	return Palette->getEntry(Index).Green ;
+	return (*Palette)[Index].Green ;
 }
 
 unsigned char BmpPaletteSampleValue::getBlue() const
 {
-	return Palette->getEntry(Index).Blue ;
+	return (*Palette)[Index].Blue ;
 }

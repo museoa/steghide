@@ -25,8 +25,8 @@
 
 #include "BinaryIO.h"
 #include "ColorPalette.h"
-#include "common.h"
 #include "CvrStgFile.h"
+#include "common.h"
 
 class BmpFile : public CvrStgFile {
 	public:
@@ -97,7 +97,7 @@ class BmpFile : public CvrStgFile {
 	BITMAPFILEHEADER bmfh ;
 	BITMAPINFOHEADER bmih ;
 	BITMAPCOREHEADER bmch ;
-	ColorPalette *Palette ;
+	ColorPalette* Palette ;
 	std::vector<std::vector <unsigned char> > bitmap ;
 	/// contains bytes that are appended at the end of the bitmap data (some image editors apparently do this)
 	std::vector<unsigned char> atend ;

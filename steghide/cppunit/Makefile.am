@@ -13,7 +13,7 @@ testall_LDADD = \
 ../src/BinaryIO.o ../src/BitString.o \
 ../src/BmpFile.o ../src/BmpPaletteSampleValue.o \
 ../src/BmpRGBSampleValue.o ../src/BmpSampleValue.o \
-../src/ColorPalette.o ../src/ConstructionHeuristic.o \
+../src/ConstructionHeuristic.o \
 ../src/CvrStgFile.o ../src/Edge.o \
 ../src/EdgeIterator.o ../src/EmbData.o \
 ../src/Embedder.o ../src/EncryptionAlgorithm.o \

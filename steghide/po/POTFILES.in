@@ -73,7 +73,6 @@ src/BmpFile.cc
 src/BmpPaletteSampleValue.cc
 src/BmpRGBSampleValue.cc
 src/BmpSampleValue.cc
-src/ColorPalette.cc
 src/ConstructionHeuristic.cc
 src/CvrStgFile.cc
 src/Edge.cc

@@ -28,29 +28,33 @@
 /**
  * \class ColorPalette
  * \brief a color palette
+ *
+ * This class is essentially a vector<RGBTriple> with some additional
+ * functionality and some wrappers for exisiting methods.
  **/
-class ColorPalette {
+class ColorPalette : public std::vector<RGBTriple> {
 	public:
-	ColorPalette (void) ;
+#if 0
+	ColorPalette (void) : std::vector<RGBTri{} ;
+#endif
 
-	void addEntry (const RGBTriple& rgb) ;
-	void addEntry (unsigned char r, unsigned char g, unsigned char b) ;
+	/**
+	 * get the size, i.e. the number of entries of this color palette
+	 **/
+	unsigned int getSize (void) const
+		{ return size() ; } ;
 
-	unsigned int getSize (void) const ;
+	/**
+	 * add (a copy of) rgb to the end of this color palette
+	 **/
+	void addEntry (RGBTriple rgb)
+		{ push_back (rgb) ; } ;
 
-	const RGBTriple& getEntry (unsigned int i) const ;
-	void setEntry (unsigned int i, const RGBTriple& rgb) ;
-
-	unsigned char getRed (unsigned int i) const ;
-	unsigned char getGreen (unsigned int i) const ;
-	unsigned char getBlue (unsigned int i) const ;
-
-	void setRed (unsigned int i, unsigned char r) ;
-	void setGreen (unsigned int i, unsigned char g) ;
-	void setBlue (unsigned int i, unsigned char b) ;
-	
-	private:
-	std::vector<RGBTriple> RGBTriples ;
+	/**
+	 * add the color r/g/b to the end of this color palette
+	 **/
+	void addEntry (unsigned char r, unsigned char g, unsigned char b)
+		{ push_back (RGBTriple (r, g, b)) ; } ;
 } ;
 
 #endif // ndef SH_COLORPALETTE_H

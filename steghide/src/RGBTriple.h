@@ -21,11 +21,13 @@
 #ifndef SH_RGBTRIPLE_H
 #define SH_RGBTRIPLE_H
 
+#include "common.h"
+
 class RGBTriple {
 	public:
 	RGBTriple (void)
 		: Red(0), Green(0), Blue(0) {} ;
-	RGBTriple (unsigned char r, unsigned char g, unsigned char b)
+	RGBTriple (BYTE r, BYTE g, BYTE b)
 		: Red(r), Green(g), Blue(b) {} ;
 
 	/**
@@ -45,9 +47,9 @@ class RGBTriple {
 	 **/
 	bool operator!= (const RGBTriple& t) const ;
 
-	unsigned char Red ;
-	unsigned char Green ;
-	unsigned char Blue ;
+	BYTE Red ;
+	BYTE Green ;
+	BYTE Blue ;
 } ;
 
 #endif // ndef SH_RGBTRIPLE_H
