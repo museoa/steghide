@@ -18,6 +18,8 @@
  *
  */
 
+#include <iostream>
+
 #include "common.h"
 #include "SteghideError.h"
 

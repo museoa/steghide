@@ -14,11 +14,26 @@ dnl GNU gettext
 ALL_LINGUAS="de fr"
 AM_GNU_GETTEXT
 
-dnl Checks for libraries.
+dnl Check for libmhash
 AC_CHECK_LIB(mhash, mhash_init)
+if test "$ac_cv_header_mhash_h" = no || test "$ac_cv_lib_mhash_mhash_init" = no ;
+then
+	AC_MSG_ERROR([[libmhash is probably not installed but needed to compile]])
+fi
+
+dnl Check for libmcrypt
 AC_CHECK_LIB(dld, dld_init)
 AC_CHECK_LIB(ltdl, lt_dlinit)
 AC_CHECK_LIB(mcrypt, mcrypt_module_open, , , -lltdl)
+if test "$ac_cv_header_mcrypt_h" = no || test "$ac_cv_lib_mcrypt_mcrypt_module_open" = no ;
+then
+	echo "**********";
+	echo "libmcrypt could not be found on your system. Steghide will be compiled without";
+	echo "support for encryption. You will not be able to extract encrypted data!";
+	echo "**********";
+else
+	AC_DEFINE(USE_LIBMCRYPT,1,[use the libmcrypt library (header and lib are present)])
+fi	
 
 dnl Checks for header files.
 AC_HEADER_STDC
@@ -85,19 +100,4 @@ case "${target}" in
 esac
 
 dnl check if needed/recommended libraries are present
-if test "$ac_cv_header_mhash_h" = no || test "$ac_cv_lib_mhash_mhash_init" = no ;
-then
-	AC_MSG_ERROR([[libmhash is probably not installed but needed to compile]])
-fi
-
-if test "$ac_cv_header_mcrypt_h" = no || test "$ac_cv_lib_mcrypt_mcrypt_module_open" = no ;
-then
-	echo "**********";
-	echo "libmcrypt could not be found on your system. Steghide will be compiled without";
-	echo "support for encryption. You will not be able to extract encrypted data!";
-	echo "**********";
-else
-	AC_DEFINE(USE_LIBMCRYPT,1,[use the libmcrypt library (header and lib are present)])
-fi	
-
-AC_OUTPUT([Makefile doc/Makefile intl/Makefile po/Makefile.in src/Makefile])
+AC_OUTPUT([Makefile cppunit/Makefile doc/Makefile intl/Makefile po/Makefile.in src/Makefile])

@@ -53,7 +53,7 @@ class MHashpp {
 	 * feed the byte v to the hashing algorithm
 	 * \param v the byte to be feeded to the hashing algorithm
 	 **/
-	MHashpp& operator<< (unsigned char v) ;
+	MHashpp& operator<< (BYTE v) ;
 
 	/**
 	 * interpret the command c
@@ -82,7 +82,7 @@ class MHashpp {
 
 	/// true iff HashBytes contains a valid hash value
 	bool HashBytesValid ;
-	std::vector<unsigned char> HashBytes ;
+	std::vector<BYTE> HashBytes ;
 
 	std::string getAlgorithmName (void) ;
 	static std::string getAlgorithmName (hashid id) ;

@@ -24,16 +24,25 @@
 #include <vector>
 #include <string>
 
-#if 0
-// common.h is not included here because randomsource.h is included in common.h
-// and bitstd::string.h is included in randomsource.h
-typedef int Bit ;
-#endif
-
 #include "common.h"
 
+/**
+ * \class BitString
+ * \brief a string of bits
+ *
+ * This class provides a way to conveniently store and
+ * manipulate a string of bits. Various objects can be
+ * appended to a BitString.
+ * 
+ * For data storage a vector of BYTEs is used with little
+ * endian bit encoding, i.e. the first bit is the least
+ * significant bit of the first byte and so on.
+ **/
 class BitString {
 	public:
+	/**
+	 * construct an empty BitString
+	 **/
 	BitString (void) ;
 	
 	/**
@@ -44,7 +53,7 @@ class BitString {
 	/**
 	 * construct a BitString containing the data in d
 	 **/
-	BitString (const std::vector<unsigned char>& d) ;
+	BitString (const std::vector<BYTE>& d) ;
 	
 	/**
 	 * construct a BitString containing the characters in d as 8 bit unsigned chars
@@ -54,10 +63,11 @@ class BitString {
 	/**
 	 * get the length of this bitstring (in bits)
 	 **/
-	unsigned long getLength (void) const ;
+	unsigned long getLength (void) const
+		{ return Length ; } ;
 
 	/**
-	 * delete the contents of this Bitstd::string
+	 * delete the contents of this Bitstring
 	 **/
 	BitString& clear (void) ;
 
@@ -67,33 +77,33 @@ class BitString {
 	BitString& append (const BIT v) ;
 
 	/**
-	 * append n lower order bits (with MSB first) of v to this BitString
+	 * append n lower order bits of v to this BitString
 	 * \param v the value to be appended
 	 * \param n the number of bits to be appended
 	 **/
 	BitString& append (const BYTE v, const unsigned short n = 8) ;
 	
 	/**
-	 * append n lower order bits (with MSB first) of v to this BitString
+	 * append n lower order bits of v to this BitString
 	 * \param v the value to be appended
 	 * \param n the number of bits to be appended
 	 **/
 	BitString& append (const UWORD16 v, const unsigned short n = 16) ;
 	
 	/**
-	 * append n lower order bits (with MSB first) of v to this BitString
+	 * append n lower order bits of v to this BitString
 	 * \param v the value to be appended
 	 * \param n the number of bits to be appended
 	 **/
 	BitString& append (const UWORD32 v, const unsigned short n = 32) ;
 	
 	/**
-	 * append the std::string v to this BitString
+	 * append the string v to this BitString
 	 **/
 	BitString& append (const std::string& v) ;
 
 	/**
-	 * append the std::vector v byte-wise to this BitString
+	 * append the vector v byte-wise to this BitString
 	 **/
 	BitString& append (const std::vector<BYTE>& v) ;
 
@@ -106,13 +116,13 @@ class BitString {
 	/**
 	 * get a BitString that is a part of this BitString
 	 * \param s the index of the first bit to be copied from this BitString
-	 * \param e the index of the last bit to be copied from this BitString
-	 * \return the BitString containing of the bits [s...e] of this BitString
+	 * \param l the total number of bits to be used for the return value
+	 * \return the BitString containing of the bits [s...s+(l-1)] of this BitString
 	 **/
-	BitString getBits (const unsigned long s, const unsigned long e) const ;
+	BitString getBits (const unsigned long s, const unsigned long l) const ;
 
 	/**
-	 * return a value composed from bits in this BitString (msb first)
+	 * return a value composed from bits in this BitString
 	 * \param s the index of the first bit to be used for the return value
 	 * \param l the total number of bits to be used for the return value (must be <= 32)
 	 * \return the unsigned long value (*this)[s],...,(*this)[s+l-1]
@@ -146,7 +156,8 @@ class BitString {
 	BIT operator[] (const unsigned long i) const ;
 
 	/**
-	 * xor v with this BitString, saving the result in this Bitstd::string - the result has the same length as this BitString
+	 * xor v with this BitString, saving the result in this Bitstring.
+	 * The result has the same length as this BitString.
 	 **/
 	BitString& operator^= (const BitString &v) ;
 
@@ -161,7 +172,7 @@ class BitString {
 
 	private:
 	unsigned long Length ;
-	std::vector<unsigned char> Data ;
+	std::vector<BYTE> Data ;
 } ;
 
 #endif // ndef SH_BITSTRING_H

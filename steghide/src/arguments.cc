@@ -82,7 +82,9 @@ void Arguments::parse ()
 		if (parse_Radius(curarg)) continue ;
 		if (parse_Force(curarg)) continue ;
 		if (parse_Verbosity(curarg)) continue ;
+#ifdef DEBUG
 		if (parse_Debug(curarg)) continue ;
+#endif
 
 		throw ArgError (_("unknown argument \"%s\"."), curarg->c_str()) ;
 	}

@@ -53,7 +53,7 @@ const std::vector<BYTE>& MHashpp::end ()
 	myassert (hashing) ;
 
 	unsigned int n = getHashSize() ;
-	HashBytes = std::vector<unsigned char> (n) ;
+	HashBytes = std::vector<BYTE> (n) ;
 	unsigned char *hash = (unsigned char*) mhash_end (HashD) ;
 	hashing = false ;
 	for (unsigned int i = 0 ; i < n ; i++) {
@@ -86,13 +86,13 @@ MHashpp& MHashpp::operator<< (BitString v)
 
 	unsigned long n = v.getLength() / 8 ;
 	for (unsigned int i = 0 ; i < n ; i++) {
-		(*this) << (unsigned char) v.getValue (8 * i, 8) ;
+		(*this) << (BYTE) v.getValue (8 * i, 8) ;
 	}
 
 	return *this ;
 }
 
-MHashpp& MHashpp::operator<< (unsigned char v)
+MHashpp& MHashpp::operator<< (BYTE v)
 {
 	myassert (hashing) ;
 	mhash (HashD, &v, 1) ;

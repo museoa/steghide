@@ -1,4 +1,5 @@
+AUTOMAKE_OPTIONS = dist-bzip2 dist-zip
 EXTRA_DIST = ABOUT-NLS BUGS CREDITS HISTORY depcomp
-SUBDIRS = doc intl po src
+SUBDIRS = cppunit doc intl po src
 docdir = $(prefix)/doc/$(PACKAGE)
 doc_DATA = ABOUT-NLS BUGS COPYING CREDITS HISTORY INSTALL README TODO

@@ -40,27 +40,20 @@ BitString::BitString (unsigned long l)
 		nbytes = (l / 8) + 1 ;
 	}
 
-	Data = std::vector<unsigned char> (nbytes) ; // is initialized to zeros in std::vector's constructor
+	Data = std::vector<BYTE> (nbytes, 0) ; // is initialized to zeros in std::vector's constructor
 	Length = l ;
 }
 
-BitString::BitString (const std::vector<unsigned char> &d)
+BitString::BitString (const std::vector<BYTE> &d)
 {
-	Data = d ;
-	Length = 8 * Data.size() ;
+	Length = 0 ;
+	append (d) ;
 }
 
 BitString::BitString (const std::string &d)
 {
 	Length = 0 ;
-	for (unsigned int i = 0 ; i < d.size() ; i++) {
-		append ((unsigned char) d[i]) ;
-	}
-}
-
-unsigned long BitString::getLength () const
-{
-	return Length ;
+	append (d) ;
 }
 
 BitString& BitString::clear()
@@ -87,7 +80,7 @@ BitString& BitString::append (BIT v)
 
 BitString& BitString::append (const BYTE v, const unsigned short n)
 {
-	for (int i = n - 1 ; i >= 0 ; i--) {
+	for (unsigned short i = 0 ; i < n ; i++) {
 		_append ((BIT) ((v & (1 << i)) >> i)) ;
 	}
 	return *this ;
@@ -95,7 +88,7 @@ BitString& BitString::append (const BYTE v, const unsigned short n)
 
 BitString& BitString::append (const UWORD16 v, const unsigned short n)
 {
-	for (int i = n - 1 ; i >= 0 ; i--) {
+	for (unsigned short i = 0 ; i < n ; i++) {
 		_append ((BIT) ((v & (1 << i)) >> i)) ;
 	}
 	return *this ;
@@ -103,7 +96,7 @@ BitString& BitString::append (const UWORD16 v, const unsigned short n)
 
 BitString& BitString::append (const UWORD32 v, const unsigned short n)
 {
-	for (int i = n - 1 ; i >= 0 ; i--) {
+	for (unsigned short i = 0 ; i < n ; i++) {
 		_append ((BIT) ((v & (1 << i)) >> i)) ;
 	}
 	return *this ;
@@ -111,16 +104,15 @@ BitString& BitString::append (const UWORD32 v, const unsigned short n)
 
 BitString& BitString::append (const BitString& v)
 {
-	unsigned long n = v.getLength() ;
-	for (unsigned long i = 0 ; i < n ; i++) {
+	for (unsigned long i = 0 ; i < v.getLength() ; i++) {
 		_append (v[i]) ;
 	}
 	return *this ;
 }
 
-BitString& BitString::append (const std::vector<unsigned char>& v)
+BitString& BitString::append (const std::vector<BYTE>& v)
 {
-	for (std::vector<unsigned char>::const_iterator i = v.begin() ; i != v.end() ; i++) {
+	for (std::vector<BYTE>::const_iterator i = v.begin() ; i != v.end() ; i++) {
 		append (*i) ;
 	}
 	return *this ;
@@ -129,7 +121,7 @@ BitString& BitString::append (const std::vector<unsigned char>& v)
 BitString& BitString::append (const std::string& v)
 {
 	for (std::string::const_iterator i = v.begin() ; i != v.end() ; i++) {
-		append ((unsigned char) *i) ;
+		append ((BYTE) *i) ;
 	}
 	return *this ;
 }
@@ -140,11 +132,11 @@ BIT BitString::operator[] (unsigned long i) const
 	return ((Data[BYTEPOS(i)] >> BITPOS(i)) & 1) ;
 }
 
-BitString BitString::getBits (unsigned long s, unsigned long e) const
+BitString BitString::getBits (unsigned long s, unsigned long l) const
 {
 	BitString retval ;
-	for (unsigned long i = s ; i <= e ; i++) {
-		retval.append ((*this)[i]) ;
+	for (unsigned long i = 0 ; i < l ; i++) {
+		retval.append ((*this)[s + i]) ;
 	}
 	return retval ;
 }
@@ -152,10 +144,9 @@ BitString BitString::getBits (unsigned long s, unsigned long e) const
 UWORD32 BitString::getValue (unsigned long s, unsigned short l) const
 {
 	myassert (l <= 32) ;
-	unsigned long retval = 0 ;
-	for (unsigned long i = s ; i < s + l ; i++) {
-		retval = retval << 1 ;
-		retval |= (*this)[i] ;
+	UWORD32 retval = 0 ;
+	for (unsigned short i = 0 ; i < l ; i++) {
+		retval |= (*this)[s + i] << i ;
 	}
 	return retval ;
 }
@@ -168,7 +159,6 @@ const std::vector<BYTE>& BitString::getBytes() const
 
 BitString& BitString::pad (unsigned long mult, BIT v)
 {
-	myassert (v == 0 || v == 1) ;
 	while (Length % mult != 0) {
 		_append (v) ;
 	}

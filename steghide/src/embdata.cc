@@ -300,7 +300,7 @@ BitString EmbData::getBitString ()
 	BitString hdr ;
 	hdr.append((UWORD16) EncAlgo.getIntegerRep(), EncryptionAlgorithm::IRep_size) ;
 	hdr.append((UWORD16) EncMode.getIntegerRep(), EncryptionMode::IRep_size) ;
-	hdr.append((UWORD16) nbits(main.getLength()), NBitsLenOfNEmbBits).append(main.getLength(), nbits(main.getLength())) ;
+	hdr.append((UWORD16) nbits(main.getLength()), NBitsLenOfNEmbBits).append((UWORD16) main.getLength(), nbits(main.getLength())) ;
 
 	// TODO - zlib deflate here
 	
