@@ -28,7 +28,7 @@ Vertex::Vertex (Graph* g, VertexLabel l, SamplePos* sposs, VertexContent *vc)
 	setLabel (l) ;
 	SamplePositions = sposs ;
 	Content = vc ;
-	Content->addOccurence (this) ;
+	VertexOccurenceIt = Content->addOccurence (this) ;
 	SampleOccurenceIts = new list<SampleOccurence>::iterator[SamplesPerVertex] ;
 	ShortestEdge = NULL ;
 	valid = true ;

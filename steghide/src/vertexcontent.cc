@@ -51,6 +51,7 @@ VertexContent::VertexContent (Graph* g, SampleValue**& svs, SamplePos*& sposs)
 	}
 
 	Occurences = list<Vertex*>() ;
+	DeletedOccurences = list<Vertex*>() ;
 
 	// calculate SelfDegree
 	SelfDegree = 0 ;
@@ -61,6 +62,13 @@ VertexContent::VertexContent (Graph* g, SampleValue**& svs, SamplePos*& sposs)
 			}
 		}
 	}
+}
+
+VertexContent::~VertexContent ()
+{
+	delete[] SampleValues ;
+	Occurences.clear() ;
+	DeletedOccurences.clear() ;
 }
 
 bool VertexContent::operator== (const VertexContent& vc) const

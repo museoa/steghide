@@ -91,27 +91,32 @@ void Graph::constructVertices (vector<SamplePos*>& sposs, vector<SampleValue**>&
 	hash_set<VertexContent*,hash<VertexContent*>,VertexContentsEqual>& vc_set)
 {
 	const VertexLabel numvertices = sposs.size() ;
-	VertexContents = vector<list<VertexContent*> > (SampleValues.size()) ;
 	Vertices = vector<Vertex*> (numvertices) ;
 	vc_set = hash_set<VertexContent*,hash<VertexContent*>,VertexContentsEqual>() ;
+	VertexContents = vector<list<VertexContent*> > (SampleValues.size()) ;
+	for (SampleValueLabel svlbl = 0 ; svlbl < SampleValues.size() ; svlbl++) {
+		VertexContents[svlbl] = list<VertexContent*>() ;
+	}
 
 	for (VertexLabel i = 0 ; i < numvertices ; i++) {
+		cerr << "addding vertex with label " << i << endl ;
 		// has vertex content already been created ?
 		VertexContent *vc = new VertexContent (this, svalues[i], sposs[i]) ;
 		hash_set<VertexContent*,hash<VertexContent*>,VertexContentsEqual>::iterator res = vc_set.find (vc) ;
 		if (res == vc_set.end()) { // vc has not been found - add it!
 			vc_set.insert (vc) ;
+			for (unsigned short j = 0 ; j < SamplesPerEBit ; i++) {
+				SampleValue *sv = vc->getSampleValue(j) ;
+				SampleValueLabel svlbl = sv->getLabel() ;
+				VertexContents[svlbl].push_back (vc) ;
+			}
 		}
 		else { // vc is already there
 			delete vc ;
 			vc = *res ;
 		}
 
-		// fill Vertices and VertexContents
 		Vertices[i] = new Vertex (this, i, sposs[i], vc) ;
-		for (unsigned short j = 0 ; j < SamplesPerEBit ; i++) {
-			VertexContents[vc->getSampleValue(j)->getLabel()].push_back (vc) ;
-		}
 	}
 
 #ifdef DEBUG
