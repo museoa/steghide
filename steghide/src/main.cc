@@ -69,6 +69,9 @@ LCIDENTRY LCIDTable[] = {
 	{ 0x480a, "es" },	// Honduras
 	{ 0x4c0a, "es" },	// Nicaragua
 	{ 0x500a, "es" },	// Puerto Rico
+	// romanian
+	{ 0x0418, "ro" },	// Romanian
+	{ 0x0818, "ro" },	// Romanian (Moldova)
 	// end of LCIDTable
 	{ 0x0000, "__" }
 } ;

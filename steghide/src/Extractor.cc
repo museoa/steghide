@@ -78,6 +78,7 @@ EmbData* Extractor::extract ()
 
 	vd.printMessage() ;
 
+	// TODO (postponed due to message freeze): rename into "verifying crc32 checksum..."
 	VerboseMessage vc (_("checking crc32 checksum...")) ;
 	vc.setNewline (false) ;
 	vc.printMessage() ;

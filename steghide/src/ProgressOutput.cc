@@ -68,7 +68,8 @@ void ProgressOutput::done (float rate, float avgweight) const
 	if (avgweight != NoAvgWeight) {
 		printf (" (%.1f)", avgweight) ;
 	}
-	printf (_(" done\n")) ;
+	printf (_(" done")) ;
+	printf ("    \n") ; // be sure to overwrite old line (even in a language with one-letter done)
 	fflush (stdout) ;
 }
 
