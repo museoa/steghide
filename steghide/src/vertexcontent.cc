@@ -65,7 +65,7 @@ VertexContent::VertexContent (Graph* g, SampleValue**& svs, SamplePos*& sposs)
 	}
 }
 
-bool VertexContent::operator== (VertexContent vc) const
+bool VertexContent::operator== (const VertexContent& vc) const
 {
 	bool retval = true ;
 	SampleValue** vc_svs = vc.getSampleValues() ;

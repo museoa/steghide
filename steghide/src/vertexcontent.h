@@ -47,9 +47,9 @@ class VertexContent : private GraphAccess {
 	 **/
 	VertexContent (Graph* g, SampleValue**& svs, SamplePos*& sposs) ;
 
-	bool operator== (VertexContent vc) const ;
+	bool operator== (const VertexContent& vc) const ;
 
-	bool operator!= (VertexContent vc) const
+	bool operator!= (const VertexContent& vc) const
 		{ return !(operator==(vc)) ; } ;
 
 	// FIXME - ev. stattdessen operator [] - ev. const return value

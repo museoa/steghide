@@ -22,11 +22,11 @@
 #include "common.h"
 
 AugmentingPathHeuristic::AugmentingPathHeuristic (Graph *g, Matching *m)
+	: GraphAccess(g)
 {
-	TheGraph = g ;
 	TheMatching = m ;
 
-	unsigned long numvertices = TheGraph->getNumVertices() ;
+	unsigned long numvertices = g->getNumVertices() ;
 	VertexOnPath = vector<bool> (numvertices, false) ;
 
 	TimeCounter = 0 ;
@@ -35,7 +35,7 @@ AugmentingPathHeuristic::AugmentingPathHeuristic (Graph *g, Matching *m)
 	// FIXME - eigentlich hier kein init nötig, wird in getNextEdge dann ohnehin gemacht
 	EdgeIterators.reserve (numvertices) ;
 	for (VertexLabel l = 0 ; l < numvertices ; l++) {
-		EdgeIterators.push_back (EdgeIterator (TheGraph, TheGraph->getVertex(l))) ;
+		EdgeIterators.push_back (EdgeIterator (g, g->getVertex(l))) ;
 	}
 }
 

@@ -28,7 +28,7 @@
 /**
  * \class AugmentingPathHeuristic
  **/
-class AugmentingPathHeuristic {
+class AugmentingPathHeuristic : private GraphAccess {
 	public:
 	AugmentingPathHeuristic (Graph *g, Matching *m) ;
 
@@ -55,7 +55,6 @@ class AugmentingPathHeuristic {
 	bool isVisited (Vertex *v)
 		{ return (TimeCounters[v->getLabel()] == TimeCounter) ; } ;
 
-	Graph *TheGraph ;
 	Matching *TheMatching ;
 
 	UWORD32 TimeCounter ;

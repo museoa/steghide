@@ -52,6 +52,8 @@ class Vertex : private GraphAccess {
 	 **/
 	Vertex (Graph* g, VertexLabel l, SamplePos* sposs, VertexContent* vc) ;
 
+	~Vertex (void) ;
+
 	/**
 	 * get the i-th sample position
 	 * \param i an index of a sample in this vertex (must be < TheCvrStgFile->getNumSamplesPerEBit())
@@ -94,6 +96,9 @@ class Vertex : private GraphAccess {
 	 * if this vertex is marked as deleted, undo this
 	 **/
 	void unmarkDeleted (void) ;
+
+	bool operator== (const Vertex& v) const
+		{ return getLabel() == v.getLabel() ; } ;
 
 	VertexLabel getLabel (void) const
 		{ return Label ; } ;

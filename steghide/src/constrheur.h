@@ -37,12 +37,11 @@ class ConstructionHeuristic : private GraphAccess {
 	class LongerShortestEdge : public binary_function<Vertex*,Vertex*,bool> {
 		public:
 		bool operator() (Vertex *v1, Vertex *v2)
-			{ return (v1->getShortestEdge()->getWeight() > v2->getShortestEdge()->getWeight()) ; } ;
+			{ assert(v1->getDegree() > 0) ; assert(v2->getDegree) > 0) ; return (v1->getShortestEdge()->getWeight() > v2->getShortestEdge()->getWeight()) ; } ;
 	} ;
 
 	static const unsigned int PriorityQueueRange = 1 ;
 
-	Graph *TheGraph ;
 	Matching *TheMatching ;
 
 	/**

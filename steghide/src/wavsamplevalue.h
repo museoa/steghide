@@ -53,7 +53,7 @@ class WavPCMSampleValue : public SampleValue {
 
 class WavPCMSmaller : public binary_function<WavPCMSampleValue*,WavPCMSampleValue*,bool> {
 	public:
-	bool operator() (WavPCMSampleValue *v, WavPCMSampleValue *w) { return v->getValue() < w->getValue() ; } ;
+	bool operator() (const WavPCMSampleValue *v, const WavPCMSampleValue *w) { return v->getValue() < w->getValue() ; } ;
 } ;
 
 #endif // ndef SH_WAVSAMPLE_H

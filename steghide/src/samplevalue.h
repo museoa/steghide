@@ -105,10 +105,10 @@ class SampleValue {
 	/**
 	 * two sample values are equal iff their keys are equal
 	 **/
-	bool operator== (const SampleValue sv) const
+	bool operator== (const SampleValue& sv) const
 		{ return (getKey() == sv.getKey()) ; } ;
 
-	bool operator!= (const SampleValue sv) const
+	bool operator!= (const SampleValue& sv) const
 		{ return (getKey() != sv.getKey()) ; } ;
 
 	virtual float getRadius (void) const = 0 ;
@@ -155,7 +155,7 @@ class SampleValue {
 } ;
 
 struct SampleValuesEqual : std::binary_function<SampleValue*, SampleValue*, bool> {
-	bool operator() (SampleValue* s1, SampleValue *s2) const
+	bool operator() (const SampleValue* s1, const SampleValue *s2) const
 	{
 		return (*s1 == *s2) ;
 	}

@@ -19,18 +19,25 @@
  */
 
 #include "common.h"
+#include "edgeiterator.h"
 #include "vertex.h"
 
-// DEBUG
+//DEBUG
 Vertex::Vertex (Graph* g, VertexLabel l, SamplePos* sposs, VertexContent *vc)
 	: GraphAccess(g)
 {
 	setLabel (l) ;
 	SamplePositions = sposs ;
 	Content = vc ;
+	assert (SamplesPerVertex == 1) ; // DEBUG
 	SampleOccurenceIts = new list<SampleOccurence>::iterator[SamplesPerVertex] ;
 	ShortestEdge = NULL ;
 	valid = true ;
+}
+
+Vertex::~Vertex ()
+{
+	// TODO delete[] SampleOccurenceIts ;
 }
 
 void Vertex::markDeleted ()
@@ -91,21 +98,35 @@ void Vertex::updateShortestEdge ()
 		ShortestEdge = NULL ;
 	}
 	else {
-		for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
+		EdgeIterator edgeit (TheGraph, this) ;
+		ShortestEdge = *edgeit ;
+#if 0
+		bool found = false ;
+		for (unsigned short i = 0 ; i < SamplesPerVertex && !found ; i++) {
 			SampleValue* srcsv = getSampleValue(i) ;
-			for (unsigned long j = 0 ; j < TheGraph->getNumOppNeighs(srcsv) ; j++) {
-				SampleValue *destsv = TheGraph->getOppNeighs(srcsv)[j] ;
-				if ((ShortestEdge == NULL) || (ShortestEdge->getWeight() > srcsv->calcDistance(destsv))) {
-					if (TheGraph->getNumSampleOccurences(destsv) > 0) {
-						SampleOccurence occ = *(TheGraph->getSampleOccurences(destsv).begin()) ;
+			for (unsigned long j = 0 ; j < TheGraph->getNumOppNeighs(srcsv) && !found ; j++) {
+				SampleValue *destsv = (TheGraph->getOppNeighs(srcsv))[j] ;
+				if (TheGraph->getNumSampleOccurences(destsv) > 0) {
+					list<SampleOccurence> socc = TheGraph->getSapmleOccurences(destsv) ;
+					list<SampleOccurence>::iteartor it = socc.begin() ;
+
+					// eliminate loop edges
+					while ((*it)->getVertex()->getLabel() == getLabel() && it != socc.end()) {
+						it++ ;
+					}
+
+					if (it != socc.end()) {
+						// a valid edge has been found
 						if (ShortestEdge != NULL) {
 							delete ShortestEdge ;
 						}
-						ShortestEdge = new Edge (this, i, occ.getVertex(), occ.getIndex()) ;
+						ShortestEdge = new Edge (this, i, (*it)->getVertex(), (*it)->getIndex()) ;
+						found = true ;
 					}
 				}
 			}
 		}
+#endif
 	}
 }
 

@@ -129,7 +129,7 @@ class Graph {
 	unsigned long getNumSampleOccurences (SampleValue *sv) const
 		{ return SampleOccurences[sv->getLabel()].size() ; } ;
 
-	const list<SampleOccurence>& getSampleOccurences (SampleValue *sv) const
+	const list<SampleOccurence>& getSampleOccurences (const SampleValue *sv) const
 		{ return SampleOccurences[sv->getLabel()] ; } ;
 
 	list<SampleOccurence>::iterator markDeletedSampleOccurence (list<SampleOccurence>::iterator it) ;

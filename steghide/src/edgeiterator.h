@@ -46,6 +46,8 @@ class EdgeIterator : private GraphAccess {
 	 **/
 	EdgeIterator (Graph *g, Vertex *v) ;
 
+	~EdgeIterator (void) ;
+
 	/**
 	 * get the current edge
 	 * \return the edge that is described by the current status of this EdgeIterator
@@ -85,11 +87,15 @@ class EdgeIterator : private GraphAccess {
 	bool Finished ;
 
 	/**
-	 * choose i < SamplesPerVertex such that SVOppNeighsIndices[i] has at least one occurence in the graph
-	 * and has the least distance from it's corresponding source sample value SrcVertex->getSampleValue(i).
-	 * If no such i can be found, Finished is set to true.
+	 * find the shortest edge, starting the search at SVOppNeighsIndices[0...k]
+	 * set the private variables accordingly
 	 **/
-	unsigned short findShortestSampleValue (void) ;
+	void findNextEdge (void) ;
+
+	/**
+	 * \return true iff there is a sample with value sv that is part of an edge starting at SrcVertex
+	 **/
+	bool isDestSampleValueOK (const SampleValue *sv) ;
 } ;
 
 #endif // ndef SH_EDGEITERATOR_H
