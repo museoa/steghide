@@ -43,7 +43,7 @@ You should have the following libraries installed to use steghide.
 <dt><a href="http://mhash.sourceforge.net/">libmhash</a></dt>
  <dd>A library that provides various hash algorithms and cryptographic key generation algorithms. Steghide needs this library
  to convert a passphrase into a form that can be used as input for cryptographic and steganographic algorithms.</dd>
-<dt><a href="http://mcrypt.hellug.gr/">libmcrypt</a></dt>
+<dt><a href="http://mcrypt.sourceforge.net/">libmcrypt</a></dt>
  <dd>A library that provides a lot of symmetric encryption algorithms. If you compile steghide without libmcrypt you will not
  be able to use steghide to encrypt data before embedding nor to extract encrypted data (even if you know the correct passphrase).</dd>
 <dt><a href="http://www.ijg.org/">libjpeg</a></dt>
