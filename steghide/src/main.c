@@ -79,7 +79,9 @@ DMTDINFO sthdr_dmtdinfo ;
 
 static void parsearguments (int argc, char *argv[]) ;
 static void args_setdefaults (void) ;
+#ifndef DEBUG
 static void gettext_init (void) ;
+#endif /* DEBUG */
 static void setsthdrdmtd (void) ;
 static void version (void) ;
 static void usage (void) ;
@@ -516,6 +518,7 @@ static void parsearguments (int argc, char* argv[])
 	return ;
 }
 
+#ifndef DEBUG
 static void gettext_init (void)
 {
 	/* initialize gettext */
@@ -548,6 +551,7 @@ static void gettext_init (void)
 
 	return ;
 }
+#endif /* DEBUG */
 
 static void args_setdefaults (void)
 {

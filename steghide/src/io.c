@@ -18,6 +18,10 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -266,9 +270,12 @@ void cleanupcvrfile (CVRFILE *cvrfile, int freesubstructs)
 		if (cvrfile->unsupdata1len != 0) {
 			free (cvrfile->unsupdata1) ;
 		}
+#ifndef WIN32
+		/* FIXME - when compiled with cygwin, steghide crashes here */
 		if (cvrfile->unsupdata2len != 0) {
 			free (cvrfile->unsupdata2) ;
 		}
+#endif
 		buffree (cvrfile->cvrdata) ;
 		if (noncvrbufuse[cvrfile->fileformat]) {
 			buffree (cvrfile->noncvrdata) ;
