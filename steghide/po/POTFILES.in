@@ -33,9 +33,6 @@ src/ConstructionHeuristic.h
 src/CvrStgFile.cc 
 src/CvrStgFile.h 
 src/CvrStgObject.h 
-src/DELMEColorPalette.cc 
-src/DELMEVertexContent.cc 
-src/DELMEVertexContent.h 
 src/DebugOutput.h 
 src/Edge.cc 
 src/Edge.h 
