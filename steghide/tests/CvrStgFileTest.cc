@@ -22,6 +22,11 @@
 #include <cstdlib>
 
 #include "CvrStgFileTest.h"
+#define private public
+#define protected public
+#include "Graph.h"
+#undef protected
+#undef private
 #include "SampleValue.h"
 #include "utcommon.h"
 
@@ -147,6 +152,18 @@ bool CvrStgFileTest::genericTestPosition (const CvrStgFile* f, const SamplePos p
 	delete sv_o ;
 	delete sv_r ;
 	return retval ;
+}
+
+bool CvrStgFileTest::genericTestSVALCalculation (const CvrStgFile* f, const Graph* g) const
+{
+	const std::vector<SampleValue*>& svs = g->SampleValues ;
+	std::vector<SampleValueAdjacencyList*> svals_generic = f->CvrStgFile::calcSVAdjacencyLists (svs) ;
+	std::vector<SampleValueAdjacencyList*> svals_specialized = f->calcSVAdjacencyLists (svs) ;
+	bool ok = true ;
+	for (EmbValue i = 0 ; i < f->getEmbValueModulus() ; i++) {
+		ok = (*(svals_generic[i]) == *(svals_specialized[i])) && ok ;
+	}
+	return ok ;
 }
 
 bool CvrStgFileTest::areEqual (const std::string& fn1, const std::string& fn2) const

@@ -20,6 +20,7 @@
 
 #include <iostream>
 
+#include "Graph.h"
 #include "WavPCMSampleValue.h"
 
 #include "WavFileTest.h"
@@ -32,6 +33,7 @@ WavFileTest::WavFileTest (TestSuite* s)
 	ADDTESTCATEGORY (WavFileTest, testReadEmbedExtract) ;
 	ADDTESTCATEGORY (WavFileTest, testReadEmbedWriteReadExtract) ;
 	ADDTESTCATEGORY (WavFileTest, testPosition) ;
+	ADDTESTCATEGORY (WavFileTest, testSVALCalculation) ;
 }
 
 void WavFileTest::setup ()
@@ -41,11 +43,15 @@ void WavFileTest::setup ()
 	Globs.reset() ;
 	f1 = CvrStgFile::readFile (std::string(DATADIR) + "pcm8_std.wav") ;
 	bs1 = new BitString (std::string ("this is a test string for the WavFile")) ;
+	s1 = new Selector (bs1->getLength() * f1->getSamplesPerVertex(), std::string ("a passphrase")) ;
+	g1 = new Graph (f1, *bs1, *s1) ;
 	gl1 = Globs ;
 
 	Globs.reset() ;
 	f2 = CvrStgFile::readFile (std::string(DATADIR) + "pcm16_std.wav") ;
 	bs2 = new BitString (std::string ("this is another test - this time a little longer, but also for the WavFile unit test")) ;
+	s2 = new Selector (bs2->getLength() * f2->getSamplesPerVertex(), std::string ("another passphrase")) ;
+	g2 = new Graph (f2, *bs2, *s2) ;
 	gl2 = Globs ;
 }
 
@@ -53,6 +59,8 @@ void WavFileTest::cleanup ()
 {
 	UnitTest::cleanup() ;
 
+	delete g1 ; delete g2 ;
+	delete s1 ; delete s2 ;
 	delete bs1 ; delete bs2 ;
 	delete f1 ; delete f2 ;
 }
@@ -89,4 +97,10 @@ void WavFileTest::testPosition()
 void WavFileTest::testReadExtractCompare ()
 {
 	// TODO
+}
+
+void WavFileTest::testSVALCalculation ()
+{
+	Globs = gl1 ; addTestResult (genericTestSVALCalculation (f1, g1)) ;
+	Globs = gl2 ; addTestResult (genericTestSVALCalculation (f2, g2)) ;
 }

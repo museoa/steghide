@@ -18,30 +18,29 @@
  *
  */
 
-#ifndef SH_SAMPLEVALUEOPPOSITENEIGHBOURHOODTEST_H
-#define SH_SAMPLEVALUEOPPOSITENEIGHBOURHOODTEST_H
+#ifndef SH_BMPFILETEST_H
+#define SH_BMPFILETEST_H
 
-#define private public
-#define protected public
-#include "SampleValueAdjacencyList.h"
-#undef private
-#undef protected
+#include "BmpFile.h"
+#include "Selector.h"
 
-#include "UnitTest.h"
-#include "TestSuite.h"
+#include "CvrStgFileTest.h"
 
-class SampleValueAdjacencyListTest : public UnitTest {
+class BmpFileTest : public CvrStgFileTest {
 	public:
-	SampleValueAdjacencyListTest (TestSuite* s) ;
+	BmpFileTest (TestSuite* s) ;
 
 	void setup (void) ;
+	void cleanup (void) ;
 
-	void testEquality (void) ;
-	void testQuicksort (void) ;
+	void testSVALCalculation (void) ;
 
 	private:
-	SampleValueAdjacencyList DummySVAL ;
-	std::vector<SampleValue*> SVEmpty ;
+	CvrStgFile *f1, *f2 ;
+	Graph *g1, *g2 ;
+	Selector *s1, *s2 ;
+	BitString *bs1, *bs2 ;
+	Globals gl1, gl2 ;
 } ;
 
-#endif // ndef SH_SAMPLEVALUEOPPOSITENEIGHBOURHOODTEST_H
+#endif // ndef SH_BMPFILETEST_H

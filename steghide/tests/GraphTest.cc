@@ -35,13 +35,12 @@ GraphTest::GraphTest (TestSuite* s)
 {
 	ADDTESTCATEGORY (GraphTest, testSampleValues) ;
 	ADDTESTCATEGORY (GraphTest, testVertices) ;
-	ADDTESTCATEGORY (GraphTest, testSampleValueOppNeighs) ;
 	ADDTESTCATEGORY (GraphTest, testSampleOccurences) ;
+	ADDTESTCATEGORY (GraphTest, testSampleValueAdjacencyLists) ;
 }
 
 void GraphTest::setup ()
 {
-	// FIXME - do this tests with other files too (maybe the same situation in other unit tests)
 	UnitTest::setup() ;
 
 	Globs.reset() ;
@@ -226,17 +225,19 @@ void GraphTest::testSampleOccurences()
 	Globs = gl13 ; addTestResult (g13->check_SampleOccurences(ArgVerbose)) ;
 }
 
-void GraphTest::testSampleValueOppNeighs()
+void GraphTest::testSampleValueAdjacencyLists ()
 {
-#if 0
-	FIXME
-	Globs = gl1 ; addTestResult (g1->SampleValueOppNeighs.check(ArgVerbose)) ;
-	Globs = gl2 ; addTestResult (g2->SampleValueOppNeighs.check(ArgVerbose)) ;
-	Globs = gl3 ; addTestResult (g3->SampleValueOppNeighs.check(ArgVerbose)) ;
-	Globs = gl4 ; addTestResult (g4->SampleValueOppNeighs.check(ArgVerbose)) ;
-	Globs = gl5 ; addTestResult (g5->SampleValueOppNeighs.check(ArgVerbose)) ;
-	Globs = gl6 ; addTestResult (g6->SampleValueOppNeighs.check(ArgVerbose)) ;
-	Globs = gl7 ; addTestResult (g7->SampleValueOppNeighs.check(ArgVerbose)) ;
-	Globs = gl8 ; addTestResult (g8->SampleValueOppNeighs.check(ArgVerbose)) ;
-#endif
+	Globs = gl1 ; addTestResult (g1->check_SVALists(ArgVerbose)) ;
+	Globs = gl2 ; addTestResult (g2->check_SVALists(ArgVerbose)) ;
+	Globs = gl3 ; addTestResult (g3->check_SVALists(ArgVerbose)) ;
+	Globs = gl4 ; addTestResult (g4->check_SVALists(ArgVerbose)) ;
+	Globs = gl5 ; addTestResult (g5->check_SVALists(ArgVerbose)) ;
+	Globs = gl6 ; addTestResult (g6->check_SVALists(ArgVerbose)) ;
+	Globs = gl7 ; addTestResult (g7->check_SVALists(ArgVerbose)) ;
+	Globs = gl8 ; addTestResult (g8->check_SVALists(ArgVerbose)) ;
+	Globs = gl9 ; addTestResult (g9->check_SVALists(ArgVerbose)) ;
+	Globs = gl10 ; addTestResult (g10->check_SVALists(ArgVerbose)) ;
+	Globs = gl11 ; addTestResult (g11->check_SVALists(ArgVerbose)) ;
+	Globs = gl12 ; addTestResult (g12->check_SVALists(ArgVerbose)) ;
+	Globs = gl13 ; addTestResult (g13->check_SVALists(ArgVerbose)) ;
 }

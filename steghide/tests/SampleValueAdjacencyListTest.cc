@@ -18,19 +18,49 @@
  *
  */
 
-#include "SampleValueAdjacencyListTest.h"
+#include <vector>
+
+#include "AuSampleValues.h"
 #include "common.h"
+
+#include "SampleValueAdjacencyListTest.h"
 #include "utcommon.h"
 
 SampleValueAdjacencyListTest::SampleValueAdjacencyListTest (TestSuite* s)
 	: UnitTest ("SampleValueAdjacencyList", s), DummySVAL (100)
 {
+	ADDTESTCATEGORY (SampleValueAdjacencyListTest, testEquality) ;
 	ADDTESTCATEGORY (SampleValueAdjacencyListTest, testQuicksort) ;
 }
 
 void SampleValueAdjacencyListTest::setup ()
 {
 	SVEmpty = std::vector<SampleValue*> (100) ;
+}
+
+void SampleValueAdjacencyListTest::testEquality ()
+{
+	CvrStgFile *f = CvrStgFile::readFile (std::string(DATADIR) + "mulaw_std.au") ;
+
+	SampleValueAdjacencyList sval1 (2) ;
+	SampleValueAdjacencyList sval2 (2) ;
+
+	sval1[(SampleValueLabel) 0].push_back (new AuMuLawSampleValue (10)) ;
+	sval1[(SampleValueLabel) 0].push_back (new AuMuLawSampleValue (15)) ;
+	sval1[(SampleValueLabel) 0].push_back (new AuMuLawSampleValue (17)) ;
+	sval1[(SampleValueLabel) 1].push_back (new AuMuLawSampleValue (100)) ;
+	sval2[(SampleValueLabel) 0].push_back (new AuMuLawSampleValue (10)) ;
+	sval2[(SampleValueLabel) 0].push_back (new AuMuLawSampleValue (15)) ;
+	sval2[(SampleValueLabel) 0].push_back (new AuMuLawSampleValue (17)) ;
+	sval2[(SampleValueLabel) 1].push_back (new AuMuLawSampleValue (100)) ;
+
+	addTestResult (sval1 == sval2) ;
+
+	sval2[(SampleValueLabel) 1].push_back (new AuMuLawSampleValue (110)) ;
+
+	addTestResult (!(sval1 == sval2)) ;
+
+	delete f ;
 }
 
 void SampleValueAdjacencyListTest::testQuicksort ()

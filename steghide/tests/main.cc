@@ -27,6 +27,7 @@
 #include "AuFileTest.h"
 #include "AugmentingPathHeuristicTest.h"
 #include "BitStringTest.h"
+#include "BmpFileTest.h"
 #include "BmpRGBSampleValueTest.h"
 #include "BmpPaletteSampleValueTest.h"
 #include "BmpOS2FileTest.h"
@@ -41,6 +42,7 @@
 #include "MCryptPPTest.h"
 #include "MHashKeyGenTest.h"
 #include "MHashPPTest.h"
+#include "SampleValueAdjacencyListTest.h"
 #include "SelectorTest.h"
 #include "WavFileTest.h"
 #include "WavPCMSampleValueTest.h"
@@ -113,6 +115,9 @@ int main (int argc, char *argv[])
 	AuFileTest aut (&ts) ;
 	ts.addUnitTest (&aut) ;
 
+	BmpFileTest bmpt (&ts) ;
+	ts.addUnitTest (&bmpt) ;
+
 	BmpOS2FileTest bmpot (&ts) ;
 	ts.addUnitTest (&bmpot) ;
 
@@ -126,6 +131,9 @@ int main (int argc, char *argv[])
 	ts.addUnitTest (&wt) ;
 
 	// graph-theoretic stuff
+	SampleValueAdjacencyListTest svalt (&ts) ;
+	ts.addUnitTest (&svalt) ;
+
 	GraphTest gt (&ts) ;
 	ts.addUnitTest (&gt) ;
 

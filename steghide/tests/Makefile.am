@@ -7,7 +7,7 @@ noinst_HEADERS = \
 AuFileTest.h AudioSampleValueTest.h AugmentingPathHeuristicTest.h \
 BitStringTest.h BmpOS2FileTest.h BmpPaletteSampleValueTest.h \
 BmpRGBSampleValueTest.h BmpWinFileTest.h ConstructionHeuristicTest.h \
-CvrStgFileTest.h DummyFile.h \
+BmpFileTest.h CvrStgFileTest.h DummyFile.h \
 DummySampleValue.h EdgeIteratorTest.h EmbDataTest.h GraphTest.h JpegFileTest.h \
 JpegSampleValueTest.h MCryptPPTest.h MHashKeyGenTest.h MHashPPTest.h \
 MatchingTest.h SampleValueAdjacencyListTest.h SampleValueTest.h SelectorTest.h \
@@ -17,7 +17,7 @@ unittests_SOURCES = \
 AuFileTest.cc AudioSampleValueTest.cc AugmentingPathHeuristicTest.cc \
 BitStringTest.cc BmpOS2FileTest.cc BmpPaletteSampleValueTest.cc \
 BmpRGBSampleValueTest.cc BmpWinFileTest.cc ConstructionHeuristicTest.cc \
-CvrStgFileTest.cc \
+BmpFileTest.cc CvrStgFileTest.cc \
 DummyFile.cc DummySampleValue.cc EdgeIteratorTest.cc EmbDataTest.cc \
 GraphTest.cc JpegFileTest.cc JpegSampleValueTest.cc MCryptPPTest.cc \
 MHashKeyGenTest.cc MHashPPTest.cc MatchingTest.cc \

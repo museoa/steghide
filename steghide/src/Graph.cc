@@ -220,14 +220,13 @@ void Graph::printVerboseInfo()
 
 #ifdef DEBUG
 		if (Args.Verbosity.getValue() == STATS) {
-			printf ("%lu:%lu:%lu:%lu:%lu:%.1f:%lu:",
+			printf ("%lu:%lu:%lu:%lu:%lu:%.1f:",
 					(unsigned long) SampleValues.size(),	// number of distinct sample values
 					(unsigned long) Vertices.size(),	// number of vertices
 					sumdeg / 2, // number of edges
 					mindeg, // minimum vertex degree
 					maxdeg, // maximum vertex degree
-					avgdeg, // average vertex degree
-					NumVertexContents // number of distinct vertex contents
+					avgdeg // average vertex degree
 				   ) ;
 		}
 #endif
@@ -256,6 +255,7 @@ bool Graph::check (bool verbose) const
 	retval = check_Vertices(verbose) && retval ;
 	retval = check_SampleValues(verbose) && retval ;
 	retval = check_SampleOccurences(verbose) && retval ;
+	retval = check_SVALists(verbose) && retval ;
 	return retval ;
 }
 
@@ -348,6 +348,140 @@ bool Graph::check_SampleOccurences_completeness (bool verbose) const
 	}
 
 	return completeness ;
+}
+
+bool Graph::check_SVALists (bool verbose) const
+{
+	bool retval = true ;
+	retval = check_SVALists_size (verbose) && retval ;
+	retval = check_SVALists_soundness (verbose) && retval ;
+	retval = check_SVALists_sorted (verbose) && retval ;
+	retval = check_SVALists_uniqueness (verbose) && retval ;
+	retval = check_SVALists_completeness (verbose) && retval ;
+	return retval ;
+}
+
+bool Graph::check_SVALists_size (bool verbose) const
+{
+	bool size = true ;
+	for (EmbValue i = 0 ; i < File->getEmbValueModulus() ; i++) {
+		size = (SVALists[i]->getNumRows() == SampleValues.size()) && size ;
+		if ((SVALists[i]->getNumRows() != SampleValues.size()) && verbose) {
+			std::cerr << std::endl << "---- FAILED: check_SVALists_size ----" << std::endl ;
+			std::cerr << "SVALists[" << i << "]->getNumRows(): " << SVALists[i]->getNumRows() << std::endl ;
+			std::cerr << "SampleValues.size(): " << SampleValues.size() << std::endl ;
+			std::cerr << "-------------------------------------" << std::endl ;
+		}
+	}
+	return size ;
+}
+
+bool Graph::check_SVALists_soundness (bool verbose) const
+{
+	unsigned long numsvs = SampleValues.size() ;
+
+	// check if everything in SVALists[i][j] really is a neighbour of j and has the embedded value i
+	bool target_ok = true ;
+	bool neigh_ok = true ;
+	for (EmbValue t = 0 ; t < File->getEmbValueModulus() ; t++) {
+		for (SampleValueLabel srclbl = 0 ; srclbl < numsvs ; srclbl++) {
+			SampleValue* srcsv = SampleValues[srclbl] ;
+			const std::vector<SampleValue*> &row = (*(SVALists[t]))[srclbl];
+			for (std::vector<SampleValue*>::const_iterator destsv = row.begin() ; destsv != row.end() ; destsv++) {
+				if ((*destsv)->getEmbeddedValue() != t) {
+					target_ok = false ;
+				}
+				if (!srcsv->isNeighbour(*destsv)) {
+					neigh_ok = false ;
+				}
+			}
+		}
+	}
+
+	return target_ok && neigh_ok ;
+}
+
+bool Graph::check_SVALists_sorted (bool verbose) const
+{
+	unsigned long numsvs = SampleValues.size() ;
+
+	// check if SVALists[t][l][1...n] have increasing distance
+	bool sorted = true ;
+	for (EmbValue t = 0 ; t < File->getEmbValueModulus() ; t++) {
+		for (SampleValueLabel srclbl = 0 ; srclbl < numsvs ; srclbl++) {
+			SampleValue* srcsv = SampleValues[srclbl] ;
+			const std::vector<SampleValue*> &row = (*(SVALists[t]))[srclbl] ;
+			if (row.size() > 1) {
+				for (unsigned int i = 0 ; i < (row.size() - 1) ; i++) {
+					UWORD32 d1 = srcsv->calcDistance (row[i]) ;
+					UWORD32 d2 = srcsv->calcDistance (row[i + 1]) ;
+					if (!(d1 <= d2)) {
+						sorted = false ;
+						if (verbose) {
+							std::cerr << std::endl << "---- FAILED: check_SVALists_sorted ----" << std::endl ;
+							std::cerr << "source sample:" << std::endl ;
+							srcsv->print(1) ;
+							std::cerr << "dest sample at position " << i << ":" << std::endl ;
+							row[i]->print(1) ;
+							std::cerr << "dest sample at position " << i + 1 << ":" << std::endl ;
+							row[i + 1]->print(1) ;
+							std::cerr << "-------------------------------------" << std::endl ;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return sorted ;
+}
+
+bool Graph::check_SVALists_uniqueness (bool verbose) const
+{
+	// check if there is no sample value that has two entries in an SVAList
+	bool unique = true ;
+	for (EmbValue t = 0 ; t < File->getEmbValueModulus() ; t++) {
+		for (SampleValueLabel srclbl = 0 ; srclbl < SampleValues.size() ; srclbl++) {
+			for (unsigned int i = 0 ; i < (*(SVALists[t]))[srclbl].size() ; i++) {
+				for (unsigned int j = i + 1 ; j < (*(SVALists[t]))[srclbl].size() ; j++) {
+					if (*((*(SVALists[t]))[srclbl][i]) == *((*(SVALists[t]))[srclbl][j])) {
+						unique = false ;
+					}
+				}
+			}
+		}
+	}
+	return unique ;
+}
+
+
+bool Graph::check_SVALists_completeness (bool verbose) const
+{
+	bool ok = true ;
+
+	unsigned long numsvs = SampleValues.size() ;
+	for (unsigned long i = 0 ; i < numsvs ; i++) {
+		SampleValue *svsrc = SampleValues[i] ;
+		for (unsigned long j = 0 ; j < numsvs ; j++) {
+			SampleValue *svdest = SampleValues[j] ;
+			if (svsrc->isNeighbour(svdest) && (svsrc->getLabel() != svdest->getLabel())) {
+				// svsrc and svdest are neighbours => there must be an entry in SVALists
+				myassert (svdest->isNeighbour (svsrc)) ;
+				const std::vector<SampleValue*> &row = (*(SVALists[svdest->getEmbeddedValue()]))[i] ;
+				bool found = false ;
+				for (std::vector<SampleValue*>::const_iterator k = row.begin() ; k != row.end() ; k++) {
+					if ((*k)->getLabel() == j) {
+						found = true ;
+					}
+				}
+				if (!found) {
+					ok = false ;
+				}
+			}
+		}
+	}
+
+	return ok ;
 }
 
 #ifdef DEBUG

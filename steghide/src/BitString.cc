@@ -178,7 +178,7 @@ BitString BitString::cutBits (unsigned long s, unsigned long l)
 		}
 	}
 	Length -= l ;
-	Data.resize (AUtils<unsigned long>::div_roundup (Length, 8)) ;
+	Data.resize (AUtils::div_roundup (Length, (UWORD32) 8)) ;
 	return retval ;
 }
 

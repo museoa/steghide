@@ -88,15 +88,15 @@ void JpegFile::read (BinaryIO* io)
 	unsigned short max_v_samp_factor = 0 ;
 	unsigned short max_h_samp_factor = 0 ;
 	for (unsigned short icomp = 0 ; icomp < DeCInfo.num_components ; icomp++) {
-		max_v_samp_factor = AUtils<unsigned short>::max(max_v_samp_factor, DeCInfo.comp_info[icomp].v_samp_factor) ;
-		max_h_samp_factor = AUtils<unsigned short>::max(max_h_samp_factor, DeCInfo.comp_info[icomp].h_samp_factor) ;
+		max_v_samp_factor = AUtils::max<unsigned short> (max_v_samp_factor, DeCInfo.comp_info[icomp].v_samp_factor) ;
+		max_h_samp_factor = AUtils::max<unsigned short> (max_h_samp_factor, DeCInfo.comp_info[icomp].h_samp_factor) ;
 	}
 	HeightInBlocks = new unsigned int[DeCInfo.num_components] ;
 	WidthInBlocks = new unsigned int[DeCInfo.num_components] ;
 	for (unsigned short icomp = 0 ; icomp < DeCInfo.num_components ; icomp++) {
-		HeightInBlocks[icomp] = AUtils<unsigned long>::div_roundup (DeCInfo.image_height * DeCInfo.comp_info[icomp].v_samp_factor,
+		HeightInBlocks[icomp] = AUtils::div_roundup<unsigned int> (DeCInfo.image_height * DeCInfo.comp_info[icomp].v_samp_factor,
 																	8 * max_v_samp_factor) ;
-		WidthInBlocks[icomp] = AUtils<unsigned long>::div_roundup (DeCInfo.image_width * DeCInfo.comp_info[icomp].h_samp_factor,
+		WidthInBlocks[icomp] = AUtils::div_roundup<unsigned int> (DeCInfo.image_width * DeCInfo.comp_info[icomp].h_samp_factor,
 																	8 * max_h_samp_factor) ;
 	}
 

@@ -43,6 +43,8 @@ class BmpFile : public CvrStgFile {
 	void replaceSample (const SamplePos pos, const SampleValue* s) ;
 	SampleValue* getSampleValue (SamplePos pos) const ;
 
+	std::vector<SampleValueAdjacencyList*> calcSVAdjacencyLists (const std::vector<SampleValue*>& svs) const ;
+
 	unsigned short getBitCount (void) const ;
 	unsigned long getWidth (void) const ;
 	unsigned long getHeight (void) const ;

@@ -131,7 +131,7 @@ class Vertex {
 	std::list<SampleOccurence>::iterator* SampleOccurenceIts ;
 
 	/// the shortest edge of this vertex (as calculated by updateShortestEdge)
-	Edge *ShortestEdge ; // FIXME - can this be done with EdgeIterator ?
+	Edge *ShortestEdge ;
 
 	/// true iff this vertex is not deleted
 	bool valid ;

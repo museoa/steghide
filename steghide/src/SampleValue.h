@@ -60,7 +60,7 @@ class CvrStgFile ;
  **/
 class SampleValue {
 	public:
-	SampleValue (void) {} ;
+	SampleValue (void) : Label(0) {} ;
 
 	/**
 	 * get the nearest (with the least distance to this sample value) sample value whose
@@ -115,6 +115,8 @@ class SampleValue {
 	bool operator== (const SampleValue& sv) const { return (getKey() == sv.getKey()) ; } ;
 	bool operator!= (const SampleValue& sv) const { return (getKey() != sv.getKey()) ; } ;
 
+	bool operator< (const SampleValue& sv) const { return (getKey() < sv.getKey()) ; } ;
+
 	/**
 	 * get the number of edges that this sample value contributes to a vertex
 	 **/
@@ -149,6 +151,13 @@ struct SampleValuesEqual : std::binary_function<SampleValue*, SampleValue*, bool
 	bool operator() (const SampleValue* s1, const SampleValue *s2) const
 	{
 		return (*s1 == *s2) ;
+	}
+} ;
+
+struct SampleValuesLess : std::binary_function<SampleValue*, SampleValue*, bool> {
+	bool operator() (const SampleValue* s1, const SampleValue *s2) const
+	{
+		return (*s1 < *s2) ;
 	}
 } ;
 

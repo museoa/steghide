@@ -21,12 +21,14 @@
 #include <cstdio>
 #include <cstdlib>
 
+#include "AUtils.h"
 #include "ColorPalette.h"
-#include "common.h"
 #include "CvrStgFile.h"
 #include "BmpFile.h"
 #include "BmpPaletteSampleValue.h"
 #include "BmpRGBSampleValue.h"
+#include "SampleValueAdjacencyList.h"
+#include "common.h"
 #include "error.h"
 
 BmpFile::BmpFile (BinaryIO *io)
@@ -151,6 +153,77 @@ SampleValue *BmpFile::getSampleValue (SamplePos pos) const
 	}
 	return retval ;
 }
+
+std::vector<SampleValueAdjacencyList*> BmpFile::calcSVAdjacencyLists (const std::vector<SampleValue*>& svs) const
+{
+	if (getBitCount() == 24) {
+		EmbValue m = getEmbValueModulus() ;
+		std::vector<SampleValueAdjacencyList*> lists (m) ;
+		for (EmbValue i = 0 ; i < m ; i++) {
+			lists[i] = new SampleValueAdjacencyList (svs.size()) ;
+		}
+
+		int numcubes = 0 ;
+		int cubelen = AUtils::roundup<int,double> (sqrt ((double) getRadius())) ;
+		if (256 % cubelen == 0) {
+			numcubes = 256 / cubelen ;
+		}
+		else {
+			numcubes = (256 / cubelen) + 1 ;
+		}
+
+		// init cubes
+		std::vector<BmpRGBSampleValue*> cubes[numcubes][numcubes][numcubes] ;
+
+		// fill cubes
+		SampleValueLabel numsvs = svs.size() ;
+		for (SampleValueLabel l = 0 ; l < numsvs ; l++) {
+			BmpRGBSampleValue* s = (BmpRGBSampleValue*) svs[l] ;
+			int i_red = s->getRed() / cubelen ;
+			int i_green = s->getGreen() / cubelen ;
+			int i_blue = s->getBlue() / cubelen ;
+			cubes[i_red][i_green][i_blue].push_back (s) ;
+		}
+
+		// fill adjacency lists
+		for (int sr = 0 ; sr < numcubes ; sr++) {
+			for (int sg = 0 ; sg < numcubes ; sg++) {
+				for (int sb = 0 ; sb < numcubes ; sb++) {
+					int start_red = AUtils::bminus (sr, 1) ;
+					int start_green = AUtils::bminus (sg, 1) ;
+					int start_blue = AUtils::bminus (sb, 1) ;
+					int end_red = AUtils::bplus (sr, 1, numcubes - 1) ;
+					int end_green = AUtils::bplus (sg, 1, numcubes - 1) ;
+					int end_blue = AUtils::bplus (sb, 1, numcubes - 1) ;
+					for (std::vector<BmpRGBSampleValue*>::const_iterator sit = cubes[sr][sg][sb].begin() ; sit != cubes[sr][sg][sb].end() ; sit++) {
+						for (int dr = start_red ; dr <= end_red ; dr++) {
+							for (int dg = start_green ; dg <= end_green ; dg++) {
+								for (int db = start_blue ; db <= end_blue ; db++) {
+									for (std::vector<BmpRGBSampleValue*>::const_iterator dit = cubes[dr][dg][db].begin() ; dit != cubes[dr][dg][db].end() ; dit++) {
+										if ((*sit)->isNeighbour(*dit) && ((*sit)->getLabel() != (*dit)->getLabel())) {
+											(*(lists[(*dit)->getEmbeddedValue()]))[(*sit)].push_back (*dit) ;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		// sort adjacency lists
+		for (EmbValue i = 0 ; i < m ; i++) {
+			lists[i]->sort() ;
+		}
+
+		return lists ;
+	}
+	else {
+		return CvrStgFile::calcSVAdjacencyLists(svs) ;
+	}
+}
+
 
 void BmpFile::calcIndex (SamplePos pos, unsigned long* index, unsigned short* firstbit) const
 {

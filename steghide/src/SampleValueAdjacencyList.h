@@ -43,6 +43,14 @@ class SampleValueAdjacencyList {
 	std::vector<SampleValue*>& operator[] (const SampleValue* sv)
 		{ return AdjacencyList[sv->getLabel()] ; } ;
 
+	unsigned long getNumRows (void) const
+		{ return AdjacencyList.size() ; } ;
+
+	/**
+	 * check if every row contains the same set of sample values
+	 **/
+	bool operator== (const SampleValueAdjacencyList& sval) ;
+
 	/**
 	 * sort the list in a way that the first entry of a row has the least distance to source sample value
 	 **/

@@ -23,6 +23,8 @@
 
 #include "CvrStgFileTest.h"
 
+#include "Selector.h"
+
 class WavFileTest : public CvrStgFileTest {
 	public:
 	WavFileTest (TestSuite* s) ;
@@ -35,10 +37,13 @@ class WavFileTest : public CvrStgFileTest {
 	void testReadEmbedWriteReadExtract (void) ;
 	void testPosition (void) ;
 	void testReadExtractCompare (void) ;
+	void testSVALCalculation (void) ;
 
 	private:
 	BitString *bs1, *bs2 ;
 	CvrStgFile *f1, *f2 ;
+	Graph *g1, *g2 ;
+	Selector *s1, *s2 ;
 	Globals gl1, gl2 ;
 } ;
 

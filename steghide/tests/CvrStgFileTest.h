@@ -46,6 +46,7 @@ class CvrStgFileTest : public UnitTest {
 	bool genericTestReadExtractCompare (const std::string& fn, const BitString& emb) const ;
 	bool genericTestReadEmbedWriteReadExtract (const std::string& cvrfn, const BitString& emb) const ;
 	bool genericTestPosition (const CvrStgFile* f, const SamplePos pos, SampleValue* sv_r) const ;
+	bool genericTestSVALCalculation (const CvrStgFile* f, const Graph* g) const ;
 
 	private:
 	bool areEqual (const std::string& fn1, const std::string& fn2) const ;

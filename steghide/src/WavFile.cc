@@ -22,15 +22,16 @@
 #include <cstdlib>
 #include <cstring>
 
-#include "common.h"
 #include "CvrStgFile.h"
-#include "error.h"
-#include "msg.h"
+#include "SampleValueAdjacencyList.h"
 #include "WavFormatChunk.h"
 #include "WavChunkHeader.h"
 #include "WavChunkUnused.h"
 #include "WavFile.h"
 #include "WavPCMSampleValue.h"
+#include "common.h"
+#include "error.h"
+#include "msg.h"
 
 WavFile::WavFile (BinaryIO *io)
 	: CvrStgFile()
@@ -114,6 +115,47 @@ SampleValue *WavFile::getSampleValue (SamplePos pos) const
 		value = data_large[pos] ;
 	}
 	return ((SampleValue *) new WavPCMSampleValue (value)) ;
+}
+
+std::vector<SampleValueAdjacencyList*> WavFile::calcSVAdjacencyLists (const std::vector<SampleValue*>& svs) const
+{
+	EmbValue m = getEmbValueModulus() ;
+	std::vector<SampleValueAdjacencyList*> lists (svs.size()) ;
+	for (EmbValue i = 0 ; i < m ; i++) {
+		lists[i] = new SampleValueAdjacencyList (svs.size()) ;
+	}
+
+	std::vector<WavPCMSampleValue*> svs_sorted (svs.size()) ;
+	for (unsigned long i = 0 ; i < svs.size() ; i++) {
+		svs_sorted[i] = (WavPCMSampleValue*) svs[i] ;
+	}
+
+	WavPCMSmaller smaller ;
+	sort (svs_sorted.begin(), svs_sorted.end(), smaller) ;
+
+	// fill the lists
+	int r = Globs.TheCvrStgFile->getRadius() ;
+	unsigned long dstart = 0 ;
+	for (unsigned long si = 0 ; si < svs_sorted.size() ; si++) {
+		while ((dstart < svs_sorted.size()) && (svs_sorted[dstart]->getValue() < svs_sorted[si]->getValue() - r)) {
+			dstart++ ;
+		}
+		// dstart is the index of the first sample in svs_sorted that is >= (svs_sorted[si]->getValue() - r)
+		unsigned long di = dstart ;
+		while ((di < svs_sorted.size()) && (svs_sorted[di]->getValue() <= svs_sorted[si]->getValue() + r)) {
+			if (si != di) {
+				(*(lists[svs_sorted[di]->getEmbeddedValue()]))[svs_sorted[si]].push_back (svs_sorted[di]) ;
+			}
+			di++ ;
+		}
+	}
+
+	// sort rows
+	for (EmbValue i = 0 ; i < m ; i++) {
+		lists[i]->sort() ;
+	}
+
+	return lists ;
 }
 
 unsigned short WavFile::getBitsPerSample() const

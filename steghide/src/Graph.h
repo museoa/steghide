@@ -106,6 +106,11 @@ class Graph {
 	 * only used for debugging and testing
 	 **/
 	bool check_SampleOccurences (bool verbose = false) const ;
+	/**
+	 * check the integrity of the SVALists data structure,
+	 * only used for debugging and testing
+	 **/
+	bool check_SVALists (bool verbose = false) const ;
 
 #ifdef DEBUG
 	/**
@@ -192,9 +197,11 @@ class Graph {
 	bool check_SampleOccurences_correctness (bool verbose = false) const ;
 	bool check_SampleOccurences_completeness (bool verbose = false) const ;
 
-#ifdef DEBUG
-	unsigned long NumVertexContents ;
-#endif
+	bool check_SVALists_size (bool verbose = false) const ;
+	bool check_SVALists_soundness (bool verbose = false) const ;
+	bool check_SVALists_sorted (bool verbose = false) const ;
+	bool check_SVALists_uniqueness (bool verbose = false) const ;
+	bool check_SVALists_completeness (bool verbose = false) const ;
 } ;
 
 #endif // ndef SH_GRAPH_H

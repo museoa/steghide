@@ -77,13 +77,13 @@ void EmbData::addBits (BitString addbits)
 #endif
 			if (bits[0] == true) {
 				Version++ ;
-				NumBitsNeeded = AUtils<unsigned long>::bminus (1, Reservoir.getLength()) ;
+				NumBitsNeeded = AUtils::bminus ((UWORD32) 1, Reservoir.getLength()) ;
 			}
 			else {
 				if (Version > CodeVersion) {
 					throw CorruptDataError (_("attempting to read an embedding of version %d but steghide %s only supports embeddings of version %d."), Version, VERSION, CodeVersion) ;
 				}
-				NumBitsNeeded = AUtils<unsigned long>::bminus (EncryptionAlgorithm::IRep_size + EncryptionMode::IRep_size, Reservoir.getLength()) ;
+				NumBitsNeeded = AUtils::bminus (EncryptionAlgorithm::IRep_size + EncryptionMode::IRep_size, Reservoir.getLength()) ;
 				State = READ_ENCINFO ;
 			}
 			break ;
@@ -103,7 +103,7 @@ void EmbData::addBits (BitString addbits)
 				EncMode.setValue ((EncryptionMode::IRep) mode) ;
 			}
 
-			NumBitsNeeded = AUtils<unsigned long>::bminus (NBitsNPlainBits, Reservoir.getLength()) ;
+			NumBitsNeeded = AUtils::bminus (NBitsNPlainBits, Reservoir.getLength()) ;
 			State = READ_NPLAINBITS ;
 
 #ifndef USE_LIBMCRYPT
@@ -121,9 +121,9 @@ void EmbData::addBits (BitString addbits)
 			NPlainBits = bits.getValue (0, NBitsNPlainBits) ;
 
 #ifdef USE_LIBMCRYPT
-			NumBitsNeeded = AUtils<unsigned long>::bminus (MCryptPP::getEncryptedSize (EncAlgo, EncMode, NPlainBits), Reservoir.getLength()) ;
+			NumBitsNeeded = AUtils::bminus ((UWORD32) MCryptPP::getEncryptedSize (EncAlgo, EncMode, NPlainBits), Reservoir.getLength()) ;
 #else
-			NumBitsNeeded = AUtils<unsigned long>::bminus (NPlainBits, Reservoir.getLength()) ;
+			NumBitsNeeded = AUtils::bminus (NPlainBits, Reservoir.getLength()) ;
 #endif
 
 			State = READ_ENCRYPTED ;

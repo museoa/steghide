@@ -39,7 +39,7 @@ class GraphTest : public UnitTest {
 	void testVertices (void) ;
 	void testSampleValues (void) ;
 	void testSampleOccurences (void) ;
-	void testSampleValueOppNeighs (void) ;
+	void testSampleValueAdjacencyLists (void) ;
 	
 	private:
 	CvrStgFile *f1, *f2, *f3, *f4, *f5, *f6, *f7, *f8, *f9, *f10, *f11, *f12, *f13, *f_f ;

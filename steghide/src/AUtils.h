@@ -25,32 +25,41 @@
  * \class AUtils
  * \brief provides some generic functions for non-standard arithmetic operations
  **/
-template<class T>
 class AUtils {
 	public:
 	/**
 	 * return the maximum of a and b (needs >)
 	 **/
-	static T max (T a, T b) ;
+	template<class T> static T max (T a, T b) ;
 
 	/**
 	 * returns a divided through b rounded up to nearest "integer" (needs =, --, +, /)
 	 **/
-	static T div_roundup (T a, T b) ;
+	template<class T> static T div_roundup (T a, T b) ;
 
 	/**
 	 * substraction with the modification to return 0 (T()) for negative difference (needs >, -, T())
 	 **/
-	static T bminus (T a, T b) ;
+	template<class T> static T bminus (T a, T b) ;
 
 	/**
-	 * calculate the sum s[0]+...s[n-1] modulo m (needs =, +, %)
+	 * addition with the modification to return top for sums that are larger than top
 	 **/
-	static T modsum (T* s, unsigned short n, T m) ;
+	template<class T> static T bplus (T a, T b, T top) ;
+
+	/**
+	 * calculate the sum s[0]+...s[n-1] modulo m (needs =, +, % for T and =, CTYPE(), <, ++ for CTYPE)
+	 **/
+	template<class T, class CTYPE> static T modsum (T* s, CTYPE n, T m) ;
+
+	/**
+	 * round up x to nearest integer
+	 **/
+	template<class IT, class FT> static IT roundup (FT x) ;
 } ;
 
 template<class T>
-T AUtils<T>::max (T a, T b)
+T AUtils::max (T a, T b)
 {
 	if (a > b) {
 		return a ;
@@ -61,14 +70,14 @@ T AUtils<T>::max (T a, T b)
 }
 
 template<class T>
-T AUtils<T>::div_roundup (T a, T b)
+T AUtils::div_roundup (T a, T b)
 {
 	T c = b-- ;
 	return ((a + b) / c) ;
 }
 
 template<class T>
-T AUtils<T>::bminus (T a, T b)
+T AUtils::bminus (T a, T b)
 {
 	if (a > b) {
 		return (a - b) ;
@@ -79,11 +88,37 @@ T AUtils<T>::bminus (T a, T b)
 }
 
 template<class T>
-T AUtils<T>::modsum (T* s, unsigned short n, T m)
+T AUtils::bplus (T a, T b, T top)
+{
+	a += b ;
+	if (a > top) {
+		return top ;
+	}
+	else {
+		return a ;
+	}
+}
+
+template<class T, class CTYPE>
+T AUtils::modsum (T* s, CTYPE n, T m)
 {
 	T retval() ;
-	for (unsigned short i = 0 ; i < n ; i++) {
+	for (CTYPE i = CTYPE() ; i < n ; ++i) {
 		retval = (retval + s[i]) % m ;
+	}
+	return retval ;
+}
+
+template<class IT, class FT>
+IT AUtils::roundup (FT x)
+{
+	IT retval = 0 ;
+	FT intpart = (FT) ((IT) x) ;
+	if (x - intpart == (FT) 0.0) {
+		retval = (IT) x ;
+	}
+	else {
+		retval = ((IT) x) + 1 ;
 	}
 	return retval ;
 }

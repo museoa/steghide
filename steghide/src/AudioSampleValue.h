@@ -21,6 +21,7 @@
 #ifndef SH_AUDIOSAMPLEVALUE_H
 #define SH_AUDIOSAMPLEVALUE_H
 
+#include "CvrStgFile.h"
 #include "SampleValue.h"
 #include "common.h"
 
@@ -66,7 +67,7 @@ class AudioSampleValue : public SampleValue {
 
 template<AUDIOSAMPLETYPE Type, class ValueType>
 AudioSampleValue<Type,ValueType>::AudioSampleValue (ValueType v)
-	: Value(v)
+	: SampleValue(), Value(v)
 {
 	Key = calcKey(v) ;
 	EValue = calcEValue(v) ;
