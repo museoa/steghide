@@ -1,6 +1,6 @@
 /*
  * steghide 0.5.1 - a steganography program
- * Copyright (C) 2002 Stefan Hetzl <shetzl.at>
+ * Copyright (C) 2002 Stefan Hetzl <shetzl@chello.at>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License

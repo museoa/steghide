@@ -115,8 +115,13 @@ void TestSuite::addTestResult (bool r)
 void TestSuite::addTestResult (TestSuite::TESTRESULT r)
 {
 	switch (r) {
-		case EXCEPTION:
-		*OutStream << "caught exception" << std::endl ;
+		case KNOWNEXCEPTION:
+		*OutStream << "caught known exception:" << std::endl ;
+		runningCategory = "__none__" ;
+		break ;
+
+		case UNKNOWNEXCEPTION:
+		*OutStream << "caugh unknown exception (!!)" << std::endl ;
 		runningCategory = "__none__" ;
 		break ;
 	}

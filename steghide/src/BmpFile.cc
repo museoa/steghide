@@ -43,9 +43,7 @@ BmpFile::BmpFile (BinaryIO *io)
 
 BmpFile::~BmpFile ()
 {
-	if (Palette != NULL) {
-		delete Palette ;
-	}
+	delete Palette ;
 }
 
 BmpFile::SUBFORMAT BmpFile::getSubformat () const

@@ -22,29 +22,58 @@
 #include "MHash.h"
 #include "Permutation.h"
 
-Permutation::Permutation ()
+Permutation::Permutation (UWORD32 w, std::string pp, UWORD32 n)
 {
-	CurArg = 0 ;
-	CurValue = 0 ;
-}
-
-Permutation::Permutation (unsigned long w, std::string pp)
-{
-	CurArg = 0 ;
-	CurValue = 0 ;
+	if (n > w) { // useful when n is left to default value
+		n = w ;
+	}
 	setWidth (w) ;
 	setKey (pp) ;
-	reset() ;
+	if (pp == "") {
+		Values.reserve(n) ;
+		for (UWORD32 i = 0 ; i < n ; i++) {
+			Values.push_back(i) ;
+		}
+	}
+	else {
+		calculate (n) ;
+	}
 }
 
+void Permutation::calculate (UWORD32 n)
+{
+	Values.clear() ;
+	Values.reserve(n) ;
+	UWORD32 arg_int = 0 ;
+	for (UWORD32 arg_ext = 0 ; arg_ext < n ; arg_ext++) {
+		UWORD32 val = 0 ;
+		do {
+			myassert (arg_int <= MaxArg) ;
+
+			UWORD32 x = lower (arg_int) ;
+			UWORD32 y = higher (arg_int) ;
+
+			y = shortxor (y, keyhash (Key1, x)) ;
+			x = shortxor (x, keyhash (Key2, y)) ;
+			y = shortxor (y, keyhash (Key3, x)) ;
+			x = shortxor (x, keyhash (Key4, y)) ;
+
+			val = concat (x, y) ;
+			arg_int++ ;
+		} while (val >= Width) ;
+		Values.push_back (val) ;
+	}
+}
+
+#if 0
 Permutation& Permutation::operator++ ()
 {
 	do {
 		CurArg++ ;
 		myassert (CurArg <= MaxArg) ;
 
-		unsigned long x = lower (CurArg) ;
-		unsigned long y = higher (CurArg) ;
+		UWORD32 x = lower (CurArg) ;
+		UWORD32 y = higher (CurArg) ;
 
 		y = shortxor (y, keyhash (Key1, x)) ;
 		x = shortxor (x, keyhash (Key2, y)) ;
@@ -56,32 +85,9 @@ Permutation& Permutation::operator++ ()
 
 	return *this ;
 }
+#endif
 
-unsigned long Permutation::higher (unsigned long a)
-{
-	return (a >> (NBits / 2)) ;
-}
-
-unsigned long Permutation::lower (unsigned long a)
-{
-	return (a & Mask) ;
-}
-
-unsigned long Permutation::shortxor (unsigned long a, unsigned long b)
-{
-	return ((a ^ b) & Mask) ;
-}
-
-unsigned long Permutation::concat (unsigned long l, unsigned long h)
-{
-	return ((h << (NBits / 2)) | l) ;
-}
-
-unsigned long Permutation::operator* ()
-{
-	return CurValue ;
-}
-
+#if 0
 void Permutation::reset()
 {
 	bool first = true ;
@@ -95,8 +101,8 @@ void Permutation::reset()
 		}
 		myassert (CurArg <= MaxArg) ;
 
-		unsigned long x = lower (CurArg) ;
-		unsigned long y = higher (CurArg) ;
+		UWORD32 x = lower (CurArg) ;
+		UWORD32 y = higher (CurArg) ;
 
 		y = shortxor (y, keyhash (Key1, x)) ;
 		x = shortxor (x, keyhash (Key2, y)) ;
@@ -106,14 +112,15 @@ void Permutation::reset()
 		CurValue = concat (x, y) ;
 	} while (CurValue >= Width) ;
 }
+#endif
 
-void Permutation::setWidth (unsigned long w)
+void Permutation::setWidth (UWORD32 w)
 {
 	myassert (w > 0) ;
 	Width = w ;
 
 	NBits = 1 ;
-	unsigned long tmp = Width - 1;
+	UWORD32 tmp = Width - 1;
 	while (tmp > 1) {
 		tmp /= 2 ;
 		NBits++ ;
@@ -152,23 +159,23 @@ void Permutation::setKey (std::string pp)
 	Key4 = hashbits.getValue (96, 32) ;
 }
 
-unsigned long Permutation::keyhash (unsigned long key, unsigned long arg)
+UWORD32 Permutation::keyhash (UWORD32 key, UWORD32 arg)
 {
 	// hash the concatenation of key and arg with md5
 	MHash hash (MHASH_MD5) ;
 	for (unsigned short i = 0 ; i < 32 ; i += 8) {
-		hash << (unsigned char) ((key >> i) & 0xFF) ;
+		hash << (BYTE) ((key >> i) & 0xFF) ;
 	}
 	myassert (arg <= 0xFFFF) ;
-	for (unsigned short i = 0 ; i < (NBits / 2) ; i+= 8) {
-		hash << (unsigned char) ((arg >> i) & 0xFF) ;
+	for (unsigned short i = 0 ; i < (NBits / 2) ; i += 8) {
+		hash << (BYTE) ((arg >> i) & 0xFF) ;
 	}
 	hash << endhash ;
-	std::vector<unsigned char> hashbytes = hash.getHashBytes() ;
+	std::vector<BYTE> hashbytes = hash.getHashBytes() ;
 	myassert (hashbytes.size() == 16) ;
 
 	// compose a 16 bit return value from the 128 bit md5 hash
-	unsigned long retval = 0 ;
+	UWORD32 retval = 0 ;
 	for (unsigned short i = 0 ; i < 8 ; i++) {
 		retval ^= hashbytes[i] ;
 	}

@@ -27,18 +27,18 @@ EdgeIterator::EdgeIterator (Graph* g, Vertex *v)
 	: GraphAccess (g)
 {
 	SrcVertex = v ;
-	SVOppNeighsIndices = new unsigned long[SamplesPerVertex] ;
+	SVOppNeighsIndices = new unsigned long[TheGraph->getSamplesPerVertex()] ;
 	Finished = false ;
 	reset() ;
 }
 
 EdgeIterator::EdgeIterator (const EdgeIterator& eit)
-	: GraphAccess (eit)
+	: GraphAccess (eit.TheGraph)
 {
 	SrcVertex = eit.SrcVertex ;
 	SrcIndex = eit.SrcIndex ;
-	SVOppNeighsIndices = new unsigned long[eit.SamplesPerVertex] ;
-	for (unsigned short i = 0 ; i < eit.SamplesPerVertex ; i++) {
+	SVOppNeighsIndices = new unsigned long[eit.TheGraph->getSamplesPerVertex()] ;
+	for (unsigned short i = 0 ; i < eit.TheGraph->getSamplesPerVertex() ; i++) {
 		SVOppNeighsIndices[i] = eit.SVOppNeighsIndices[i] ;
 	}
 	Finished = eit.Finished ;
@@ -81,7 +81,7 @@ EdgeIterator& EdgeIterator::operator++ ()
 
 void EdgeIterator::reset ()
 {
-	for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
+	for (unsigned short i = 0 ; i < TheGraph->getSamplesPerVertex() ; i++) {
 		SVOppNeighsIndices[i] = 0 ;
 	}
 	findNextEdge() ;
@@ -90,8 +90,8 @@ void EdgeIterator::reset ()
 void EdgeIterator::findNextEdge ()
 {
 	float mindist = FLT_MAX ;
-	unsigned short idx_mindist = SamplesPerVertex ;
-	for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
+	unsigned short idx_mindist = TheGraph->getSamplesPerVertex() ;
+	for (unsigned short i = 0 ; i < TheGraph->getSamplesPerVertex() ; i++) {
 		SampleValue* srcsv = SrcVertex->getSampleValue(i) ;
 		while (SVOppNeighsIndices[i] < TheGraph->SampleValueOppNeighs[srcsv].size()) {
 			SampleValue* destsv = TheGraph->SampleValueOppNeighs[srcsv][SVOppNeighsIndices[i]] ;

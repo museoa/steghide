@@ -1,6 +1,6 @@
 /*
  * steghide 0.5.1 - a steganography program
- * Copyright (C) 2002 Stefan Hetzl <shetzl.at>
+ * Copyright (C) 2002 Stefan Hetzl <shetzl@chello.at>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -36,9 +36,10 @@ class PermutationTest : public UnitTest {
 	~PermutationTest (void) ;
 
 	void testIsPermutation (void) ;
+	void testIsIdPermutation (void) ;
 
 	private:
-	Permutation *p1, *p2, *p3, *p4, *p5, *p6, *p7, *p8 ;
+	Permutation *p1, *p2, *p3, *p4, *p5, *p6, *p7, *p8, *p9, *p10, *p11 ;
 
 	/**
 	 * tests if p is a permutation, i.e. if
@@ -46,6 +47,11 @@ class PermutationTest : public UnitTest {
 	 * that no i >= Width occures in p.
 	 **/
 	bool genericTestIsPermutation (Permutation& p) ;
+
+	/**
+	 * tests if p is the identity permutation
+	 **/
+	bool genericTestIsIdPermutation (Permutation& p) ;
 } ;
 
 #endif // ndef SH_PERMUTATIONTEST_H

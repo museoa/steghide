@@ -34,8 +34,12 @@ PermutationTest::PermutationTest (TestSuite* s)
 	p6 = new Permutation (128, "and the last") ;
 	p7 = new Permutation (2000, "it even works with large") ;
 	p8 = new Permutation (25000, "and really large widths") ;
+	p9 = new Permutation (31) ;
+	p10 = new Permutation (32) ;
+	p11 = new Permutation (33) ;
 
 	ADDTESTCATEGORY (PermutationTest, testIsPermutation) ;
+	ADDTESTCATEGORY (PermutationTest, testIsIdPermutation) ;
 }
 
 PermutationTest::~PermutationTest()
@@ -48,6 +52,9 @@ PermutationTest::~PermutationTest()
 	delete p6 ;
 	delete p7 ;
 	delete p8 ;
+	delete p9 ;
+	delete p10 ;
+	delete p11 ;
 }
 
 void PermutationTest::testIsPermutation()
@@ -62,21 +69,24 @@ void PermutationTest::testIsPermutation()
 	addTestResult (genericTestIsPermutation (*p8)) ;
 }
 
+void PermutationTest::testIsIdPermutation()
+{
+	addTestResult (genericTestIsIdPermutation (*p9)) ;
+	addTestResult (genericTestIsIdPermutation (*p10)) ;
+	addTestResult (genericTestIsIdPermutation (*p11)) ;
+}
+
 bool PermutationTest::genericTestIsPermutation (Permutation& p)
 {
-	std::vector<bool> hasoccured (p.getWidth()) ; // all set to zero
+	std::vector<bool> hasoccured (p.getWidth()) ; // all set to false
 
 	bool range_ok = true ;
 	bool inj = true ;
 	for (unsigned long i = 0 ; i < p.getWidth() ; i++) {
-		unsigned long value = *p ;
-		range_ok = range_ok && value < p.getWidth() ;
+		UWORD32 value = p[i] ;
+		range_ok = range_ok && (value < p.getWidth()) ;
 		inj = inj && !hasoccured[value];
 		hasoccured[value] = true ;
-
-		if (i + 1 < p.getWidth()) {
-			++p ;
-		}
 	}
 
 	bool surj = true ;
@@ -85,4 +95,13 @@ bool PermutationTest::genericTestIsPermutation (Permutation& p)
 	}
 
 	return range_ok && inj && surj ;
+}
+
+bool PermutationTest::genericTestIsIdPermutation (Permutation& p)
+{
+	bool ok = true ;
+	for (UWORD32 i = 0 ; i < p.getWidth() ; i++) {
+		ok = ok && (p[i] == i) ;
+	}
+	return ok ;
 }

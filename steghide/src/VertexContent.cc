@@ -27,11 +27,11 @@
 VertexContent::VertexContent (Graph* g, SampleValue**& svs, SamplePos*& sposs)
 	: GraphAccess(g)
 {
-	SampleValues = new SampleValue*[SamplesPerVertex] ;
-	for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
+	SampleValues = new SampleValue*[TheGraph->getSamplesPerVertex()] ;
+	for (unsigned short i = 0 ; i < TheGraph->getSamplesPerVertex() ; i++) {
 		unsigned short idx_minkey = i ;
 		SampleKey minkey = SAMPLEKEY_MAX ;
-		for (unsigned short j = i ; j < SamplesPerVertex ; j++) {
+		for (unsigned short j = i ; j < TheGraph->getSamplesPerVertex() ; j++) {
 			if (svs[j]->getKey() < minkey) {
 				minkey = svs[j]->getKey() ;
 				idx_minkey = j ;
@@ -55,8 +55,8 @@ VertexContent::VertexContent (Graph* g, SampleValue**& svs, SamplePos*& sposs)
 
 	// calculate SelfDegree
 	SelfDegree = 0 ;
-	for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
-		for (unsigned short j = i + 1 ; j < SamplesPerVertex ; j++) {
+	for (unsigned short i = 0 ; i < TheGraph->getSamplesPerVertex() ; i++) {
+		for (unsigned short j = i + 1 ; j < TheGraph->getSamplesPerVertex() ; j++) {
 			if ((SampleValues[i]->isNeighbour (SampleValues[j])) && (SampleValues[i]->getBit() != SampleValues[j]->getBit())) {
 				SelfDegree += 2 ;
 			}
@@ -75,7 +75,7 @@ bool VertexContent::operator== (const VertexContent& vc) const
 {
 	bool retval = true ;
 	SampleValue** vc_svs = vc.getSampleValues() ;
-	for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
+	for (unsigned short i = 0 ; i < TheGraph->getSamplesPerVertex() ; i++) {
 		if (*(SampleValues[i]) != *(vc_svs[i])) {
 			retval = false ;
 			break ;
@@ -87,7 +87,7 @@ bool VertexContent::operator== (const VertexContent& vc) const
 unsigned long VertexContent::getDegree (void) const
 {
 	unsigned long retval = 0 ;
-	for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
+	for (unsigned short i = 0 ; i < TheGraph->getSamplesPerVertex() ; i++) {
 		retval += SampleValues[i]->getNumEdges() ;
 	}
 	if (hasOccurences()) {
@@ -114,7 +114,7 @@ std::list<Vertex*>::iterator VertexContent::unmarkDeletedFromOccurences (std::li
 size_t VertexContent::getHash (void) const
 {
 	size_t retval = 0 ;
-	for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
+	for (unsigned short i = 0 ; i < TheGraph->getSamplesPerVertex() ; i++) {
 		size_t newval = 0 ;
 		size_t key = SampleValues[i]->getKey() ;
 		switch (i) {
@@ -148,7 +148,7 @@ void VertexContent::print (unsigned short spc) const
 	}
 	space[spc] = '\0' ;
 	std::cerr << space << "VertexContent:" << std::endl ;
-	for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
+	for (unsigned short i = 0 ; i < TheGraph->getSamplesPerVertex() ; i++) {
 		SampleValues[i]->print (spc + 1) ;
 	}
 

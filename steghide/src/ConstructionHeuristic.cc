@@ -93,7 +93,7 @@ void ConstructionHeuristic::insertInMatching (Edge *e)
 
 void ConstructionHeuristic::checkNeighboursDeg1 (Vertex *v)
 {
-	for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
+	for (unsigned short i = 0 ; i < TheGraph->getSamplesPerVertex() ; i++) {
 		const std::vector<SampleValue*>& oppneighs = TheGraph->SampleValueOppNeighs[v->getSampleValue(i)] ;
 		for (std::vector<SampleValue*>::const_iterator it = oppneighs.begin() ; it != oppneighs.end() ; it++) {
 			const std::list<VertexContent*> vcontents = TheGraph->VertexContents[(*it)->getLabel()] ;

@@ -39,9 +39,7 @@ JpegFile::JpegFile (BinaryIO *io)
 
 JpegFile::~JpegFile ()
 {
-	if (frame != NULL) {
-		delete frame ;
-	}
+	delete frame ;
 }
 
 void JpegFile::read (BinaryIO *io)

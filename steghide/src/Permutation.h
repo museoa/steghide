@@ -21,7 +21,9 @@
 #ifndef SH_PERMUTATION_H
 #define SH_PERMUTATION_H
 
-#include "BitString.h"
+#include <vector>
+
+#include "common.h"
 
 /**
  * \class Permutation
@@ -31,9 +33,19 @@
  **/
 class Permutation {
 	public:
-	Permutation (void) ;
-	Permutation (unsigned long w, std::string pp) ;
+	/**
+	 * construct a permutation
+	 * \param w the width of the permutation (i.e. the number of different arguments and values)
+	 * \param pp the passphrase that will be used to generate this permutation
+	 * \param n the number of entries that will be used.
+	 *
+	 * n should not be set to w if less than w entries are used because the calculation
+	 * of the permutation is rather time-consuming.
+	 * If the passphrase is not given, the identitiy permutation is generated.
+	 **/
+	Permutation (UWORD32 w, std::string pp = "", UWORD32 n = MAX_UWORD32) ;
 
+#if 0
 	/**
 	 * increment the argument of the permutation
 	 *
@@ -45,52 +57,81 @@ class Permutation {
 	/**
 	 * get the current value of the permutation
 	 **/
-	unsigned long operator* (void) ;
+	UWORD32 operator* (void) ;
 
 	/**
-	 * reset this permutation, so that (*this)* returns first value
+	 * reset this permutation, so that *(*this) returns first value
 	 **/
 	void reset (void) ;
 
-	void setWidth (unsigned long w) ;
+#endif
+
+
+	/**
+	 * get the value of the permutation at position pos
+	 **/
+	UWORD32 operator[] (UWORD32 pos) const
+		{ return Values[pos] ; } ;
 
 	/**
 	 * get the width of this permutation
 	 **/
-	unsigned long getWidth (void) const
+	UWORD32 getWidth (void) const
 		{ return Width ; } ;
 
+	private:
+	/**
+	 * calculate the first n positions of the Values array
+	 **/
+	void calculate (UWORD32 n) ;
+
+	/// Values[i] contains the value of the permutation at position i
+	std::vector<UWORD32> Values ;
+
+	/**
+	 * set Key[1-4]
+	 **/
 	void setKey (std::string pp) ;
 
-	private:
-	unsigned long CurArg ;
-	/// current value of the permutation curvalue = P(curarg) 
-	unsigned long CurValue ;
-	/// the permutation ranges from 0...Width - 1
-	unsigned long Width ;
+	/// the keys (as derived from passphrase)
+	UWORD32 Key1 ;
+	UWORD32 Key2 ;
+	UWORD32 Key3 ;
+	UWORD32 Key4 ;
+
 	/**
-	 * the smallest even number with 2^nBits >= Width
+	 * set the width and the dependent variables (NBits, Mask, MaxArg)
+	 **/
+	void setWidth (UWORD32 w) ;
+
+	UWORD32 Width ;
+
+	/**
+	 * the smallest even number with 2^NBits >= Width
 	 * this is the length of the argument and the value
 	 **/
 	unsigned int NBits ;
 
-	/// the maximum for curarg - this is (2^NBits) - 1
-	unsigned long MaxArg ;
-
 	/// contains (NBits / 2) 1s in the lsbs
-	unsigned long Mask ;
+	UWORD32 Mask ;
 
-	/// the keys (as derived from passphrase)
-	unsigned long Key1 ;
-	unsigned long Key2 ;
-	unsigned long Key3 ;
-	unsigned long Key4 ;
+	/// the maximum for curarg - this is (2^NBits) - 1
+	UWORD32 MaxArg ;
 
-	unsigned long higher (unsigned long a) ;
-	unsigned long lower (unsigned long b) ;
-	unsigned long shortxor (unsigned long a, unsigned long b) ;
-	unsigned long concat (unsigned long l, unsigned long h) ;
-	unsigned long keyhash (unsigned long key, unsigned long arg) ;
+
+	UWORD32 keyhash (UWORD32 key, UWORD32 arg) ;
+
+	UWORD32 higher (UWORD32 a)
+		{ return (a >> (NBits / 2)) ; } ;
+
+	UWORD32 lower (UWORD32 a)
+		{ return (a & Mask) ; }
+
+	UWORD32 shortxor (UWORD32 a, UWORD32 b)
+		{ return ((a ^ b) & Mask) ; }
+
+	UWORD32 concat (UWORD32 l, UWORD32 h)
+		{ return ((h << (NBits / 2)) | l) ; }
 } ;
 
 #endif //ndef SH_PERMUTATION_H

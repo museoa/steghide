@@ -52,7 +52,9 @@ Embedder::Embedder ()
 	}
 
 	// create graph
-	TheGraph = new Graph (TheCvrStgFile, ToEmbed) ;
+	Permutation perm (TheCvrStgFile->getNumSamples(), Args.Passphrase.getValue(),
+		(ToEmbed.getLength() * TheCvrStgFile->getSamplesPerEBit())) ;
+	TheGraph = new Graph (TheCvrStgFile, ToEmbed, perm) ;
 	TheGraph->printVerboseInfo() ;
 
 #ifdef DEBUG

@@ -18,41 +18,28 @@
  *
  */
 
-#include "TestSuite.h"
+#ifndef SH_BMPOS2FILETEST_H
+#define SH_BMPOS2FILETEST_H
 
-#include "BitStringTest.h"
-#include "BmpOS2FileTest.h"
-#include "BmpWinFileTest.h"
-#include "GraphTest.h"
-#include "MHashTest.h"
-#include "PermutationTest.h"
+#define private public
+#define protected public
+#include "BmpFile.h"
+#undef private
+#undef protected
+#include "CvrStgFileTest.h"
 
-int main (void)
-{
-	TestSuite ts ;
+class BmpOS2FileTest : public CvrStgFileTest {
+	public:
+	BmpOS2FileTest (TestSuite* s) ;
+	~BmpOS2FileTest (void) ;
 
-	// basic classes
-	BitStringTest bst (&ts) ;
-	ts.addUnitTest (&bst) ;
+	void testReadWrite (void) ;
+	void testReadEmbedExtract (void) ;
+	void testReadEmbedWriteReadExtract (void) ;
 
-	MHashTest mht (&ts) ;
-	ts.addUnitTest (&mht) ;
+	private:
+	std::string *datadir ;
+	BitString *bs1, *bs2, *bs3, *bs4 ;
+} ;
 
-	PermutationTest pt (&ts) ;
-	ts.addUnitTest (&pt) ;
-
-	// CvrStgFiles
-	BmpOS2FileTest bmpot (&ts) ;
-	ts.addUnitTest (&bmpot) ;
-
-	BmpWinFileTest bmpwt (&ts) ;
-	ts.addUnitTest (&bmpwt) ;
-
-	// graph-theoretic stuff
-	GraphTest gt (&ts) ;
-	ts.addUnitTest (&gt) ;
-
-	ts.run() ;
-
-	return (ts.getResult() ? 0 : -1) ;
-}
+#endif // ndef SH_BMPOS2FILETEST_H

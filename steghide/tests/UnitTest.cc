@@ -40,8 +40,11 @@ void UnitTest::run()
 			(*it)->run() ;
 		}
 		catch (SteghideError& e) {
-			getSuite()->addTestResult (TestSuite::EXCEPTION) ;
+			getSuite()->addTestResult (TestSuite::KNOWNEXCEPTION) ;
 			e.printMessage() ;
+		}
+		catch (...) {
+			getSuite()->addTestResult (TestSuite::UNKNOWNEXCEPTION) ;
 		}
 		getSuite()->endCategory ((*it)->getName()) ;
 	}

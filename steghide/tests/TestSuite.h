@@ -30,6 +30,8 @@
 
 class TestSuite : public Test {
 	public:
+	enum TESTRESULT { KNOWNEXCEPTION, UNKNOWNEXCEPTION } ;
+
 	TestSuite (void) ;
 
 	void addUnitTest (UnitTest* ut) ;
@@ -48,7 +50,6 @@ class TestSuite : public Test {
 	void startCategory (std::string n) ;
 	void endCategory (std::string n) ;
 	void addTestResult (bool r) ;
-	enum TESTRESULT { EXCEPTION } ;
 	void addTestResult (TESTRESULT r) ;
 
 	private:

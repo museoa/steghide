@@ -43,8 +43,6 @@ bool CvrStgFileTest::genericTestReadWrite (const std::string& rfn) const
 
 bool CvrStgFileTest::genericTestReadEmbedExtract (const std::string& fn, const BitString& emb) const
 {
-	SampleValue::resetstatic() ;
-
 	CvrStgFile *file = CvrStgFile::readFile (fn) ;
 
 	// embed data (at the beginning of the file)
@@ -75,7 +73,6 @@ bool CvrStgFileTest::genericTestReadEmbedWriteReadExtract (const std::string& cv
 	std::string stgfn ("test_rewrx.out") ;
 
 	// read
-	SampleValue::resetstatic() ;
 	CvrStgFile *file = CvrStgFile::readFile (cvrfn) ;
 
 	// embed
@@ -95,7 +92,6 @@ bool CvrStgFileTest::genericTestReadEmbedWriteReadExtract (const std::string& cv
 	delete file ;
 
 	// read
-	SampleValue::resetstatic() ;
 	file = CvrStgFile::readFile (stgfn) ;
 
 	// extract and compare

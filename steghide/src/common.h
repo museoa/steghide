@@ -21,37 +21,46 @@
 #ifndef SH_COMMON_H
 #define SH_COMMON_H
 
+//
 // this file contains some definitions that are/can be used throughout the whole program
+//
 
+//
 // include config.h
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 
+//
 // gettext support
 #include <libintl.h>
 #define _(S) gettext (S)
 
+//
 // every class should (be able to) do assertions
 // (myassert(expr) is more verbose than the standard C assert)
 #include "AssertionFailed.h"
 #define myassert(expr)		(void) ((expr) ? 0 : throw AssertionFailed (__FILE__, __LINE__)) ;
 
+//
 // every class can have debugging output
 extern void printDebug (unsigned int level, const char *msgfmt, ...) ;
 #ifdef DEBUG
 #include <iostream>
 #endif
 
+//
 // every class has access to the command line arguments
 #include "Arguments.h"
 extern Arguments Args ;
 
+//
 // every class has access to random data
 #include "RandomSource.h"
 extern RandomSource RndSrc ;
 
-// typedefs
+//
+// generic type definitions
 #ifdef HAVE_CONFIG_H
 typedef TYPE_UWORD32	UWORD32 ;
 typedef TYPE_UWORD16	UWORD16 ;
@@ -62,7 +71,12 @@ typedef unsigned long	UWORD32 ;
 typedef unsigned short	UWORD16 ;
 typedef unsigned char	BYTE ;
 #endif
+#define MAX_UWORD32		4294967295UL
+#define MAX_UWORD16		65535
+#define MAX_BYTE		256
 
+//
+// specialised type definitions
 typedef bool BIT ;
 typedef UWORD32 SamplePos ;
 typedef UWORD32 VertexLabel ;

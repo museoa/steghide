@@ -18,41 +18,30 @@
  *
  */
 
-#include "TestSuite.h"
+#ifndef SH_GRAPHTEST_H
+#define SH_GRAPHTEST_H
 
-#include "BitStringTest.h"
-#include "BmpOS2FileTest.h"
-#include "BmpWinFileTest.h"
-#include "GraphTest.h"
-#include "MHashTest.h"
-#include "PermutationTest.h"
+#include "UnitTest.h"
 
-int main (void)
-{
-	TestSuite ts ;
+class TestSuite ;
+class CvrStgFile ;
+class BitString ;
+class Permutation ;
+class Graph ;
 
-	// basic classes
-	BitStringTest bst (&ts) ;
-	ts.addUnitTest (&bst) ;
+class GraphTest : public UnitTest {
+	public:
+	GraphTest (TestSuite* s) ;
+	~GraphTest (void) ;
 
-	MHashTest mht (&ts) ;
-	ts.addUnitTest (&mht) ;
+	void testSampleValueOppNeighs (void) ;
+	
+	private:
+	std::string* datadir ;
+	CvrStgFile *f1, *f2, *f3, *f4, *f5, *f6, *f7, *f8 ;
+	BitString *bs1, *bs2, *bs3, *bs4, *bs5, *bs6, *bs7, *bs8 ;
+	Permutation *p1, *p2, *p3, *p4, *p5, *p6, *p7, *p8 ;
+	Graph *g1, *g2, *g3, *g4, *g5, *g6, *g7, *g8 ;
+} ;
 
-	PermutationTest pt (&ts) ;
-	ts.addUnitTest (&pt) ;
-
-	// CvrStgFiles
-	BmpOS2FileTest bmpot (&ts) ;
-	ts.addUnitTest (&bmpot) ;
-
-	BmpWinFileTest bmpwt (&ts) ;
-	ts.addUnitTest (&bmpwt) ;
-
-	// graph-theoretic stuff
-	GraphTest gt (&ts) ;
-	ts.addUnitTest (&gt) ;
-
-	ts.run() ;
-
-	return (ts.getResult() ? 0 : -1) ;
-}
+#endif // ndef SH_GRAPHTEST_H

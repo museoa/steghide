@@ -31,7 +31,7 @@
 #include "Vertex.h"
 #include "wrapper_hash_set.h"
 
-Graph::Graph (CvrStgFile *cvr, const BitString& emb)
+Graph::Graph (CvrStgFile *cvr, const BitString& emb, const Permutation& perm)
 {
 	VerboseMessage v (_("creating the graph...")) ;
 	v.printMessage() ;
@@ -41,15 +41,13 @@ Graph::Graph (CvrStgFile *cvr, const BitString& emb)
 
 	// construct sposs
 	std::vector<SamplePos*> sposs ;
-	Permutation perm (File->getNumSamples(), Args.Passphrase.getValue()) ;
 	unsigned long n = emb.getLength() ;
 	for (unsigned long i = 0 ; i < n ; i++) {
 		SamplePos *poss = new SamplePos[SamplesPerEBit] ;
 		BIT parity = 0 ;
 		for (unsigned int j = 0 ; j < SamplesPerEBit ; j++) {
-			poss[j] = *perm ;
-			parity ^= File->getSampleBit (*perm) ;
-			++perm ;
+			poss[j] = perm[(i * SamplesPerEBit) + j] ;
+			parity ^= File->getSampleBit (poss[j]) ;
 		}
 
 		if (parity != emb[i]) {
@@ -454,53 +452,6 @@ bool Graph::check_degrees (void) const
 
 			retval = false ;
 			break ;
-		}
-	}
-
-	return retval ;
-}
-
-bool Graph::check_sampleoppositeneighbourhood (void) const
-{
-	bool retval = true ;
-
-	std::cerr << "checking SampleValueOppositeNeighbourhood: sample values are opposite" << std::endl ;
-	for (SampleValueLabel srclbl = 0 ; srclbl < SampleValues.size() ; srclbl++) {
-		const std::vector<SampleValue*> &oppneighs = SampleValueOppNeighs[srclbl] ;
-		for (std::vector<SampleValue*>::const_iterator destsv = oppneighs.begin() ; destsv != oppneighs.end() ; destsv++) {
-			BIT srcbit = SampleValues[srclbl]->getBit() ;
-			BIT destbit = (*destsv)->getBit() ;
-			if (srcbit == destbit) {
-				retval = false ;
-				std::cerr << "FAILED: SampleOppositeNeighbourhood contains a non-opposite sample" << std::endl ;
-				break ;
-			}
-		}
-	}
-
-	// FIXME - also check all are neighbours
-
-	std::cerr << "checking SampleValueOppositeNeighbourhood: all oppneighs are in this std::list" << std::endl ;
-	for (unsigned long i = 0 ; i < SampleValues.size() ; i++) {
-		for (unsigned long j = 0 ; j < SampleValues.size() ; j++) {
-			if (SampleValues[i]->getBit() != SampleValues[j]->getBit()) {
-				// they are opposite...
-				if (SampleValues[i]->isNeighbour (SampleValues[j])) {
-					// ...and they are neighbours => there must be an entry in SampleOppositeNeighbourhood
-					myassert (SampleValues[j]->isNeighbour (SampleValues[i])) ;
-					const std::vector<SampleValue*> &oppneighs = SampleValueOppNeighs[i] ;
-					bool found = false ;
-					for (std::vector<SampleValue*>::const_iterator k = oppneighs.begin() ; k != oppneighs.end() ; k++) {
-						if ((*k)->getLabel() == j) {
-							found = true ;
-						}
-					}
-					if (!found) {
-						retval = false ;
-						std::cerr << "FAILED: SampleOppositeNeighbourhood does not contain all opposite neighbours" << std::endl ;
-					}
-				}
-			}
 		}
 	}
 

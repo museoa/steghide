@@ -26,14 +26,10 @@ class Graph ;
 class GraphAccess {
 	public:
 	GraphAccess (void) {} ;
-	GraphAccess (Graph* g) ;
+	GraphAccess (Graph* g) : TheGraph(g) {} ;
 
 	protected:
-	static Graph* TheGraph ;
-	static unsigned short SamplesPerVertex ;
-
-	private:
-	static bool is_set ;
+	Graph* TheGraph ;
 } ;
 
 #endif // ndef SH_GRAPHACCESS_H

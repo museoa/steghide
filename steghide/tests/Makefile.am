@@ -2,12 +2,12 @@ TESTS = unittests
 AM_CPPFLAGS = -I../src
 check_PROGRAMS = unittests
 noinst_HEADERS = \
-BitStringTest.h BmpWinFileTest.h CvrStgFileTest.h \
+BitStringTest.h BmpWinFileTest.h BmpOS2FileTest.h CvrStgFileTest.h \
 MHashTest.h PermutationTest.h Test.h TestCategory.h \
-TestCategoryCaller.h TestSuite.h UnitTest.h utcommon.h
+GraphTest.h TestCategoryCaller.h TestSuite.h UnitTest.h utcommon.h
 unittests_SOURCES = \
-BitStringTest.cc BmpWinFileTest.cc CvrStgFileTest.cc \
-MHashTest.cc PermutationTest.cc TestSuite.cc UnitTest.cc \
+BitStringTest.cc BmpWinFileTest.cc BmpOS2FileTest.cc CvrStgFileTest.cc \
+GraphTest.cc MHashTest.cc PermutationTest.cc TestSuite.cc UnitTest.cc \
 main.cc
 unittests_LDADD = \
 ../src/Arg.o ../src/Arguments.o ../src/AssertionFailed.o ../src/AuFile.o \
@@ -17,7 +17,7 @@ unittests_LDADD = \
 ../src/ConstructionHeuristic.o ../src/CvrStgFile.o ../src/Edge.o \
 ../src/EdgeIterator.o ../src/EmbData.o ../src/Embedder.o \
 ../src/EncryptionAlgorithm.o ../src/EncryptionMode.o ../src/Extractor.o \
-../src/Graph.o ../src/GraphAccess.o ../src/JpegFile.o ../src/JpegSampleValue.o \
+../src/Graph.o ../src/JpegFile.o ../src/JpegSampleValue.o \
 ../src/MCrypt.o ../src/MHash.o ../src/MHashKeyGen.o ../src/Matching.o \
 ../src/Permutation.o ../src/RGBTriple.o ../src/RandomSource.o \
 ../src/SampleValue.o ../src/SampleValueOppositeNeighbourhood.o \

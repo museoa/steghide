@@ -34,6 +34,8 @@
 #include "VertexContent.h"
 #include "wrapper_hash_set.h"
 
+class Permutation ;
+
 /**
  * \class Graph
  * \brief a graph constructed from a cover file and a message to be embedded
@@ -52,7 +54,7 @@ class Graph {
 	 * \param cvr the underlying cover file
 	 * \param emb the bitstring to be embedded
 	 **/
-	Graph (CvrStgFile* cvr, const BitString& emb) ;
+	Graph (CvrStgFile* cvr, const BitString& emb, const Permutation& perm) ;
 
 	/**
 	 * destructor
@@ -88,6 +90,7 @@ class Graph {
 	friend class GraphAccess ;
 	friend class SampleValueOppositeNeighbourhood ;
 	friend class Vertex ;
+	friend class VertexContent ;
 
 	/// contains the vertices in this graph - Vertices[l] is the vertex with label l
 	std::vector<Vertex*> Vertices ;
@@ -178,7 +181,6 @@ class Graph {
 	bool check_samples (void) const ;
 	bool check_vertices (void) const ;
 	bool check_degrees (void) const ;
-	bool check_sampleoppositeneighbourhood (void) const ;
 	bool check_vertexcontents (void) const ;
 
 	bool check_SampleOccurences (void) const ;

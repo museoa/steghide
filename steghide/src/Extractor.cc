@@ -38,6 +38,7 @@ void Extractor::extract ()
 	CvrStgFile *stgfile = CvrStgFile::readFile (StegoFileName) ;
 	EmbData embdata (EmbData::EXTRACT) ;
 
+	// FIXME - supply num to Permutatin constructor (efficiency!)
 	Permutation perm (stgfile->getNumSamples(), Args.Passphrase.getValue()) ;
 
 	unsigned int sam_ebit = stgfile->getSamplesPerEBit() ;
@@ -47,8 +48,7 @@ void Extractor::extract ()
 		for (unsigned long i = 0 ; i < bitsneeded ; i++) {
 			BIT xorresult = 0 ;
 			for (unsigned int j = 0 ; j < sam_ebit ; j++) {
-				xorresult ^= stgfile->getSampleBit (*perm) ;
-				++perm ;
+				xorresult ^= stgfile->getSampleBit (perm[(i * sam_ebit) + j]) ;
 			}
 			bits.append (xorresult) ;
 		}

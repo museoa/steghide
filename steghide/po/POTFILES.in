@@ -83,7 +83,6 @@ src/EncryptionAlgorithm.cc
 src/EncryptionMode.cc
 src/Extractor.cc
 src/Graph.cc
-src/GraphAccess.cc
 src/JpegFile.cc
 src/JpegSampleValue.cc
 src/MCrypt.cc

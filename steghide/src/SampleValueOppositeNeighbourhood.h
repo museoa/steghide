@@ -38,6 +38,11 @@ class SampleValueOppositeNeighbourhood : private GraphAccess {
 	const std::vector<SampleValue*>& operator[] (const SampleValue* sv) const
 		{ return OppNeighs[sv->getLabel()] ; } ;
 
+	/**
+	 * check the integrity of this data structure (only used for debugging and testing)
+	 **/
+	bool check (void) const ;
+
 	private:
 	/**
 	 * a strict weak ordering with sv1 < sv2 iff sv1 is nearer to sv (as given in constructor)
@@ -65,12 +70,8 @@ class SampleValueOppositeNeighbourhood : private GraphAccess {
 	 **/
 	int roundup (float x) ;
 
-#ifdef DEBUG
-	public:
-	bool check (void) const ;
 	bool check_soundness (void) const ;
 	bool check_completeness (void) const ;
-#endif
 } ;
 
 #endif // ndef SH_SVALUEOPPNEIGHS_H

@@ -44,7 +44,7 @@ CvrStgFile.cc Edge.cc \
 EdgeIterator.cc EmbData.cc \
 Embedder.cc EncryptionAlgorithm.cc \
 EncryptionMode.cc Extractor.cc \
-Graph.cc GraphAccess.cc \
+Graph.cc \
 JpegFile.cc JpegSampleValue.cc \
 MCrypt.cc MHash.cc \
 MHashKeyGen.cc Matching.cc \

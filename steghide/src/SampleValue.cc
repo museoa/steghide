@@ -24,12 +24,7 @@
 
 SampleValue::SampleValue (const CvrStgFile* f)
 {
-	if (File == NULL) {
-		File = const_cast<CvrStgFile*>(f) ;
-	}
-	else {
-		myassert (File == f) ;
-	}
+	File = f ;
 }
 
 void SampleValue::decNumEdges ()
@@ -37,13 +32,6 @@ void SampleValue::decNumEdges ()
 	myassert (NumEdges > 0) ;
 	NumEdges-- ;
 }
-
-void SampleValue::resetstatic()
-{
-	File = NULL ;
-}
-
-CvrStgFile* SampleValue::File = NULL ;
 
 #ifdef DEBUG
 void SampleValue::print (unsigned short spc) const

@@ -215,15 +215,9 @@ int SampleValueOppositeNeighbourhood::roundup (float x)
 	return retval ;
 }
 
-#ifdef DEBUG
 bool SampleValueOppositeNeighbourhood::check (void) const
 {
-	bool retval = true ;
-
-	retval = check_soundness() && retval ;
-	retval = check_completeness() && retval ;
-
-	return retval ;
+	return check_soundness() && check_completeness() ;
 }
 
 bool SampleValueOppositeNeighbourhood::check_soundness (void) const
@@ -231,7 +225,6 @@ bool SampleValueOppositeNeighbourhood::check_soundness (void) const
 	bool err_nonopp = false ;
 	bool err_nonneigh = false ;
 
-	std::cerr << "checking SampleValueOppositeNeighbourhood: sample values are opposite neighbours" << std::endl ;
 	unsigned long numsvs = TheGraph->SampleValues.size() ;
 	for (SampleValueLabel srclbl = 0 ; srclbl < numsvs ; srclbl++) {
 		SampleValue* srcsv = TheGraph->SampleValues[srclbl] ;
@@ -247,13 +240,6 @@ bool SampleValueOppositeNeighbourhood::check_soundness (void) const
 		}
 	}
 
-	if (err_nonopp) {
-		std::cerr << "FAILED: SampleOppositeNeighbourhood contains a non-opposite sample value" << std::endl ;
-	}
-	if (err_nonneigh) {
-		std::cerr << "FAILED: SampleValueOppositeNeighbourhood contains a non-neighbour value" << std::endl ;
-	}
-
 	return !(err_nonopp || err_nonneigh) ;
 }
 
@@ -261,7 +247,6 @@ bool SampleValueOppositeNeighbourhood::check_completeness (void) const
 {
 	bool err = false ;
 
-	std::cerr << "checking SampleValueOppositeNeighbourhood: all oppneighs are in this std::list" << std::endl ;
 	unsigned long numsvs = TheGraph->SampleValues.size() ;
 	for (unsigned long i = 0 ; i < numsvs ; i++) {
 		SampleValue *sv1 = TheGraph->SampleValues[i] ;
@@ -287,11 +272,5 @@ bool SampleValueOppositeNeighbourhood::check_completeness (void) const
 		}
 	}
 
-	if (err) {
-		std::cerr << "FAILED: SampleOppositeNeighbourhood does not contain all opposite neighbours" << std::endl ;
-	}
-
 	return !err ;
 }
-
-#endif
