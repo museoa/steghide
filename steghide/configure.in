@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(src/main.c)
-AC_CANONICAL_TARGET
+AC_CANONICAL_SYSTEM
 AM_INIT_AUTOMAKE(steghide, 0.4.5)
 AM_CONFIG_HEADER(config.h)
 
@@ -39,11 +39,7 @@ dnl system-specific internationalization settings
 case "${target}" in
 	*-cygwin*)
 	AC_DEFINE(WIN32,1,target system is win32)
-	AC_DEFINE(LOCALEDIR,"./locale/",directory containing locale files)
 	LIBS="${LIBS} -lintl"
-	;;
-	*)
-	AC_DEFINE_UNQUOTED(LOCALEDIR,"$datadir/locale",directory containing locale files)
 	;;
 esac
 

@@ -1,6 +1,5 @@
-* The configure script has been done a bit lazy. Those parts of steghide that
-  need a certain library should not compile if the configure script has
-  determined that this library is not available.
+* The parts of steghide that need a certain library should not compile if the
+  configure script has determined that this library is not available.
 
 If you find a bug, please send a mail to the steghide development mailing list:
 steghide-devel@lists.sourceforge.net

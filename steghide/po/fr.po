@@ -15,7 +15,6 @@ msgstr ""
 "Content-Transfer-Encoding: ENCODING\n"
 
 #: main.c:622
-#, fuzzy
 msgid ""
 "\n"
 "the first argument must be one of the following:\n"
@@ -65,37 +64,38 @@ msgid ""
 msgstr ""
 "\n"
 "le premier argument doit être un des suivants:\n"
-"embed, --embed\t\t\t\tcache les données en clair dans les données-couverture\n"
-"extract, --extract\t\t\textrait les données cachées à partir de données stégo.\n"
-"version, --version\t\t\taffiche les informations sur la version du "
-"programme.\n"
-" license, --license      \taffiche la license de steghide.\n"
-" help, --help            \taffiche ce message d'aide.\n"
+" embed, --embed          cache les données en clair dans les données-couverture\n"
+" extract, --extract      extrait les données cachées à partir de données stégo.\n"
+" version, --version      affiche les informations sur la version du programme.\n"
+" license, --license      affiche la license de steghide.\n"
+" help, --help            affiche ce message d'aide.\n"
 "\n"
 "options pour le camouflage de données uniquement:\n"
-" -d, --distribution      \tméthode de distribution des bits secrets dans les bits-couverture\n"
-"   -d cnsti <n>          \tintervalles constants, taille: <n>\n"
-"   -d prndi <n>          \tintervalles pseudo-aléatoires, longueur d'intervalle maximum: <n> -cf, --coverfile        \tsélectionne le fichier-couverture\n"
-"   -cf <filename>        \tutilise <filename> comme fichier couverture\n"
-" -e, --encryption        \tchiffre les données avant de les cacher (par défaut)\n"
-" -E, --noencryption      \tne chiffre pas les données avant de les cacher\n"
-" -k, --checksum          \tencapsule le checksum crc32 des données cachées (par défaut)\n"
-" -K, --nochecksum        \tn'encapsule pas le checksum crc32 des données cachées\n"
-" -n, --embedplainname    \tencapsule le nom du fichier de données (par défaut)\n"
-" -N, --notembedplainname \tn'encapsule pas le nom du fichier de données.\n"
+" -d, --distribution      méthode de distribution des bits secrets dans les bits-couverture\n"
+"   -d cnsti <n>          intervalles constants, taille: <n>\n"
+"   -d prndi <n>          intervalles pseudo-aléatoires, longueur d'intervalle maximum: <n>\n"
+" -cf, --coverfile        sélectionne le fichier-couverture\n"
+"   -cf <filename>        utilise <filename> comme fichier couverture\n"
+" -e, --encryption        chiffre les données avant de les cacher (par défaut)\n"
+" -E, --noencryption      ne chiffre pas les données avant de les cacher\n"
+" -k, --checksum          encapsule le checksum crc32 des données cachées (par défaut)\n"
+" -K, --nochecksum        n'encapsule pas le checksum crc32 des données cachées\n"
+" -n, --embedplainname    encapsule le nom du fichier de données (par défaut)\n"
+" -N, --notembedplainname n'encapsule pas le nom du fichier de données.\n"
 "\n"
 "options pour le camouflage et l'extraction:\n"
-" -p, --passphrase        \tspécifie la passphrase\n"
-"   -p <passphrase>       \tutilise <passphrase> comme passphrase\n"
-" -sf, --stegofile        \tsélectionne le fichier stégo\n"
-"   -sf <fichier>        \tutilise <fichier> comme fichier stégo.\n"
-" -pf, --plainfile        \tselectionne le fichier de données\n"
-"   -pf <fichier>        \tutilise <fichier> comme fichier de données.\n"
-" -h, --sthdrencryption   \tchiffre l'entête stégo avant le camouflage (par défaut)\n"
-" -H, --nosthdrencryption \tne chiifre pas l'entête stégo avant le camouflage.\n"
-" -f, --force             \técrase les fichiers existants\n"
-" -q, --quiet             \tsupprime les messages d'information\n"
-" -v, --verbose           \taffiche des informations détaillées\n"
+" -p, --passphrase        spécifie la passphrase\n"
+"   -p <passphrase>       utilise <passphrase> comme passphrase\n"
+" -sf, --stegofile        sélectionne le fichier stégo\n"
+"   -sf <fichier>         utilise <fichier> comme fichier stégo.\n"
+" -pf, --plainfile        selectionne le fichier de données\n"
+"   -pf <fichier>         utilise <fichier> comme fichier de données.\n"
+" -h, --sthdrencryption   chiffre l'entête stégo avant le camouflage (par défaut)\n"
+" -H, --nosthdrencryption ne chiifre pas l'entête stégo avant le camouflage.\n"
+" -c, --compatibility     compatibilité avec libmcrypt version < 2.4.9\n"
+" -f, --force             écrase les fichiers existants\n"
+" -q, --quiet             supprime les messages d'information\n"
+" -v, --verbose           affiche des informations détaillées\n"
 "\n"
 "Si un <filename> est \"-\", stdin or stdout est utilisé.\n"
 "\n"
@@ -395,7 +395,6 @@ msgid ""
 msgstr "si l'entrée  standard est utilisée, la passphrase doit être donnée en ligne de commande."
 
 #: msg.c:69
-#, fuzzy
 msgid "n"
 msgstr "n"
 
@@ -542,11 +541,11 @@ msgid ""
 msgstr "l'argument checksum peut seulement être utilisé une fois. tapez \"%s --help\" pour l'aide."
 
 #: main.c:333
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "the compatibility argument can be used only once. type \"%s --help\" for "
 "help."
-msgstr "l'argument encryption peut être utilisé une fois seulement. tapez \"%s --help\" pour l'aide."
+msgstr "l'argument compatibility peut être utilisé une fois seulement. tapez \"%s --help\" pour l'aide."
 
 #: stegano.c:87
 msgid ""
@@ -595,9 +594,9 @@ msgid "the file format of the file \"%s\" is not supported."
 msgstr "le format du fichier \"%s\" n'est pas supporté."
 
 #: main.c:433
-#, fuzzy, c-format
+#, c-format
 msgid "the force argument can be used only once. type \"%s --help\" for help."
-msgstr "l'argument checksum peut seulement être utilisé une fois. tapez \"%s --help\" pour l'aide."
+msgstr "l'argument force peut seulement être utilisé une fois. tapez \"%s --help\" pour l'aide."
 
 #: main.c:189
 #, c-format
@@ -730,9 +729,8 @@ msgid "wrote stego file to standard output."
 msgstr "écriture du fichier stégo vers la sortie standard terminée."
 
 #: msg.c:69
-#, fuzzy
 msgid "y"
-msgstr "y"
+msgstr "o"
 
 #: main.c:146
 msgid "you cannot use arguments with the \"help\" command"

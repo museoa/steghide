@@ -62,6 +62,8 @@ LCIDENTRY LCIDTable[] = {
 	{ 0x0000, "__" }
 	} ;
 
+#undef LOCALEDIR
+#define LOCALEDIR	"./locale/"
 #endif /* WIN32 */
  
 #ifdef DEBUG
