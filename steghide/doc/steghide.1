@@ -259,5 +259,10 @@ If you pass data to steghide via standard input or from steghide to another
 program via standard output, you need to specify the passphrase on the command
 line with the -p argument (as shown in the two commands above).
 
+.SH RETURN VALUE
+Steghide returns 0 on success and 1 if a failure occured and it had to terminate
+before completion of the requested operation. Warnings do not have an effect
+on the return value.
+
 .SH AUTHOR
 Stefan Hetzl <shetzl@chello.at>
