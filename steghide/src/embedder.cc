@@ -35,7 +35,7 @@
 
 Embedder::Embedder ()
 {
-	// create bitstd::string to be embedded
+	// create bitstring to be embedded
 	EmbData embdata (EmbData::EMBED, Args.EmbFn.getValue()) ;
 	embdata.setEncAlgo (Args.EncAlgo.getValue()) ;
 	embdata.setEncMode (Args.EncMode.getValue()) ;
@@ -47,24 +47,8 @@ Embedder::Embedder ()
 	TheCvrStgFile = CvrStgFile::readFile (Args.CvrFn.getValue()) ;
 	
 	// create graph
-	std::vector<SamplePos*> sampleposs ;
-	Permutation perm (TheCvrStgFile->getNumSamples(), Args.Passphrase.getValue()) ;
-	unsigned long n = ToEmbed.getLength() ;
-	unsigned int sam_ebit = TheCvrStgFile->getSamplesPerEBit() ;
-	for (unsigned long i = 0 ; i < n ; i++) {
-		SamplePos *poss = new SamplePos[sam_ebit] ;
-		Bit parity = 0 ;
-		for (unsigned int j = 0 ; j < sam_ebit ; j++) {
-			poss[j] = *perm ;
-			parity ^= TheCvrStgFile->getSampleBit (*perm) ;
-			++perm ;
-		}
-
-		if (parity != ToEmbed[i]) {
-			sampleposs.push_back (poss) ;
-		}
-	}
-	TheGraph = new Graph (TheCvrStgFile, sampleposs) ;
+	TheGraph = new Graph (TheCvrStgFile, ToEmbed) ;
+	TheGraph->printVerboseInfo() ;
 }
 
 Embedder::~Embedder ()
@@ -81,11 +65,7 @@ void Embedder::embed ()
 		throw SteghideError (_("the cover file is too short to embed the data.")) ;
 	}
 
-	VerboseMessage vmsg (_("embedding %lu bits in %lu samples."), n, TheCvrStgFile->getNumSamples()) ;
-	vmsg.printMessage() ;
-
 	const Matching* M = calculateMatching() ;
-	M->printVerboseInfo() ;
 
 	// embed matched edges
 	const std::list<Edge*> medges = M->getEdges() ;
@@ -105,9 +85,8 @@ void Embedder::embed ()
 
 const Matching *Embedder::calculateMatching ()
 {
-	TheGraph->printVerboseInfo() ;
-	VerboseMessage vmsg (_("calculating the matching...")) ;
-	vmsg.printMessage() ;
+	VerboseMessage vmsg1 (_("calculating the matching...")) ;
+	vmsg1.printMessage() ;
 
 	// do construction heuristic (maybe more than once)
 	unsigned int nconstrheur = Default_NConstrHeur ;
@@ -128,12 +107,20 @@ const Matching *Embedder::calculateMatching ()
 		TheGraph->unmarkDeletedAllVertices() ;
 	}
 
+	VerboseMessage vmsg2 (_("best matching after construction heuristic:")) ;
+	vmsg2.printMessage() ;
+	bestmatching->printVerboseInfo() ;
+
 	// do augmenting path heuristic
 	if (true) { // TODO - make augmenting path heuristic optional ?
 		AugmentingPathHeuristic aph (TheGraph, bestmatching) ;
 		aph.run() ;
 		bestmatching = aph.getMatching() ;
 	}
+
+	VerboseMessage vmsg3 (_("best matching after augmenting path heuristic:")) ;
+	vmsg3.printMessage() ;
+	bestmatching->printVerboseInfo() ;
 
 #if 0
 	if (!bestmatching->check()) {

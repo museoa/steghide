@@ -28,13 +28,38 @@
 #include "cvrstgfile.h"
 #include "graph.h"
 #include "msg.h"
+#include "permutation.h"
 #include "vertex.h"
 #include "wrapper_hash_set.h"
 
-Graph::Graph (CvrStgFile *f, std::vector<SamplePos*>& sposs)
+Graph::Graph (CvrStgFile *cvr, const BitString& emb)
 {
-	File = f ;
+	VerboseMessage v (_("creating the graph...")) ;
+	v.printMessage() ;
+
+	File = cvr ;
 	SamplesPerEBit = File->getSamplesPerEBit() ;
+
+	// construct sposs
+	std::vector<SamplePos*> sposs ;
+	Permutation perm (File->getNumSamples(), Args.Passphrase.getValue()) ;
+	unsigned long n = emb.getLength() ;
+	for (unsigned long i = 0 ; i < n ; i++) {
+		SamplePos *poss = new SamplePos[SamplesPerEBit] ;
+		Bit parity = 0 ;
+		for (unsigned int j = 0 ; j < SamplesPerEBit ; j++) {
+			poss[j] = *perm ;
+			parity ^= File->getSampleBit (*perm) ;
+			++perm ;
+		}
+
+		if (parity != emb[i]) {
+			sposs.push_back (poss) ;
+		}
+		else {
+			delete[] poss ;
+		}
+	}
 
 	std::vector<SampleValue**> svalues ;
 	sgi::hash_set<VertexContent*,sgi::hash<VertexContent*>,VertexContentsEqual> vc_set ;

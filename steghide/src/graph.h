@@ -26,6 +26,7 @@
 #include <queue>
 #include <vector>
 
+#include "bitstring.h"
 #include "common.h"
 #include "sampleoccurence.h"
 #include "svalueoppneigh.h"
@@ -43,10 +44,10 @@ class Graph {
 
 	/**
 	 * construct a graph
-	 * \param f the underlying cover file
-	 * \param sposs the std::vector of k-tuples of sample positions that will make up the vertices
+	 * \param cvr the underlying cover file
+	 * \param emb the bitstring to be embedded
 	 **/
-	Graph (CvrStgFile *f, std::vector<SamplePos*>& sposs) ;
+	Graph (CvrStgFile *cvr, const BitString &emb) ;
 
 	/**
 	 * construct sample-related data structures

@@ -196,7 +196,10 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_wav (const std::vector<Samp
 		}
 	}
 
-	// OppNeighs are already sorted
+	// FIXME - don't use generic sort (!)
+	for (unsigned long lbl = 0 ; lbl < n ; lbl++) {
+		sort (OppNeighs[lbl].begin(), OppNeighs[lbl].end(), SmallerDistance(TheGraph->getSampleValue(lbl))) ;
+	}
 }
 
 int SampleValueOppositeNeighbourhood::roundup (float x)

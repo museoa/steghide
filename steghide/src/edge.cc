@@ -124,7 +124,9 @@ void Edge::print (unsigned short spc) const
 
 	std::cerr << space << "Edge:" << std::endl ;
 	Vertex1->print (spc + 1) ;
+	std::cerr << space << " Index1: " << Index1 << std::endl ;
 	Vertex2->print (spc + 1) ;
+	std::cerr << space << " Index2: " << Index2 << std::endl ;
 	std::cerr << space << " Weight: " << getWeight() << std::endl ;
 }
 #endif

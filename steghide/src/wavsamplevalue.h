@@ -43,7 +43,7 @@ class WavPCMSampleValue : public SampleValue {
 	/**
 	 * every pair of wav samples whose distance is smaller than this constant are neighbours
 	 **/
-	static const float DefaultRadius = 1.0 ;
+	static const float DefaultRadius = 20.0 ;
 	static float Radius ;
 
 	int Value ;
