@@ -148,7 +148,7 @@ void Session::printInfo ()
 	}
 
 	bool printembinfo = Args.Passphrase.is_set() ;
-	if (!printembinfo) {
+	if (!printembinfo && !(Args.Verbosity.getValue() == QUIET)) {
 		Question q (_("Try to get information about embedded data ?")) ;
 		q.printMessage() ;
 		printembinfo = q.getAnswer() ;
