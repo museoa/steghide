@@ -70,8 +70,8 @@ typedef UWORD32 SampleKey ;
 
 //
 // every class can have debugging output
+#include <iostream> // for verbose testing output
 #if DEBUG
-#include <iostream>
 #define RUNDEBUGLEVEL(LEVEL) ((LEVEL) <= Args.DebugLevel.getValue())
 extern void printDebug (unsigned short level, const char *msgfmt, ...) ;
 #endif

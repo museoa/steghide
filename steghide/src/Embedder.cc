@@ -124,16 +124,27 @@ const Matching* Embedder::calculateMatching ()
 	vmsg2.printMessage() ;
 	bestmatching->printVerboseInfo() ;
 
-	// do augmenting path heuristic
-	if (true) { // TODO - make augmenting path heuristic optional ?
-		AugmentingPathHeuristic aph (TheGraph, bestmatching) ;
+	// do bounded augmenting path heuristic
+	if (true) {
+		AugmentingPathHeuristic aph (TheGraph, bestmatching, (UWORD32) (TheGraph->getAvgVertexDegree() / 20)) ;
 		aph.run() ;
 		bestmatching = aph.getMatching() ;
-	}
 
-	VerboseMessage vmsg3 (_("best matching after augmenting path heuristic:")) ;
-	vmsg3.printMessage() ;
-	bestmatching->printVerboseInfo() ;
+		VerboseMessage vmsg3 (_("best matching after bounded augmenting path heuristic:")) ;
+		vmsg3.printMessage() ;
+		bestmatching->printVerboseInfo() ;
+
+		// do unbounded augmenting path heuristic
+		if (false) {
+			aph.reset() ;
+			aph.run() ;
+			bestmatching = aph.getMatching() ;
+
+			VerboseMessage vmsg4 (_("best matching after unbounded augmenting path heuristic:")) ;
+			vmsg4.printMessage() ;
+			bestmatching->printVerboseInfo() ;
+		}
+	}
 
 	return bestmatching ;
 }

@@ -30,7 +30,6 @@ EdgeIterator::EdgeIterator (Graph* g, Vertex *v)
 {
 	SrcVertex = v ;
 	SVOppNeighsIndices = new unsigned long[TheGraph->getSamplesPerVertex()] ;
-	Finished = false ;
 	reset() ;
 }
 
@@ -78,15 +77,22 @@ EdgeIterator& EdgeIterator::operator++ ()
 		findNextEdge() ;
 	}
 
+	// increment EdgeIndex while checking that it has not become too high
+	if (++EdgeIndex >= MaxNumEdges) {
+		Finished = true ;
+	}
+
 	return *this ;
 }
 
 void EdgeIterator::reset ()
 {
+	Finished = false ;
 	for (unsigned short i = 0 ; i < TheGraph->getSamplesPerVertex() ; i++) {
 		SVOppNeighsIndices[i] = 0 ;
 	}
 	findNextEdge() ;
+	EdgeIndex = 0 ;
 }
 
 void EdgeIterator::findNextEdge ()
@@ -138,3 +144,5 @@ void EdgeIterator::findNextEdge ()
 		Finished = true ;
 	}
 }
+
+UWORD32 EdgeIterator::MaxNumEdges = UWORD32_MAX ;

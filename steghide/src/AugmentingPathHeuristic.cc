@@ -25,7 +25,7 @@
 #include "Matching.h"
 #include "common.h"
 
-AugmentingPathHeuristic::AugmentingPathHeuristic (Graph* g, Matching* m)
+AugmentingPathHeuristic::AugmentingPathHeuristic (Graph* g, Matching* m, UWORD32 mne)
 	: GraphAccess(g)
 {
 	TheMatching = m ;
@@ -39,6 +39,19 @@ AugmentingPathHeuristic::AugmentingPathHeuristic (Graph* g, Matching* m)
 	EdgeIterators.reserve (numvertices) ;
 	for (VertexLabel l = 0 ; l < numvertices ; l++) {
 		EdgeIterators.push_back (EdgeIterator (g, g->getVertex(l))) ;
+	}
+	EdgeIterator::setMaxNumEdges (mne) ;
+}
+
+void AugmentingPathHeuristic::reset (UWORD32 mne)
+{
+	EdgeIterator::setMaxNumEdges (mne) ;
+	unsigned long numvertices = TheGraph->getNumVertices() ;
+	VertexOnPath.assign (numvertices, false) ;
+	TimeCounter = 0 ;
+	TimeCounters.assign (numvertices, 0) ;
+	for (VertexLabel l = 0 ; l < numvertices ; l++) {
+		EdgeIterators[l].reset() ;
 	}
 }
 

@@ -34,7 +34,19 @@ class Matching ;
  **/
 class AugmentingPathHeuristic : private GraphAccess {
 	public:
-	AugmentingPathHeuristic (Graph* g, Matching* m) ;
+	/**
+	 * construct an AugmentingPathHeuristic object
+	 * \param g the graph on which this heuristic should run
+	 * \param m the matching to start with
+	 * \param mne the maximum number of edges that should be considered for every vertex
+	 **/
+	AugmentingPathHeuristic (Graph* g, Matching* m, UWORD32 mne = UWORD32_MAX) ;
+
+	/**
+	 * reset the state of this AugmentingPathHeuristic, esp. the EdgeIterators
+	 * \param mne the maximum number of edges that should be considered for every vertex for now on
+	 **/
+	void reset (UWORD32 mne = UWORD32_MAX) ;
 
 	void run (void) ;
 

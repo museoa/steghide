@@ -90,6 +90,12 @@ class EdgeIterator : private GraphAccess {
 	VertexLabel getPartnerVertexLabel (void) const
 		{ return SampleOccurenceIt->getVertex()->getLabel() ; } ;
 
+	static UWORD32 getMaxNumEdges (void)
+		{ return MaxNumEdges ; } ;
+
+	static void setMaxNumEdges (UWORD32 mne)
+		{ MaxNumEdges = mne ; } ;
+
 	private:
 	/// the vertex that is common to all edges this edge iterator will iterate trough
 	Vertex* SrcVertex ;
@@ -99,6 +105,12 @@ class EdgeIterator : private GraphAccess {
 
 	/// contains (for every sample value) an index to the current opposite neighbour
 	unsigned long* SVOppNeighsIndices ;
+
+	/// the maximum number of edges the EdgeIterator should iterate through
+	static UWORD32 MaxNumEdges ;
+
+	/// the index/number of the edge that is currently returned by operator*
+	UWORD32 EdgeIndex ;
 
 	/// is true iff there are no more edges for this source vertex
 	bool Finished ;

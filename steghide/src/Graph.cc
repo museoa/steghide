@@ -207,6 +207,15 @@ std::list<SampleOccurence>::iterator Graph::unmarkDeletedSampleOccurence (std::l
 	return SampleOccurences[lbl].insert (SampleOccurences[lbl].end(), SampleOccurence (v, i)) ;
 }
 
+float Graph::getAvgVertexDegree () const
+{
+	unsigned long sumdeg = 0 ;
+	for (std::vector<Vertex*>::const_iterator vit = Vertices.begin() ; vit != Vertices.end() ; vit++) {
+		sumdeg += (*vit)->getDegree() ;
+	}
+	return ((float) sumdeg / (float) Vertices.size()) ;
+}
+
 void Graph::printVerboseInfo()
 {
 #ifdef DEBUG

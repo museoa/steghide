@@ -46,6 +46,11 @@ class Vertex ;
  * content have the same set of adjacent vertices. If SelfDegree > 0
  * the vertices with this vertex content will have different sets of
  * adjacent vertices.
+ *
+ * VertexContents are needed to speed up the construction heuristic. In
+ * the step that finds all vertices with degree 1 only the vertex contents
+ * need to be searched for degree 1 and there is only a constant number
+ * of vertex contents (the maximum is | Sample-space | ^ k).
  **/
 class VertexContent : private GraphAccess {
 	public:

@@ -79,6 +79,11 @@ class Graph {
 
 	void unmarkDeletedAllVertices (void) ;
 
+	/**
+	 * calculate and return the average vertex degree
+	 **/
+	float getAvgVertexDegree (void) const ;
+
 	void printVerboseInfo (void) ;
 
 	/**

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: steghide 0.4.6b\n"
-"POT-Creation-Date: 2003-02-28 11:31+0100\n"
+"POT-Creation-Date: 2003-03-03 19:40+0100\n"
 "PO-Revision-Date: 2002-05-09 00:40+0200\n"
 "Last-Translator: Stefan Hetzl <shetzl@chello.at>\n"
 "Language-Team: Deutsch\n"
@@ -628,19 +628,19 @@ msgstr ""
 "Die Trägerdatei ist zu kurz, um die Daten einzubetten. Verwenden Sie eine "
 "andere Trägerdatei."
 
-#: src/Embedder.cc:100
+#: src/Embedder.cc:99
 msgid "calculating the matching..."
 msgstr ""
 
-#: src/Embedder.cc:125
+#: src/Embedder.cc:124
 msgid "best matching after construction heuristic:"
 msgstr ""
 
-#: src/Embedder.cc:136
+#: src/Embedder.cc:135
 msgid "best matching after augmenting path heuristic:"
 msgstr ""
 
-#: src/Extractor.cc:51
+#: src/Extractor.cc:50
 #, fuzzy
 msgid ""
 "the stego data from standard input is too short to contain the embedded data "
@@ -649,7 +649,7 @@ msgstr ""
 "Die Stegodatei ist zu kurz, um die Klartextdaten zu enthalten "
 "(Dateikorruption ?)."
 
-#: src/Extractor.cc:54
+#: src/Extractor.cc:53
 #, fuzzy, c-format
 msgid ""
 "the stego file \"%s\" is too short to contain the embedded data (file "
@@ -692,58 +692,58 @@ msgstr ""
 msgid "number of edges: %lu"
 msgstr ""
 
-#: src/MCrypt.cc:64 src/MCrypt.cc:250
+#: src/MCryptPP.cc:64 src/MCryptPP.cc:250
 #, c-format
 msgid "could not open libmcrypt module \"%s\",\"%s\"."
 msgstr "Das libmcrypt Modul \"%s\",\"%s\" konnte nicht geöffnet werden."
 
-#: src/MCrypt.cc:120
+#: src/MCryptPP.cc:120
 msgid ""
 "could not initialize libmcrypt encryption. see above error messages if any."
 msgstr ""
 "Die Verschlüsselung aus libmcrypt konnte nicht initialisiert werden. Siehe "
 "obige Meldungen (falls vorhanden)."
 
-#: src/MCrypt.cc:133
+#: src/MCryptPP.cc:133
 #, fuzzy
 msgid "could not encrypt data."
 msgstr "Der Stego-Header konnte nicht verschlüsselt werden."
 
-#: src/MCrypt.cc:155
+#: src/MCryptPP.cc:155
 #, fuzzy
 msgid "could not finish libmcrypt encryption."
 msgstr "Die Verschlüsselung der Klartextdaten konnte nicht beendet werden."
 
-#: src/MCrypt.cc:186
+#: src/MCryptPP.cc:186
 msgid ""
 "could not initialize libmcrypt decryption. see above error messages if any."
 msgstr ""
 "Die Entschlüsselung aus libmcrypt konnte nicht initialisiert werden. Siehe "
 "obige Meldungen (falls vorhanden)."
 
-#: src/MCrypt.cc:199
+#: src/MCryptPP.cc:199
 #, fuzzy
 msgid "could not decrypt data."
 msgstr "Der Stego-Header konnte nicht entschlüsselt werden."
 
-#: src/MCrypt.cc:210
+#: src/MCryptPP.cc:210
 #, fuzzy
 msgid "could not finish libmcrypt decryption."
 msgstr "Die Entschlüsselung der Klartextdaten konnte nicht beendet werden."
 
-#: src/MCrypt.cc:316 src/MHashKeyGen.cc:117
+#: src/MCryptPP.cc:316 src/MHashKeyGen.cc:117
 msgid "could not allocate memory."
 msgstr "Es konnte nicht genügend Speicher alloziiert werden."
-
-#: src/MHash.cc:45
-#, fuzzy, c-format
-msgid "could not initialize libmhash %s algorithm."
-msgstr "Der MD5 Algorithmus aus libmhash konnte nicht initialisiert werden."
 
 #: src/MHashKeyGen.cc:63
 #, fuzzy
 msgid "could not generate key using libmhash."
 msgstr "Die Attribute des Terminals konnten nicht gelesen werden."
+
+#: src/MHashPP.cc:45
+#, fuzzy, c-format
+msgid "could not initialize libmhash %s algorithm."
+msgstr "Der MD5 Algorithmus aus libmhash konnte nicht initialisiert werden."
 
 #: src/Matching.cc:155
 #, c-format

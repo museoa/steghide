@@ -16,7 +16,7 @@ AC_CHECK_FUNCS(strchr)
 AM_GNU_GETTEXT
 
 dnl check if debugging support is requested
-AC_MSG_CHECKING([wether to enabled -DDEBUG])
+AC_MSG_CHECKING([wether to enable -DDEBUG])
 AC_ARG_ENABLE(debug,[  --enable-debug          enable code used only for debugging],
 	if test "$enableval" = yes ;
 	then
@@ -25,6 +25,18 @@ AC_ARG_ENABLE(debug,[  --enable-debug          enable code used only for debuggi
 	else
 		AC_MSG_RESULT([no])
 	fi
+)
+
+dnl check if randomness should be disabled
+AC_MSG_CHECKING([wether to disable randomness])
+AC_ARG_ENABLE(randomness,[  --disable-randomness    disable randomness making every run exactly reproducible],
+		if test "$enableval" = yes ;
+		then
+			AC_MSG_RESULT([no])
+		else	
+			AC_MSG_RESULT([yes])
+			AC_DEFINE(NORANDOM,1,[disable randomness making every run exactly reproducible])
+		fi
 )
 
 dnl Check for libmhash
