@@ -1,0 +1,144 @@
+/* format for logo space */
+#topleft {
+  background: #EFEFE7;
+  height: 70px;
+  color: black;
+  border-top: solid thin black;
+  border-left: solid thin black;
+  border-bottom: solid thin black;
+}
+
+/* format for title space */
+#topright {
+  background: #EFEFE7;
+  height: 70px;
+  color: black;
+  border-top: solid thin black;
+  border-right: solid thin black;
+  border-bottom: solid thin black;
+}
+
+/* format for a closed section */
+td.seccloseddefault {
+  height: 30px;
+  background: #B5A58C;
+  border-top: solid thin black;
+  border-left: solid thin black;
+  border-right: solid thin black;
+}
+td.seccloseddefault:hover {
+  height: 30px;
+  background: #DDDDDD;
+  border-top: solid thin black;
+  border-left: solid thin black;
+  border-right: solid thin black;
+}
+td.secclosedfirst {
+  height: 30px;
+  background: #B5A58C;
+  border-left: solid thin black;
+  border-right: solid thin black;
+}
+td.secclosedfirst:hover {
+  height: 30px;
+  background: #DDDDDD;
+  border-left: solid thin black;
+  border-right: solid thin black;
+}
+
+/* format for an open section (and subsections) */
+td.secopendefault {
+  height: 30px;
+  background: #B5A58C;
+  border-top: solid thin black;
+  border-left: solid thin black;
+  border-right: solid thin black;
+}
+td.secopenfirst {
+  height: 30px;
+  background: #B5A58C;
+  border-left: solid thin black;
+  border-right: solid thin black;
+}
+td.ssecleft {
+  background: #B5A58C;
+  border-left: solid thin black;
+}
+td.ssecrightfirst {
+  background: #DED6C6;
+  border: solid thin black;
+}
+td.ssecrightdefault {
+  background: #DED6C6;
+  border-left: solid thin black;
+  border-right: solid thin black;
+}
+
+/* a section link */
+a.seclinkclickable {
+  font-family: sans-serif;
+  font-size: 14pt;
+  font-weight: bold;
+  color: #00005A;
+  text-decoration: none;
+}
+a.seclinkclickable:active {
+  font-family: sans-serif;
+  font-size: 14pt;
+  font-weight: bold;
+  color: #4632BE;
+  text-decoration: none;
+}
+
+a.seclinkactivated {
+  font-family: sans-serif;
+  font-size: 14pt;
+  font-weight: bold;
+  color: #4632BE;
+  text-decoration: none;
+}
+/*
+a.seclink:visited {
+  font-family: sans-serif;
+  font-size: 14pt;
+  font-weight: bold;
+  color: black;
+  text-decoration: none;
+}
+*/
+
+/* a subsection link */
+a.sseclink {
+  font-family: sans-serif;
+  font-size: 12pt;
+  color: black;
+  text-decoration: none;
+}
+a.sseclink:active {
+  font-family: sans-serif;
+  font-size: 12pt;
+  color: white;
+  text-decoration: none;
+}
+a.sseclink:visited {
+  font-family: sans-serif;
+  font-size: 12pt;
+  color: black;
+  text-decoration: none;
+}
+
+/* format for the "last update"-box (bottom-left) */
+#lastupdate {
+  background: #EFEFE7;
+  border: solid thin black;
+  font-size: 10pt;
+}
+
+/* definitions to harmonize main text with overall look */
+h2 {
+  font-family: sans-serif;
+  font-size: 12pt;
+  color: black ;
+  background: #DED6C6;
+  border: solid thin black;
+}
