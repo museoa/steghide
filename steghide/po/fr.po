@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2003-02-26 18:03+0100\n"
+"POT-Creation-Date: 2003-02-27 12:37+0100\n"
 "PO-Revision-Date: 2002-05-12 18:34+0100\n"
 "Last-Translator: Julien Catanese <julien_catanese@yahoo.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -376,39 +376,39 @@ msgstr ""
 "une erreur a eu lieu lors de l'écriture de l'entête au vers la sortie "
 "standard."
 
-#: src/AuFile.cc:196 src/WavFile.cc:197
+#: src/AuFile.cc:196 src/WavFile.cc:193
 #, c-format
 msgid "an error occured while reading the audio data from the file \"%s\"."
 msgstr ""
 "une erreur a eu lieu lors de la lecture des données audio à partir du "
 "fichier \"%s\"."
 
-#: src/AuFile.cc:202 src/WavFile.cc:201
+#: src/AuFile.cc:202 src/WavFile.cc:197
 #, c-format
 msgid "premature end of file \"%s\" while reading audio data."
 msgstr ""
 "fin innattendue du fichier \"%s\" lors de la lecture des données audio."
 
-#: src/AuFile.cc:208 src/WavFile.cc:205
+#: src/AuFile.cc:208 src/WavFile.cc:201
 msgid "an error occured while reading the audio data from standard input."
 msgstr ""
 "une erreur a eu lieu lors de la lecture des données audio à partir de "
 "l'entrée standard."
 
-#: src/AuFile.cc:214 src/WavFile.cc:209
+#: src/AuFile.cc:214 src/WavFile.cc:205
 msgid "premature end of data from standard input while reading audio data."
 msgstr ""
 "fin prématurée des données lors de la lecture des données audio à partir de "
 "l'entrée standard."
 
-#: src/AuFile.cc:234 src/WavFile.cc:250
+#: src/AuFile.cc:234 src/WavFile.cc:246
 #, c-format
 msgid "an error occured while writing the audio data to the file \"%s\"."
 msgstr ""
 "une erreur a eu lieu lors de l'écriture des données audio vers le fichier \"%"
 "s\"."
 
-#: src/AuFile.cc:240 src/WavFile.cc:254
+#: src/AuFile.cc:240 src/WavFile.cc:250
 msgid "an error occured while writing the audio data to standard output."
 msgstr ""
 "une erreur a eu lieu lors de l'écriture des données audio vers la sortie "
@@ -634,7 +634,7 @@ msgstr ""
 "le checksum crc32 a échoué! les données extraites sont probablement "
 "corrompues."
 
-#: src/EmbData.cc:302
+#: src/EmbData.cc:301
 #, fuzzy, c-format
 msgid "the maximum length for the embedded file's name is %d characters."
 msgstr "la longueur maximale du fichier de données est de %d caractères."
@@ -922,38 +922,38 @@ msgstr "n'a pas pu trouver les propriétés du terminal."
 msgid "could not set terminal attributes."
 msgstr "n'a pas pu fixer les propriétés du terminal."
 
-#: src/WavFile.cc:288
+#: src/WavFile.cc:284
 #, c-format
 msgid "an error occured while reading the wav headers from the file \"%s\"."
 msgstr ""
 "une erreur a eu lieu lors de la lecture de l'entête wav à partir du fichier "
 "\"%s\"."
 
-#: src/WavFile.cc:294
+#: src/WavFile.cc:290
 #, c-format
 msgid "premature end of file \"%s\" while reading wav headers."
 msgstr "fin innatendue du fichier \"%s\" lors de la lecture des entetes wav."
 
-#: src/WavFile.cc:300
+#: src/WavFile.cc:296
 msgid "an error occured while reading the wav headers from standard input."
 msgstr ""
 "une erreur a eu lieu lors de la lecture de l'entete wav à partir de l'entrée "
 "standard."
 
-#: src/WavFile.cc:306
+#: src/WavFile.cc:302
 msgid "premature end of data from standard input while reading wav headers."
 msgstr ""
 "fin prématurée des données lors de la lecture des entetes wav à partir de "
 "l'entrée standard."
 
-#: src/WavFile.cc:336
+#: src/WavFile.cc:332
 #, c-format
 msgid "an error occured while writing the wav headers to the file \"%s\"."
 msgstr ""
 "une erreur a eu lieu lors de l'écriture de l'entête wav vers le fichier \"%s"
 "\"."
 
-#: src/WavFile.cc:342
+#: src/WavFile.cc:338
 msgid "an error occured while writing the wav headers to standard output."
 msgstr ""
 "une erreur a eu lieu lors de l'écriture de l'entête wav vers la sortie "

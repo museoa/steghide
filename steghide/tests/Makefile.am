@@ -5,11 +5,12 @@ noinst_HEADERS = \
 BitStringTest.h BmpWinFileTest.h BmpOS2FileTest.h CvrStgFileTest.h \
 MHashTest.h PermutationTest.h Test.h TestCategory.h \
 GraphTest.h TestCategoryCaller.h TestSuite.h UnitTest.h utcommon.h \
-SampleValueOppositeNeighbourhoodTest.h SampleValueTest.h BmpRGBSampleValueTest.h
+SampleValueOppositeNeighbourhoodTest.h SampleValueTest.h WavFileTest.h \
+BmpRGBSampleValueTest.h
 unittests_SOURCES = \
 BitStringTest.cc BmpWinFileTest.cc BmpOS2FileTest.cc CvrStgFileTest.cc \
 GraphTest.cc MHashTest.cc PermutationTest.cc TestSuite.cc UnitTest.cc \
-SampleValueTest.cc BmpRGBSampleValueTest.cc \
+SampleValueTest.cc BmpRGBSampleValueTest.cc WavFileTest.cc \
 SampleValueOppositeNeighbourhoodTest.cc main.cc
 unittests_LDADD = \
 ../src/Arg.o ../src/Arguments.o ../src/AssertionFailed.o ../src/AuFile.o \

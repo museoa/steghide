@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2003-02-26 18:03+0100\n"
+"POT-Creation-Date: 2003-02-27 12:37+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -283,30 +283,30 @@ msgstr ""
 msgid "an error occured while writing the au headers to standard output."
 msgstr ""
 
-#: src/AuFile.cc:196 src/WavFile.cc:197
+#: src/AuFile.cc:196 src/WavFile.cc:193
 #, c-format
 msgid "an error occured while reading the audio data from the file \"%s\"."
 msgstr ""
 
-#: src/AuFile.cc:202 src/WavFile.cc:201
+#: src/AuFile.cc:202 src/WavFile.cc:197
 #, c-format
 msgid "premature end of file \"%s\" while reading audio data."
 msgstr ""
 
-#: src/AuFile.cc:208 src/WavFile.cc:205
+#: src/AuFile.cc:208 src/WavFile.cc:201
 msgid "an error occured while reading the audio data from standard input."
 msgstr ""
 
-#: src/AuFile.cc:214 src/WavFile.cc:209
+#: src/AuFile.cc:214 src/WavFile.cc:205
 msgid "premature end of data from standard input while reading audio data."
 msgstr ""
 
-#: src/AuFile.cc:234 src/WavFile.cc:250
+#: src/AuFile.cc:234 src/WavFile.cc:246
 #, c-format
 msgid "an error occured while writing the audio data to the file \"%s\"."
 msgstr ""
 
-#: src/AuFile.cc:240 src/WavFile.cc:254
+#: src/AuFile.cc:240 src/WavFile.cc:250
 msgid "an error occured while writing the audio data to standard output."
 msgstr ""
 
@@ -494,7 +494,7 @@ msgstr ""
 msgid "crc32 checksum failed! extracted data is probably corrupted."
 msgstr ""
 
-#: src/EmbData.cc:302
+#: src/EmbData.cc:301
 #, c-format
 msgid "the maximum length for the embedded file's name is %d characters."
 msgstr ""
@@ -708,30 +708,30 @@ msgstr ""
 msgid "could not set terminal attributes."
 msgstr ""
 
-#: src/WavFile.cc:288
+#: src/WavFile.cc:284
 #, c-format
 msgid "an error occured while reading the wav headers from the file \"%s\"."
 msgstr ""
 
-#: src/WavFile.cc:294
+#: src/WavFile.cc:290
 #, c-format
 msgid "premature end of file \"%s\" while reading wav headers."
 msgstr ""
 
-#: src/WavFile.cc:300
+#: src/WavFile.cc:296
 msgid "an error occured while reading the wav headers from standard input."
 msgstr ""
 
-#: src/WavFile.cc:306
+#: src/WavFile.cc:302
 msgid "premature end of data from standard input while reading wav headers."
 msgstr ""
 
-#: src/WavFile.cc:336
+#: src/WavFile.cc:332
 #, c-format
 msgid "an error occured while writing the wav headers to the file \"%s\"."
 msgstr ""
 
-#: src/WavFile.cc:342
+#: src/WavFile.cc:338
 msgid "an error occured while writing the wav headers to standard output."
 msgstr ""
 

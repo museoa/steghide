@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: steghide 0.4.6b\n"
-"POT-Creation-Date: 2003-02-26 18:03+0100\n"
+"POT-Creation-Date: 2003-02-27 12:37+0100\n"
 "PO-Revision-Date: 2002-05-09 00:40+0200\n"
 "Last-Translator: Stefan Hetzl <shetzl@chello.at>\n"
 "Language-Team: Deutsch\n"
@@ -374,33 +374,33 @@ msgstr ""
 "Beim Schreiben der au-Header auf die Standardausgabe ist ein Fehler "
 "aufgetreten."
 
-#: src/AuFile.cc:196 src/WavFile.cc:197
+#: src/AuFile.cc:196 src/WavFile.cc:193
 #, c-format
 msgid "an error occured while reading the audio data from the file \"%s\"."
 msgstr ""
 "Beim Lesen der Audiodaten aus der Datei \"%s\" ist ein Fehler aufgetreten."
 
-#: src/AuFile.cc:202 src/WavFile.cc:201
+#: src/AuFile.cc:202 src/WavFile.cc:197
 #, c-format
 msgid "premature end of file \"%s\" while reading audio data."
 msgstr "Die Audiodaten aus der Datei \"%s\" sind unvollständig."
 
-#: src/AuFile.cc:208 src/WavFile.cc:205
+#: src/AuFile.cc:208 src/WavFile.cc:201
 msgid "an error occured while reading the audio data from standard input."
 msgstr ""
 "Beim Lesen der Audiodaten von der Standardeingabe ist ein Fehler aufgetreten."
 
-#: src/AuFile.cc:214 src/WavFile.cc:209
+#: src/AuFile.cc:214 src/WavFile.cc:205
 msgid "premature end of data from standard input while reading audio data."
 msgstr "Die Audiodaten von der Standardeingabe sind unvollständig."
 
-#: src/AuFile.cc:234 src/WavFile.cc:250
+#: src/AuFile.cc:234 src/WavFile.cc:246
 #, c-format
 msgid "an error occured while writing the audio data to the file \"%s\"."
 msgstr ""
 "Beim Schreiben der Audiodaten in die Datei \"%s\" ist ein Fehler aufgetreten."
 
-#: src/AuFile.cc:240 src/WavFile.cc:254
+#: src/AuFile.cc:240 src/WavFile.cc:250
 msgid "an error occured while writing the audio data to standard output."
 msgstr ""
 "Beim Schreiben der Audiodaten auf die Standardausgabe ist ein Fehler "
@@ -616,7 +616,7 @@ msgstr ""
 "CRC32 Prüfsummentest fehlgeschlagen! Die extrahierten Daten sind "
 "wahrscheinlich fehlerhaft."
 
-#: src/EmbData.cc:302
+#: src/EmbData.cc:301
 #, fuzzy, c-format
 msgid "the maximum length for the embedded file's name is %d characters."
 msgstr "Die maximale Länge für den Namen der Klartextdatei ist %d Zeichen."
@@ -899,33 +899,33 @@ msgstr "Die Attribute des Terminals konnten nicht gelesen werden."
 msgid "could not set terminal attributes."
 msgstr "Die Attribute des Terminals konnten nicht gesetzt werden."
 
-#: src/WavFile.cc:288
+#: src/WavFile.cc:284
 #, c-format
 msgid "an error occured while reading the wav headers from the file \"%s\"."
 msgstr ""
 "Beim Lesen der wav-Header aus der Datei \"%s\" ist ein Fehler aufgetreten."
 
-#: src/WavFile.cc:294
+#: src/WavFile.cc:290
 #, c-format
 msgid "premature end of file \"%s\" while reading wav headers."
 msgstr "Die wav-Header aus der Datei \"%s\" sind unvollständig."
 
-#: src/WavFile.cc:300
+#: src/WavFile.cc:296
 msgid "an error occured while reading the wav headers from standard input."
 msgstr ""
 "Beim Lesen der wav-Header von der Standardeingabe ist ein Fehler aufgetreten."
 
-#: src/WavFile.cc:306
+#: src/WavFile.cc:302
 msgid "premature end of data from standard input while reading wav headers."
 msgstr "Die wav-Header von der Standardeingabe sind unvollständig."
 
-#: src/WavFile.cc:336
+#: src/WavFile.cc:332
 #, c-format
 msgid "an error occured while writing the wav headers to the file \"%s\"."
 msgstr ""
 "Beim Schreiben der wav-Header in die Datei \"%s\" ist ein Fehler aufgetreten."
 
-#: src/WavFile.cc:342
+#: src/WavFile.cc:338
 msgid "an error occured while writing the wav headers to standard output."
 msgstr ""
 "Beim Schreiben der wav-Header auf die Standardausgabe ist ein Fehler "

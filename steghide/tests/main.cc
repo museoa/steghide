@@ -28,6 +28,7 @@
 #include "MHashTest.h"
 #include "PermutationTest.h"
 #include "SampleValueOppositeNeighbourhoodTest.h"
+#include "WavFileTest.h"
 
 bool ArgVerbose ;
 
@@ -62,6 +63,9 @@ int main (int argc, char *argv[])
 
 	BmpWinFileTest bmpwt (&ts) ;
 	ts.addUnitTest (&bmpwt) ;
+
+	WavFileTest wt (&ts) ;
+	ts.addUnitTest (&wt) ;
 
 	// graph-theoretic stuff
 	SampleValueOppositeNeighbourhoodTest svont (&ts) ;
