@@ -64,6 +64,7 @@ void Session::run ()
 
 void Session::printEncInfo ()
 {
+#ifdef USE_LIBMCRYPT
 	vector<string> algos = MCryptpp::getListAlgorithms() ;
 	vector<string> modes = MCryptpp::getListModes() ;
 
@@ -71,14 +72,23 @@ void Session::printEncInfo ()
 		"<algorithm>: <supported modes>...\n")) ;
 
 	for (vector<string>::iterator a = algos.begin() ; a != algos.end() ; a++) {
-		cout << *a << ":" ;
-		for (vector<string>::iterator m = modes.begin() ; m != modes.end() ; m++) {
-			if (MCryptpp::AlgoSupportsMode (*a, *m)) {
-				cout << " " << *m ;
+		if (EncryptionAlgorithm::isValidStringRep (*a)) { // invalid if supported by libmcrypt but not by steghide, e.g. blowfish-compat
+			cout << *a << ":" ;
+			for (vector<string>::iterator m = modes.begin() ; m != modes.end() ; m++) {
+				if (EncryptionMode::isValidStringRep (*m)) {
+					if (MCryptpp::AlgoSupportsMode (*a, *m)) {
+						cout << " " << *m ;
+					}
+				}
 			}
+			cout << endl ;
 		}
-		cout << endl ;
 	}
+#else
+	printf (_("steghide has been compiled without support for encryption.\n"
+		"If you want to encrypt your data before embedding it, use an external encryption\n"
+		"program or install libmcrypt (http://mcrypt.hellug.gr/) and recompile steghide.\n")) ;
+#endif
 }
 
 void Session::printVersion ()
@@ -86,8 +96,8 @@ void Session::printVersion ()
 	cout << "steghide version " << VERSION << endl ;
 }
 
-// TODO - Lang- u. Kurzformen von Argumenten testen
-// FIXME - in übersetzungen nachsehen - alle fehlermeldungen mit punkt beenden
+// TODO - test short und long arguments
+// FIXME - every error message should end with a "." - see .pot file
 void Session::printHelp ()
 {
 	printVersion() ;

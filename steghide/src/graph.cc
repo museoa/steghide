@@ -46,7 +46,7 @@ Graph::~Graph()
 	for (vector<Vertex*>::iterator i = Vertices.begin() ; i != Vertices.end() ; i++) {
 		delete *i ;
 	}
-	// TODO - mehr löschen
+	// TODO - delete more...
 }
 
 void Graph::startAdding()
@@ -101,7 +101,7 @@ unsigned long Graph::absdiff (unsigned long a, unsigned long b)
 	return ((a > b) ? (a - b) : (b - a)) ;
 }
 
-Vertex *Graph::getVertex(unsigned long i) const
+Vertex *Graph::getVertex (VertexLabel i) const
 {
 	assert (i < Vertices.size()) ;
 	return Vertices[i] ;
@@ -505,7 +505,7 @@ void Graph::setupConstrHeuristic()
 #if 0
 	cerr << "checking data structures:" << endl ;
 	assert (check_ds()) ;
-	// FIXME - wenn alle bugs draußen - einmal bbtest damit durchlaufen lassen
+	// TODO: run this with many test cases
 #endif
 	
 }
@@ -525,7 +525,7 @@ Vertex *Graph::findVertexDeg1 (unsigned int k)
 
 		if ((v->getDegree() == 1) && (!v->isMatched())) { // implicitly delete vertices that have degree zero or have already been matched
 			// v is valid vertex
-			updateShortestEdge (v) ; // FIXME - wozu ?
+			updateShortestEdge (v) ; // FIXME - is this necessary here ?
 			if (topk.size() == k - 1) {
 				for (unsigned int i = 0 ; i < k - 1 ; i++) {
 					VerticesDeg1.push (topk[i]) ;
@@ -753,7 +753,7 @@ bool Graph::check_ds (void) const
 	return retval ;
 }
 
-// FIXME - wo wird verwendet, dass jeder vertexcontents weiß welche knoten zu ihm gehören ??
+// FIXME - why does every vertexcontent need to know which vertices belong to him ??
 
 bool Graph::check_sizes (void) const
 {

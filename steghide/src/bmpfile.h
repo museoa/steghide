@@ -74,15 +74,6 @@ class BmpFile : public CvrStgFile {
 		unsigned long	biClrImportant ;
 	} BITMAPINFOHEADER ;
 
-#if 0
-	typedef struct struct_RGBQUAD {
-		unsigned char	rgbBlue ;
-		unsigned char	rgbGreen ;
-		unsigned char	rgbRed ;
-		unsigned char	rgbReserved ;
-	} RGBQUAD ;
-#endif
-
 	/* os/2 bmp file format */
 	typedef struct struct_BITMAPCOREHEADER {
 		unsigned long	bcSize;
@@ -91,29 +82,7 @@ class BmpFile : public CvrStgFile {
 		unsigned short	bcPlanes;
 		unsigned short	bcBitCount;
 	} BITMAPCOREHEADER ;
-
-#if 0
-	typedef struct struct_RGBTRIPLE {
-		unsigned char	rgbtBlue ;
-		unsigned char	rgbtGreen ;
-		unsigned char	rgbtRed ;
-	} RGBTRIPLE ;
-#endif
 #endif /* def WIN32 */
-
-#if 0
-	typedef struct struct_BMPINFO_WIN {
-		BITMAPINFOHEADER	bmih ;
-		unsigned int		ncolors ;
-		std::vector<RGBQUAD>		colors ;
-	} BMPINFO_WIN ;
-
-	typedef struct struct_BMPINFO_OS2 {
-		BITMAPCOREHEADER	bmch ;
-		unsigned int		ncolors ;
-		std::vector<RGBTRIPLE>	colors ;
-	} BMPINFO_OS2 ;
-#endif
 
 	private:
 	static const unsigned int IdBm = 19778 ;
@@ -126,10 +95,6 @@ class BmpFile : public CvrStgFile {
 
 	SUBFORMAT subformat ;
 	BITMAPFILEHEADER bmfh ;
-#if 0
-	BMPINFO_WIN	bmi_win ;
-	BMPINFO_OS2	bmi_os2 ;
-#endif
 	BITMAPINFOHEADER bmih ;
 	BITMAPCOREHEADER bmch ;
 	ColorPalette *Palette ;

@@ -41,7 +41,7 @@ EmbData::EmbData (MODE m, string fn)
 		break ; }
 
 		case EXTRACT: {
-			NumBitsNeeded = MCryptpp::sizeAlgorithm + MCryptpp::sizeMode ;
+			NumBitsNeeded = EncryptionAlgorithm::IRep_size + EncryptionMode::IRep_size ;
 			State = READCRYPT ;
 		break ; }
 
@@ -70,10 +70,21 @@ void EmbData::addBits (BitString bits)
 
 	switch (State) {
 		case READCRYPT: {
-			CryptAlgo = (MCryptpp::Algorithm) bits.getValue (0, MCryptpp::sizeAlgorithm) ;
-			CryptMode = (MCryptpp::Mode) bits.getValue (MCryptpp::sizeAlgorithm, MCryptpp::sizeMode) ;
+			unsigned int algo = (unsigned int) bits.getValue (0, EncryptionAlgorithm::IRep_size) ;
+			if (EncryptionAlgorithm::isValidIntegerRep (algo)) {
+				EncAlgo.setValue ((EncryptionAlgorithm::IRep) algo) ;
+			}
+			unsigned int mode = (unsigned int) bits.getValue (EncryptionAlgorithm::IRep_size, EncryptionMode::IRep_size) ;
+			if (EncryptionMode::isValidIntegerRep (mode)) {
+				EncMode.setValue ((EncryptionMode::IRep) mode) ;
+			}
 			NumBitsNeeded = NBitsLenOfNEmbBits ;
 			State = READLENOFNEMBBITS ;
+#ifndef USE_LIBMCRYPT
+			if (EncAlgo.getIntegerRep() != EncryptionAlgorithm::NONE) {
+				throw SteghideError (_("the embedded data is encrypted but steghide has been compiled without encryption support.")) ;
+			}
+#endif
 		break ; }
 
 		case READLENOFNEMBBITS: {
@@ -83,19 +94,29 @@ void EmbData::addBits (BitString bits)
 
 		case READNEMBBITS: {
 			NEmbBits = bits.getValue (0, NumBitsNeeded) ;
-			NumBitsNeeded = MCryptpp::getEncryptedSize (CryptAlgo, CryptMode, NEmbBits) ;
+#ifdef USE_LIBMCRYPT
+			NumBitsNeeded = MCryptpp::getEncryptedSize (EncAlgo, EncMode, NEmbBits) ;
+#else
+			assert (EncAlgo.getIntegerRep() == EncryptionAlgorithm::NONE) ;
+			NumBitsNeeded = NEmbBits ;
+#endif
 			State = READENCRYPTED ;
 		break ; }
 
 		case READENCRYPTED: {
+#ifdef USE_LIBMCRYPT
 			BitString decrypted ;
-			if (CryptAlgo == MCryptpp::NONE) {
+			if (EncAlgo.getIntegerRep() == EncryptionAlgorithm::NONE) {
 				decrypted = bits ;
 			}
 			else {
-				MCryptpp crypto (CryptAlgo, CryptMode) ;
+				MCryptpp crypto (EncAlgo, EncMode) ;
 				decrypted = crypto.decrypt (bits, Args.Passphrase.getValue()) ;
 			}
+#else
+			BitString decrypted = bits ;
+#endif
+
 			// TODO - zlib inflate here - decrypted becomes plain
 
 			unsigned long pos = 0 ;
@@ -139,7 +160,6 @@ void EmbData::addBits (BitString bits)
 				FileName = filename ;
 			}
 
-			// TODO - hier einige assertions
 			assert ((NEmbBits - pos) % 8 == 0) ;
 
 			unsigned long extdatalen = (NEmbBits - pos) / 8 ;
@@ -181,24 +201,24 @@ void EmbData::addBits (BitString bits)
 	}
 }
 
-void EmbData::setCryptAlgo (MCryptpp::Algorithm a)
+void EmbData::setEncAlgo (EncryptionAlgorithm a)
 {
-	CryptAlgo = a ;
+	EncAlgo = a ;
 }
 	
-MCryptpp::Algorithm EmbData::getCryptAlgo (void)
+EncryptionAlgorithm EmbData::getEncAlgo () const
 {
-	return CryptAlgo ;
+	return EncAlgo ;
 }
 	
-void EmbData::setCryptMode (MCryptpp::Mode m) 
+void EmbData::setEncMode (EncryptionMode m) 
 {
-	CryptMode = m ;
+	EncMode = m ;
 }
 	
-MCryptpp::Mode EmbData::getCryptMode (void)
+EncryptionMode EmbData::getEncMode () const
 {
-	return CryptMode ;
+	return EncMode ;
 }
 	
 void EmbData::setCompression (bool c)
@@ -206,7 +226,7 @@ void EmbData::setCompression (bool c)
 	Compression = c ;
 }
 	
-bool EmbData::getCompression (void)
+bool EmbData::getCompression (void) const
 {
 	return Compression ;
 }
@@ -216,7 +236,7 @@ void EmbData::setChecksum (bool c)
 	Checksum = c ;
 }
 	
-bool EmbData::getChecksum (void)
+bool EmbData::getChecksum (void) const
 {
 	return Checksum ;
 }
@@ -278,14 +298,20 @@ BitString EmbData::getBitString ()
 
 	// put header together - nembbits contains main.getLength() before encryption
 	BitString hdr ;
-	hdr.append((unsigned char) CryptAlgo, MCryptpp::sizeAlgorithm).append((unsigned char) CryptMode, MCryptpp::sizeMode) ;
+	hdr.append((unsigned int) EncAlgo.getIntegerRep(), EncryptionAlgorithm::IRep_size) ;
+	hdr.append((unsigned int) EncMode.getIntegerRep(), EncryptionMode::IRep_size) ;
 	hdr.append(nbits(main.getLength()), NBitsLenOfNEmbBits).append(main.getLength(), nbits(main.getLength())) ;
 
 	// TODO - zlib deflate here
-	if (CryptAlgo != MCryptpp::NONE) {
-		MCryptpp crypto (CryptAlgo, CryptMode) ;
+	
+#ifdef USE_LIBMCRYPT
+	if (EncAlgo.getIntegerRep() != EncryptionAlgorithm::NONE) {
+		MCryptpp crypto (EncAlgo, EncMode) ;
 		main = crypto.encrypt (main, Args.Passphrase.getValue()) ;
 	}
+#else
+	assert (EncAlgo.getIntegerRep() == EncryptionAlgorithm::NONE) ;
+#endif
 
 	return hdr.append(main) ;
 }

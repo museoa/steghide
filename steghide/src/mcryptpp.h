@@ -18,6 +18,10 @@
  *
  */
 
+#include "common.h"
+
+#ifdef USE_LIBMCRYPT
+
 #ifndef SH_MCRYPTPP_H
 #define SH_MCRYPTPP_H
 
@@ -26,6 +30,8 @@
 #include <mcrypt.h>
 
 #include "bitstring.h"
+#include "encalgo.h"
+#include "encmode.h"
 
 #ifdef WIN32
 #define MCRYPTPP_LIBDIR	"./modules/"
@@ -35,71 +41,17 @@
 
 class MCryptpp {
 	public:
-	/// number of bits needed to code the algorithm	
-	static const unsigned int sizeAlgorithm = 5 ;
-	enum Algorithm {
-		NONE = 0,
-		TWOFISH = 1,
-		RIJNDAEL128 = 2,
-		RIJNDAEL192 = 3,
-		RIJNDAEL256 = 4,
-		SAFERPLUS = 5,
-		RC2 = 6,
-		XTEA = 7,
-		SERPENT = 8,
-		SAFERSK64 = 9,
-		SAFERSK128 = 10,
-		CAST256 = 11,
-		LOKI97 = 12,
-		GOST = 13,
-		THREEWAY = 14,
-		CAST128 = 15,
-		BLOWFISH = 16,
-		DES = 17,
-		TRIPLEDES = 18,
-		ENIGMA = 19,
-		ARCFOUR = 20,
-		PANAMA = 21,
-		WAKE = 22
-	} ;
-
-	/// number of bits needed to code the mode
-	static const unsigned int sizeMode = 3 ;
-	enum Mode {
-		ECB = 0,
-		CBC = 1,
-		OFB = 2,
-		CFB = 3,
-		NOFB = 4,
-		NCFB = 5,
-		CTR = 6,
-		STREAM = 7
-	} ;
-
 	MCryptpp (void) ;
-
-	/**
-	 * construct a MCryptpp object
-	 * \param a the algorithm to be used for en/decryption
-	 * \param m the mode to be used for en/decryption
-	 **/
-	MCryptpp (Algorithm a, Mode m) ;
-
-	/**
-	 * construct a MCryptpp object
-	 * \param algo the name of an algorithm to be used for en/decryption
-	 * \param mode the name of a mode to be used for en/decryption
-	 **/
-	MCryptpp (std::string algo, std::string mode) ;
+	MCryptpp (EncryptionAlgorithm a, EncryptionMode m) ;
 
 	~MCryptpp (void) ;
 
 	/**
 	 * open the libmcrypt module algo/mode
-	 * \param a the name of an encryption algorithm supported by libmcrypt
-	 * \param m the name of a mode supported by libmcrypt and the given encryption algorithm
+	 * \param a the encryption algorithm
+	 * \param m the encryption mode (must be supported by the given encryption algorithm)
 	 **/
-	void open (std::string a, std::string m) ;
+	void open (EncryptionAlgorithm a, EncryptionMode m) ;
 
 	/**
 	 * close the opened libmcrypt module
@@ -109,15 +61,8 @@ class MCryptpp {
 	BitString encrypt (BitString p, std::string pp) ;
 	BitString decrypt (BitString c, std::string pp) ;
 
-	std::string getAlgorithmName (void) ;
-	std::string getModeName (void) ;
-	static std::string getAlgorithmName (Algorithm a) ;
-	static std::string getModeName (Mode m) ;
-
-	Algorithm getAlgorithm (void) ;
-	Mode getMode (void) ;
-	static Algorithm getAlgorithm (std::string name) ;
-	static Mode getMode (std::string name) ;
+	EncryptionAlgorithm getAlgorithm (void) const ;
+	EncryptionMode getMode (void) const ;
 
 	/**
 	 * get the size of an encryption result
@@ -126,22 +71,12 @@ class MCryptpp {
 	 * \param plnsize the size of the plaintext (in bits)
 	 * \return the size the ciphertext would have (in bits and including the IV)
 	 **/
-	static unsigned long getEncryptedSize (Algorithm a, Mode m, unsigned long plnsize) ;
+	static unsigned long getEncryptedSize (EncryptionAlgorithm a, EncryptionMode m, unsigned long plnsize) ;
 
 	static std::vector<std::string> getListModes (void) ;
 	static std::vector<std::string> getListAlgorithms (void) ;
 
-	static bool isValidAlgorithm (std::string s) ;
-	static bool isValidMode (std::string s) ;
-
-	static bool AlgoSupportsMode (std::string algo, std::string mode) ;
-
-	// ? - macht das sinn ?
-	// TODO wenn einmal so funktioniert: salt (unverändert durch verstecken !!) verwenden,
-	// um Schlüssel außer von passphrase auch von cvrstg-Datei abhängig zu machen - dazu:
-	// in CvrStgObject neue Funktion vector<unsigned char> getCleanSample (unsigned int n) - retourniert daten eines samples bis auf
-	// den Bereich, in dem versteckt wird (also z.B. Daten, wo LSB = 0 gesetzt wurden)
-	// auch für permutation!
+	static bool AlgoSupportsMode (EncryptionAlgorithm a, EncryptionMode m) ;
 
 	protected:
 	void *createKey (std::string pp) ;
@@ -172,24 +107,11 @@ class MCryptpp {
 	MCRYPT MCryptD ;
 
 	void *s_malloc (size_t size) ;
-
-	typedef struct struct_AlgoTranslation {
-		Algorithm algo ;
-		char* name ;
-	} AlgoTranslation ;
-	typedef struct struct_ModeTranslation {
-		Mode mode ;
-		char* name ;
-	} ModeTranslation ;
-
-	static const unsigned int NumAlgoTranslations = 23 ;
-	static const AlgoTranslation AlgoTranslations[] ;
-
-	static const unsigned int NumModeTranslations = 8 ;
-	static const ModeTranslation ModeTranslations[] ;
 } ;
 
-/* TODO: einmal mit jedem algo und jedem mode ausprobieren - um tippfehler zu vermeiden
+/* TODO: test with every algorithm and every mode - to avoid typos
    */
 
-#endif // SH_MCRYPTPP_H
+#endif // ndef SH_MCRYPTPP_H
+
+#endif // def USE_LIBMCRYPT

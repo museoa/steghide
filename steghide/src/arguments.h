@@ -24,14 +24,14 @@
 #include <string>
 
 #include "arg.h"
+class EncryptionAlgorithm ;
+class EncryptionMode ;
 
 class Arguments {
 	public:
 	ArgCommand		Command ;
 	ArgString		EmbFn ;
 	ArgString		CvrFn ;
-	ArgString		EncAlgo ;
-	ArgString		EncMode ;
 	ArgBool			Checksum ;
 	ArgBool			EmbedEmbFn ;
 	ArgString		ExtFn ;
@@ -40,6 +40,8 @@ class Arguments {
 	ArgBool			Force ;
 	ArgVerbosity	Verbosity ;
 	ArgFloat		Radius ;
+	ArgEncAlgo		EncAlgo ;
+	ArgEncMode		EncMode ;
 #ifdef DEBUG
 	ArgDebugCommand	DebugCommand ;
 	ArgUInt			DebugLevel ;
@@ -55,8 +57,8 @@ class Arguments {
 	bool stdin_isused (void) ;
 
 	private:
-	static const char*		Default_EncAlgo ;
-	static const char*		Default_EncMode ;
+	static const EncryptionAlgorithm Default_EncAlgo ;
+	static const EncryptionMode Default_EncMode ;
 	static const bool		Default_Checksum = true ;
 	static const bool		Default_EmbedEmbFn = true ;
 	static const bool		Default_Force = false ;

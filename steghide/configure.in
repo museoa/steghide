@@ -35,6 +35,37 @@ AC_CHECK_SIZEOF(unsigned int)
 AC_CHECK_SIZEOF(unsigned short int)
 AC_CHECK_SIZEOF(unsigned char)
 
+if test "$ac_cv_sizeof_unsigned_int" = 4;
+then
+	AC_DEFINE(TYPE_UWORD32,[unsigned int],[type of unsigned word with 32 bits])
+else
+if test "$ac_cv_sizeof_unsigned_long_int" = 4;
+then
+	AC_DEFINE(TYPE_UWORD32,[unsigned long int],[type of unsigned word with 32 bits])
+else
+	AC_MSG_ERROR([[There is no unsigned integer type with a size of 32 bits on your system. Cannot compile.]])
+fi
+fi	
+
+if test "$ac_cv_sizeof_unsigned_short_int" = 2;
+then
+	AC_DEFINE(TYPE_UWORD16,[unsigned short int],[type of unsigned word with 16 bits])
+else
+if test "$ac_cv_sizeof_unsigned_int" = 2;
+then
+	AC_DEFINE(TYPE_UWORD16,[unsigned int],[type of unsigned word with 16 bits])
+else
+	AC_MSG_ERROR([[There is no unsigned integer type with a size of 16 bits on your system. Cannot compile.]])
+fi
+fi	
+
+if test "$ac_cv_sizeof_unsigned_char" = 1;
+then
+	AC_DEFINE(TYPE_BYTE,[unsigned char],[type of unsigned byte])
+else
+	AC_MSG_ERROR([[There is no unsigned character type with a size of 8 bits on your system. Cannot compile.]])
+fi	
+
 dnl Check for random sources	
 AC_CHECK_FILE(/dev/urandom, [AC_DEFINE(HAVE_DEV_URANDOM,1,/dev/urandom is available)])
 AC_CHECK_FILE(/dev/random, [AC_DEFINE(HAVE_DEV_RANDOM,1,/dev/random is available)])
@@ -52,5 +83,21 @@ case "${target}" in
 	LIBS="${LIBS} -lintl"
 	;;
 esac
+
+dnl check if needed/recommended libraries are present
+if test "$ac_cv_header_mhash_h" = no || test "$ac_cv_lib_mhash_mhash_init" = no ;
+then
+	AC_MSG_ERROR([[libmhash is probably not installed but needed to compile]])
+fi
+
+if test "$ac_cv_header_mcrypt_h" = no || test "$ac_cv_lib_mcrypt_mcrypt_module_open" = no ;
+then
+	echo "**********";
+	echo "libmcrypt could not be found on your system. Steghide will be compiled without";
+	echo "support for encryption. You will not be able to extract encrypted data!";
+	echo "**********";
+else
+	AC_DEFINE(USE_LIBMCRYPT,1,[use the libmcrypt library (header and lib are present)])
+fi	
 
 AC_OUTPUT([Makefile doc/Makefile intl/Makefile po/Makefile.in src/Makefile])

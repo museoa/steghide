@@ -189,7 +189,7 @@ void BinaryIO::close (void)
 	set_open (false) ;
 }
 
-unsigned char BinaryIO::read8 (void)
+BYTE BinaryIO::read8 (void)
 {
 	assert (getMode() == READ) ;
 	assert (is_open()) ;
@@ -202,7 +202,7 @@ unsigned char BinaryIO::read8 (void)
 	return (unsigned char) c ;
 }
 
-unsigned int BinaryIO::read16_le (void)
+UWORD16 BinaryIO::read16_le (void)
 {
 	assert (getMode() == READ) ;
 	assert (is_open()) ;
@@ -217,7 +217,7 @@ unsigned int BinaryIO::read16_le (void)
 	return ((bytes[1] << 8) | bytes[0]) ;
 }
 
-unsigned int BinaryIO::read16_be (void)
+UWORD16 BinaryIO::read16_be (void)
 {
 	assert (getMode() == READ) ;
 	assert (is_open()) ;
@@ -232,7 +232,7 @@ unsigned int BinaryIO::read16_be (void)
 	return ((bytes[0] << 8) | bytes[1]) ;
 }
 
-unsigned long BinaryIO::read32_le (void)
+UWORD32 BinaryIO::read32_le (void)
 {
 	assert (getMode() == READ) ;
 	assert (is_open()) ;
@@ -247,7 +247,7 @@ unsigned long BinaryIO::read32_le (void)
 	return ((bytes[3] << 24) | (bytes[2] << 16) | (bytes[1] << 8) | bytes[0]) ;
 }
 
-unsigned long BinaryIO::read32_be (void)
+UWORD32 BinaryIO::read32_be (void)
 {
 	assert (getMode() == READ) ;
 	assert (is_open()) ;

@@ -62,8 +62,7 @@ int main (int argc, char *argv[])
 {
 	try {
 		gettext_init () ;
-        Args = Arguments (argc, argv) ;
-		RndSrc = RandomSource() ;
+        Args.parse (argc, argv) ;
 
         Session s ;
         s.run() ;

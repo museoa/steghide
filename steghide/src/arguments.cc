@@ -118,7 +118,27 @@ void Arguments::parse (int argc, char *argv[])
 
 	// parse rest of arguments
 	for ( ; i < argc; i++) {
-		if (std::string (argv[i]) == "-e" || std::string (argv[i]) == "--encryption") {
+		if (std::string (argv[i]) == "-p" || std::string (argv[i]) == "--passphrase") {
+			if (Passphrase.is_set()) {
+				throw SteghideError (_("the passphrase argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
+			}
+
+			if (++i == argc) {
+				throw SteghideError (_("the \"%s\" argument must be followed by the passphrase. type \"%s --help\" for help."), argv[i - 1], PROGNAME) ;
+			}
+
+			if (strlen (argv[i]) > PassphraseMaxLen) {
+				throw SteghideError (_("the maximum length of the passphrase is %d characters."), PassphraseMaxLen) ;
+			}
+			Passphrase.setValue (argv[i]) ;
+
+			// overwrite passphrase in argv in order to avoid that it can be read with the ps command
+			for (unsigned int j = 0 ; j < strlen (argv[i]) ; j++) {
+				argv[i][j] = ' ' ;
+			}
+		}
+
+		else if (std::string (argv[i]) == "-e" || std::string (argv[i]) == "--encryption") {
 			if (Command.getValue() != EMBED) {
 				throw SteghideError (_("the argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
@@ -141,23 +161,27 @@ void Arguments::parse (int argc, char *argv[])
 					s2 = "" ;
 				}
 				else {
-					if (argv[i + 1][0] != '-') {
+					if (argv[i + 1][0] == '-') {
+						s2 = "" ;
+					}
+					else {
 						s2 = std::string (argv[i + 1]) ;
 						i++ ;
 					}
 				}
 			}
 
-			if (s1 == "none") {
+			if (s1 == "none" && s2 == "") {
 				EncAlgo.setValue (s1) ;
 			}
+#ifdef USE_LIBMCRYPT
 			else {
 				bool s1_isalgo = false, s1_ismode = false ;
 				bool s2_isalgo = false, s2_ismode = false ;
 
 				if (s1 != "") {
-					s1_isalgo = MCryptpp::isValidAlgorithm (s1) ;
-					s1_ismode = MCryptpp::isValidMode (s1) ;
+					s1_isalgo = EncryptionAlgorithm::isValidStringRep (s1) ;
+					s1_ismode = EncryptionMode::isValidStringRep (s1) ;
 
 					assert (!(s1_isalgo && s1_ismode)) ;
 					if (!(s1_isalgo || s1_ismode)) {
@@ -165,8 +189,8 @@ void Arguments::parse (int argc, char *argv[])
 					}
 				}
 				if (s2 != "") {
-					s2_isalgo = MCryptpp::isValidAlgorithm (s2) ;
-					s2_ismode = MCryptpp::isValidMode (s2) ;
+					s2_isalgo = EncryptionAlgorithm::isValidStringRep (s2) ;
+					s2_ismode = EncryptionMode::isValidStringRep (s2) ;
 
 					assert (!(s2_isalgo && s2_ismode)) ;
 					if (!(s2_isalgo || s2_ismode)) {
@@ -195,9 +219,15 @@ void Arguments::parse (int argc, char *argv[])
 				}
 
 				if (!MCryptpp::AlgoSupportsMode (EncAlgo.getValue(), EncMode.getValue())) {
-					throw SteghideError (_("the encryption algorithm \"%s\" can not be used with the mode \"%s\"."), EncAlgo.getValue().c_str(), EncAlgo.getValue().c_str()) ;
+					throw SteghideError (_("the encryption algorithm \"%s\" can not be used with the mode \"%s\"."),
+						EncAlgo.getValue().getStringRep().c_str(), EncAlgo.getValue().getStringRep().c_str()) ;
 				}
 			}
+#else
+			else {
+				throw SteghideError (_("steghide has been compiled without support for encryption.")) ;
+			}
+#endif // def USE_LIBMCRYPT
 		}
 
 		else if (std::string (argv[i]) == "-k" || std::string (argv[i]) == "--checksum") {
@@ -246,26 +276,6 @@ void Arguments::parse (int argc, char *argv[])
 			}
 
 			EmbedEmbFn.setValue (false) ;
-		}
-
-		else if (std::string (argv[i]) == "-p" || std::string (argv[i]) == "--passphrase") {
-			if (Passphrase.is_set()) {
-				throw SteghideError (_("the passphrase argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
-			}
-
-			if (++i == argc) {
-				throw SteghideError (_("the \"%s\" argument must be followed by the passphrase. type \"%s --help\" for help."), argv[i - 1], PROGNAME) ;
-			}
-
-			if (strlen (argv[i]) > PassphraseMaxLen) {
-				throw SteghideError (_("the maximum length of the passphrase is %d characters."), PassphraseMaxLen) ;
-			}
-			Passphrase.setValue (argv[i]) ;
-
-			// overwrite passphrase in argv in order to avoid that it can be read with the ps command
-			for (unsigned int j = 0 ; j < strlen (argv[i]) ; j++) {
-				argv[i][j] = ' ' ;
-			}
 		}
 
 		else if (std::string (argv[i]) == "-cf" || std::string (argv[i]) == "--coverfile") {
@@ -568,5 +578,10 @@ void Arguments::setDefaults (void)
 #endif
 }
 
-const char* Arguments::Default_EncAlgo = "rijndael-128" ;
-const char* Arguments::Default_EncMode = "cbc" ;
+#ifdef USE_LIBMCRYPT
+const EncryptionAlgorithm Arguments::Default_EncAlgo = EncryptionAlgorithm (EncryptionAlgorithm::RIJNDAEL128) ;
+const EncryptionMode Arguments::Default_EncMode = EncryptionMode (EncryptionMode::CBC) ;
+#else
+const EncryptionAlgorithm Arguments::Default_EncAlgo = EncryptionAlgorithm (EncryptionAlgorithm::NONE) ;
+const EncryptionMode Arguments::Default_EncMode = EncryptionMode (EncryptionMode::ECB) ; // is ignored
+#endif

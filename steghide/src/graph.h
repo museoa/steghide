@@ -91,13 +91,6 @@ class Graph {
 	/// is used to create the unique sample list
 	hash_set<SampleValue*,hash<SampleValue*>,SampleValuesEqual> SampleValues_set ;
 
-#if 0
-	/**
-	 * SampleOppositeNeighbourhood[sample_label] contains a list of those SampleLabels that describe samples that
-	 * are in the set Samples[sample_label]->getOppositeNeighbours().
-	 **/
-	vector<vector<SampleLabel> > SampleOppositeNeighbourhood ;
-#endif
 	SampleValueOppositeNeighbourhood SValueOppNeighs ;
 
 	/**

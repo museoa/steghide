@@ -22,7 +22,8 @@
 #define SH_EMBDATA_H
 
 #include "bitstring.h"
-#include "mcryptpp.h"
+#include "encalgo.h"
+#include "encmode.h"
 
 class EmbData {
 	public:
@@ -37,17 +38,17 @@ class EmbData {
 	unsigned long getNumBitsNeeded (void) ;
 	void addBits (BitString bits) ;
 
-	void setCryptAlgo (MCryptpp::Algorithm a) ;
-	MCryptpp::Algorithm getCryptAlgo (void) ;
+	void setEncAlgo (EncryptionAlgorithm a) ;
+	EncryptionAlgorithm getEncAlgo (void) const ;
 	
-	void setCryptMode (MCryptpp::Mode m) ;
-	MCryptpp::Mode getCryptMode (void) ;
+	void setEncMode (EncryptionMode m) ;
+	EncryptionMode getEncMode (void) const ;
 
 	void setCompression (bool c) ;
-	bool getCompression (void) ;
+	bool getCompression (void) const ;
 
 	void setChecksum (bool c) ;
-	bool getChecksum (void) ;
+	bool getChecksum (void) const ;
 
 	/**
 	 * read the file FileName and put contents into Data
@@ -82,8 +83,8 @@ class EmbData {
 	unsigned long NEmbBits ;
 	unsigned long NumBitsNeeded ;
 
-	MCryptpp::Algorithm CryptAlgo ;
-	MCryptpp::Mode CryptMode ;
+	EncryptionAlgorithm EncAlgo ;
+	EncryptionMode EncMode ;
 	bool Compression ;
 	bool Checksum ;
 	string FileName ;

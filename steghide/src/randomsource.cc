@@ -36,6 +36,7 @@ RandomSource::RandomSource ()
 	if ((RandomInput = fopen ("/dev/urandom", "r")) == NULL) {
 		Warning w (_("could not open /dev/urandom, using standard library random numbers instead.")) ;
 		w.printMessage() ;
+		RandomInput = NULL ;
 		srand ((unsigned int) time (NULL)) ;
 	}
 #else
@@ -55,9 +56,8 @@ RandomSource::~RandomSource()
 
 BYTE RandomSource::getByte ()
 {
-#ifdef NORANDOM
 	BYTE retval = 0 ;
-#else
+#ifndef NORANDOM
 	if (RandomInput != NULL) {
 		retval = getc (RandomInput) ;
 	}

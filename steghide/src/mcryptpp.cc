@@ -18,6 +18,10 @@
  *
  */
 
+#include "common.h"
+
+#ifdef USE_LIBMCRYPT
+
 #include <algorithm>
 #include <cstdlib>
 #include <vector>
@@ -25,8 +29,9 @@
 
 #include <mcrypt.h>
 
-#include "common.h"
 #include "error.h"
+#include "encalgo.h"
+#include "encmode.h"
 #include "mcryptpp.h"
 #include "mhashkeygenpp.h"
 #include "randomsource.h"
@@ -36,17 +41,9 @@ MCryptpp::MCryptpp ()
 	ModuleOpen = false ;
 }
 
-MCryptpp::MCryptpp (Algorithm a, Mode m)
+MCryptpp::MCryptpp (EncryptionAlgorithm a, EncryptionMode m)
 {
-	open (getAlgorithmName (a), getModeName (m)) ;
-}
-
-MCryptpp::MCryptpp (string algo, string mode)
-{
-	assert (isValidAlgorithm (algo)) ;
-	assert (isValidAlgorithm (mode)) ;
-
-	open (algo, mode) ;
+	open (a, m) ;
 }
 
 MCryptpp::~MCryptpp ()
@@ -56,11 +53,13 @@ MCryptpp::~MCryptpp ()
 	}
 }
 
-void MCryptpp::open (string a, string m)
+void MCryptpp::open (EncryptionAlgorithm a, EncryptionMode m)
 {
-	char algo[a.size() + 1], mode[m.size() + 1] ;
-	strcpy (algo, a.c_str()) ;
-	strcpy (mode, m.c_str()) ;
+	string tmp1 = a.getStringRep(), tmp2 = m.getStringRep() ;
+	char algo[tmp1.size() + 1], mode[tmp2.size() + 1] ;
+	strcpy (algo, tmp1.c_str()) ;
+	strcpy (mode, tmp2.c_str()) ;
+
 	if ((MCryptD = mcrypt_module_open (algo, MCRYPTPP_LIBDIR, mode, MCRYPTPP_LIBDIR)) == MCRYPT_FAILED) {
 		throw SteghideError (_("could not open libmcrypt module \"%s\",\"%s\"."), algo, mode) ;
 	}
@@ -75,8 +74,7 @@ void MCryptpp::close ()
 
 BitString MCryptpp::encrypt (BitString p, string pp)
 {
-	//DEBUG p.padRandom (8 * mcrypt_enc_get_block_size (MCryptD)) ; // blocksize is 1 for stream algorithms
-	p.pad (8 * mcrypt_enc_get_block_size (MCryptD), 0) ;
+	p.padRandom (8 * mcrypt_enc_get_block_size (MCryptD)) ; // blocksize is 1 for stream algorithms
 	vector<unsigned char> ciphertext = _encrypt (p.getBytes(), pp) ;
 	return BitString (ciphertext) ;
 }
@@ -88,7 +86,7 @@ BitString MCryptpp::decrypt (BitString c, string pp)
 	return BitString (plaintext) ;
 }
 
-// TODO - in welchen version von mhash ist keygen_mcrypt kompatibel ?? nmav schreiben
+// TODO - ? compatibility of keygen_mcrypt in different versions of mhash
 void* MCryptpp::createKey (string pp)
 {
 	unsigned int keysize = mcrypt_enc_get_key_size (MCryptD) ;
@@ -220,89 +218,29 @@ vector<unsigned char> MCryptpp::_decrypt (vector<unsigned char> c, string pp)
 	return retval ;
 }
 
-string MCryptpp::getAlgorithmName ()
+EncryptionAlgorithm MCryptpp::getAlgorithm () const
 {
 	assert (ModuleOpen) ;
 	char *name = mcrypt_enc_get_algorithms_name (MCryptD) ;
-	string retval = string (name) ;
-	free (name) ;
-	return retval ;
+	return EncryptionAlgorithm (name) ;
 }
 
-string MCryptpp::getModeName ()
+EncryptionMode MCryptpp::getMode () const
 {
 	assert (ModuleOpen) ;
 	char *name = mcrypt_enc_get_modes_name (MCryptD) ;
-	string retval = string (name) ;
-	free (name) ;
-	return retval ;
+	return EncryptionMode (name) ;
 }
 
-string MCryptpp::getAlgorithmName (Algorithm a)
-{
-	string retval ;
-	bool found = false ;
-	for (unsigned int i = 0 ; i < NumAlgoTranslations ; i++) {
-		if (AlgoTranslations[i].algo == a) {
-			retval = string (AlgoTranslations[i].name) ;
-			found = true ;
-		}
-	}
-	assert (found) ;
-	return retval ;
-}
-
-string MCryptpp::getModeName (Mode m)
-{
-	string retval ;
-	bool found = false ;
-	for (unsigned int i = 0 ; i < NumModeTranslations ; i++) {
-		if (ModeTranslations[i].mode == m) {
-			retval = string (ModeTranslations[i].name) ;
-			found = true ;
-		}
-	}
-	assert (found) ;
-	return retval ;
-}
-
-MCryptpp::Algorithm MCryptpp::getAlgorithm (string name)
-{
-	Algorithm retval ;
-	bool found = false ;
-	for (unsigned int i = 0 ; i < NumAlgoTranslations ; i++) {
-		if (AlgoTranslations[i].name == name) {
-			retval = AlgoTranslations[i].algo ;
-			found = true ;
-		}
-	}
-	assert (found) ;
-	return retval ;
-}
-
-MCryptpp::Mode MCryptpp::getMode (string name)
-{
-	Mode retval ;
-	bool found = false ;
-	for (unsigned int i = 0 ; i < NumModeTranslations ; i++) {
-		if (ModeTranslations[i].name == name) {
-			retval = ModeTranslations[i].mode ;
-			found = true ;
-		}
-	}
-	assert (found) ;
-	return retval ;
-}
-
-unsigned long MCryptpp::getEncryptedSize (Algorithm a, Mode m, unsigned long plnsize)
+unsigned long MCryptpp::getEncryptedSize (EncryptionAlgorithm a, EncryptionMode m, unsigned long plnsize)
 {
 	unsigned long retval = 0 ;
 
-	if (a == NONE) {
+	if (a.getIntegerRep() == EncryptionAlgorithm::NONE) {
 		retval = plnsize ;
 	}
 	else {
-		string tmp1 = getAlgorithmName (a), tmp2 = getModeName (m) ;
+		string tmp1 = a.getStringRep(), tmp2 = m.getStringRep() ;
 		char algo[tmp1.size() + 1], mode[tmp2.size() + 1] ;
 		strcpy (algo, tmp1.c_str()) ;
 		strcpy (mode, tmp2.c_str()) ;
@@ -360,31 +298,13 @@ vector<string> MCryptpp::getListModes ()
 	return retval ;
 }
 
-bool MCryptpp::isValidAlgorithm (string s)
+bool MCryptpp::AlgoSupportsMode (EncryptionAlgorithm a, EncryptionMode m)
 {
-	vector<string> algos = getListAlgorithms() ;
-	bool retval = false ;
-	if (find (algos.begin(), algos.end(), s) != algos.end()) {
-		retval = true ;
-	}
-	return retval ;
-}
+	string tmp1 = a.getStringRep(), tmp2 = m.getStringRep() ;
+	char algo[tmp1.size() + 1], mode[tmp2.size() + 1] ;
+	strcpy (algo, tmp1.c_str()) ;
+	strcpy (mode, tmp2.c_str()) ;
 
-bool MCryptpp::isValidMode (string s)
-{
-	vector<string> modes = getListModes() ;
-	bool retval = false ;
-	if (find (modes.begin(), modes.end(), s) != modes.end()) {
-		retval = true ;
-	}
-	return retval ;
-}
-
-bool MCryptpp::AlgoSupportsMode (string a, string m)
-{
-	char algo[a.size() + 1], mode[m.size() + 1] ;
-	strcpy (algo, a.c_str()) ;
-	strcpy (mode, m.c_str()) ;
 	return (mcrypt_module_is_block_algorithm (algo, MCRYPTPP_LIBDIR) ==
 			mcrypt_module_is_block_algorithm_mode (mode, MCRYPTPP_LIBDIR)) ;
 }
@@ -398,39 +318,4 @@ void *MCryptpp::s_malloc (size_t size)
 	return retval ;
 }
 
-const MCryptpp::AlgoTranslation MCryptpp::AlgoTranslations[] = {
-	{ NONE, "none" },
-	{ TWOFISH, "twofish" },
-	{ RIJNDAEL128, "rijndael-128" },
-	{ RIJNDAEL192, "rijndael-192" },
-	{ RIJNDAEL256, "rijndael-256" },
-	{ SAFERPLUS, "saferplus" },
-	{ RC2, "rc2" },
-	{ XTEA, "xtea" },
-	{ SERPENT, "serpent" },
-	{ SAFERSK64, "safer-sk64" },
-	{ SAFERSK128, "safer-sk128" },
-	{ CAST256, "cast-256" },
-	{ LOKI97, "loki97" },
-	{ GOST, "gost" },
-	{ THREEWAY, "threeway" },
-	{ CAST128, "cast-128" },
-	{ BLOWFISH, "blowfish" },
-	{ DES, "des" },
-	{ TRIPLEDES, "tripledes" },
-	{ ENIGMA, "enigma" },
-	{ ARCFOUR, "arcfour" },
-	{ PANAMA, "panama" },
-	{ WAKE, "wake" }
-} ;
-
-const MCryptpp::ModeTranslation MCryptpp::ModeTranslations[] = {
-	{ ECB, "ecb" },
-	{ CBC, "cbc" },
-	{ OFB, "ofb" },
-	{ CFB, "cfb" },
-	{ NOFB, "nofb" },
-	{ NCFB, "ncfb" },
-	{ CTR, "ctr" },
-	{ STREAM, "stream" }
-} ;
+#endif // def USE_LIBMCRYPT

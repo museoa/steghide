@@ -37,18 +37,18 @@ class WavFormatChunk : public WavChunk {
 	void read (BinaryIO *io) ;
 	void write (BinaryIO *io) ;
 
-	WORD16 getBitsPerSample (void) const { return BitsPerSample ; } ;
+	UWORD16 getBitsPerSample (void) const { return BitsPerSample ; } ;
 
 	private:
-	static const WORD16 WAVE_FORMAT_PCM = 0x0001 ;
+	static const UWORD16 WAVE_FORMAT_PCM = 0x0001 ;
 
-	WORD16 FormatTag ;
-	WORD16 Channels ;
-	WORD32 SamplesPerSec ;
-	WORD32 AvgBytesPerSec ;
-	WORD16 BlockAlign ;
-	WORD16 BitsPerSample ;
-	WORD16 AdditionalSize ;
+	UWORD16 FormatTag ;
+	UWORD16 Channels ;
+	UWORD32 SamplesPerSec ;
+	UWORD32 AvgBytesPerSec ;
+	UWORD16 BlockAlign ;
+	UWORD16 BitsPerSample ;
+	UWORD16 AdditionalSize ;
 } ;
 
 #endif // ndef SH_WAVCHUNKFORMAT_H

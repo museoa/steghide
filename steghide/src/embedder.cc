@@ -40,8 +40,8 @@ Embedder::Embedder ()
 void Embedder::embed ()
 {
 	EmbData embdata (EmbData::EMBED, EmbedFileName) ;
-	embdata.setCryptAlgo (MCryptpp::getAlgorithm (Args.EncAlgo.getValue())) ;
-	embdata.setCryptMode (MCryptpp::getMode (Args.EncMode.getValue())) ;
+	embdata.setEncAlgo (Args.EncAlgo.getValue()) ;
+	embdata.setEncMode (Args.EncMode.getValue()) ;
 	embdata.setCompression (false) ;
 	embdata.setChecksum (Args.Checksum.getValue()) ;
 

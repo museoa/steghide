@@ -101,26 +101,6 @@ BmpPaletteSampleValue::BmpPaletteSampleValue (CvrStgFile *f, unsigned char i)
 		  ((unsigned long) getGreen() << 8) | ((unsigned long) getBlue()) ;
 }
 
-#if 0
-use this algorithms as general algo to compute SampleValueOppNeighbours
-list<SampleValue*> *BmpPaletteSampleValue::getOppositeNeighbours() const
-{
-	list<SampleValue*> *retval = new list<SampleValue*> ;
-	RGBTriple thistriple = Palette->getEntry (Index) ;
-	unsigned int n = Palette->getSize() ;
-
-	// loop will only look at even or odd entries not both - will look at the opposite entries
-	for (unsigned int i = ((getBit() == 1) ? 0 : 1) ; i < n ; i += 2) {
-		RGBTriple pon = Palette->getEntry (i) ;
-		if (thistriple.calcDistance (pon) <= Radius) {
-			retval->push_back ((SampleValue *) new BmpPaletteSampleValue (getFile(), i)) ;
-		}
-	}
-
-	return retval ;
-}
-#endif
-
 SampleValue *BmpPaletteSampleValue::getNearestOppositeSampleValue () const
 {
 	RGBTriple thistriple = Palette->getEntry (Index) ;
@@ -176,58 +156,6 @@ BmpRGBSampleValue::BmpRGBSampleValue (CvrStgFile *f, RGBTriple t)
 	SBit = (Bit) ((t.Red & 1) ^ (t.Green & 1) ^ (t.Blue & 1)) ;
 	Key = ((unsigned long) t.Red << 16) | ((unsigned long) t.Green << 8) | ((unsigned long) t.Blue) ;
 }
-
-#if 0
-void BmpRGBSampleValue::calcOppNeighDeltas()
-{
-	// FIXME - ev. mit bool currgbisopp arbeiten - af = !af bei jeder veränderung
-	const int scmc = (int) ceil ((double) Radius) ;
-	for (int r = -scmc ; r <= scmc ; r++) {
-		for (int g = -scmc ; g <= scmc ; g++) {
-			for (int b = -scmc ; b <= scmc ; b++) {
-				// r/g/b is opposite delta iff |r + b + g| is odd
-				int s = r + g + b ;
-				s = ((s >= 0) ? s : -s) ;
-				if (s % 2 == 1) { // r/g/b is an opposite delta...
-					if (sqrt (((float) r * (float) r) +
-							  ((float) g * (float) g) +
-							  ((float) b * (float) b)) <= Radius) { // ...and r/g/b is a neighbour delta
-						OppNeighDeltas.push_back (RGBVector (r, g, b)) ;
-					}
-				}
-			}
-		}
-	}
-}
-
-list<SampleValue*> *BmpRGBSampleValue::getOppositeNeighbours() const
-{
-	list<SampleValue*> *retval = new list<SampleValue*> ;
-
-	const int scmc = (int) ceil ((double) Radius) ; // single component maximum change
-
-	if (((int) Color.Red - scmc >= 0) && ((int) Color.Red + scmc <= 255) &&
-		((int) Color.Green - scmc >= 0) && ((int) Color.Green + scmc <= 255) &&
-		((int) Color.Blue - scmc >= 0) && ((int) Color.Blue + scmc <= 255)) {
-		for (vector<RGBVector>::iterator i = OppNeighDeltas.begin() ; i != OppNeighDeltas.end() ; i++) {
-			retval->push_back ((SampleValue *) new BmpRGBSampleValue (getFile(), (unsigned char) ((int) Color.Red + i->Red),
-				(unsigned char) ((int) Color.Green + i->Green), (unsigned char) ((int) Color.Blue + i->Blue))) ;
-		}
-	}
-	else {
-		for (vector<RGBVector>::iterator i = OppNeighDeltas.begin() ; i != OppNeighDeltas.end() ; i++) {
-			int r = (int) Color.Red + i->Red ;
-			int g = (int) Color.Green + i->Green ;
-			int b = (int) Color.Blue + i->Blue ;
-			if ((r >= 0) && (r <= 255) && (g >= 0) && (g <= 255) && (b >= 0) && b <= 255) {
-				retval->push_back ((SampleValue *) new BmpRGBSampleValue (getFile(), (unsigned char) r, (unsigned char) g, (unsigned char) b)) ;
-			}
-		}
-	}
-
-	return retval ;
-}
-#endif
 
 SampleValue *BmpRGBSampleValue::getNearestOppositeSampleValue () const
 {

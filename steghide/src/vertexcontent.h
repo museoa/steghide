@@ -36,7 +36,7 @@ class VertexContent {
 	 * construct a vertex content object using the sorted sample labels
 	 * \param sl the sample labels - will be sorted in the constructor
 	 **/
-	VertexContent (const vector<unsigned long> &sl) ;
+	VertexContent (const vector<SampleValueLabel> &sl) ;
 
 	/**
 	 * set the degree of this vertex content
@@ -76,7 +76,7 @@ class VertexContent {
 	void deleteFromOccurences (list<Vertex*>::iterator it) ;
 	
 	private:
-	vector<unsigned long> SampleValueLabels ;
+	vector<SampleValueLabel> SampleValueLabels ;
 	list<Vertex*> Occurences ;
 	unsigned long Degree ;
 } ;

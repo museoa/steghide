@@ -51,41 +51,19 @@ extern RandomSource RndSrc ;
 
 // typedefs
 #ifdef HAVE_CONFIG_H
-
-# if SIZEOF_UNSIGNED_LONG_INT == 4
-typedef unsigned long WORD32;
-# elif SIZEOF_UNSIGNED_INT == 4
-typedef unsigned int WORD32;
-# else
-#  error "There is no int with a size of 32 bits on your system. Cannot compile."
-# endif
-
-# if SIZEOF_UNSIGNED_INT == 2
-typedef unsigned int WORD16;
-# elif SIZEOF_UNSIGNED_SHORT_INT == 2
-typedef unsigned short WORD16;
-# else
-#  error "There is no int with a size of 16 bits on your system. Cannot compile."
-# endif
-
-# if SIZEOF_UNSIGNED_CHAR == 1
-typedef unsigned char BYTE;
-# else
-#  error "There is no char with a size of 8 bits on your system. Cannot compile."
-# endif
-
+typedef TYPE_UWORD32	UWORD32 ;
+typedef TYPE_UWORD16	UWORD16 ;
+typedef TYPE_BYTE		BYTE ;
 #else
-
-// FIXME - ev. UWORD für unsigned, WORD für signed
-typedef unsigned long	WORD32 ;
-typedef unsigned int	WORD16 ;
+// use types that are at least the correct size
+typedef unsigned long	UWORD32 ;
+typedef unsigned short	UWORD16 ;
 typedef unsigned char	BYTE ;
-
 #endif
 
 typedef int Bit ;
-typedef WORD32 SamplePos ;
-typedef WORD32 VertexLabel ;
-typedef WORD32 SampleValueLabel ;
+typedef UWORD32 SamplePos ;
+typedef UWORD32 VertexLabel ;
+typedef UWORD32 SampleValueLabel ;
 
 #endif // ndef SH_COMMON_H

@@ -22,6 +22,8 @@
 #define SH_ARG_H
 
 #include <string>
+#include "encalgo.h"
+#include "encmode.h"
 
 template<class T> class Arg {
 	public:
@@ -47,8 +49,10 @@ typedef Arg<COMMAND> ArgCommand ;
 typedef Arg<VERBOSITY> ArgVerbosity ;
 typedef Arg<bool> ArgBool ;
 typedef Arg<std::string> ArgString ;
-#ifdef DEBUG
 typedef Arg<float> ArgFloat ;
+typedef Arg<EncryptionAlgorithm> ArgEncAlgo ;
+typedef Arg<EncryptionMode> ArgEncMode ;
+#ifdef DEBUG
 typedef Arg<unsigned int> ArgUInt ;
 typedef Arg<DEBUGCOMMAND> ArgDebugCommand ;
 #endif

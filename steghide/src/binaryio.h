@@ -50,10 +50,10 @@ class BinaryIO {
 	void close (void) ;
 
 	BYTE read8 (void) ;
-	WORD16 read16_le (void) ;
-	WORD16 read16_be (void) ;
-	WORD32 read32_le (void) ;
-	WORD32 read32_be (void) ;
+	UWORD16 read16_le (void) ;
+	UWORD16 read16_be (void) ;
+	UWORD32 read32_le (void) ;
+	UWORD32 read32_be (void) ;
 	/**
 	 * read n bytes (little endian byte ordering)
 	 * \param n the number of bytes to read (must be <= 4)

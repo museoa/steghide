@@ -23,7 +23,7 @@
 //
 // class VertexContent
 //
-VertexContent::VertexContent (const vector<unsigned long> &sl)
+VertexContent::VertexContent (const vector<SampleValueLabel> &sl)
 {
 	SampleValueLabels = sl ;
 	sort (SampleValueLabels.begin(), SampleValueLabels.end()) ;

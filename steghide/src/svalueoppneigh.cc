@@ -85,7 +85,7 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_rgb (const vector<SampleVal
 	svalues0.reserve (numsvalues / 2) ;
 
 	unsigned short numcubes = 0 ;
-	short r = (short) svalues[0]->getRadius() ; // FIXME - was ist mit radius der nicht \in N
+	short r = (short) svalues[0]->getRadius() ; // FIXME - what should be done with a radius not \in N
 	if (256 % r == 0) {
 		numcubes = 256 / r ;
 	}
@@ -170,7 +170,7 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_wav (const vector<SampleVal
 	sort (svalues0.begin(), svalues0.end(), smaller) ;
 	sort (svalues1.begin(), svalues1.end(), smaller) ;
 
-	int r_ub = (int) svalues[0]->getRadius() ; // FIXME - radius aufrunden
+	int r_ub = (int) svalues[0]->getRadius() ; // FIXME - round up radius
 
 	OppNeighs = vector<vector<SampleValueLabel> > (n) ;
 	unsigned long n0 = svalues0.size() ;

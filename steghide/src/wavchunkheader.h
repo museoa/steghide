@@ -27,18 +27,18 @@
 class WavChunkHeader {
 	public:
 	WavChunkHeader (void) {} ;
-	WavChunkHeader (char *id, WORD32 len) ;
+	WavChunkHeader (char *id, UWORD32 len) ;
 	WavChunkHeader (BinaryIO *io) ;
 
 	void read (BinaryIO *io) ;
 	void write (BinaryIO *io) const ;
 
-	WORD32 getChunkLength (void) const { return ChunkLength ; } ;
+	UWORD32 getChunkLength (void) const { return ChunkLength ; } ;
 	const char *getChunkId (void) const { return ChunkId ; } ;
 
 	private:
 	char ChunkId[4] ;
-	WORD32 ChunkLength ;
+	UWORD32 ChunkLength ;
 } ;
 
 #endif // ndef SH_WAVCHUNKHEADER_H
