@@ -184,8 +184,6 @@ Question::Question (const char *msgfmt, ...)
 
 void Question::printMessage () const
 {
-	myassert (!Args.stdin_isused()) ;
-
 #ifndef HAVE_TERMIOS_H
 	Warning w (_("unknown terminal. you might need to press <Enter> after answering.")) ;
 	w.printMessage() ;
@@ -195,8 +193,6 @@ void Question::printMessage () const
 
 bool Question::getAnswer ()
 {
-	myassert (!Args.stdin_isused()) ;
-
 	Terminal term ;
 	term.SingleKeyOn() ;
 	char input[2] ;

@@ -64,15 +64,10 @@ void BinaryIO::checkForce (const std::string& fn) const
 {
 	if (!Args.Force.getValue()) {
 		if (Fileexists (fn)) {
-			if (Args.stdin_isused()) {
-				throw SteghideError (_("the file \"%s\" does already exist."), fn.c_str()) ;
-			}
-			else {
-				Question q (_("the file \"%s\" does already exist. overwrite ?"), fn.c_str()) ;
-				q.printMessage() ;
-				if (!q.getAnswer()) {
-					throw SteghideError (_("did not write to file \"%s\"."), fn.c_str()) ;
-				}
+			Question q (_("the file \"%s\" does already exist. overwrite ?"), fn.c_str()) ;
+			q.printMessage() ;
+			if (!q.getAnswer()) {
+				throw SteghideError (_("did not write to file \"%s\"."), fn.c_str()) ;
 			}
 		}
 	}

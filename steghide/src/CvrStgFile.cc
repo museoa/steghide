@@ -45,8 +45,8 @@ CvrStgFile::CvrStgFile ()
 
 CvrStgFile::~CvrStgFile (void)
 {
-	if (getBinIO() != NULL) {
-		delete getBinIO() ;
+	if (BinIO != NULL) {
+		delete BinIO ;
 	}
 }
 
@@ -71,8 +71,9 @@ void CvrStgFile::write (void)
 
 void CvrStgFile::transform (const std::string& stgfn)
 {
-	delete getBinIO() ;
-	setBinIO (new BinaryIO (stgfn, BinaryIO::WRITE)) ;
+	delete BinIO ;
+	BinIO = NULL ;
+	BinIO = new BinaryIO (stgfn, BinaryIO::WRITE) ;
 }
 
 std::vector<SampleValueAdjacencyList*> CvrStgFile::calcSVAdjacencyLists (const std::vector<SampleValue*>& svs) const

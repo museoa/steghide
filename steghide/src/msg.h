@@ -61,8 +61,8 @@ class Message : public MessageBase {
 
 class VerboseMessage : public MessageBase {
 	public:
-	VerboseMessage (void) : MessageBase() {} ;
-	VerboseMessage (std::string msg) : MessageBase (msg) {} ;
+	VerboseMessage (void) : MessageBase() { setNewline(true) ; } ;
+	VerboseMessage (std::string msg) : MessageBase (msg) { setNewline(true) ; } ;
 	VerboseMessage (const char *msgfmt, ...) ;
 
 	/**

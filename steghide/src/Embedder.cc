@@ -49,8 +49,8 @@ Embedder::Embedder ()
 	}
 	else {
 		vrs.setMessage (_("reading secret file \"%s\"..."), Args.EmbFn.getValue().c_str()) ;
+		vrs.setNewline (false) ;
 	}
-	vrs.setNewline (false) ;
 	vrs.printMessage() ;
 
 	std::vector<BYTE> emb ;
@@ -61,7 +61,9 @@ Embedder::Embedder ()
 	embio.close() ;
 
 	VerboseMessage vdone (_(" done")) ;
-	vdone.printMessage() ;
+	if (Args.EmbFn.getValue() != "") {
+		vdone.printMessage() ;
+	}
 
 	// create bitstring to be embedded
 	std::string fn = "" ;
