@@ -28,7 +28,7 @@ class DummySampleValue : public SampleValue {
 	public:
 	DummySampleValue (UWORD16 v)
 		: SampleValue(), Value(v)
-		{ SBit = (v % 2) ; Key = v ; } ;
+		{ EValue = (v % 2) ; Key = v ; } ;
 
 	UWORD16 getValue (void) const
 		{ return Value ; } ;
@@ -43,7 +43,7 @@ class DummySampleValue : public SampleValue {
 	 **/
 	bool isNeighbour (const SampleValue* s) const ;
 
-	SampleValue* getNearestOppositeSampleValue (void) const ;
+	SampleValue* getNearestTargetSampleValue (EmbValue t) const ;
 
 	std::string getName (void) const ;
 

@@ -26,10 +26,9 @@
 
 #include "common.h"
 
+#include "BitString.h"
 #include "EncryptionAlgorithm.h"
 #include "EncryptionMode.h"
-
-class BitString ;
 
 class EmbData {
 	public:
@@ -49,7 +48,7 @@ class EmbData {
 	bool finished (void) ;
 
 	unsigned long getNumBitsNeeded (void) ;
-	void addBits (BitString bits) ;
+	void addBits (BitString addbits) ;
 
 	void setEncAlgo (EncryptionAlgorithm a) ;
 	EncryptionAlgorithm getEncAlgo (void) const ;
@@ -94,6 +93,7 @@ class EmbData {
 	unsigned long NPlainBits ;
 
 	unsigned long NumBitsNeeded ;
+	BitString Reservoir ;
 
 	std::string Passphrase ;
 

@@ -51,9 +51,6 @@ class AuFile : public CvrStgFile {
 	SampleValue* getSampleValue (SamplePos pos) const
 		{ return Data->getSampleValue(pos) ; } ;
 
-	unsigned short getSamplesPerEBit (void) const
-		{ return SamplesPerEBit ; } ;
-
 	private:
 	enum ENCODING { MULAW8 = 1, PCM8 = 2, PCM16 = 3, PCM32 = 5 } ;
 	class AuHeader {
@@ -75,7 +72,8 @@ class AuFile : public CvrStgFile {
 	static const UWORD32 Radius_PCM8 = 1 ;
 	static const UWORD32 Radius_PCM16 = 20 ;
 	static const UWORD32 Radius_PCM32 = 20 ; // FIXME - find good value
-	static const unsigned short SamplesPerEBit = 2 ;
+	static const unsigned short SamplesPerVertex = 2 ;
+	static const EmbValue EmbValueModulus = 2 ;
 
 	AuHeader Header ;
 	std::vector<BYTE> Infofield ;

@@ -94,6 +94,7 @@ std::vector<Edge*>* AugmentingPathHeuristic::searchAugmentingPath (Vertex *v0)
 #endif
 
 	TimeCounter++ ;
+	// FIXME - use something self-written for path data structure - a stack (? based on a simple C-style array?)
 	std::vector<Edge*>* path = new std::vector<Edge*>() ;
 	Edge *e = NULL ;
 

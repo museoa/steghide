@@ -36,13 +36,13 @@ ConstructionHeuristic::ConstructionHeuristic (Graph* g, Matching* m, float goal)
 	for (VertexLabel l = 0 ; l < nvertices ; l++) {	
 		Vertex *v = g->getVertex(l) ;
 		v->updateShortestEdge() ;
-		if (v->getDegree() != 0) {
-			if (v->getDegree() == 1) {
-				myassert (v->getShortestEdge()) ;
+		UWORD32 degree = v->getDegree() ;
+		if (degree != 0) {
+			myassert (v->getShortestEdge() != NULL) ;
+			if (degree == 1) {
 				VerticesDeg1.push (v) ;
 			}
 			else {
-				myassert (v->getShortestEdge()) ;
 				VerticesDegG.push (v) ;
 			}
 		}
@@ -65,13 +65,14 @@ void ConstructionHeuristic::run ()
 	unsigned long numDeg1 = 0 ;
 #endif
 
-	while ((TheMatching->getCardinality() < CardinalityGoal) && (!VerticesDegG.empty() || !VerticesDeg1.empty())) {
+	while ((TheMatching->getCardinality() < CardinalityGoal) && !(VerticesDegG.empty() && VerticesDeg1.empty())) {
 		Vertex *v = NULL ;
 		unsigned int k = 1 ;
 		if (pqr > 1) {
 			k = RndSrc.getValue (pqr) + 1 ;
 		}
 
+		// get a vertex from one of the priority queues
 		if (!VerticesDeg1.empty()) {
 			v = findVertexDeg1 (k) ;
 #ifdef DEBUG
@@ -91,8 +92,18 @@ void ConstructionHeuristic::run ()
 #endif
 		}
 
-		if (v != NULL) {
-			insertInMatching (v->getShortestEdge()) ;
+		if (v != NULL) { // insert v's shortest edge into matching
+			Edge* e = v->getShortestEdge() ;
+			Vertex* vother = e->getOtherVertex(v) ;
+
+#ifdef DEBUG
+			printDebug (5, "ConstructionHeuristic: inserting edge %lu - %lu into matching", v->getLabel(), vother->getLabel()) ;
+#endif
+			TheMatching->addEdge(e) ;
+			v->markDeleted() ;
+			vother->markDeleted() ;
+			checkNeighboursDeg1 (v) ;
+			checkNeighboursDeg1 (vother) ;
 		}
 	}
 
@@ -103,36 +114,27 @@ void ConstructionHeuristic::run ()
 #endif
 }
 
-void ConstructionHeuristic::insertInMatching (Edge *e)
-{
-	Vertex *v1 = e->getVertex1() ;
-	Vertex *v2 = e->getVertex2() ;
-
-#ifdef DEBUG
-	printDebug (5, "ConstructionHeuristic: inserting edge %lu - %lu into matching", v1->getLabel(), v2->getLabel()) ;
-#endif
-	TheMatching->addEdge (e) ;
-
-	v1->markDeleted() ;
-	v2->markDeleted() ;
-	checkNeighboursDeg1 (v1) ;
-	checkNeighboursDeg1 (v2) ;
-}
-
+// FIXME - speed improvement possible if checkNeighboursDeg1 takes an Edge as parameter ?
+// FIXME - speed improvement if getDegree() is called always (not just for real neighbours) ?
 void ConstructionHeuristic::checkNeighboursDeg1 (Vertex *v)
 {
-	for (unsigned short i = 0 ; i < TheGraph->getSamplesPerVertex() ; i++) {
-		const std::vector<SampleValue*>& oppneighs = TheGraph->SampleValueOppNeighs[v->getSampleValue(i)] ;
-		for (std::vector<SampleValue*>::const_iterator it = oppneighs.begin() ; it != oppneighs.end() ; it++) {
-			const std::list<VertexContent*> vcontents = TheGraph->VertexContents[(*it)->getLabel()] ;
-			for (std::list<VertexContent*>::const_iterator jt = vcontents.begin() ; jt != vcontents.end() ; jt++) {
-				if ((*jt)->hasOccurences()) {
-					if ((*jt)->getDegree() == 1) {
-						std::list<Vertex*> occ = (*jt)->getOccurences() ;
-						for (std::list<Vertex*>::iterator kt = occ.begin() ; kt != occ.end() ; kt++) {
-							(*kt)->updateShortestEdge() ;
-							VerticesDeg1.push (*kt) ;
-						}
+	// for all sample values in v...
+	for (unsigned short i = 0 ; i < Globs.TheCvrStgFile->getSamplesPerVertex() ; i++) {
+		SampleValue* srcsv = v->getSampleValue(i) ;
+		const std::vector<SampleValue*>& tneighbours = (*(TheGraph->SVALists[v->getTargetValue(i)]))[srcsv] ;
+
+		// ...get all target neighbour sample values...
+		for (std::vector<SampleValue*>::const_iterator tnit = tneighbours.begin() ; tnit != tneighbours.end() ; tnit++) {
+			const std::list<SampleOccurence>& soccs = TheGraph->SampleOccurences[(*tnit)->getLabel()] ;
+
+			// ...and for each of them look at every sample occurence of it,...
+			for (std::list<SampleOccurence>::const_iterator soccit = soccs.begin() ; soccit != soccs.end() ; soccit++) {
+				// ...determine wether it is in an edge with v and ...
+				if (srcsv->getEmbeddedValue() == soccit->getVertex()->getTargetValue(soccit->getIndex())) {
+					// ...if the corresponding vertex has degree 1:
+					if (soccit->getVertex()->getDegree() == 1) {
+						soccit->getVertex()->updateShortestEdge() ;
+						VerticesDeg1.push(soccit->getVertex()) ; // move it to the Deg1 priority queue
 					}
 				}
 			}
@@ -235,13 +237,15 @@ Vertex *ConstructionHeuristic::findVertexDeg1 (unsigned int k)
 bool ConstructionHeuristic::LongerShortestEdge::operator() (const Vertex* v1, const Vertex* v2)
 {
 	bool retval = false ;
-	if (v1->getDegree() == 0 && v2->getDegree() == 0) {
+	UWORD32 deg1 = v1->getDegree() ;
+	UWORD32 deg2 = v2->getDegree() ;
+	if (deg1 == 0 && deg2 == 0) {
 		retval = (v1->getLabel() > v2->getLabel()) ;
 	}
-	else if (v1->getDegree() == 0) {
+	else if (deg1 == 0) {
 		retval = true ;
 	}
-	else if (v2->getDegree() == 0) {
+	else if (deg2 == 0) {
 		retval = false ;
 	}
 	else {

@@ -119,12 +119,29 @@ class BitString {
 	BitString& append (const BitString& v) ;
 
 	/**
+	 * set the p-th bit to v
+	 * \param i the index (must be < getLength())
+	 * \param v the value
+	 **/
+	BitString& setBit (unsigned long i, BIT v) ;
+
+	/**
 	 * get a BitString that is a part of this BitString
 	 * \param s the index of the first bit to be copied from this BitString
 	 * \param l the total number of bits to be used for the return value
 	 * \return the BitString containing of the bits [s...s+(l-1)] of this BitString
 	 **/
 	BitString getBits (const unsigned long s, const unsigned long l) const ;
+
+	/**
+	 * cut some bits out of this BitString
+	 * \param s the index of the first bit to be removed from this BitString
+	 * \param l the total number of bits to be removed
+	 * \return the BitString containing of the bits [s...s+(l-1)] of this BitString
+	 *
+	 * After calling cutBits, this BitString consists of the bits 0,...,s-1,s+l,... .
+	 **/
+	BitString cutBits (const unsigned long s, const unsigned long l) ;
 
 	/**
 	 * return a value composed from bits in this BitString
@@ -162,6 +179,21 @@ class BitString {
 	 * \param mult this BitString is padded until size is a multiple of mult (given in bits)
 	 **/
 	BitString& padRandom (const unsigned long mult) ;
+
+	/**
+	 * get an n-ary digit from this BitString
+	 * \param n the base of the number system to be used
+	 * \param p the position (in the n-ary representation of this BitString)
+	 * \return the p-th n-ary digit
+	 **/
+	BYTE getNAry (BYTE n, unsigned long p) const ;
+
+	/**
+	 * append an n-ary digit to this BitString
+	 * \param n the base of the number system to be used
+	 * \param v the n-ary value to be appended
+	 **/
+	void appendNAry (BYTE n, BYTE v) ;
 
 #ifdef USE_ZLIB
 	/**

@@ -51,7 +51,7 @@ class AudioSampleValue : public SampleValue {
 
 	ValueType getValue (void) const { return Value ; } ;
 
-	SampleValue* getNearestOppositeSampleValue (void) const ;
+	SampleValue* getNearestTargetSampleValue (EmbValue t) const ;
 	UWORD32 calcDistance (const SampleValue* s) const ;
 	std::string getName (void) const ;
 
@@ -59,14 +59,17 @@ class AudioSampleValue : public SampleValue {
 	ValueType Value ;
 	static const ValueType MinValue ;
 	static const ValueType MaxValue ;
+
+	UWORD32 calcKey (ValueType v) const { return (v - MinValue) ; } ;
+	EmbValue calcEValue (ValueType v) const { return ((EmbValue) ((v - MinValue) % Globs.TheCvrStgFile->getEmbValueModulus())) ; } ;
 } ;
 
 template<AUDIOSAMPLETYPE Type, class ValueType>
 AudioSampleValue<Type,ValueType>::AudioSampleValue (ValueType v)
 	: Value(v)
 {
-	Key = (UWORD32) (v - MinValue) ;
-	SBit = (BIT) (Key % 2) ;
+	Key = calcKey(v) ;
+	EValue = calcEValue(v) ;
 }
 
 template<AUDIOSAMPLETYPE Type, class ValueType>
@@ -86,23 +89,38 @@ UWORD32 AudioSampleValue<Type,ValueType>::calcDistance (const SampleValue* s) co
 }
 
 template<AUDIOSAMPLETYPE Type, class ValueType>
-SampleValue* AudioSampleValue<Type,ValueType>::getNearestOppositeSampleValue (void) const
+SampleValue* AudioSampleValue<Type,ValueType>::getNearestTargetSampleValue (EmbValue t) const
 {
-	ValueType newval ;
-	if (Value == MinValue) {
-		newval = MinValue + 1 ;
-	}
-	else if (Value == MaxValue) {
-		newval = MaxValue - 1 ;
-	}
-	else {
-		if (RndSrc.getBool()) {
-			newval = Value - 1 ;
+	ValueType val_up = Value, val_down = Value, newval = 0 ;
+	bool found = false ;
+
+	do {
+		if (val_up < MaxValue) {
+			val_up++ ;
 		}
-		else {
-			newval = Value + 1 ;
+		if (val_down > MinValue) {
+			val_down-- ;
 		}
-	}
+
+		if (calcEValue(val_up) == t && calcEValue(val_down) == t) {
+			if (RndSrc.getBool()) {
+				newval = val_up ;
+			}
+			else {
+				newval = val_down ;
+			}
+			found = true ;
+		}
+		else if (calcEValue(val_up) == t) {
+			newval = val_up ;
+			found = true ;
+		}
+		else if (calcEValue(val_down) == t) {
+			newval = val_down ;
+			found = true ;
+		}
+	} while (!found) ;
+
 	return ((SampleValue *) new AudioSampleValue<Type,ValueType> (newval)) ;
 }
 

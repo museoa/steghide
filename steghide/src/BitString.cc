@@ -18,6 +18,7 @@
  *
  */
 
+#include "AUtils.h"
 #include "BitString.h"
 #include "common.h"
 
@@ -146,12 +147,38 @@ BIT BitString::operator[] (unsigned long i) const
 	return ((Data[BYTEPOS(i)] >> BITPOS(i)) & 1) ;
 }
 
+BitString& BitString::setBit (unsigned long i, BIT v)
+{
+	myassert (i < Length) ;
+	BYTE mask = ~(1 << BITPOS(i)) ;
+	Data[BYTEPOS(i)] &= mask ; 
+	Data[BYTEPOS(i)] |= (v << BITPOS(i)) ;
+	return (*this) ;
+}
+
 BitString BitString::getBits (unsigned long s, unsigned long l) const
 {
 	BitString retval ;
-	for (unsigned long i = 0 ; i < l ; i++) {
-		retval.append ((*this)[s + i]) ;
+	for (unsigned long i = s ; i < s + l ; i++) {
+		retval.append ((*this)[i]) ;
 	}
+	return retval ;
+}
+
+BitString BitString::cutBits (unsigned long s, unsigned long l)
+{
+	myassert (s + l <= Length) ;
+	BitString retval ;
+	for (unsigned long i = s, j = s + l ; i < s + l || j < Length ; i++, j++) {
+		if (i < s + l) {
+			retval.append ((*this)[i]) ;
+		}
+		if (j < Length) {
+			setBit(i, (*this)[j]) ;
+		}
+	}
+	Length -= l ;
+	Data.resize (AUtils<unsigned long>::div_roundup (Length, 8)) ;
 	return retval ;
 }
 
@@ -207,6 +234,43 @@ BitString& BitString::padRandom (unsigned long mult)
 		append (RndSrc.getBool()) ;
 	}
 	return *this ;
+}
+
+BYTE BitString::getNAry (BYTE n, unsigned long p) const
+	// only implemented for n that is 2^m
+{
+	// find number of bits per n-ary digit
+	BYTE tmp = n ;
+	unsigned short nbits = 0 ;
+	while (tmp > 1) {
+		myassert (tmp % 2 == 0) ;
+		tmp /= 2 ;
+		nbits++ ;
+	}
+
+	unsigned long pbinary = p * nbits ;
+	BYTE retval = 0 ;
+	for (unsigned short i = 0 ; i < nbits ; i++) {
+		retval |= (*this)[pbinary + i] << i ;
+	}
+	return retval ;
+}
+
+void BitString::appendNAry (BYTE n, BYTE v)
+	// only implemented for n that is 2^m
+{
+	// find number of bits per n-ary digit
+	BYTE tmp = n ;
+	unsigned short nbits = 0 ;
+	while (tmp > 1) {
+		myassert (tmp % 2 == 0) ;
+		tmp /= 2 ;
+		nbits++ ;
+	}
+
+	for (unsigned short i = 0 ; i < nbits ; i++) {
+		_append ((v & (1 << i)) >> i) ;
+	}
 }
 
 #ifdef USE_ZLIB

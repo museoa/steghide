@@ -28,9 +28,9 @@
 #include <vector>
 
 #include "EdgeIterator.h"
-#include "SampleValueOppositeNeighbourhood.h"
-#include "wrapper_hash_set.h"
+#include "SampleValueAdjacencyList.h"
 #include "common.h"
+#include "wrapper_hash_set.h"
 
 class BitString ;
 class SampleOccurence ;
@@ -101,11 +101,6 @@ class Graph {
 	 **/
 	bool check_SampleValues (bool verbose = false) const ;
 	/**
-	 * check the integrity of the VertexContents data structure,
-	 * only used for debugging and testing
-	 **/
-	bool check_VertexContents (bool verbose = false) const ;
-	/**
 	 * check the integrity of the SampleOccurences data structure,
 	 * it is assumed that DeletedSampleOccurences is empty,
 	 * only used for debugging and testing
@@ -131,14 +126,11 @@ class Graph {
 	private:
 	//
 	// friend-declarations
-	// Note: private members of Graph that are declared before this point
-	//       should not be used by friends.
 	//
 	friend class ConstructionHeuristic ;
 	friend class EdgeIterator ;
-	friend class SampleValueOppositeNeighbourhood ;
+	friend class SampleValueAdjacencyList ;
 	friend class Vertex ;
-	friend class VertexContent ;
 
 	/// contains the vertices in this graph - Vertices[l] is the vertex with label l
 	std::vector<Vertex*> Vertices ;
@@ -146,26 +138,20 @@ class Graph {
 	/// contains the list of (unique) sample values - SampleValues[l] is the sample value with label l
 	std::vector<SampleValue*> SampleValues ;
 
-	/**
-	 * contains pointers to all vertex contents - VertexContents[l] contains a pointer
-	 * to a VertexContent object iff the sample value with label l is part of this vertex content.
-	 **/
-	// FIXME - time/memory ?? use std::vector instead of std::list ??
-	std::vector<std::list<VertexContent*> > VertexContents ;
+	/// contains the sample value adjacency lists (SVALists[v] contains only sample values with embedded value v)
+	std::vector<SampleValueAdjacencyList*> SVALists ;
 
-	/// SampleValueOppNeighs[l] is the vector of opposite neighbours of the sample value with label l
-	SampleValueOppositeNeighbourhood SampleValueOppNeighs ;
-
-	/**
-	 * SampleOccurences[l] contains all occurences of the sample value with label l
-	 **/
+	/// SampleOccurences[l] contains all occurences of the sample value with label l
 	std::vector<std::list<SampleOccurence> > SampleOccurences ;
 
-	/// contains those sample occurences that have been deleted from SampleOccurences
+	/// NumSampleOccurences[l] contains the number of vertices that contain the sample value with label l
+	std::vector<UWORD32> NumSampleOccurences ;
+
+	/// contains those sample occurences that have been marked as deleted from SampleOccurences
 	std::vector<std::list<SampleOccurence> > DeletedSampleOccurences ;
 
-	unsigned short getSamplesPerVertex (void) const
-		{ return SamplesPerEBit ; } ;
+	/// NumSampleOccurences[l] contains the number of vertices that contain the sample value with label l and have been marked as deleted
+	std::vector<UWORD32> NumDeletedSampleOccurences ;
 
 	std::list<SampleOccurence>::iterator markDeletedSampleOccurence (std::list<SampleOccurence>::iterator it) ;
 	std::list<SampleOccurence>::iterator unmarkDeletedSampleOccurence (std::list<SampleOccurence>::iterator it) ;
@@ -180,35 +166,28 @@ class Graph {
 	 * construct sample-related data structures
 	 *
 	 * needs: sposs(unsorted)
-	 * provides: svalues(unsorted), SampleValues
+	 * provides: svalues(unsorted,unique), SampleValues
 	 **/
 	void constructSamples (const std::vector<SamplePos*> &sposs, std::vector<SampleValue**>& svalues) ;
 
 	/**
 	 * construct vertex-related data structures
 	 *
-	 * needs: sposs(unsorted), svalues(unsorted), SampleValues
-	 * provides: sposs(sorted), svalues(sorted), vc_set, VertexContents (values), Vertices (except SampleOccurenceIts)
+	 * needs: sposs(unsorted), svalues(unsorted,unique), tvalues
+	 * provides: sposs(sorted), Vertices (except SampleOccurenceIts)
 	 **/
-	void constructVertices (std::vector<SamplePos*>& sposs, std::vector<SampleValue**>& svalues,
-		sgi::hash_set<VertexContent*,sgi::hash<VertexContent*>,VertexContentsEqual>& vc_set) ;
+	void constructVertices (std::vector<SamplePos*>& sposs, std::vector<SampleValue**>& svalues, const std::vector<EmbValue>& tvalues) ;
 
 	/**
 	 * construct edge-related data structures
 	 *
-	 * needs: vc_set, SampleValues, Vertices (except SampleOccurenceIts)
-	 * provides: SValueOppNeighs, SampleOccurences, VertexContents (degrees), Vertices (SampleOccurenceIts)
+	 * needs: SampleValues, Vertices (except SampleOccurenceIts)
+	 * provides: SVALists, SampleOccurences, Vertices (SampleOccurenceIts)
 	 **/
-	void constructEdges (const sgi::hash_set<VertexContent*,sgi::hash<VertexContent*>,VertexContentsEqual>& vc_set) ;
+	void constructEdges (void) ;
 
 	CvrStgFile *File ;
-	unsigned short SamplesPerEBit ;
 
-	bool check_VertexContents_size (bool verbose = false) const ;
-	bool check_VertexContents_soundness (bool verbose = false) const ;
-	bool check_VertexContents_completeness (bool verbose = false) const ;
-	bool check_VertexContents_pointerequiv (bool verbose = false) const ;
-	bool check_VertexContents_degrees (bool verbose = false) const ;
 	bool check_SampleOccurences_size (bool verbose = false) const ;
 	bool check_SampleOccurences_correctness (bool verbose = false) const ;
 	bool check_SampleOccurences_completeness (bool verbose = false) const ;

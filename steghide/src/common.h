@@ -63,6 +63,7 @@ typedef char			SBYTE ;
 //
 // specialised type definitions
 typedef bool BIT ;
+typedef BYTE	EmbValue ;
 typedef UWORD32 SamplePos ;
 typedef UWORD32 VertexLabel ;
 typedef UWORD32 SampleValueLabel ;

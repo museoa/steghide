@@ -50,6 +50,11 @@ bool Edge::operator== (const Edge& e) const
 	return false ;
 }
 
+bool Edge::operator!= (const Edge& e) const
+{
+	return (!operator==(e)) ;
+}
+
 void Edge::swap (void)
 {
 	Vertex* v_tmp = Vertex1 ;

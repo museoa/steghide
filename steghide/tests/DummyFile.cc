@@ -31,7 +31,8 @@ DummyFile::DummyFile (UWORD16 s, std::vector<std::vector<bool> >* svam)
 	for (UWORD16 i = 0 ; i < s ; i++) {
 		Samples[i] = i ;
 	}
-	setSamplesPerEBit (SamplesPerEBit) ;
+	setSamplesPerVertex (SamplesPerVertex) ;
+	setEmbValueModulus (EmbValueModulus) ;
 	setRadius (0) ; // undefined, neighbourhood relatin decided by svam
 }
 

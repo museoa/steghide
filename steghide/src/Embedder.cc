@@ -65,7 +65,7 @@ Embedder::Embedder ()
 	// read cover-/stego-file
 	CvrStgFile::readFile (Args.CvrFn.getValue()) ;
 	
-	if ((ToEmbed.getLength() * Globs.TheCvrStgFile->getSamplesPerEBit()) > Globs.TheCvrStgFile->getNumSamples()) {
+	if ((ToEmbed.getLength() * Globs.TheCvrStgFile->getSamplesPerVertex()) > Globs.TheCvrStgFile->getNumSamples()) {
 		throw SteghideError (_("the cover file is too short to embed the data.")) ;
 	}
 
@@ -212,9 +212,9 @@ void Embedder::embedExposedVertex (Vertex *v)
 	SamplePos samplepos = 0 ;
 	SampleValue *newsample = NULL ;
 	float mindistance = FLT_MAX ;
-	for (unsigned short i = 0 ; i < Globs.TheCvrStgFile->getSamplesPerEBit() ; i++) {
+	for (unsigned short i = 0 ; i < Globs.TheCvrStgFile->getSamplesPerVertex() ; i++) {
 		SampleValue *curold = v->getSampleValue(i) ;
-		SampleValue *curnew = v->getSampleValue(i)->getNearestOppositeSampleValue() ;
+		SampleValue *curnew = v->getSampleValue(i)->getNearestTargetSampleValue(v->getTargetValue(i)) ;
 		if (curold->calcDistance (curnew) < mindistance) {
 			samplepos = v->getSamplePos(i) ;
 			newsample = curnew ;
@@ -229,8 +229,8 @@ void Embedder::embedExposedVertex (Vertex *v)
 	printDebug (1, "embedding vertex with label %lu by changing sample position %lu.", v->getLabel(), samplepos) ;
 #endif
 
-	BIT oldbit = Globs.TheCvrStgFile->getSampleBit (samplepos) ;
+	BIT oldbit = Globs.TheCvrStgFile->getEmbeddedValue (samplepos) ;
 	Globs.TheCvrStgFile->replaceSample (samplepos, newsample) ;
-	myassert (oldbit != Globs.TheCvrStgFile->getSampleBit (samplepos)) ;
+	myassert (oldbit != Globs.TheCvrStgFile->getEmbeddedValue (samplepos)) ;
 	delete newsample ;
 }

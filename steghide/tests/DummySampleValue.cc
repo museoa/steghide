@@ -37,7 +37,7 @@ bool DummySampleValue::isNeighbour (const SampleValue* s) const
 	return (*svam)[Value][sample->getValue()] ;
 }
 
-SampleValue* DummySampleValue::getNearestOppositeSampleValue (void) const
+SampleValue* DummySampleValue::getNearestTargetSampleValue (EmbValue t) const
 {
 	UWORD16 n_value = 0 ;
 	if (Value == 0) {
@@ -54,6 +54,7 @@ SampleValue* DummySampleValue::getNearestOppositeSampleValue (void) const
 			n_value = Value + 1 ;
 		}
 	}
+	myassert (n_value % 2 == t) ;
 	return ((SampleValue *) new DummySampleValue (n_value)) ;
 }
 

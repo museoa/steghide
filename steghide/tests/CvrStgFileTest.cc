@@ -47,6 +47,7 @@ bool CvrStgFileTest::genericTestReadWrite (const std::string& rfn, bool new_wfn)
 
 		retval = areEqual (rfn, "test_rw.bak") ;
 
+		myassert(false) ;
 		// FIXME - finish this
 	}
 
@@ -58,7 +59,7 @@ bool CvrStgFileTest::genericTestReadExtractCompare (const std::string& fn, const
 	CvrStgFile *file = CvrStgFile::readFile (fn) ;
 	bool ok = true ;
 	for (unsigned long i = 0 ; i < emb.getLength() ; i++) {
-		ok = (emb[i] == file->getSampleBit(i)) && ok ;
+		ok = (emb.getNAry(file->getEmbValueModulus(), i) == file->getEmbeddedValue(i)) && ok ;
 	}
 	delete file ;
 
@@ -72,8 +73,9 @@ bool CvrStgFileTest::genericTestReadEmbedExtract (const std::string& fn, const B
 	// embed data (at the beginning of the file)
 	for (unsigned long i = 0 ; i < emb.getLength() ; i++) {
 		SampleValue *oldsample = file->getSampleValue (i) ;
-		if (oldsample->getBit() != emb[i]) {
-			SampleValue *newsample = oldsample->getNearestOppositeSampleValue() ;
+		EmbValue target = emb.getNAry(file->getEmbValueModulus(), i) ;
+		if (oldsample->getEmbeddedValue() != target) {
+			SampleValue* newsample = oldsample->getNearestTargetSampleValue (target) ;
 			file->replaceSample (i, newsample) ;
 			delete newsample ;
 		}
@@ -83,7 +85,7 @@ bool CvrStgFileTest::genericTestReadEmbedExtract (const std::string& fn, const B
 	// extract and compare
 	bool retval = true ;
 	for (unsigned long i = 0 ; i < emb.getLength() ; i++) {
-		if (file->getSampleBit(i) != emb[i]) {
+		if (file->getEmbeddedValue(i) != emb.getNAry(file->getEmbValueModulus(), i)) {
 			retval = false ;
 		}
 	}
@@ -102,8 +104,9 @@ bool CvrStgFileTest::genericTestReadEmbedWriteReadExtract (const std::string& cv
 	// embed
 	for (unsigned long i = 0 ; i < emb.getLength() ; i++) {
 		SampleValue *oldsample = file->getSampleValue (i) ;
-		if (oldsample->getBit() != emb[i]) {
-			SampleValue *newsample = oldsample->getNearestOppositeSampleValue() ;
+		EmbValue target = emb.getNAry(file->getEmbValueModulus(), i) ;
+		if (oldsample->getEmbeddedValue() != target) {
+			SampleValue* newsample = oldsample->getNearestTargetSampleValue (target) ;
 			file->replaceSample (i, newsample) ;
 			delete newsample ;
 		}
@@ -121,7 +124,7 @@ bool CvrStgFileTest::genericTestReadEmbedWriteReadExtract (const std::string& cv
 	// extract and compare
 	bool retval = true ;
 	for (unsigned long i = 0 ; i < emb.getLength() ; i++) {
-		if (file->getSampleBit(i) != emb[i]) {
+		if (file->getEmbeddedValue(i) != emb.getNAry(file->getEmbValueModulus(), i)) {
 			retval = false ;
 		}
 	}

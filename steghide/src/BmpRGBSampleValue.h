@@ -34,7 +34,7 @@ class BmpRGBSampleValue : public BmpSampleValue {
 	BmpRGBSampleValue (BYTE r, BYTE g, BYTE b) ;
 	BmpRGBSampleValue (RGBTriple t) ;
 
-	SampleValue* getNearestOppositeSampleValue (void) const ;
+	SampleValue* getNearestTargetSampleValue (EmbValue t) const ;
 	std::string getName (void) const ;
 
 	BYTE getRed (void) const { return Color.Red ; } ;
@@ -43,6 +43,15 @@ class BmpRGBSampleValue : public BmpSampleValue {
 
 	private:
 	RGBTriple Color ;
+
+	UWORD32 calcKey (const RGBTriple& rgb) const
+		{ return (((UWORD32) rgb.Red << 16) | ((UWORD32) rgb.Green << 8) | ((UWORD32) rgb.Blue)) ;} ;
+
+	EmbValue calcEValue (const RGBTriple& rgb) const
+		{ return ((EmbValue) ((rgb.Red & 1) ^ (rgb.Green & 1) ^ (rgb.Blue & 1))) ; } ;
+
+	enum COLOR { RED, GREEN, BLUE } ;
+	enum DIRECTION { UP, DOWN } ;
 
 	/**
 	 * add the BYTEs a and b
@@ -57,9 +66,13 @@ class BmpRGBSampleValue : public BmpSampleValue {
 	BYTE minus (BYTE a, BYTE b) const ;
 
 	/**
-	 * add a candidate for the nearest opposite sample to cands
+	 * add candidates for the nearest target sample value
+	 * \param cands the candidates vector
+	 * \param cube the color values describing the current search cube
+	 * \param fc the fixed color
+	 * \param fd the fixed side of the fixed color
 	 **/
-	void addNOSCandidate (std::vector<RGBTriple>& cands, BYTE r, BYTE g, BYTE b) const ;
+	void addNTSVCandidates (std::vector<RGBTriple>& cands, const BYTE cube[3][2], COLOR fc, DIRECTION fd, COLOR i1, COLOR i2, EmbValue t) const ;
 } ;
 
 #endif // ndef SH_BMPRGBSAMPLEVALUE_H

@@ -64,28 +64,43 @@ WavPCMSampleValue::WavPCMSampleValue (int v)
 	myassert (MinValue <= Value) ;
 	myassert (Value <= MaxValue) ;
 
-	SBit = (BIT) (Value & 1) ;
-	Key = (unsigned long) Value ;
+	Key = (UWORD32) Value ;
+	EValue = calcEValue (Value) ;
 }
 
-SampleValue *WavPCMSampleValue::getNearestOppositeSampleValue () const
+SampleValue *WavPCMSampleValue::getNearestTargetSampleValue (EmbValue t) const
 {
-	int n_value = 0 ;
-	if (Value == MinValue) {
-		n_value = MinValue + 1 ;
-	}
-	else if (Value == MaxValue) {
-		n_value = MaxValue - 1 ;
-	}
-	else {
-		if (RndSrc.getBool()) {
-			n_value = Value - 1 ;
+	int val_up = Value, val_down = Value, newval = 0 ;
+	bool found = false ;
+
+	do {
+		if (val_up < MaxValue) {
+			val_up++ ;
 		}
-		else {
-			n_value = Value + 1 ;
+		if (val_down > MinValue) {
+			val_down-- ;
 		}
-	}
-	return ((SampleValue *) new WavPCMSampleValue (n_value)) ;
+
+		if (calcEValue(val_up) == t && calcEValue(val_down) == t) {
+			if (RndSrc.getBool()) {
+				newval = val_up ;
+			}
+			else {
+				newval = val_down ;
+			}
+			found = true ;
+		}
+		else if (calcEValue(val_up) == t) {
+			newval = val_up ;
+			found = true ;
+		}
+		else if (calcEValue(val_down) == t) {
+			newval = val_down ;
+			found = true ;
+		}
+	} while (!found) ;
+
+	return ((SampleValue *) new WavPCMSampleValue (newval)) ;
 }
 
 UWORD32 WavPCMSampleValue::calcDistance (const SampleValue *s) const

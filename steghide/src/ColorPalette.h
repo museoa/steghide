@@ -30,13 +30,11 @@
  * \class ColorPalette
  * \brief a color palette
  *
- * This class is essentially a vector<RGBTriple> with some additional
- * functionality and some wrappers for exisiting methods.
+ * This class is essentially a vector<RGBTriple> with
+ * some wrappers for exisiting methods.
  **/
 class ColorPalette : public std::vector<RGBTriple> {
 	public:
-	enum SUBSET { ALL, EVENINDICES, ODDINDICES } ;
-
 	/**
 	 * get the size, i.e. the number of entries of this color palette
 	 **/
@@ -54,16 +52,6 @@ class ColorPalette : public std::vector<RGBTriple> {
 	 **/
 	void addEntry (BYTE r, BYTE g, BYTE b)
 		{ push_back (RGBTriple (r, g, b)) ; } ;
-
-	/**
-	 * given an index i, find the color which has the least distance to the i-th color (except i)
-	 * \param i the index of the "source color"
-	 * \param s the subset that is to be searched
-	 * \return the index of the color that is in the subset s and has the least distance to the i-th color
-	 *
-	 * The distance measure defined by RGBTriple is used here.
-	 **/
-	unsigned int getNearest (unsigned int idx, SUBSET s = ALL) ;
 } ;
 
 #endif // ndef SH_COLORPALETTE_H

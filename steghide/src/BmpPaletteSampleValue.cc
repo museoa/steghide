@@ -28,15 +28,30 @@ BmpPaletteSampleValue::BmpPaletteSampleValue (unsigned char i)
 	const BmpFile* bmpfile = dynamic_cast<const BmpFile*> (Globs.TheCvrStgFile) ;
 	myassert (bmpfile) ;
 	Palette = bmpfile->getPalette() ;
-	SBit = (BIT) (Index & 1) ;
 	Key = ((unsigned long) getIndex() << 24) | ((unsigned long) getRed() << 16) |
 		  ((unsigned long) getGreen() << 8) | ((unsigned long) getBlue()) ;
+	EValue = calcEValue(getIndex()) ;
 }
 
-SampleValue* BmpPaletteSampleValue::getNearestOppositeSampleValue () const
+SampleValue* BmpPaletteSampleValue::getNearestTargetSampleValue (EmbValue t) const
 {
-	unsigned int nosv_idx = Palette->getNearest (Index, (getBit() == 1 ? ColorPalette::EVENINDICES : ColorPalette::ODDINDICES)) ;
-	return ((SampleValue*) new BmpPaletteSampleValue (nosv_idx)) ;
+	BmpPaletteSampleValue* sv_mindist = NULL ;
+	UWORD32 mindist = UWORD32_MAX ;
+	for (unsigned int i = 0 ; i < Palette->getSize() ; i++) {
+		if (calcEValue(i) == t) {
+			BmpPaletteSampleValue* destsv = new BmpPaletteSampleValue (i) ;
+			UWORD32 curdist = calcDistance (destsv) ;
+			if (curdist < mindist) {
+				delete sv_mindist ;
+				sv_mindist = destsv ;
+				mindist = curdist ;
+			}
+			else {
+				delete destsv ;
+			}
+		}
+	}
+	return ((SampleValue*) sv_mindist) ;
 }
 
 std::string BmpPaletteSampleValue::getName () const

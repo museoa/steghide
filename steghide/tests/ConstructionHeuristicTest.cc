@@ -77,6 +77,8 @@ void ConstructionHeuristicTest::setup ()
 		ch3 = new ConstructionHeuristic (g3, m3, 100.0) ;
 		gl3 = Globs ;
 	}
+
+	// FIXME - test with real (i.e. large) graphs
 }
 
 void ConstructionHeuristicTest::cleanup ()

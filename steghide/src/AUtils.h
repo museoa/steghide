@@ -37,6 +37,16 @@ class AUtils {
 	 * returns a divided through b rounded up to nearest "integer" (needs =, --, +, /)
 	 **/
 	static T div_roundup (T a, T b) ;
+
+	/**
+	 * substraction with the modification to return 0 (T()) for negative difference (needs >, -, T())
+	 **/
+	static T bminus (T a, T b) ;
+
+	/**
+	 * calculate the sum s[0]+...s[n-1] modulo m (needs =, +, %)
+	 **/
+	static T modsum (T* s, unsigned short n, T m) ;
 } ;
 
 template<class T>
@@ -55,6 +65,27 @@ T AUtils<T>::div_roundup (T a, T b)
 {
 	T c = b-- ;
 	return ((a + b) / c) ;
+}
+
+template<class T>
+T AUtils<T>::bminus (T a, T b)
+{
+	if (a > b) {
+		return (a - b) ;
+	}
+	else {
+		return T() ;
+	}
+}
+
+template<class T>
+T AUtils<T>::modsum (T* s, unsigned short n, T m)
+{
+	T retval() ;
+	for (unsigned short i = 0 ; i < n ; i++) {
+		retval = (retval + s[i]) % m ;
+	}
+	return retval ;
 }
 
 #endif // ndef SH_AUTILS_H

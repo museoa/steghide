@@ -88,10 +88,11 @@ class BmpFile : public CvrStgFile {
 	static const unsigned short SizeBMCOREHEADER = 12 ;
 	static const unsigned int COMPRESSION_BI_RGB = 0 ;
 
-	static const unsigned short SamplesPerEBit_Palette = 2 ;
-	static const unsigned short SamplesPerEBit_RGB = 1 ;
+	static const unsigned short SamplesPerVertex_Palette = 2 ;
+	static const unsigned short SamplesPerVertex_RGB = 1 ;
 	/// the default radius (400 = 20^2)
 	static const UWORD32 Radius = 400 ;
+	static const EmbValue EmbValueModulus = 2 ;
 
 	enum SUBFORMAT { WIN, OS2 } ;
 

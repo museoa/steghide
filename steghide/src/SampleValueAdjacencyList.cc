@@ -26,61 +26,13 @@
 #include "CvrStgFile.h"
 #include "Graph.h"
 #include "SampleValue.h"
-#include "SampleValueOppositeNeighbourhood.h"
+#include "SampleValueAdjacencyList.h"
 #include "WavPCMSampleValue.h"
 #include "common.h"
 
-SampleValueOppositeNeighbourhood::SampleValueOppositeNeighbourhood (Graph* g, const std::vector<SampleValue*>& svalues)
-	: TheGraph(g)
-{
-	if (svalues.size() > 0) { // graph contains at least one vertex
-		if (dynamic_cast<BmpRGBSampleValue*> (svalues[0])) {
-			calcOppNeighs_rgb (svalues) ;
-		}
-		else if (dynamic_cast<WavPCMSampleValue*> (svalues[0])) {
-			calcOppNeighs_wav (svalues) ;
-		}
-		else {
-			calcOppNeighs_generic (svalues) ;
-		}
-	}
-}
-
-void SampleValueOppositeNeighbourhood::calcOppNeighs_generic (const std::vector<SampleValue*> &svalues)
-{
-	// partition samples into those with getBit() == 0 and with getBit() == 1
-	unsigned long numsvs = svalues.size() ;
-
-	std::vector<SampleValue*> svalues0 ;
-	svalues0.reserve (numsvs / 2) ;
-	std::vector<SampleValue*> svalues1 ;
-	svalues1.reserve (numsvs / 2) ;
-
-	for (unsigned long l = 0 ; l < numsvs ; l++) {
-		if (svalues[l]->getBit() == 0) {
-			svalues0.push_back (svalues[l]) ;
-		}
-		else {
-			svalues1.push_back (svalues[l]) ;
-		}
-	}
-
-	// fill OppNeighs data structure
-	OppNeighs = std::vector<std::vector<SampleValue*> > (numsvs) ;
-	for (unsigned long i0 = 0 ; i0 < svalues0.size() ; i0++) {
-		for (unsigned long i1 = 0 ; i1 < svalues1.size() ; i1++) {
-			if (svalues0[i0]->isNeighbour(svalues1[i1])) {
-				OppNeighs[svalues0[i0]->getLabel()].push_back (svalues1[i1]) ;
-				OppNeighs[svalues1[i1]->getLabel()].push_back (svalues0[i0]) ;
-			}
-		}
-	}
-
-	// sort OppNeighs data structure
-	sortOppNeighs() ;
-}
-
-void SampleValueOppositeNeighbourhood::calcOppNeighs_rgb (const std::vector<SampleValue*> &svalues)
+#if 0
+// FIXME - incorporate specializations into *File
+void SampleValueAdjacencyList::calcOppNeighs_rgb (const std::vector<SampleValue*> &svalues)
 {
 	unsigned long numsvs = svalues.size() ;
 
@@ -150,7 +102,7 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_rgb (const std::vector<Samp
 	sortOppNeighs() ;
 }
 
-void SampleValueOppositeNeighbourhood::calcOppNeighs_wav (const std::vector<SampleValue*> &svalues)
+void SampleValueAdjacencyList::calcOppNeighs_wav (const std::vector<SampleValue*> &svalues)
 {
 	// partition samples into those with getBit() == 0 and with getBit() == 1
 	unsigned long n = svalues.size() ;
@@ -197,26 +149,44 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_wav (const std::vector<Samp
 	sortOppNeighs() ;
 }
 
-void SampleValueOppositeNeighbourhood::sortOppNeighs (void)
+int SampleValueAdjacencyList::roundup (float x)
 {
-	for (SampleValueLabel lbl = 0 ; lbl < OppNeighs.size() ; lbl++) {
-		SampleValue* srcsample = TheGraph->SampleValues[lbl] ;
-		std::vector<SampleValue*>& oppneighs = OppNeighs[lbl] ;
+	int retval = -1 ;
+	float intpart = (float) ((int) x) ;
+	if (x - intpart == 0) {
+		retval = (int) x ;
+	}
+	else {
+		retval = ((int) x) + 1 ;
+	}
+	return retval ;
+}
+#endif
 
-		if (oppneighs.size() > 0) {
-			UWORD32* distances = new UWORD32[oppneighs.size() + 1] ;
-			for (unsigned int i = 0 ; i < oppneighs.size() ; i++) {
-				distances[i] = srcsample->calcDistance (oppneighs[i]) ;
+SampleValueAdjacencyList::SampleValueAdjacencyList (SampleValueLabel numsvs)
+{
+	AdjacencyList = std::vector<std::vector<SampleValue*> > (numsvs) ;
+}
+
+void SampleValueAdjacencyList::sort ()
+{
+	for (SampleValueLabel lbl = 0 ; lbl < AdjacencyList.size() ; lbl++) {
+		std::vector<SampleValue*>& row = AdjacencyList[lbl] ;
+
+		if (row.size() > 0) {
+			UWORD32* distances = new UWORD32[row.size() + 1] ;
+			for (unsigned int i = 0 ; i < row.size() ; i++) {
+				distances[i] = Globs.TheGraph->SampleValues[lbl]->calcDistance (row[i]) ;
 			}
 
-			quicksort (oppneighs, distances, 0, oppneighs.size() - 1) ;
+			quicksort (row, distances, 0, row.size() - 1) ;
 
 			delete[] distances ;
 		}
 	}
 }
 
-void SampleValueOppositeNeighbourhood::quicksort (std::vector<SampleValue*>& oppneighs, UWORD32* distances, unsigned int l, unsigned int r)
+void SampleValueAdjacencyList::quicksort (std::vector<SampleValue*>& oppneighs, UWORD32* distances, unsigned int l, unsigned int r)
 {
 	if (l < r) {
 		unsigned int p = partition (oppneighs, distances, l, r, distances[r]) ;
@@ -227,7 +197,7 @@ void SampleValueOppositeNeighbourhood::quicksort (std::vector<SampleValue*>& opp
 	}
 }
 
-unsigned int SampleValueOppositeNeighbourhood::partition (std::vector<SampleValue*>& oppneighs, UWORD32* distances, unsigned int l, unsigned int r, UWORD32 x)
+unsigned int SampleValueAdjacencyList::partition (std::vector<SampleValue*>& oppneighs, UWORD32* distances, unsigned int l, unsigned int r, UWORD32 x)
 {
 	unsigned int i = l, j = r ;
 	while (i < j) {
@@ -245,7 +215,7 @@ unsigned int SampleValueOppositeNeighbourhood::partition (std::vector<SampleValu
 	return i ;
 }
 
-void SampleValueOppositeNeighbourhood::swap (std::vector<SampleValue*>& oppneighs, UWORD32* distances, unsigned int i, unsigned int j)
+void SampleValueAdjacencyList::swap (std::vector<SampleValue*>& oppneighs, UWORD32* distances, unsigned int i, unsigned int j)
 {
 	SampleValue* tmp1 = oppneighs[i] ;
 	UWORD32 tmp2 = distances[i] ;
@@ -255,20 +225,10 @@ void SampleValueOppositeNeighbourhood::swap (std::vector<SampleValue*>& oppneigh
 	distances[j] = tmp2 ;
 }
 
-int SampleValueOppositeNeighbourhood::roundup (float x)
-{
-	int retval = -1 ;
-	float intpart = (float) ((int) x) ;
-	if (x - intpart == 0) {
-		retval = (int) x ;
-	}
-	else {
-		retval = ((int) x) + 1 ;
-	}
-	return retval ;
-}
 
-bool SampleValueOppositeNeighbourhood::check (bool verbose) const
+// FIXME - rewrite this
+#if 0
+bool SampleValueAdjacencyList::check (bool verbose) const
 {
 	bool retval = true ;
 	retval = check_size (verbose) && retval ;
@@ -279,7 +239,7 @@ bool SampleValueOppositeNeighbourhood::check (bool verbose) const
 	return retval ;
 }
 
-bool SampleValueOppositeNeighbourhood::check_size (bool verbose) const
+bool SampleValueAdjacencyList::check_size (bool verbose) const
 {
 	bool size = (OppNeighs.size() == TheGraph->SampleValues.size()) ;
 	if (!size && verbose) {
@@ -291,7 +251,7 @@ bool SampleValueOppositeNeighbourhood::check_size (bool verbose) const
 	return size ;
 }
 
-bool SampleValueOppositeNeighbourhood::check_soundness (bool verbose) const
+bool SampleValueAdjacencyList::check_soundness (bool verbose) const
 {
 	unsigned long numsvs = TheGraph->SampleValues.size() ;
 
@@ -314,7 +274,7 @@ bool SampleValueOppositeNeighbourhood::check_soundness (bool verbose) const
 	return !(err_nonopp || err_nonneigh) ;
 }
 
-bool SampleValueOppositeNeighbourhood::check_sorted (bool verbose) const
+bool SampleValueAdjacencyList::check_sorted (bool verbose) const
 {
 	// check if OppNeighs[l][1...n] have increasing distance
 	bool err_unsorted = false ;
@@ -345,7 +305,7 @@ bool SampleValueOppositeNeighbourhood::check_sorted (bool verbose) const
 	return !err_unsorted ;
 }
 
-bool SampleValueOppositeNeighbourhood::check_uniqueness (bool verbose) const
+bool SampleValueAdjacencyList::check_uniqueness (bool verbose) const
 {
 	// check if there is no sample value that has two entries in an OppNeighs[i]
 	bool err_nonunique = false ;
@@ -361,7 +321,7 @@ bool SampleValueOppositeNeighbourhood::check_uniqueness (bool verbose) const
 	return !err_nonunique ;
 }
 
-bool SampleValueOppositeNeighbourhood::check_completeness (bool verbose) const
+bool SampleValueAdjacencyList::check_completeness (bool verbose) const
 {
 	bool err = false ;
 
@@ -392,3 +352,4 @@ bool SampleValueOppositeNeighbourhood::check_completeness (bool verbose) const
 
 	return !err ;
 }
+#endif

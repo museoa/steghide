@@ -27,6 +27,7 @@
 #include "BmpFile.h"
 #include "JpegFile.h"
 #include "SampleValue.h"
+#include "SampleValueAdjacencyList.h"
 #include "Utils.h"
 #include "WavFile.h"
 #include "common.h"
@@ -34,7 +35,7 @@
 #include "msg.h"
 
 CvrStgFile::CvrStgFile ()
-	: BinIO(NULL), SamplesPerEBit(0), Radius(0)
+	: BinIO(NULL), SamplesPerVertex(0), Radius(0), EmbValueModulus(0)
 {
 	Globs.TheCvrStgFile = this ;
 }
@@ -100,11 +101,35 @@ void CvrStgFile::transform (const std::string& stgfn)
 	setBinIO (new BinaryIO (stgfn, BinaryIO::WRITE)) ;
 }
 
+std::vector<SampleValueAdjacencyList*> CvrStgFile::calcSVAdjacencyLists (const std::vector<SampleValue*>& svs) const
+{
+	EmbValue m = getEmbValueModulus() ;
+	std::vector<SampleValueAdjacencyList*> lists (m) ;
+	for (EmbValue i = 0 ; i < m ; i++) {
+		lists[i] = new SampleValueAdjacencyList (svs.size()) ;
+	}
+
+	for (SampleValueLabel i = 0 ; i < svs.size() ; i++) { // to be integrated into lists
+		SampleValueAdjacencyList* sval = lists[svs[i]->getEmbeddedValue()] ;
+		for (SampleValueLabel j = 0 ; j < svs.size() ; j++) { // line where integration should happen
+			if ((svs[i]->isNeighbour(svs[j])) && (i != j)) {
+				(*sval)[svs[j]].push_back (svs[i]) ;
+			}
+		}
+	}
+
+	for (EmbValue i = 0 ; i < m ; i++) {
+		lists[i]->sort() ;
+	}
+
+	return lists ;
+}
+
 // FIXME - implement this in ...File to save some time - include tests: implementation in ...File is equivalent to getSample(pos)-> getBit()
-BIT CvrStgFile::getSampleBit (const SamplePos pos) const
+EmbValue CvrStgFile::getEmbeddedValue (const SamplePos pos) const
 {
 	SampleValue* sv = getSampleValue(pos) ;
-	BIT retval = sv->getBit() ;
+	EmbValue retval = sv->getEmbeddedValue() ;
 	delete sv ;
 	return retval ;
 }

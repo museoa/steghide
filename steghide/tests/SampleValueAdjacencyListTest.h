@@ -18,45 +18,29 @@
  *
  */
 
-#include "ColorPalette.h"
-#include "common.h"
+#ifndef SH_SAMPLEVALUEOPPOSITENEIGHBOURHOODTEST_H
+#define SH_SAMPLEVALUEOPPOSITENEIGHBOURHOODTEST_H
 
-unsigned int ColorPalette::getNearest (unsigned int idx, ColorPalette::SUBSET s)
-{
-	const RGBTriple& thistriple = (*this)[idx] ;
+#define private public
+#define protected public
+#include "SampleValueAdjacencyList.h"
+#undef private
+#undef protected
 
-	unsigned int i = 0 ;
-	unsigned int inc = 0 ;
-	switch (s) {
-		case ALL:
-		i = 0 ;
-		inc = 1 ;
-		break ;
+#include "UnitTest.h"
+#include "TestSuite.h"
 
-		case EVENINDICES:
-		i = 0 ;
-		inc = 2 ;
-		break ;
+class SampleValueAdjacencyListTest : public UnitTest {
+	public:
+	SampleValueAdjacencyListTest (TestSuite* s) ;
 
-		case ODDINDICES:
-		i = 1 ;
-		inc = 2 ;
-		break ;
+	void setup (void) ;
 
-		default:
-		myassert (0) ;
-		break ;
-	}
+	void testQuicksort (void) ;
 
-	unsigned int idx_mindist = 0 ;
-	UWORD32 mindist = UWORD32_MAX ;
-	for ( ; i < size() ; i += inc) {
-		UWORD32 curdist = thistriple.calcDistance ((*this)[i]) ;
-		if (curdist < mindist && i != idx) {
-			mindist = curdist ;
-			idx_mindist = i ;
-		}
-	}
+	private:
+	SampleValueAdjacencyList DummySVAL ;
+	std::vector<SampleValue*> SVEmpty ;
+} ;
 
-	return idx_mindist ;
-}
+#endif // ndef SH_SAMPLEVALUEOPPOSITENEIGHBOURHOODTEST_H

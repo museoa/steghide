@@ -36,6 +36,10 @@ class Vertex ;
  *
  * The Vertex that is the source for all edges is called "source vertex".
  * The order of the iteration through the edges is from the shortest to the longest edge.
+ * If two edges have the same length they are ordered the same way as the corresponding
+ * entries in the sample value adjacency lists (for different sample values) respectivly
+ * the destination sample occurences in the SampleOccurences data structure (for the same
+ * sample value).
  *
  * EdgeIterator uses an SampleOccurence::const_iterator to store information
  * about the current edge. Graph::(un)markDeletedSampleOccurence can invalidate
@@ -47,8 +51,9 @@ class Vertex ;
  **/
 class EdgeIterator {
 	public:
-	enum ITERATIONMODE {	SAMPLEOCCURENCE,	// incrementing increments to next sample occurence (possibly of the same sample value) thus using every edge of the source vertex
-				SAMPLEVALUE		// incrementing increments to the next sample value thus not using all edges in general
+	enum ITERATIONMODE {
+		SAMPLEOCCURENCE,	// incrementing increments to next sample occurence (possibly of the same sample value) thus using every edge of the source vertex
+		SAMPLEVALUE		// incrementing increments to the next sample value thus not using all edges in general
 	} ;
 
 	/**
@@ -70,7 +75,7 @@ class EdgeIterator {
 	 * The returned Edge object is created in this function and
 	 * should be deleted by the caller.
 	 **/
-	Edge* operator* (void) ;
+	Edge* operator* (void) const ;
 
 	/**
 	 * set this iterator to next edge
@@ -112,7 +117,7 @@ class EdgeIterator {
 	ITERATIONMODE Mode ;
 
 	/// contains (for every sample value) an index to the current opposite neighbour
-	unsigned long* SVOppNeighsIndices ;
+	unsigned long* SVALIndices ;
 
 	/// the maximum number of edges the EdgeIterator should iterate through
 	static UWORD32 MaxNumEdges ;
@@ -141,6 +146,9 @@ class EdgeIterator {
 	 * \return true iff there is a sample with value sv that is part of an edge starting at SrcVertex
 	 **/
 	bool isDestSampleValueOK (const SampleValue *sv) ;
+
+	/// check if operator* will return a valid edge
+	bool check_EdgeValidity (void) const ;
 } ;
 
 #endif // ndef SH_EDGEITERATOR_H

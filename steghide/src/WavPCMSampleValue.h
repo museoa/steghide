@@ -31,7 +31,7 @@ class WavPCMSampleValue : public SampleValue {
 	public:
 	WavPCMSampleValue (int v) ;
 
-	SampleValue* getNearestOppositeSampleValue (void) const ;
+	SampleValue* getNearestTargetSampleValue (EmbValue t) const ;
 	UWORD32 calcDistance (const SampleValue *s) const ;
 	std::string getName (void) const ;
 
@@ -42,6 +42,9 @@ class WavPCMSampleValue : public SampleValue {
 	int Value ;
 	int MaxValue ;
 	int MinValue ;
+
+	EmbValue calcEValue (int v) const
+		{ return (v & 1) ; }
 } ;
 
 class WavPCMSmaller : public std::binary_function<WavPCMSampleValue*,WavPCMSampleValue*,bool> {

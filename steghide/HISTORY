@@ -9,7 +9,7 @@ steghide 0.5.1 :
 
 * use of permutation as distribution function
 
-* a 'capacity' command to display the capacity of a cover file
+* a 'info' command to display the information about a cover- or stego- file (including it's capacity)
 
 * random data can be taken from /dev/urandom
 

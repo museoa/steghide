@@ -28,7 +28,7 @@
 EdgeIterator::EdgeIterator (Vertex *v, ITERATIONMODE m)
 {
 	SrcVertex = v ;
-	SVOppNeighsIndices = new unsigned long[Globs.TheGraph->getSamplesPerVertex()] ;
+	SVALIndices = new unsigned long[Globs.TheCvrStgFile->getSamplesPerVertex()] ;
 	reset(m) ;
 }
 
@@ -37,9 +37,9 @@ EdgeIterator::EdgeIterator (const EdgeIterator& eit)
 	SrcVertex = eit.SrcVertex ;
 	SrcIndex = eit.SrcIndex ;
 	Mode = eit.Mode ;
-	SVOppNeighsIndices = new unsigned long[Globs.TheGraph->getSamplesPerVertex()] ;
-	for (unsigned short i = 0 ; i < Globs.TheGraph->getSamplesPerVertex() ; i++) {
-		SVOppNeighsIndices[i] = eit.SVOppNeighsIndices[i] ;
+	SVALIndices = new unsigned long[Globs.TheCvrStgFile->getSamplesPerVertex()] ;
+	for (unsigned short i = 0 ; i < Globs.TheCvrStgFile->getSamplesPerVertex() ; i++) {
+		SVALIndices[i] = eit.SVALIndices[i] ;
 	}
 	Finished = eit.Finished ;
 	SampleOccurenceIt = eit.SampleOccurenceIt ;
@@ -47,10 +47,10 @@ EdgeIterator::EdgeIterator (const EdgeIterator& eit)
 
 EdgeIterator::~EdgeIterator ()
 {
-	delete[] SVOppNeighsIndices ;
+	delete[] SVALIndices ;
 }
 
-Edge* EdgeIterator::operator* ()
+Edge* EdgeIterator::operator* () const
 {
 	Edge* retval = NULL ;
 	if (!Finished) {
@@ -59,6 +59,7 @@ Edge* EdgeIterator::operator* ()
 	return retval ;
 }
 
+// FIXME - speed improvement if no switch is used - instead a virtual function a derived classes ?
 EdgeIterator& EdgeIterator::operator++ ()
 {
 	myassert (!Finished) ;
@@ -67,23 +68,26 @@ EdgeIterator& EdgeIterator::operator++ ()
 		case SAMPLEOCCURENCE:
 		{
 			SampleValue* srcsv = SrcVertex->getSampleValue(SrcIndex) ;
-			SampleValue* destsv = Globs.TheGraph->SampleValueOppNeighs[srcsv][SVOppNeighsIndices[SrcIndex]] ;
+			SampleValue* destsv = (*(Globs.TheGraph->SVALists[SrcVertex->getTargetValue(SrcIndex)]))[srcsv][SVALIndices[SrcIndex]] ;
 
-			do { // to avoid looping edge (SrcVertex,SrcVertex)
+			do {
 				SampleOccurenceIt++ ;
 			} while ((SampleOccurenceIt != Globs.TheGraph->SampleOccurences[destsv->getLabel()].end()) &&
-				(SampleOccurenceIt->getVertex()->getLabel() == SrcVertex->getLabel())) ;
+				// to avoid looping edge (SrcVertex,SrcVertex)
+				((SampleOccurenceIt->getVertex()->getLabel() == SrcVertex->getLabel()) ||
+				// to find a valid edge
+				(srcsv->getEmbeddedValue() != SampleOccurenceIt->getVertex()->getTargetValue(SampleOccurenceIt->getIndex())))) ;
 
 			if (SampleOccurenceIt == Globs.TheGraph->SampleOccurences[destsv->getLabel()].end()) {
 				// search new destination sample value
-				SVOppNeighsIndices[SrcIndex]++ ;
+				SVALIndices[SrcIndex]++ ;
 				findNextEdge() ;
 			}
 			break ;
 		}
 		case SAMPLEVALUE:
 		{
-			SVOppNeighsIndices[SrcIndex]++ ;
+			SVALIndices[SrcIndex]++ ;
 			findNextEdge() ;
 			break ;
 		}
@@ -93,6 +97,11 @@ EdgeIterator& EdgeIterator::operator++ ()
 	if (++EdgeIndex >= MaxNumEdges) {
 		Finished = true ;
 	}
+	else { // FIXME - temporarily
+		if (!Finished) { // might have been set in findNextEdge()
+			myassert (check_EdgeValidity()) ;
+		}
+	}
 
 	return *this ;
 }
@@ -101,31 +110,36 @@ void EdgeIterator::reset (ITERATIONMODE m)
 {
 	Mode = m ;
 	Finished = false ;
-	for (unsigned short i = 0 ; i < Globs.TheGraph->getSamplesPerVertex() ; i++) {
-		SVOppNeighsIndices[i] = 0 ;
+	for (unsigned short i = 0 ; i < Globs.TheCvrStgFile->getSamplesPerVertex() ; i++) {
+		SVALIndices[i] = 0 ;
 	}
 	findNextEdge() ;
 	EdgeIndex = 0 ;
+
+	if (!Finished) {// FIXME - temporarily
+		myassert (check_EdgeValidity()) ;
+	}
 }
 
 void EdgeIterator::findNextEdge ()
 {
 	UWORD32 mindist = UWORD32_MAX ;
-	for (unsigned short i = 0 ; i < Globs.TheGraph->getSamplesPerVertex() ; i++) {
+	for (unsigned short i = 0 ; i < Globs.TheCvrStgFile->getSamplesPerVertex() ; i++) {
 		SampleValue* srcsv = SrcVertex->getSampleValue(i) ;
 		SampleValue* destsv = NULL ;
 		std::list<SampleOccurence>::const_iterator soccit_candidate ;
 
-		// increment SVOppNeighsIndices[i] until it points to a valid destination sample value
-		while (SVOppNeighsIndices[i] < Globs.TheGraph->SampleValueOppNeighs[srcsv].size()) {
-			destsv = Globs.TheGraph->SampleValueOppNeighs[srcsv][SVOppNeighsIndices[i]] ;
+		// increment SVALIndices[i] until it points to a valid destination sample value
+		while (SVALIndices[i] < (*(Globs.TheGraph->SVALists[SrcVertex->getTargetValue(i)]))[srcsv].size()) {
+			destsv = (*(Globs.TheGraph->SVALists[SrcVertex->getTargetValue(i)]))[srcsv][SVALIndices[i]] ;
 
 			// look for a sample occurence of destsv - thereby setting soccit_candidate
 			bool found = false ;
 			const std::list<SampleOccurence>& socc = Globs.TheGraph->SampleOccurences[destsv->getLabel()] ;
 			soccit_candidate = socc.begin() ;
 			while (!found && soccit_candidate != socc.end()) {
-				if (soccit_candidate->getVertex()->getLabel() == SrcVertex->getLabel()) {
+				if ((soccit_candidate->getVertex()->getLabel() == SrcVertex->getLabel()) || 
+					(srcsv->getEmbeddedValue() != soccit_candidate->getVertex()->getTargetValue(soccit_candidate->getIndex()))) {
 					soccit_candidate++ ;
 				}
 				else {
@@ -137,12 +151,12 @@ void EdgeIterator::findNextEdge ()
 				break ;
 			}
 			else {
-				SVOppNeighsIndices[i]++ ;
+				SVALIndices[i]++ ;
 			}
 		}
 
 		// test if the destination sample value leads to edge with (until now) minimal distance - thereby setting SrcIndex and SampleOccurenceIt
-		if (SVOppNeighsIndices[i] < Globs.TheGraph->SampleValueOppNeighs[srcsv].size()) {
+		if (SVALIndices[i] < (*(Globs.TheGraph->SVALists[SrcVertex->getTargetValue(i)]))[srcsv].size()) {
 			UWORD32 thisdist = srcsv->calcDistance(destsv) ;
 			if (thisdist < mindist) {
 				mindist = thisdist ;
@@ -156,6 +170,29 @@ void EdgeIterator::findNextEdge ()
 		// no edge has been found
 		Finished = true ;
 	}
+}
+
+bool EdgeIterator::check_EdgeValidity () const
+{
+	bool retval = true ;
+	Edge* e = **this ;
+
+	unsigned short idx1 = e->getIndex1() ;
+	unsigned short idx2 = e->getIndex2() ;
+	Vertex* v1 = e->getVertex1() ;
+	Vertex* v2 = e->getVertex2() ;
+	SampleValue* sv1 = v1->getSampleValue(idx1) ;
+	SampleValue* sv2 = v2->getSampleValue(idx2) ;
+	EmbValue t1 = v1->getTargetValue(idx1) ;
+	EmbValue t2 = v2->getTargetValue(idx2) ;
+
+	retval = (v1->getLabel() != v2->getLabel()) ; // is already asserted in edge constructor
+	retval = sv1->isNeighbour(sv2) && retval ;
+	retval = (sv1->getEmbeddedValue() == t2) && retval ;
+	retval = (sv2->getEmbeddedValue() == t1) && retval ;
+	delete e ;
+
+	return retval ;
 }
 
 UWORD32 EdgeIterator::MaxNumEdges = UWORD32_MAX ;

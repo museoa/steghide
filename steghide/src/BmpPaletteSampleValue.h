@@ -33,7 +33,7 @@ class BmpPaletteSampleValue : public BmpSampleValue {
 	public:
 	BmpPaletteSampleValue (BYTE i) ;
 
-	SampleValue* getNearestOppositeSampleValue (void) const ;
+	SampleValue* getNearestTargetSampleValue (EmbValue t) const ;
 	std::string getName (void) const ;
 
 	BYTE getIndex (void) const { return Index ; } ;
@@ -44,6 +44,8 @@ class BmpPaletteSampleValue : public BmpSampleValue {
 	private:
 	ColorPalette* Palette ;
 	BYTE Index ;
+
+	EmbValue calcEValue (BYTE idx) const { return (idx & 1) ; } ;
 } ;
 
 #endif // ndef SH_BMPPALETTESAMPLEVALUE_H

@@ -63,17 +63,16 @@ class SampleValue {
 	SampleValue (void) {} ;
 
 	/**
-	 * get the nearest (with the least distance) opposite sample value that can be used in this file
-	 * \return the nearest opposite sample value
+	 * get the nearest (with the least distance to this sample value) sample value whose
+	 * embedded value equals the specified target
+	 * \param t the target embedded value
 	 *
-	 * If two or more opposite samples values have equal distance each of them should
-	 * be returned with equal probability.
+	 * If two or more target sample values have equal distance each of them should be
+	 * returned with equal probability.
 	 *
-	 * The returned SampleValue object should be deleted by the caller.
-	 *
-	 * If an opposite neighbour exists then getNearestOppositeSample() will return a neighbour.
+	 * The returned SampleValue object should be deleted by the callser.
 	 **/
-	virtual SampleValue* getNearestOppositeSampleValue (void) const = 0 ;
+	virtual SampleValue* getNearestTargetSampleValue (EmbValue t) const = 0 ;
 
 	/**
 	 * calculate the distance between the sample value s and this sample value
@@ -97,11 +96,11 @@ class SampleValue {
 	virtual bool isNeighbour (const SampleValue* s) const ;
 
 	/**
-	 * get the bit that is embedded in this sample value
-	 * \return the embedded bit
+	 * get the value that is embedded in this sample value (must be >=0 and <EmbValueModulus)
+	 * \return the embedded value
 	 **/
-	BIT getBit (void) const
-		{ return SBit ; } ;
+	EmbValue getEmbeddedValue (void) const
+		{ return EValue ; } ;
 
 	/**
 	 * get the key for this sample
@@ -130,10 +129,10 @@ class SampleValue {
 	void print (unsigned short spc = 0) const ;
 
 	protected:
-	// FIXME - time/memory: use SBit, Key ?
+	// FIXME - time/memory: use EValue, Key ?
 
 	/// the bit that is embedded in this sample value - must be set in constructor of derived class
-	BIT SBit ;
+	EmbValue EValue ;
 
 	/// the key of this sample value - must be different for two different sample values - must be set in constructor of derived class
 	UWORD32 Key ;

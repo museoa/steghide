@@ -55,8 +55,6 @@ class JpegFile : public CvrStgFile {
 	unsigned long getNumSamples (void) const ;
 	void replaceSample (const SamplePos pos, const SampleValue* s) ;
 	SampleValue* getSampleValue (const SamplePos pos) const ;
-	unsigned short getSamplesPerEBit (void) const
-		{ return SamplesPerEBit ; } ;
 
 #ifdef DEBUG
 	std::map<SampleKey,unsigned long>* getFrequencies (void) ;
@@ -73,8 +71,9 @@ class JpegFile : public CvrStgFile {
 	/// the number of dct coefficients per block
 	static const unsigned int CoeffPerBlock = 64 ;
 
-	static const unsigned short SamplesPerEBit = 2 ;
+	static const unsigned short SamplesPerVertex = 2 ;
 	static const UWORD32 Radius = 1 ;
+	static const EmbValue EmbValueModulus = 2 ;
 
 	struct jpeg_compress_struct CInfo ;
 	struct jpeg_decompress_struct DeCInfo ;

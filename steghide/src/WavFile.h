@@ -50,9 +50,10 @@ class WavFile : public CvrStgFile {
 	private:
 	static const signed short	FormatPCM = 1 ;
 
-	static const unsigned short SamplesPerEBit = 2 ;
+	static const unsigned short SamplesPerVertex = 2 ;
 	static const UWORD32 Radius_small = 1 ;
 	static const UWORD32 Radius_large = 20 ;
+	static const EmbValue EmbValueModulus = 2 ;
 
 	WavChunkHeader *riffchhdr ;
 	char id_wave[4] ;

@@ -18,24 +18,35 @@
  *
  */
 
-#ifndef SH_SVALUEOPPNEIGHS_H
-#define SH_SVALUEOPPNEIGHS_H
+#ifndef SH_SAMPLEVALUEADJACENCYLIST_H
+#define SH_SAMPLEVALUEADJACENCYLIST_H
 
 #include <vector>
 
-#include "common.h"
 #include "SampleValue.h"
+#include "common.h"
 
-class SampleValueOppositeNeighbourhood {
+/**
+ * \class SampleValueAdjacencyList
+ * \brief an adjacency list-like data structur for sample values
+ **/
+class SampleValueAdjacencyList {
 	public:
-	SampleValueOppositeNeighbourhood (void) : TheGraph(NULL) {} ;
-	SampleValueOppositeNeighbourhood (Graph* g, const std::vector<SampleValue*>& svalues) ;
+	/**
+	 * construct a SampleValueAdjacencyList with numsvs rows
+	 **/
+	SampleValueAdjacencyList (SampleValueLabel numsvs) ;
 
-	const std::vector<SampleValue*>& operator[] (const SampleValueLabel lbl) const
-		{ return OppNeighs[lbl] ; } ;
+	std::vector<SampleValue*>& operator[] (const SampleValueLabel lbl)
+		{ return AdjacencyList[lbl] ; } ;
 
-	const std::vector<SampleValue*>& operator[] (const SampleValue* sv) const
-		{ return OppNeighs[sv->getLabel()] ; } ;
+	std::vector<SampleValue*>& operator[] (const SampleValue* sv)
+		{ return AdjacencyList[sv->getLabel()] ; } ;
+
+	/**
+	 * sort the list in a way that the first entry of a row has the least distance to source sample value
+	 **/
+	void sort (void) ;
 
 	/**
 	 * check the integrity of this data structure (only used for debugging and testing)
@@ -43,44 +54,15 @@ class SampleValueOppositeNeighbourhood {
 	bool check (bool verbose = false) const ;
 
 	private:
-	/**
-	 * a strict weak ordering with sv1 < sv2 iff sv1 is nearer to sv (as given in constructor)
-	 **/
-	class SmallerDistance {
-		public:
-		SmallerDistance (SampleValue *sv)
-			: SrcSampleValue(sv) {} ;
+	std::vector<std::vector<SampleValue*> > AdjacencyList ;
 
-		bool operator() (const SampleValue* sv1, const SampleValue* sv2)
-			{ return (SrcSampleValue->calcDistance(sv1) < SrcSampleValue->calcDistance(sv2)) ; } ;
-
-		private:
-		SampleValue* SrcSampleValue ;
-	} ;
-
-	std::vector<std::vector<SampleValue*> > OppNeighs ;
-
-	/// the underlying Graph object
-	Graph* TheGraph ;
-
-	void calcOppNeighs_generic (const std::vector<SampleValue*> &svalues) ;
-	void calcOppNeighs_rgb (const std::vector<SampleValue*> &svalues) ;
-	void calcOppNeighs_wav (const std::vector<SampleValue*> &svalues) ;
-
-	void sortOppNeighs (void) ;
 	void quicksort (std::vector<SampleValue*>& oppneighs, UWORD32* distances, unsigned int l, unsigned int r) ;
-
 	/**
 	 * partition oppneighs/distances into those with distances less than and those with distances greater than and equal to x
 	 * \return the index in oppneighs/distances that separates the two
 	 **/
 	unsigned int partition (std::vector<SampleValue*>& oppneighs, UWORD32* distances, unsigned int l, unsigned int r, UWORD32 x) ;
 	void swap (std::vector<SampleValue*>& oppneighs, UWORD32* distances, unsigned int i, unsigned int j) ;
-
-	/**
-	 * return the smallest integer that is >= x
-	 **/
-	int roundup (float x) ;
 
 	bool check_size (bool verbose = false) const ;
 	bool check_soundness (bool verbose = false) const ;
@@ -89,4 +71,4 @@ class SampleValueOppositeNeighbourhood {
 	bool check_completeness (bool verbose = false) const ;
 } ;
 
-#endif // ndef SH_SVALUEOPPNEIGHS_H
+#endif // ndef SH_SAMPLEVALUEADJACENCYLIST_H

@@ -18,13 +18,14 @@
  *
  */
 
-#include "common.h"
+#include "AUtils.h"
 #include "BinaryIO.h"
 #include "BitString.h"
 #include "EmbData.h"
 #include "error.h"
 #include "MCryptPP.h"
 #include "MHashPP.h"
+#include "common.h"
 
 EmbData::EmbData (MODE m, std::string pp, std::string fn)
 	: Mode(m), Passphrase(pp), FileName(fn)
@@ -33,6 +34,7 @@ EmbData::EmbData (MODE m, std::string pp, std::string fn)
 		NumBitsNeeded = 1 ;
 		Version = 0 ;
 		State = READ_VERSION ;
+		Reservoir = BitString() ;
 	}
 }
 
@@ -48,10 +50,18 @@ unsigned long EmbData::getNumBitsNeeded ()
 	return NumBitsNeeded ;
 }
 
-void EmbData::addBits (BitString bits)
+void EmbData::addBits (BitString addbits)
 {
 	myassert (Mode == EXTRACT) ;
-	myassert (bits.getLength() == NumBitsNeeded) ;
+
+	Reservoir.append (addbits) ;
+	BitString bits ;
+	if (Reservoir.getLength() >= NumBitsNeeded) {
+		bits = Reservoir.cutBits (0, NumBitsNeeded) ;
+	}
+	else { // Reservoir.getLength() < NumBitsNeeded
+		myassert(false) ;
+	}
 
 #ifdef DEBUG
 	printDebug (1, "EmbData::addBits called with") ;
@@ -67,13 +77,13 @@ void EmbData::addBits (BitString bits)
 #endif
 			if (bits[0] == true) {
 				Version++ ;
-				// leave NumBitsNeeded at value 1 and State at READ_VERSION
+				NumBitsNeeded = AUtils<unsigned long>::bminus (1, Reservoir.getLength()) ;
 			}
 			else {
 				if (Version > CodeVersion) {
 					throw CorruptDataError (_("attempting to read an embedding of version %d but steghide %s only supports embeddings of version %d."), Version, VERSION, CodeVersion) ;
 				}
-				NumBitsNeeded = EncryptionAlgorithm::IRep_size + EncryptionMode::IRep_size ;
+				NumBitsNeeded = AUtils<unsigned long>::bminus (EncryptionAlgorithm::IRep_size + EncryptionMode::IRep_size, Reservoir.getLength()) ;
 				State = READ_ENCINFO ;
 			}
 			break ;
@@ -93,7 +103,7 @@ void EmbData::addBits (BitString bits)
 				EncMode.setValue ((EncryptionMode::IRep) mode) ;
 			}
 
-			NumBitsNeeded = NBitsNPlainBits ;
+			NumBitsNeeded = AUtils<unsigned long>::bminus (NBitsNPlainBits, Reservoir.getLength()) ;
 			State = READ_NPLAINBITS ;
 
 #ifndef USE_LIBMCRYPT
@@ -111,9 +121,9 @@ void EmbData::addBits (BitString bits)
 			NPlainBits = bits.getValue (0, NBitsNPlainBits) ;
 
 #ifdef USE_LIBMCRYPT
-			NumBitsNeeded = MCryptPP::getEncryptedSize (EncAlgo, EncMode, NPlainBits) ;
+			NumBitsNeeded = AUtils<unsigned long>::bminus (MCryptPP::getEncryptedSize (EncAlgo, EncMode, NPlainBits), Reservoir.getLength()) ;
 #else
-			NumBitsNeeded = NPlainBits ;
+			NumBitsNeeded = AUtils<unsigned long>::bminus (NPlainBits, Reservoir.getLength()) ;
 #endif
 
 			State = READ_ENCRYPTED ;

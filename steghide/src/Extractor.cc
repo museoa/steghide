@@ -36,7 +36,7 @@ EmbData* Extractor::extract ()
 
 	Selector sel (Globs.TheCvrStgFile->getNumSamples(), Passphrase) ;
 
-	unsigned int sam_ebit = Globs.TheCvrStgFile->getSamplesPerEBit() ;
+	unsigned int sam_ebit = Globs.TheCvrStgFile->getSamplesPerVertex() ;
 	unsigned long ebit_idx = 0 ;
 	while (!embdata->finished()) {
 		unsigned long bitsneeded = embdata->getNumBitsNeeded() ;
@@ -50,11 +50,11 @@ EmbData* Extractor::extract ()
 		}
 		BitString bits ;
 		for (unsigned long i = 0 ; i < bitsneeded ; i++, ebit_idx++) {
-			BIT xorresult = 0 ;
+			EmbValue ev = 0 ;
 			for (unsigned int j = 0 ; j < sam_ebit ; j++) {
-				xorresult ^= Globs.TheCvrStgFile->getSampleBit (sel[(ebit_idx * sam_ebit) + j]) ;
+				ev = (ev + Globs.TheCvrStgFile->getEmbeddedValue (sel[(ebit_idx * sam_ebit) + j])) % Globs.TheCvrStgFile->getEmbValueModulus() ;
 			}
-			bits.append (xorresult) ;
+			bits.appendNAry (Globs.TheCvrStgFile->getEmbValueModulus(), ev) ;
 		}
 		embdata->addBits (bits) ;
 	}

@@ -1,6 +1,8 @@
 These are things that I plan to implement in the future:
 
-* gui frontend
+* partition code into library and frontend
+
+* graphical user interface
 
 * user-friendly installer for Windows version (InnoSetup)
 
@@ -12,7 +14,7 @@ These are things that I plan to implement in the future:
 
 * support for other file formats (mp3, png, gif, avi)
 
-* user's guide (sgml?, gnu texinfo?)
+* user's guide (sgml?, docbook?, gnu texinfo?)
 
 * support for RLE-encoded bmps
 

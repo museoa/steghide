@@ -27,7 +27,7 @@ class JpegSampleValue : public SampleValue {
 	public:
 	JpegSampleValue (int c) ;
 
-	SampleValue* getNearestOppositeSampleValue (void) const ;
+	SampleValue* getNearestTargetSampleValue (EmbValue t) const ;
 	UWORD32 calcDistance (const SampleValue *s) const ;
 	std::string getName (void) const ;
 
@@ -36,6 +36,11 @@ class JpegSampleValue : public SampleValue {
 
 	private:
 	SWORD16 DctCoeff ;
+
+	// FIXME - would it make sense to let EValue(-1) be 0, not 1 ? (i.e. invert for negative numbers) ?
+	EmbValue calcEValue (SWORD16 dctc) const
+		{ return (((dctc >= 0) ? dctc : -dctc)  % 2) ; } ;
+
 } ;
 
 #endif // ndef SH_JPEGSAMPLE_H

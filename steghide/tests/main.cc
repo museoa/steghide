@@ -34,7 +34,6 @@
 #include "EdgeIteratorTest.h"
 #include "EmbDataTest.h"
 #include "ConstructionHeuristicTest.h"
-#include "ColorPaletteTest.h"
 #include "GraphTest.h"
 #include "JpegFileTest.h"
 #include "JpegSampleValueTest.h"
@@ -42,9 +41,7 @@
 #include "MCryptPPTest.h"
 #include "MHashKeyGenTest.h"
 #include "MHashPPTest.h"
-#include "SampleValueOppositeNeighbourhoodTest.h"
 #include "SelectorTest.h"
-#include "VertexContentTest.h"
 #include "WavFileTest.h"
 #include "WavPCMSampleValueTest.h"
 
@@ -82,9 +79,6 @@ int main (int argc, char *argv[])
 
 	SelectorTest st (&ts) ;
 	ts.addUnitTest (&st) ;
-
-	ColorPaletteTest cpt  (&ts) ;
-	ts.addUnitTest (&cpt) ;
 
 	EmbDataTest edt (&ts) ;
 	ts.addUnitTest (&edt) ;
@@ -132,12 +126,6 @@ int main (int argc, char *argv[])
 	ts.addUnitTest (&wt) ;
 
 	// graph-theoretic stuff
-	VertexContentTest vct (&ts) ;
-	ts.addUnitTest (&vct) ;
-
-	SampleValueOppositeNeighbourhoodTest svont (&ts) ;
-	ts.addUnitTest (&svont) ;
-
 	GraphTest gt (&ts) ;
 	ts.addUnitTest (&gt) ;
 

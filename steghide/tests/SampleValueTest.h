@@ -50,7 +50,13 @@ class SampleValueTest : public UnitTest {
 	 **/
 	bool genericTestIsNeighbour (SampleValue* s1, SampleValue* s2, bool res) ;
 
-	bool areOpposite (SampleValue* s1, SampleValue* s2) ;
+	/**
+	 * generic evalue test
+	 * \param s a sample value
+	 * \param ev an embedded value
+	 * \return true iff s->getEmbeddedValue() == ev
+	 **/
+	bool genericTestEValue (SampleValue* s, EmbValue ev) ;
 } ;
 
 #endif // ndef SH_SAMPLEVALUETEST_H

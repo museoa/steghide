@@ -21,8 +21,8 @@
 #ifndef SH_VERTEX_H
 #define SH_VERTEX_H
 
+#include "CvrStgFile.h"
 #include "common.h"
-#include "VertexContent.h"
 
 class Edge ;
 class SampleOccurence ;
@@ -34,7 +34,7 @@ class SampleValue ;
  *
  * A vertex represents a bit that will cause a change to the cover-stego-file to be embedded.
  * A vertex consists of k samples (that is k sample values at k (different) positions in the
- * cover-stego-file), where k is TheCvrStgFile->getNumSamplesPerEBit(). One of these k samples
+ * cover-stego-file), where k is TheCvrStgFile->getNumSamplesPerVertex(). One of these k samples
  * must be changed to an opposite sample to embed the bit that corresponds to this vertex.
  *
  * <b>NOTE:</b> Vertex relies on the Globals object pointed to by the Globs pointer.
@@ -45,21 +45,17 @@ class Vertex {
 	/**
 	 * construct a new vertex object
 	 * \param l the vertex label for this vertex
-	 * \param sposs the array (with length g->getSamplesPerEBit()) of the positions of the samples
-	 * \param vc the corresponding vertex content
+	 * \param sposs the array (with length g->getSamplesPerVertex()) of the positions of the samples
+	 * \param svalues the array (with length g->getSamplesPerVertex()) of (unique (!)) pointers to the sample values
+	 * \param t the target value for the whole vertex - the value that should be returned by getEmbeddedValue() after the embedding
 	 **/
-	Vertex (VertexLabel l, SamplePos* sposs, VertexContent* vc) ;
-
-	/**
-	 * copy constructor
-	 **/
-	Vertex (const Vertex& v) ;
+	Vertex (VertexLabel l, SamplePos* sposs, SampleValue** svalues, EmbValue t) ;
 
 	~Vertex (void) ;
 
 	/**
 	 * get the i-th sample position
-	 * \param i an index of a sample in this vertex (must be < TheCvrStgFile->getNumSamplesPerEBit())
+	 * \param i an index of a sample in this vertex (must be < TheCvrStgFile->getNumSamplesPerVertex())
 	 * \return the position of the sample in the associated cvrstgfile
 	 **/
 	SamplePos getSamplePos (unsigned short i) const
@@ -67,17 +63,16 @@ class Vertex {
 
 	/**
 	 * get the i-th sample value
-	 * \param i an index of a sample in this vertex (must be < TheCvrStgFile->getNumSamplesPerEBit())
+	 * \param i an index of a sample in this vertex (must be < TheCvrStgFile->getNumSamplesPerVertex())
 	 * \return the value of the sample in the associated cvrstgfile
 	 **/
-	SampleValue *getSampleValue (unsigned short i) const
-		{ return Content->getSampleValue(i) ; } ;
+	SampleValue* getSampleValue (unsigned short i) const
+		{ return SampleValues[i] ; } ;
 
 	/**
-	 * get the degree of this vertex (via it's vertex content)
+	 * get the degree of this vertex
 	 **/
-	unsigned long getDegree (void) const
-		{ return Content->getDegree() ; } ;
+	UWORD32 getDegree (void) const ;
 
 	/**
 	 * get the shortest edge of this vertex
@@ -109,16 +104,10 @@ class Vertex {
 	void setSampleOccurenceIt (unsigned short i, std::list<SampleOccurence>::iterator it)
 		{ SampleOccurenceIts[i] = it ; }
 
-	/**
-	 * get the vertex content of this vertex
-	 *
-	 * This function should only be used if access to the VertexContent object itself
-	 * is really necessary (which is not the case very often). To get e.g. the
-	 * SampleValue from the Content object, v->getSampleValue(i) should be used, not
-	 * v->getContent()->getSampleValue(i).
-	 **/
-	VertexContent* getContent (void) const
-		{ return Content ; } ;
+	EmbValue getEmbeddedValue (void) const ;
+
+	EmbValue getTargetValue (unsigned short i) const
+		{ return TargetValues[i] ; } ;
 
 #ifdef DEBUG
 	void print (unsigned short spc = 0) const ;
@@ -132,17 +121,17 @@ class Vertex {
 	/// the sample positions of the samples described by this vertex in the CvrStgFile
 	SamplePos* SamplePositions ;
 
-	/// the content of this vertex
-	VertexContent* Content ;
+	/// the sample values at the SamplePositions
+	SampleValue** SampleValues ;
 
-	/// points to an entry in the std::list of vertex occurences in the vertex content
-	std::list<Vertex*>::iterator VertexOccurenceIt ;
+	/// the target values for the sample values (exactly one of them has to be reached (and the other left unchanged) to embed this vertex)
+	EmbValue* TargetValues ;
 
 	/// point to entries in std::lists of sample occurences in the graph
 	std::list<SampleOccurence>::iterator* SampleOccurenceIts ;
 
 	/// the shortest edge of this vertex (as calculated by updateShortestEdge)
-	Edge *ShortestEdge ;
+	Edge *ShortestEdge ; // FIXME - can this be done with EdgeIterator ?
 
 	/// true iff this vertex is not deleted
 	bool valid ;

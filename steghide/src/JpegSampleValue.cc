@@ -27,31 +27,56 @@
 JpegSampleValue::JpegSampleValue (int c)
 	: DctCoeff (c)
 {
-	int dctcoeff = ((DctCoeff >= 0) ? DctCoeff : -DctCoeff) ;
-	SBit = (BIT) (dctcoeff % 2) ;
 	Key = (UWORD32) DctCoeff ;
+	EValue = calcEValue (DctCoeff) ;
 }
 
-SampleValue *JpegSampleValue::getNearestOppositeSampleValue() const
+SampleValue *JpegSampleValue::getNearestTargetSampleValue (EmbValue t) const
 {
-	int n_coeff = 0 ;
+	SWORD16 minvalue = 0, maxvalue = 0 ;
 
-	if (DctCoeff == 1) {
-		n_coeff = 2 ;
+	if (DctCoeff > 0) {
+		minvalue = 1 ;
+		maxvalue = SWORD16_MAX ;
 	}
-	else if (DctCoeff == -1) {
-		n_coeff = -2 ;
+	else if (DctCoeff < 0) {
+		minvalue = SWORD16_MIN ;
+		maxvalue = -1 ;
 	}
 	else {
-		if (RndSrc.getBool()) {
-			n_coeff = DctCoeff - 1 ;
-		}
-		else {
-			n_coeff = DctCoeff + 1 ;
-		}
+		myassert(false) ;
 	}
 
-	return ((SampleValue *) new JpegSampleValue (n_coeff)) ;
+	SWORD16 dctc_up = DctCoeff, dctc_down = DctCoeff, dctc_new = 0 ;
+	bool found = false ;
+	do {
+		if (dctc_up < maxvalue) {
+			dctc_up++ ;
+		}
+		if (dctc_down > minvalue) {
+			dctc_down-- ;
+		}
+
+		if (calcEValue(dctc_up) == t && calcEValue(dctc_down) == t) {
+			if (RndSrc.getBool()) {
+				dctc_new = dctc_up ;
+			}
+			else {
+				dctc_new = dctc_down ;
+			}
+			found = true ;
+		}
+		else if (calcEValue(dctc_up) == t) {
+			dctc_new = dctc_up ;
+			found = true ;
+		}
+		else if (calcEValue(dctc_down) == t) {
+			dctc_new = dctc_down ;
+			found = true ;
+		}
+	} while (!found) ;
+
+	return ((SampleValue *) new JpegSampleValue (dctc_new)) ;
 }
 
 UWORD32 JpegSampleValue::calcDistance (const SampleValue *s) const

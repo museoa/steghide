@@ -34,7 +34,8 @@
 AuFile::AuFile (BinaryIO *io)
 	: CvrStgFile()
 {
-	setSamplesPerEBit (SamplesPerEBit) ;
+	setSamplesPerVertex (SamplesPerVertex) ;
+	setEmbValueModulus (EmbValueModulus) ;
 	read (io) ;
 }
 

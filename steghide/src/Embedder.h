@@ -22,7 +22,6 @@
 #define SH_EMBEDDER_H
 
 #include "BitString.h"
-
 class Edge ;
 class CvrStgFile ;
 class Graph ;

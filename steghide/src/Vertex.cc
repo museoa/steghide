@@ -18,33 +18,47 @@
  *
  */
 
-#include "common.h"
 #include "Edge.h"
 #include "EdgeIterator.h"
 #include "Graph.h"
 #include "Vertex.h"
+#include "common.h"
 
-Vertex::Vertex (VertexLabel l, SamplePos* sposs, VertexContent *vc)
+Vertex::Vertex (VertexLabel l, SamplePos* sposs, SampleValue** svalues, EmbValue t)
 {
 	setLabel (l) ;
 	SamplePositions = sposs ;
-	Content = vc ;
-	VertexOccurenceIt = Content->addOccurence (this) ;
-	SampleOccurenceIts = new std::list<SampleOccurence>::iterator[Globs.TheGraph->getSamplesPerVertex()] ;
+	SampleValues = svalues ;
+
+	SampleOccurenceIts = new std::list<SampleOccurence>::iterator[Globs.TheCvrStgFile->getSamplesPerVertex()] ;
 	ShortestEdge = NULL ;
 	valid = true ;
-}
 
-Vertex::Vertex (const Vertex& v)
-{
-	// the copy constructor should never be called because
-	// Vertex Occurences in corresponding VertexContent would be inconsistent
-	myassert (0) ;
+	// calculate sample target values
+	TargetValues = new EmbValue[Globs.TheCvrStgFile->getSamplesPerVertex()] ;
+	EmbValue msum = 0 ;
+	for (unsigned short i = 0 ; i < Globs.TheCvrStgFile->getSamplesPerVertex() ; i++) { // fill TargetValues with source values temporarily
+		TargetValues[i] = SampleValues[i]->getEmbeddedValue() ;
+		msum = (msum + TargetValues[i]) % Globs.TheCvrStgFile->getEmbValueModulus() ;
+	}
+
+	// by solving msum + d = t (mod m)
+	if (t < msum) {
+		t += Globs.TheCvrStgFile->getEmbValueModulus() ;
+	}
+	EmbValue d = t - msum ;
+
+	// and adding d to source values to produce target values
+	for (unsigned short i = 0 ; i < Globs.TheCvrStgFile->getSamplesPerVertex() ; i++) {
+		TargetValues[i] = (TargetValues[i] + d) % Globs.TheCvrStgFile->getEmbValueModulus() ;
+	}
 }
 
 Vertex::~Vertex ()
 {
+	delete[] TargetValues ;
 	delete[] SampleOccurenceIts ;
+	delete[] SampleValues ;
 	delete[] SamplePositions ;
 }
 
@@ -55,21 +69,11 @@ void Vertex::markDeleted ()
 #endif
 
 	if (valid) {
-		// decrement neighbour degrees
-		for (unsigned short i = 0 ; i < Globs.TheGraph->getSamplesPerVertex() ; i++) {
-			const std::vector<SampleValue*>& oppneighs = Globs.TheGraph->SampleValueOppNeighs[getSampleValue(i)] ;
-			for (unsigned long j = 0 ; j < oppneighs.size() ; j++) {
-				oppneighs[j]->decNumEdges() ;
-			}
-		}
-
-		// delete from vertex occurences in vertex content
-		VertexOccurenceIt = Content->markDeletedFromOccurences (VertexOccurenceIt) ;
-
 		// delete from sample occurences in graph
-		for (unsigned short i = 0 ; i < Globs.TheGraph->getSamplesPerVertex() ; i++) {
+		for (unsigned short i = 0 ; i < Globs.TheCvrStgFile->getSamplesPerVertex() ; i++) {
 			SampleOccurenceIts[i] = Globs.TheGraph->markDeletedSampleOccurence (SampleOccurenceIts[i]) ;
 		}
+
 		valid = false ;
 	}
 }
@@ -82,19 +86,8 @@ void Vertex::unmarkDeleted ()
 
 	if (!valid) {
 		// undelete into sample occurences in graph
-		for (unsigned short i = 0 ; i < Globs.TheGraph->getSamplesPerVertex() ; i++) {
+		for (unsigned short i = 0 ; i < Globs.TheCvrStgFile->getSamplesPerVertex() ; i++) {
 			SampleOccurenceIts[i] = Globs.TheGraph->unmarkDeletedSampleOccurence (SampleOccurenceIts[i]) ;
-		}
-
-		// undelete into sample occurences in graph
-		VertexOccurenceIt = Content->unmarkDeletedFromOccurences (VertexOccurenceIt) ;
-
-		// increment neighbour degrees
-		for (unsigned short i = 0 ; i < Globs.TheGraph->getSamplesPerVertex() ; i++) {
-			const std::vector<SampleValue*>& oppneighs = Globs.TheGraph->SampleValueOppNeighs[getSampleValue(i)] ;
-			for (unsigned long j = 0 ; j < oppneighs.size() ; j++) {
-				oppneighs[j]->incNumEdges() ;
-			}
 		}
 
 		valid = true ;
@@ -120,6 +113,42 @@ void Vertex::updateShortestEdge ()
 	}
 }
 
+EmbValue Vertex::getEmbeddedValue () const
+{
+	EmbValue retval = 0 ;
+	for (unsigned short i = 0 ; i < Globs.TheCvrStgFile->getSamplesPerVertex() ; i++) {
+		retval = (retval + SampleValues[i]->getEmbeddedValue()) % Globs.TheCvrStgFile->getEmbValueModulus() ;
+	}
+	return retval ;
+}
+
+UWORD32 Vertex::getDegree () const // FIXME - speed this up (other algorithm) if possible
+{
+	UWORD32 degree = 0 ;
+
+	for (unsigned short i = 0 ; i < Globs.TheCvrStgFile->getSamplesPerVertex() ; i++) {
+		// iterate through target neighbours summing up degree
+		const std::vector<SampleValue*>& tneighs = (*(Globs.TheGraph->SVALists[TargetValues[i]]))[SampleValues[i]] ;
+		for (std::vector<SampleValue*>::const_iterator tnit = tneighs.begin() ; tnit != tneighs.end() ; tnit++) {
+			degree += Globs.TheGraph->NumSampleOccurences[(*tnit)->getLabel()] ;
+		}
+
+		// substract self degree (loops)
+		for (unsigned short j = i + 1 ; j < Globs.TheCvrStgFile->getSamplesPerVertex() ; j++) {
+			if (SampleValues[i]->isNeighbour(SampleValues[j])) {
+				if (TargetValues[i] == SampleValues[j]->getEmbeddedValue()) {
+					degree-- ;
+				}
+				if (TargetValues[j] == SampleValues[i]->getEmbeddedValue()) {
+					degree-- ;
+				}
+			}
+		}
+	}
+
+	return degree ;
+}
+
 #ifdef DEBUG
 void Vertex::print (unsigned short spc) const
 {
@@ -131,10 +160,18 @@ void Vertex::print (unsigned short spc) const
 
 	std::cerr << space << "Vertex:" << std::endl ;
 	std::cerr << space << " Label: " << getLabel() << std::endl ;
-	for (unsigned short i = 0 ; i < Globs.TheGraph->getSamplesPerVertex() ; i++) {
+	for (unsigned short i = 0 ; i < Globs.TheCvrStgFile->getSamplesPerVertex() ; i++) {
 		std::cerr << space << " SamplePosition: " << getSamplePos(i) << std::endl ;
 		getSampleValue(i)->print (spc + 1) ;
 	}
+	std::cerr << space << " ShortestEdge:" << std::endl ;
+	if (ShortestEdge) {
+		ShortestEdge->print(spc + 2) ;
+	}
+	else {
+		std::cerr << space << "  NULL" << std::endl ;
+	}
+	std::cerr << space << " getDegree(): " << getDegree() << std::endl ;
 }
 
 void Vertex::printEdges() const

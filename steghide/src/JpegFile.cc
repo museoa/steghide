@@ -34,8 +34,9 @@
 JpegFile::JpegFile (BinaryIO* io)
 	: CvrStgFile()
 {
-	setSamplesPerEBit (SamplesPerEBit) ;
+	setSamplesPerVertex (SamplesPerVertex) ;
 	setRadius (Radius) ;
+	setEmbValueModulus (EmbValueModulus) ;
 	HeightInBlocks = NULL ;
 	WidthInBlocks = NULL ;
 	read (io) ;

@@ -48,6 +48,8 @@ class Edge {
 
 	bool operator== (const Edge& e) const ;
 
+	bool operator!= (const Edge& e) const ;
+
 	/**
 	 * swap vertices 1 and 2 in this edge (weight is not altered)
 	 **/

@@ -31,8 +31,9 @@ BitStringTest::BitStringTest (TestSuite* s)
 	ADDTESTCATEGORY (BitStringTest, testDatatypeInput) ;
 	ADDTESTCATEGORY (BitStringTest, testDatatypeOutput) ;
 	ADDTESTCATEGORY (BitStringTest, testEquality) ;
-	ADDTESTCATEGORY (BitStringTest, testTruncation) ;
+	ADDTESTCATEGORY (BitStringTest, testCutting) ;
 	ADDTESTCATEGORY (BitStringTest, testCompression) ;
+	ADDTESTCATEGORY (BitStringTest, testArity) ;
 }
 
 void BitStringTest::setup ()
@@ -43,10 +44,38 @@ void BitStringTest::setup ()
 	bs_1 = new BitString() ;
 	bs_1->append(true) ;
 
+	bs_10 = new BitString() ;
+	bs_10->append(true) ;
+	bs_10->append(false) ;
+
+	bs_001 = new BitString() ;
+	bs_001->append (false) ;
+	bs_001->append (false) ;
+	bs_001->append (true) ;
+
 	bs_100 = new BitString() ;
 	bs_100->append(true) ;
 	bs_100->append(false) ;
 	bs_100->append(false) ;
+
+	bs_1010 = new BitString() ;
+	bs_1010->append(true) ;
+	bs_1010->append(false) ;
+	bs_1010->append(true) ;
+	bs_1010->append(false) ;
+
+	bs_1110 = new BitString() ;
+	bs_1110->append(true) ;
+	bs_1110->append(true) ;
+	bs_1110->append(true) ;
+	bs_1110->append(false) ;
+
+	bs_01011 = new BitString() ;
+	bs_01011->append(false) ;
+	bs_01011->append(true) ;
+	bs_01011->append(false) ;
+	bs_01011->append(true) ;
+	bs_01011->append(true) ;
 
 	bs_10010 = new BitString() ;
 	bs_10010->append(true) ;
@@ -81,7 +110,12 @@ void BitStringTest::cleanup ()
 {
 	delete bs_0 ;
 	delete bs_1 ;
+	delete bs_10 ;
+	delete bs_001 ;
 	delete bs_100 ;
+	delete bs_1010 ;
+	delete bs_1110 ;
+	delete bs_01011 ;
 	delete bs_10010 ;
 	delete bs_10101110 ;
 	delete bs_101011101 ;
@@ -113,7 +147,14 @@ void BitStringTest::testBitInputOutput()
 					(*bs_101011101)[6] == true &&
 					(*bs_101011101)[7] == false &&
 					(*bs_101011101)[8] == true) ;
-
+	{
+		BitString bs1 = *bs_10010 ;
+		BitString bs2 = *bs_01011 ;
+		bs1.setBit(0, 0) ;
+		bs1.setBit(1, 1) ;
+		bs2.setBit(4, 0) ;
+		addTestResult (bs1 == bs2) ;
+	}
 }
 
 void BitStringTest::testLength()
@@ -214,7 +255,7 @@ void BitStringTest::testEquality()
 	}
 }
 
-void BitStringTest::testTruncation ()
+void BitStringTest::testCutting ()
 {
 	{
 		BitString bs1 = *bs_10010 ;
@@ -227,6 +268,24 @@ void BitStringTest::testTruncation ()
 		BitString bs2 ; 
 		bs2.append(true).append(false).append(true).append(true) ;
 		addTestResult (bs1.truncate(2, 6) == bs2) ;
+	}
+
+	{
+		BitString bs1 = *bs_10010 ;
+		BitString bs2 = *bs_001 ;
+		BitString bs3 = *bs_10 ;
+
+		BitString middle = bs1.cutBits(1, 3) ;
+		addTestResult (middle == bs2 && bs1 == bs3) ;
+	}
+
+	{
+		BitString bs1 = *bs_10101110 ;
+		BitString bs2 = *bs_1110 ;
+		BitString bs3 = *bs_1010 ;
+
+		BitString cutted = bs1.cutBits(4, 4) ;
+		addTestResult (cutted == bs2 && bs1 == bs3) ;
 	}
 }
 
@@ -250,4 +309,28 @@ void BitStringTest::testCompression ()
 #else
 	addTestResult (TestSuite::NOTINSTALLED) ;
 #endif // def USE_ZLIB
+}
+
+void BitStringTest::testArity ()
+{
+	addTestResult (bs_0->getNAry(2, 0) == 0) ;
+	addTestResult (bs_1->getNAry(2, 0) == 1) ;
+	addTestResult (bs_10010->getNAry(4, 1) != 3) ;
+	addTestResult (bs_101011101->getNAry(8, 2) == 5) ;
+
+	{
+		BitString bs1 ;
+		bs1.appendNAry (2, 0) ;
+		bs1.appendNAry (8, 6) ;
+		bs1.appendNAry (8, 1) ;
+		bs1.appendNAry (4, 3) ;
+
+		BitString bs2 ;
+		bs2.append(false) ;
+		bs2.append(false).append(true).append(true) ;
+		bs2.append(true).append(false).append(false) ;
+		bs2.append(true).append(true) ;
+
+		addTestResult (bs1 == bs2) ;
+	}
 }

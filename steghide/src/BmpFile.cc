@@ -33,6 +33,7 @@ BmpFile::BmpFile (BinaryIO *io)
 	: CvrStgFile()
 {
 	setRadius (Radius) ;
+	setEmbValueModulus (EmbValueModulus) ;
 	read (io) ;
 }
 
@@ -312,10 +313,10 @@ void BmpFile::bmpwin_readheaders ()
 	myassert (bmih.biPlanes == 1) ;
 	bmih.biBitCount = getBinIO()->read16_le () ;
 	if ((bmih.biBitCount == 1) || (bmih.biBitCount == 4) || (bmih.biBitCount == 8)) {
-		setSamplesPerEBit (SamplesPerEBit_Palette) ;
+		setSamplesPerVertex (SamplesPerVertex_Palette) ;
 	}
 	else if (bmih.biBitCount == 24) {
-		setSamplesPerEBit (SamplesPerEBit_RGB) ;
+		setSamplesPerVertex (SamplesPerVertex_RGB) ;
 	}
 	else {
 		if (getBinIO()->is_std()) {
@@ -395,10 +396,10 @@ void BmpFile::bmpos2_readheaders ()
 	myassert (bmch.bcPlanes == 1) ;
 	bmch.bcBitCount = getBinIO()->read16_le () ;
 	if ((bmch.bcBitCount == 1) || (bmch.bcBitCount == 4) || (bmch.bcBitCount == 8)) {
-		setSamplesPerEBit (SamplesPerEBit_Palette) ;
+		setSamplesPerVertex (SamplesPerVertex_Palette) ;
 	}
 	else if (bmch.bcBitCount == 24) {
-		setSamplesPerEBit (SamplesPerEBit_RGB) ;
+		setSamplesPerVertex (SamplesPerVertex_RGB) ;
 	}
 	else {
 		if (getBinIO()->is_std()) {

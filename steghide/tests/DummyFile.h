@@ -63,17 +63,18 @@ class DummyFile : public CvrStgFile {
 	 * Constructing a Graph object with "Graph (*f, **bs, **s)" will result in a graph of the form of adjlist.
 	 *
 	 * The constructed graph has the following form:
-	 * SamplesPerVertex == 2,
+	 * SamplesPerVertex == 2, EmbValueModulus = 2
 	 * every vertex has a sample value with bit == 0 at index 0 and one with bit == 1 at index 1,
 	 * if two vertices are adjacent, one end of the edge is at index 0 of the vertex with
 	 * the lower vertex label and the other end of the edge is at index 1 of the vertex with
 	 * the higher vertex label.
-	 * The distance between vertex with label i and vertex with label j is for i < j : 2*j + 1 - 2*i
+	 * The distance between vertex with label i and vertex with label j is : 2*|j - i| + 1
 	 **/
 	static void createGraph (std::vector<std::list<UWORD16> >& adjlist, BitString** bs, CvrStgFile** f, Selector** s) ;
 
 	private:
-	static const unsigned short SamplesPerEBit = 2 ;
+	static const unsigned short SamplesPerVertex = 2 ;
+	static const EmbValue EmbValueModulus = 2 ;
 
 	std::vector<UWORD16> Samples ;
 	std::vector<std::vector<bool> >* SampleValueAdjacencyMatrix ;

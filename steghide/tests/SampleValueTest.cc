@@ -23,11 +23,6 @@
 
 #include "SampleValue.h"
 
-bool SampleValueTest::areOpposite (SampleValue* s1, SampleValue* s2)
-{
-	return (s1->getBit() != s2->getBit()) ;
-}
-
 bool SampleValueTest::genericTestIsNeighbour (SampleValue* s1, SampleValue* s2, bool res)
 {
 	bool retval = ((s1->isNeighbour(s2) == s2->isNeighbour(s1)) && (s1->isNeighbour(s2) == res)) ;
@@ -51,5 +46,11 @@ bool SampleValueTest::genericTestDistance (SampleValue* s1, SampleValue* s2, UWO
 		std::cerr << "should be: " << dist << std::endl ;
 		std::cerr << "-------------------------------------" << std::endl ;
 	}
+	return retval ;
+}
+
+bool SampleValueTest::genericTestEValue (SampleValue* s, EmbValue ev)
+{
+	bool retval = (s->getEmbeddedValue() == ev) ;
 	return retval ;
 }
