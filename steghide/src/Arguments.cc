@@ -76,7 +76,6 @@ void Arguments::parse ()
 		if (parse_EmbedEmbFn(curarg)) continue ;
 		if (parse_Encryption(curarg)) continue ;
 		if (parse_Radius(curarg)) continue ;
-		if (parse_Algorithm(curarg)) continue ;
 		if (parse_Goal(curarg)) continue ;
 		if (parse_Force(curarg)) continue ;
 		if (parse_Verbosity(curarg)) continue ;
@@ -562,37 +561,6 @@ bool Arguments::parse_Radius (ArgIt& curarg)
 	return found ;
 }
 
-bool Arguments::parse_Algorithm (ArgIt& curarg)
-{
-	bool found = false ;
-
-	if (*curarg == "-a" || *curarg == "--algorithm") {
-		if (Command.getValue() != EMBED) {
-			throw ArgError (_("the argument \"%s\" can only be used with the \"%s\" command."), curarg->c_str(), "embed") ;
-		}
-
-		if (Goal.is_set()) {
-			throw ArgError (_("the algorithm argument can be used only once.")) ;
-		}
-
-		if (++curarg == TheArguments.end()) {
-			throw ArgError (_("the \"%s\" argument must be followed by a number between 0 and %d."), (curarg - 1)->c_str(), Max_Algorithm) ;
-		}
-
-		unsigned int tmp ;
-		sscanf (curarg->c_str(), "%u", &tmp) ;
-		if (tmp > Max_Algorithm) {
-			throw ArgError (_("the \"%s\" argument must be followed by a number between 0 and %d."), (curarg - 1)->c_str(), Max_Algorithm) ;
-		}
-		Algorithm.setValue (tmp) ;
-
-		found = true ;
-		curarg++ ;
-	}
-
-	return found ;
-}
-
 bool Arguments::parse_Goal (ArgIt& curarg)
 {
 	bool found = false ;
@@ -754,46 +722,6 @@ bool Arguments::parse_Debug (ArgIt& curarg)
 		found = true ;
 		++curarg ;
 	}
-	else if (*curarg == "--priorityqueuerange") {
-		if (Command.getValue() != EMBED) {
-			throw ArgError (_("the argument \"%s\" can only be used with the \"%s\" command."), curarg->c_str(), "embed") ;
-		}
-
-		if (PriorityQueueRange.is_set()) {
-			throw ArgError (_("the priority queue range argument can be used only once.")) ;
-		}
-
-		if (++curarg == TheArguments.end()) {
-			throw ArgError (_("the \"%s\" argument must be followed by the priority queue range."), (curarg - 1)->c_str()) ;
-		}
-
-		unsigned int tmp = 0 ;
-		sscanf (curarg->c_str(), "%u", &tmp) ;
-		PriorityQueueRange.setValue (tmp) ;
-
-		found = true ;
-		++curarg ;
-	}
-	else if (*curarg == "--nconstrheur") {
-		if (Command.getValue() != EMBED) {
-			throw ArgError (_("the argument \"%s\" can only be used with the \"%s\" command."), curarg->c_str(), "embed") ;
-		}
-
-		if (NConstrHeur.is_set()) {
-			throw ArgError (_("the number construction heuristic argument can be used only once.")) ;
-		}
-
-		if (++curarg == TheArguments.end()) {
-			throw ArgError (_("the \"%s\" argument must be followed by the number of times the construction heuristic should be run."), (curarg - 1)->c_str()) ;
-		}
-
-		unsigned int tmp = 0 ;
-		sscanf (curarg->c_str(), "%u", &tmp) ;
-		NConstrHeur.setValue (tmp) ;
-
-		found = true ;
-		++curarg ;
-	}
 
 	return found ;
 }
@@ -871,7 +799,6 @@ void Arguments::setDefaults (void)
 	Force.setValue (Default_Force, false) ;
 	Verbosity.setValue (Default_Verbosity, false) ;
 	Radius.setValue (Default_Radius, false) ;
-	Algorithm.setValue (Default_Algorithm, false) ;
 	Goal.setValue (Default_Goal, false) ;
 #ifdef DEBUG
 	DebugCommand.setValue (Default_DebugCommand, false) ;

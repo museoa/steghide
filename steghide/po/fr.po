@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2003-09-24 22:52+0200\n"
+"POT-Creation-Date: 2003-09-25 15:43+0200\n"
 "PO-Revision-Date: 2002-05-12 18:34+0100\n"
 "Last-Translator: Julien Catanese <julien_catanese@yahoo.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -169,23 +169,23 @@ msgstr "terminé."
 msgid " ok"
 msgstr ""
 
-#: Arguments.cc:500
+#: Arguments.cc:499
 #, c-format
 msgid ""
 "\"%s\" and \"%s\" are both libmcrypt algorithms. please specify only one."
 msgstr ""
 
-#: Arguments.cc:503
+#: Arguments.cc:502
 #, c-format
 msgid "\"%s\" and \"%s\" are both libmcrypt modes. please specify only one."
 msgstr ""
 
-#: Arguments.cc:486 Arguments.cc:495
+#: Arguments.cc:485 Arguments.cc:494
 #, c-format
 msgid "\"%s\" is neither an algorithm nor a mode supported by libmcrypt."
 msgstr ""
 
-#: Arguments.cc:388
+#: Arguments.cc:387
 #, fuzzy, c-format
 msgid "\"%s\" is not a valid compression level."
 msgstr ""
@@ -200,7 +200,7 @@ msgstr ""
 msgid ", mu-law encoding"
 msgstr ""
 
-#: Arguments.cc:810
+#: Arguments.cc:738
 msgid "Enter passphrase: "
 msgstr "Entrez la passphrase: "
 
@@ -214,7 +214,7 @@ msgid ""
 "or that there is no embedded data.\n"
 msgstr ""
 
-#: Arguments.cc:823
+#: Arguments.cc:751
 msgid "Re-Enter passphrase: "
 msgstr "Entrez à nouveau la passphrase: "
 
@@ -577,7 +577,7 @@ msgstr ""
 msgid "error, exiting. (no error message defined)."
 msgstr "erreur, fin du programme. (pas de message d'erreur spécifié)"
 
-#: Embedder.cc:232
+#: Embedder.cc:203
 #, c-format
 msgid "executing %s..."
 msgstr ""
@@ -591,7 +591,7 @@ msgstr "extraction des données cachées."
 msgid "format"
 msgstr ""
 
-#: Arguments.cc:104 Arguments.cc:110
+#: Arguments.cc:103 Arguments.cc:109
 msgid ""
 "if standard input is used, the passphrase must be specified on the command "
 "line."
@@ -726,14 +726,14 @@ msgstr "lecture du fichier stégo à partir de l'entrée standard."
 msgid "standard input"
 msgstr ""
 
-#: Arguments.cc:91
+#: Arguments.cc:90
 #, fuzzy
 msgid "standard input cannot be used for cover data AND data to be embedded."
 msgstr ""
 "l'entrée standard ne peut pas être utilisée pour cacher des données AND. "
 "tapez \"%s --help\" pour l'aide."
 
-#: Arguments.cc:526
+#: Arguments.cc:525
 msgid "steghide has been compiled without support for encryption."
 msgstr ""
 
@@ -746,14 +746,14 @@ msgid ""
 "steghide.\n"
 msgstr ""
 
-#: Arguments.cc:210 Arguments.cc:241 Arguments.cc:303
+#: Arguments.cc:209 Arguments.cc:240 Arguments.cc:302
 #, fuzzy, c-format
 msgid "the \"%s\" argument can be used only once."
 msgstr ""
 "l'argument passphrase peut être utilisé seulement une fois. tapez \"%s --help"
 "\" pour l'aide."
 
-#: Arguments.cc:661 Arguments.cc:675 Arguments.cc:733
+#: Arguments.cc:629 Arguments.cc:643 Arguments.cc:701
 #, c-format
 msgid ""
 "the \"%s\" argument cannot be used here because the verbosity has already "
@@ -762,107 +762,77 @@ msgstr ""
 "l'argument \"%s\" ne peut pas être utilisé ici car le mode verbeux a déjà "
 "été choisi."
 
-#: Arguments.cc:579 Arguments.cc:585
-#, fuzzy, c-format
-msgid "the \"%s\" argument must be followed by a number between 0 and %d."
-msgstr ""
-"l'argument \"%s\" doit être suivi du nom du fichier stégo. tapez \"%s --help"
-"\" pour l'aide."
-
-#: Arguments.cc:610 Arguments.cc:616
+#: Arguments.cc:578 Arguments.cc:584
 #, fuzzy, c-format
 msgid "the \"%s\" argument must be followed by a number between 0 and 100."
 msgstr ""
 "l'argument \"%s\" doit être suivi du nom du fichier stégo. tapez \"%s --help"
 "\" pour l'aide."
 
-#: Arguments.cc:449 Arguments.cc:454
+#: Arguments.cc:448 Arguments.cc:453
 #, fuzzy, c-format
 msgid "the \"%s\" argument must be followed by encryption parameters."
 msgstr ""
 "l'argument \"%s\" doit être suivi du nom du fichier de données. tapez \"%s --"
 "help\" pour l'aide."
 
-#: Arguments.cc:382
+#: Arguments.cc:381
 #, fuzzy, c-format
 msgid "the \"%s\" argument must be followed by the compression level."
 msgstr ""
 "l'argument \"%s\" doit être suivi du nom du fichier stégo. tapez \"%s --help"
 "\" pour l'aide."
 
-#: Arguments.cc:276
+#: Arguments.cc:275
 #, fuzzy, c-format
 msgid "the \"%s\" argument must be followed by the cover file name."
 msgstr ""
 "l'argument \"%s\" doit être suivi du nom du fichier-couverture. tapez \"%s --"
 "help\" pour l'aide."
 
-#: Arguments.cc:747
+#: Arguments.cc:715
 #, fuzzy, c-format
 msgid "the \"%s\" argument must be followed by the debug level."
 msgstr ""
 "l'argument \"%s\" doit être suivi du nom du fichier stégo. tapez \"%s --help"
 "\" pour l'aide."
 
-#: Arguments.cc:214
+#: Arguments.cc:213
 #, fuzzy, c-format
 msgid "the \"%s\" argument must be followed by the embed file name."
 msgstr ""
 "l'argument \"%s\" doit être suivi du nom du fichier stégo. tapez \"%s --help"
 "\" pour l'aide."
 
-#: Arguments.cc:245
+#: Arguments.cc:244
 #, fuzzy, c-format
 msgid "the \"%s\" argument must be followed by the extract file name."
 msgstr ""
 "l'argument \"%s\" doit être suivi du nom du fichier-couverture. tapez \"%s --"
 "help\" pour l'aide."
 
-#: Arguments.cc:551
+#: Arguments.cc:550
 #, fuzzy, c-format
 msgid "the \"%s\" argument must be followed by the neighbourhood radius."
 msgstr ""
 "l'argument \"%s\" doit être suivi de la passphrase. tapez \"%s --help\" pour "
 "l'aide."
 
-#: Arguments.cc:787
-#, fuzzy, c-format
-msgid ""
-"the \"%s\" argument must be followed by the number of times the construction "
-"heuristic should be run."
-msgstr ""
-"l'argument \"%s\" doit être suivi du nom du fichier-couverture. tapez \"%s --"
-"help\" pour l'aide."
-
-#: Arguments.cc:334
+#: Arguments.cc:333
 #, fuzzy, c-format
 msgid "the \"%s\" argument must be followed by the passphrase."
 msgstr ""
 "l'argument \"%s\" doit être suivi de la passphrase. tapez \"%s --help\" pour "
 "l'aide."
 
-#: Arguments.cc:767
-#, fuzzy, c-format
-msgid "the \"%s\" argument must be followed by the priority queue range."
-msgstr ""
-"l'argument \"%s\" doit être suivi de la passphrase. tapez \"%s --help\" pour "
-"l'aide."
-
-#: Arguments.cc:307
+#: Arguments.cc:306
 #, fuzzy, c-format
 msgid "the \"%s\" argument must be followed by the stego file name."
 msgstr ""
 "l'argument \"%s\" doit être suivi du nom du fichier stégo. tapez \"%s --help"
 "\" pour l'aide."
 
-#: Arguments.cc:575
-#, fuzzy
-msgid "the algorithm argument can be used only once."
-msgstr ""
-"l'argument force peut seulement être utilisé une fois. tapez \"%s --help\" "
-"pour l'aide."
-
-#: Arguments.cc:299 Arguments.cc:633 Arguments.cc:657 Arguments.cc:671
+#: Arguments.cc:298 Arguments.cc:601 Arguments.cc:625 Arguments.cc:639
 #, fuzzy, c-format
 msgid ""
 "the argument \"%s\" can only be used with the \"%s\" and \"%s\" commands."
@@ -870,16 +840,15 @@ msgstr ""
 "l'argument \"%s\" peut seulement être utilisé avec la commande \"embed\". "
 "tapez \"%s --help\" pour l'aide."
 
-#: Arguments.cc:206 Arguments.cc:237 Arguments.cc:268 Arguments.cc:352
-#: Arguments.cc:397 Arguments.cc:441 Arguments.cc:543 Arguments.cc:571
-#: Arguments.cc:602 Arguments.cc:759 Arguments.cc:779
+#: Arguments.cc:205 Arguments.cc:236 Arguments.cc:267 Arguments.cc:351
+#: Arguments.cc:396 Arguments.cc:440 Arguments.cc:542 Arguments.cc:570
 #, fuzzy, c-format
 msgid "the argument \"%s\" can only be used with the \"%s\" command."
 msgstr ""
 "l'argument \"%s\" peut seulement être utilisé avec la commande \"embed\". "
 "tapez \"%s --help\" pour l'aide."
 
-#: Arguments.cc:374 Arguments.cc:419
+#: Arguments.cc:373 Arguments.cc:418
 #, fuzzy, c-format
 msgid "the argument \"%s\" can only be used with the \"embed\" command."
 msgstr ""
@@ -953,14 +922,14 @@ msgstr "le fichier \"%s\" a un format qui n'est pas supporté."
 msgid "the bmp file \"%s\" has a format that is not supported (biSize: %lu)."
 msgstr "le fichier \"%s\" a un format qui n'est pas supporté."
 
-#: Arguments.cc:356
+#: Arguments.cc:355
 #, fuzzy
 msgid "the checksum argument can be used only once."
 msgstr ""
 "l'argument checksum peut seulement être utilisé une fois. tapez \"%s --help"
 "\" pour l'aide."
 
-#: Arguments.cc:378 Arguments.cc:401
+#: Arguments.cc:377 Arguments.cc:400
 #, fuzzy
 msgid "the compression argument can be used only once."
 msgstr ""
@@ -974,14 +943,14 @@ msgstr ""
 "le fichier-couverture est trop petit pour cacher les données. utilisez un "
 "autre fichier-couverture."
 
-#: Arguments.cc:272
+#: Arguments.cc:271
 #, fuzzy
 msgid "the cover file name argument can be used only once."
 msgstr ""
 "le nom du fichier-couverture peut seulement être utilisé une fois en "
 "argument. tapez pour l'aide."
 
-#: Arguments.cc:743
+#: Arguments.cc:711
 #, fuzzy
 msgid "the debug level argument can be used only once."
 msgstr ""
@@ -992,14 +961,14 @@ msgstr ""
 msgid "the embedded data has an invalid length."
 msgstr ""
 
-#: Arguments.cc:520
+#: Arguments.cc:519
 #, fuzzy, c-format
 msgid "the encryption algorithm \"%s\" can not be used with the mode \"%s\"."
 msgstr ""
 "l'argument \"%s\" peut seulement être utilisé avec la commande \"embed\". "
 "tapez \"%s --help\" pour l'aide."
 
-#: Arguments.cc:445
+#: Arguments.cc:444
 #, fuzzy
 msgid "the encryption argument can be used only once."
 msgstr ""
@@ -1027,53 +996,39 @@ msgstr ""
 msgid "the file format of the file \"%s\" is not supported."
 msgstr "le format du fichier \"%s\" n'est pas supporté."
 
-#: Arguments.cc:423
+#: Arguments.cc:422
 #, fuzzy
 msgid "the file name embedding argument can be used only once."
 msgstr ""
 "l'argument pour l'encapsulation du fichier de données ne peut être utilisé "
 "qu'une seule fois. taper \"%s --help\" pour l'aide."
 
-#: Arguments.cc:637
+#: Arguments.cc:605
 #, fuzzy
 msgid "the force argument can be used only once."
 msgstr ""
 "l'argument force peut seulement être utilisé une fois. tapez \"%s --help\" "
 "pour l'aide."
 
-#: Arguments.cc:606
+#: Arguments.cc:574
 #, fuzzy
 msgid "the goal argument can be used only once."
 msgstr ""
 "l'argument force peut seulement être utilisé une fois. tapez \"%s --help\" "
 "pour l'aide."
 
-#: Arguments.cc:783
-#, fuzzy
-msgid "the number construction heuristic argument can be used only once."
-msgstr ""
-"l'argument distribution peut être utilisé seulement une fois. tapez \"%s --"
-"help\" pour l'aide."
-
-#: Arguments.cc:330
+#: Arguments.cc:329
 #, fuzzy
 msgid "the passphrase argument can be used only once."
 msgstr ""
 "l'argument passphrase peut être utilisé seulement une fois. tapez \"%s --help"
 "\" pour l'aide."
 
-#: Arguments.cc:835
+#: Arguments.cc:763
 msgid "the passphrases do not match."
 msgstr "les passphrases ne correspondent pas."
 
-#: Arguments.cc:763
-#, fuzzy
-msgid "the priority queue range argument can be used only once."
-msgstr ""
-"le nom du fichier de données peut seulement être utilisé une fois en "
-"argument. tapez \"%s --help pour l'aide."
-
-#: Arguments.cc:547
+#: Arguments.cc:546
 #, fuzzy
 msgid "the radius argument can be used only once."
 msgstr ""
@@ -1134,17 +1089,17 @@ msgstr "le fichier wav à partir de l'entrée standard a un format non supporté."
 msgid "type \"steghide --help\" for help."
 msgstr "commande \"%s\" inconnue. tapez \"%s --help\" pour l'aide."
 
-#: Arguments.cc:85
+#: Arguments.cc:84
 #, fuzzy, c-format
 msgid "unknown argument \"%s\"."
 msgstr "argument \"%s\" inconnu. tapez \"%s --help\" pour l'aide."
 
-#: Arguments.cc:196
+#: Arguments.cc:195
 #, fuzzy, c-format
 msgid "unknown command \"%s\"."
 msgstr "commande \"%s\" inconnue. tapez \"%s --help\" pour l'aide."
 
-#: Arguments.cc:806
+#: Arguments.cc:734
 msgid "unknown terminal. the passphrase you type now will be visible."
 msgstr ""
 
@@ -1200,20 +1155,58 @@ msgstr "o"
 msgid "yes"
 msgstr ""
 
-#: Arguments.cc:160 Arguments.cc:167 Arguments.cc:174 Arguments.cc:181
+#: Arguments.cc:159 Arguments.cc:166 Arguments.cc:173 Arguments.cc:180
 #, fuzzy, c-format
 msgid "you cannot use arguments with the \"%s\" command."
 msgstr "vous ne pouvez pas utiliser d'arguments avec la commande \"help\"."
 
-#: Arguments.cc:691 Arguments.cc:701 Arguments.cc:711 Arguments.cc:729
+#: Arguments.cc:659 Arguments.cc:669 Arguments.cc:679 Arguments.cc:697
 #, fuzzy
 msgid "you cannot use more than one debug command at a time."
 msgstr "vous ne pouvez pas utiliser d'arguments avec la commande \"help\"."
 
-#: Arguments.cc:139
+#: Arguments.cc:138
 #, fuzzy, c-format
 msgid "you have to suppy a filename to the \"%s\" command."
 msgstr "vous ne pouvez pas utiliser d'arguments avec la commande \"license\"."
+
+#, fuzzy
+#~ msgid "the \"%s\" argument must be followed by a number between 0 and %d."
+#~ msgstr ""
+#~ "l'argument \"%s\" doit être suivi du nom du fichier stégo. tapez \"%s --"
+#~ "help\" pour l'aide."
+
+#, fuzzy
+#~ msgid ""
+#~ "the \"%s\" argument must be followed by the number of times the "
+#~ "construction heuristic should be run."
+#~ msgstr ""
+#~ "l'argument \"%s\" doit être suivi du nom du fichier-couverture. tapez \"%"
+#~ "s --help\" pour l'aide."
+
+#, fuzzy
+#~ msgid "the \"%s\" argument must be followed by the priority queue range."
+#~ msgstr ""
+#~ "l'argument \"%s\" doit être suivi de la passphrase. tapez \"%s --help\" "
+#~ "pour l'aide."
+
+#, fuzzy
+#~ msgid "the algorithm argument can be used only once."
+#~ msgstr ""
+#~ "l'argument force peut seulement être utilisé une fois. tapez \"%s --help"
+#~ "\" pour l'aide."
+
+#, fuzzy
+#~ msgid "the number construction heuristic argument can be used only once."
+#~ msgstr ""
+#~ "l'argument distribution peut être utilisé seulement une fois. tapez \"%s "
+#~ "--help\" pour l'aide."
+
+#, fuzzy
+#~ msgid "the priority queue range argument can be used only once."
+#~ msgstr ""
+#~ "le nom du fichier de données peut seulement être utilisé une fois en "
+#~ "argument. tapez \"%s --help pour l'aide."
 
 #, fuzzy
 #~ msgid "the embed file name argument can be used only once."

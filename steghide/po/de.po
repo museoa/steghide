@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
-"POT-Creation-Date: 2003-09-24 22:52+0200\n"
+"POT-Creation-Date: 2003-09-25 15:43+0200\n"
 "PO-Revision-Date: 2003-09-24 22:52+0200\n"
 "Last-Translator: Stefan Hetzl <shetzl@chello.at>\n"
 "Language-Team: Deutsch\n"
@@ -166,7 +166,7 @@ msgstr " fertig\n"
 msgid " ok"
 msgstr " ok"
 
-#: Arguments.cc:500
+#: Arguments.cc:499
 #, c-format
 msgid ""
 "\"%s\" and \"%s\" are both libmcrypt algorithms. please specify only one."
@@ -174,20 +174,20 @@ msgstr ""
 "Sowohl \"%s\" als auch \"%s\" sind libmcrypt-Algorithmen. Bitte nur einen "
 "angeben."
 
-#: Arguments.cc:503
+#: Arguments.cc:502
 #, c-format
 msgid "\"%s\" and \"%s\" are both libmcrypt modes. please specify only one."
 msgstr ""
 "Sowohl \"%s\" als auch \"%s\" sind libmcrypt-Modi. Bitte nur einen angeben."
 
-#: Arguments.cc:486 Arguments.cc:495
+#: Arguments.cc:485 Arguments.cc:494
 #, c-format
 msgid "\"%s\" is neither an algorithm nor a mode supported by libmcrypt."
 msgstr ""
 "\"%s\" ist weder ein Algorithmus noch ein Modus der von libmcrypt "
 "unterstützt wird."
 
-#: Arguments.cc:388
+#: Arguments.cc:387
 #, c-format
 msgid "\"%s\" is not a valid compression level."
 msgstr "\"%s\" is keine gültige Kompressionsstufe."
@@ -200,7 +200,7 @@ msgstr ", PCM-Kodierung"
 msgid ", mu-law encoding"
 msgstr ", mu-law-Kodierung"
 
-#: Arguments.cc:810
+#: Arguments.cc:738
 msgid "Enter passphrase: "
 msgstr "Passwort eingeben: "
 
@@ -216,7 +216,7 @@ msgstr ""
 "Andere mögliche Gründe für diesen Fehler sind dass das Passwort falsch ist\n"
 "oder dass keine Daten eingebettet sind.\n"
 
-#: Arguments.cc:823
+#: Arguments.cc:751
 msgid "Re-Enter passphrase: "
 msgstr "Passwort wiederholen: "
 
@@ -577,7 +577,7 @@ msgstr ""
 msgid "error, exiting. (no error message defined)."
 msgstr "Fehler, Programmende. (keine Fehlermeldung definiert)."
 
-#: Embedder.cc:232
+#: Embedder.cc:203
 #, c-format
 msgid "executing %s..."
 msgstr "Führe %s aus..."
@@ -590,7 +590,7 @@ msgstr "Extrahiere Daten..."
 msgid "format"
 msgstr "Format"
 
-#: Arguments.cc:104 Arguments.cc:110
+#: Arguments.cc:103 Arguments.cc:109
 msgid ""
 "if standard input is used, the passphrase must be specified on the command "
 "line."
@@ -713,13 +713,13 @@ msgstr "Lese Stegodatei von der Standardeingabe..."
 msgid "standard input"
 msgstr "Standardeingabe"
 
-#: Arguments.cc:91
+#: Arguments.cc:90
 msgid "standard input cannot be used for cover data AND data to be embedded."
 msgstr ""
 "Die Standardeingabe kann nicht für Trägerdaten UND Klartextdaten verwendet "
 "werden."
 
-#: Arguments.cc:526
+#: Arguments.cc:525
 msgid "steghide has been compiled without support for encryption."
 msgstr "Steghide wurde ohne Unterstützung für Verschlüsselung kompiliert."
 
@@ -737,12 +737,12 @@ msgstr ""
 "externes Verschlüsselungsprogramm oder installieren Sie libmcrypt\n"
 "(http://mcrypt.sourceforge.net/) und kompilieren Sie steghide erneut.\n"
 
-#: Arguments.cc:210 Arguments.cc:241 Arguments.cc:303
+#: Arguments.cc:209 Arguments.cc:240 Arguments.cc:302
 #, c-format
 msgid "the \"%s\" argument can be used only once."
 msgstr "Das Argument \"%s\" kann nur einmal verwendet werden."
 
-#: Arguments.cc:661 Arguments.cc:675 Arguments.cc:733
+#: Arguments.cc:629 Arguments.cc:643 Arguments.cc:701
 #, c-format
 msgid ""
 "the \"%s\" argument cannot be used here because the verbosity has already "
@@ -751,86 +751,62 @@ msgstr ""
 "Das Argument \"%s\" kann hier nicht verwendet werden, da die Genauigkeit der "
 "Ausgabe bereits festgelegt wurde."
 
-#: Arguments.cc:579 Arguments.cc:585
-#, c-format
-msgid "the \"%s\" argument must be followed by a number between 0 and %d."
-msgstr "Nach dem Argument \"%s\" muss sich eine Zahl von 0 bis %d befinden."
-
-#: Arguments.cc:610 Arguments.cc:616
+#: Arguments.cc:578 Arguments.cc:584
 #, c-format
 msgid "the \"%s\" argument must be followed by a number between 0 and 100."
 msgstr "Nach dem Argument \"%s\" muss sich eine Zahl von 0 bis 100 befinden."
 
-#: Arguments.cc:449 Arguments.cc:454
+#: Arguments.cc:448 Arguments.cc:453
 #, c-format
 msgid "the \"%s\" argument must be followed by encryption parameters."
 msgstr ""
 "Nach dem Argument \"%s\" müssen sich Verschlüsselungsparameter befinden."
 
-#: Arguments.cc:382
+#: Arguments.cc:381
 #, c-format
 msgid "the \"%s\" argument must be followed by the compression level."
 msgstr "Nach dem Argument \"%s\" muss sich eine Kompressionsstufe befinden."
 
-#: Arguments.cc:276
+#: Arguments.cc:275
 #, c-format
 msgid "the \"%s\" argument must be followed by the cover file name."
 msgstr "Nach dem Argument \"%s\" muss sich der Name der Trägerdatei befinden."
 
-#: Arguments.cc:747
+#: Arguments.cc:715
 #, c-format
 msgid "the \"%s\" argument must be followed by the debug level."
 msgstr "Nach dem Argument \"%s\" muss sich der debug level befinden."
 
-#: Arguments.cc:214
+#: Arguments.cc:213
 #, c-format
 msgid "the \"%s\" argument must be followed by the embed file name."
 msgstr ""
 "Nach dem Argument \"%s\" muss sich der Name der einzubettenden Datei "
 "befinden."
 
-#: Arguments.cc:245
+#: Arguments.cc:244
 #, c-format
 msgid "the \"%s\" argument must be followed by the extract file name."
 msgstr ""
 "Nach dem Argument \"%s\" muss sich ein Dateiname für die extrahierten Daten "
 "befinden."
 
-#: Arguments.cc:551
+#: Arguments.cc:550
 #, c-format
 msgid "the \"%s\" argument must be followed by the neighbourhood radius."
 msgstr "Nach dem Argument \"%s\" muss sich der Nachbarschaftsradius befinden."
 
-#: Arguments.cc:787
-#, c-format
-msgid ""
-"the \"%s\" argument must be followed by the number of times the construction "
-"heuristic should be run."
-msgstr ""
-"Nach dem Argument \"%s\" muss angegeben werden, wie oft die "
-"Konstruktionsheuristik laufen soll."
-
-#: Arguments.cc:334
+#: Arguments.cc:333
 #, c-format
 msgid "the \"%s\" argument must be followed by the passphrase."
 msgstr "Nach dem Argument \"%s\" muss sich ein Passwort befinden."
 
-#: Arguments.cc:767
-#, c-format
-msgid "the \"%s\" argument must be followed by the priority queue range."
-msgstr ""
-"Nach dem Argument \"%s\" muss die Priority Queue Range festgelegt werden."
-
-#: Arguments.cc:307
+#: Arguments.cc:306
 #, c-format
 msgid "the \"%s\" argument must be followed by the stego file name."
 msgstr "Nach dem Argument \"%s\" muss sich der Name der Stegodatei befinden."
 
-#: Arguments.cc:575
-msgid "the algorithm argument can be used only once."
-msgstr "FIXME"
-
-#: Arguments.cc:299 Arguments.cc:633 Arguments.cc:657 Arguments.cc:671
+#: Arguments.cc:298 Arguments.cc:601 Arguments.cc:625 Arguments.cc:639
 #, c-format
 msgid ""
 "the argument \"%s\" can only be used with the \"%s\" and \"%s\" commands."
@@ -838,14 +814,13 @@ msgstr ""
 "Das Argument \"%s\" kann nur mit den Kommandos \"%s\" und \"%s\" verwendet "
 "werden."
 
-#: Arguments.cc:206 Arguments.cc:237 Arguments.cc:268 Arguments.cc:352
-#: Arguments.cc:397 Arguments.cc:441 Arguments.cc:543 Arguments.cc:571
-#: Arguments.cc:602 Arguments.cc:759 Arguments.cc:779
+#: Arguments.cc:205 Arguments.cc:236 Arguments.cc:267 Arguments.cc:351
+#: Arguments.cc:396 Arguments.cc:440 Arguments.cc:542 Arguments.cc:570
 #, c-format
 msgid "the argument \"%s\" can only be used with the \"%s\" command."
 msgstr "Das Argument \"%s\" kann nur mit dem Kommando \"%s\" verwendet werden."
 
-#: Arguments.cc:374 Arguments.cc:419
+#: Arguments.cc:373 Arguments.cc:418
 #, c-format
 msgid "the argument \"%s\" can only be used with the \"embed\" command."
 msgstr ""
@@ -921,11 +896,11 @@ msgid "the bmp file \"%s\" has a format that is not supported (biSize: %lu)."
 msgstr ""
 "Die bmp-Datei \"%s\" hat ein Format das nicht unterstützt wird (biSize: %lu)."
 
-#: Arguments.cc:356
+#: Arguments.cc:355
 msgid "the checksum argument can be used only once."
 msgstr "Das Prüfsumme-Argument kann nur einmal verwendet werden."
 
-#: Arguments.cc:378 Arguments.cc:401
+#: Arguments.cc:377 Arguments.cc:400
 msgid "the compression argument can be used only once."
 msgstr "Das Kompression-Argument kann nur einmal verwendet werden."
 
@@ -933,11 +908,11 @@ msgstr "Das Kompression-Argument kann nur einmal verwendet werden."
 msgid "the cover file is too short to embed the data."
 msgstr "Die Trägerdatei ist zu kurz, um die Daten einzubetten."
 
-#: Arguments.cc:272
+#: Arguments.cc:271
 msgid "the cover file name argument can be used only once."
 msgstr "Die Trägerdatei-Argument kann nur einmal verwendet werden."
 
-#: Arguments.cc:743
+#: Arguments.cc:711
 msgid "the debug level argument can be used only once."
 msgstr "Das debug level-Argument kann nur einmal verwendet werden."
 
@@ -945,14 +920,14 @@ msgstr "Das debug level-Argument kann nur einmal verwendet werden."
 msgid "the embedded data has an invalid length."
 msgstr "Die eingebetteten Daten haben eine ungültige Länge."
 
-#: Arguments.cc:520
+#: Arguments.cc:519
 #, c-format
 msgid "the encryption algorithm \"%s\" can not be used with the mode \"%s\"."
 msgstr ""
 "Der Verschlüsselungsalgorithmus \"%s\" kann nicht mit dem Modus \"%s\" "
 "verwendet werden."
 
-#: Arguments.cc:445
+#: Arguments.cc:444
 msgid "the encryption argument can be used only once."
 msgstr "Das Verschlüsselung-Argument kann nur einmal verwendet werden."
 
@@ -976,36 +951,28 @@ msgstr ""
 msgid "the file format of the file \"%s\" is not supported."
 msgstr "Das Dateiformat der Datei \"%s\" wird nicht unterstützt."
 
-#: Arguments.cc:423
+#: Arguments.cc:422
 msgid "the file name embedding argument can be used only once."
 msgstr ""
 "Das Argument zur Einbettung des Dateinamens kann nur einmal verwendet werden."
 
-#: Arguments.cc:637
+#: Arguments.cc:605
 msgid "the force argument can be used only once."
 msgstr "Das Überschreiben-Argument kann nur einmal verwendet werden."
 
-#: Arguments.cc:606
+#: Arguments.cc:574
 msgid "the goal argument can be used only once."
 msgstr "Das Ziel-Argument kann nur einmal verwendet werden."
 
-#: Arguments.cc:783
-msgid "the number construction heuristic argument can be used only once."
-msgstr "FIXME"
-
-#: Arguments.cc:330
+#: Arguments.cc:329
 msgid "the passphrase argument can be used only once."
 msgstr "Das Argument \"Passwort\" kann nur einmal verwendet werden."
 
-#: Arguments.cc:835
+#: Arguments.cc:763
 msgid "the passphrases do not match."
 msgstr "Die Passworte stimmen nicht überein."
 
-#: Arguments.cc:763
-msgid "the priority queue range argument can be used only once."
-msgstr "FIXME"
-
-#: Arguments.cc:547
+#: Arguments.cc:546
 msgid "the radius argument can be used only once."
 msgstr "Das Argument \"Radius\" kann nur einmal verwendet werden."
 
@@ -1063,17 +1030,17 @@ msgstr "Die wav-Datei von der Standardeingabe ist ungültig."
 msgid "type \"steghide --help\" for help."
 msgstr "Geben Sie \"steghide --help\" ein, um Hilfe zu erhalten."
 
-#: Arguments.cc:85
+#: Arguments.cc:84
 #, c-format
 msgid "unknown argument \"%s\"."
 msgstr "unbekanntes Argument \"%s\"."
 
-#: Arguments.cc:196
+#: Arguments.cc:195
 #, c-format
 msgid "unknown command \"%s\"."
 msgstr "unbekanntes Kommando \"%s\"."
 
-#: Arguments.cc:806
+#: Arguments.cc:734
 msgid "unknown terminal. the passphrase you type now will be visible."
 msgstr ""
 "Unbekanntes Terminal. Das Passwort das Sie jetzt eingeben wird sichtbar sein."
@@ -1130,16 +1097,17 @@ msgstr "j"
 msgid "yes"
 msgstr "ja"
 
-#: Arguments.cc:160 Arguments.cc:167 Arguments.cc:174 Arguments.cc:181
+#: Arguments.cc:159 Arguments.cc:166 Arguments.cc:173 Arguments.cc:180
 #, c-format
 msgid "you cannot use arguments with the \"%s\" command."
 msgstr "Mit dem Kommando \"%s\" können keine Argumente verwendet werden."
 
-#: Arguments.cc:691 Arguments.cc:701 Arguments.cc:711 Arguments.cc:729
+#: Arguments.cc:659 Arguments.cc:669 Arguments.cc:679 Arguments.cc:697
 msgid "you cannot use more than one debug command at a time."
 msgstr "Sie können nicht mehr als ein debug-Kommando auf einmal verwenden."
 
-#: Arguments.cc:139
+#: Arguments.cc:138
 #, c-format
 msgid "you have to suppy a filename to the \"%s\" command."
 msgstr "Das Kommando \"%s\" benötigt einen Dateinamen."
+

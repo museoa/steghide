@@ -196,36 +196,7 @@ const Matching* Embedder::calculateMatching (ProgressOutput* prout)
 {
 	Matching* matching = new Matching (Globs.TheGraph, prout) ;
 
-	std::vector<MatchingAlgorithm*> MatchingAlgos ;
-	if (Args.Algorithm.is_set()) {
-		switch (Args.Algorithm.getValue()) {
-			case Arguments::Algorithm_None:
-			// leave MatchingAlgos empty
-			break ;
-
-			case Arguments::Algorithm_CHOnly:
-			MatchingAlgos.push_back (new WKSConstructionHeuristic (Globs.TheGraph, matching)) ;
-			break ;
-
-			case Arguments::Algorithm_BoundedAPH:
-			MatchingAlgos.push_back (new WKSConstructionHeuristic (Globs.TheGraph, matching)) ;
-			MatchingAlgos.push_back (new DFSAPHeuristic (Globs.TheGraph, matching, Args.Goal.getValue(), (UWORD32) (Globs.TheGraph->getAvgVertexDegree() / 20), EdgeIterator::SAMPLEVALUE)) ;
-			break ;
-
-			case Arguments::Algorithm_UnboundedAPH:
-			MatchingAlgos.push_back (new WKSConstructionHeuristic (Globs.TheGraph, matching)) ;
-			MatchingAlgos.push_back (new DFSAPHeuristic (Globs.TheGraph, matching, Args.Goal.getValue())) ;
-			break ;
-
-			default:
-			myassert(false) ;
-			break ;
-		}
-
-	}
-	else {
-		MatchingAlgos = Globs.TheCvrStgFile->getMatchingAlgorithms (Globs.TheGraph, matching) ;
-	}
+	std::vector<MatchingAlgorithm*> MatchingAlgos = Globs.TheCvrStgFile->getMatchingAlgorithms (Globs.TheGraph, matching) ;
 
 	for (std::vector<MatchingAlgorithm*>::const_iterator ait = MatchingAlgos.begin() ; ait != MatchingAlgos.end() ; ait++) {
 		if (Args.Verbosity.getValue() == VERBOSE) {

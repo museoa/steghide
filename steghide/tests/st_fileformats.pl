@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 use STSupport;
 
-use constant EMPTY => {e => "none", Z => "", a => "0", K => ""} ;
+use constant EMPTY => {e => "none", Z => "", K => ""} ;
 
 sub runAu {
 	startSubCategory("au") ;
