@@ -42,6 +42,20 @@ class Selector {
 	 **/
 	Selector (UWORD32 m, std::string pp) ;
 
+	/**
+	 * construct a Selector object that resembles the identity permutation with range m
+	 * \param m the range - (*this)[i] will be i for i in {0,...,m-1}
+	 **/
+	Selector (UWORD32 m) ;
+
+	/**
+	 * construct a Selector object that will return predefined values
+	 * \param retvals the values that operator[] shall return
+	 *
+	 * The Maximum is set to retvals.size().
+	 **/
+	Selector (const std::vector<UWORD32>& retvals) ;
+
 	~Selector (void) ;
 
 	/**
@@ -49,6 +63,9 @@ class Selector {
 	 * \param i an index
 	 **/
 	UWORD32 operator[] (UWORD32 i) ;
+
+	UWORD32 getRange (void) const
+		{ return Maximum ; } ;
 
 	private:
 	std::vector<UWORD32> X ;

@@ -39,9 +39,30 @@ Selector::Selector (UWORD32 m, std::string pp)
 	PRandom = new PseudoRandomSource (seed) ;
 }
 
+Selector::Selector (UWORD32 m)
+{
+	Maximum = m ;
+	X.resize(m) ;
+	for (UWORD32 i = 0 ; i < m ; i++) {
+		X[i] = i ;
+	}
+	NumInArray = m ;
+	PRandom = NULL ;
+}
+
+Selector::Selector (const std::vector<UWORD32>& retvals)
+{
+	X = retvals ;
+	Maximum = retvals.size() ;
+	NumInArray = retvals.size() ;
+	PRandom = NULL ;
+}
+
 Selector::~Selector ()
 {
-	delete PRandom ;
+	if (PRandom) {
+		delete PRandom ;
+	}
 }
 
 UWORD32 Selector::operator[] (UWORD32 i)

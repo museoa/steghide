@@ -27,6 +27,7 @@
 #include "GraphTest.h"
 #include "MHashPPTest.h"
 #include "SampleValueOppositeNeighbourhoodTest.h"
+#include "SelectorTest.h"
 #include "VertexContentTest.h"
 #include "WavFileTest.h"
 
@@ -49,6 +50,9 @@ int main (int argc, char *argv[])
 
 	MHashPPTest mht (&ts) ;
 	ts.addUnitTest (&mht) ;
+
+	SelectorTest st (&ts) ;
+	ts.addUnitTest (&st) ;
 
 	// SampleValues
 	BmpRGBSampleValueTest rgbsvt (&ts) ;
