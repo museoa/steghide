@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.6b - a steganography program
+ * steghide 0.5.1 - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -18,26 +18,18 @@
  *
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <assert.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
-#include <libintl.h>
-#define _(S) gettext (S)
-
-#include "error.h"
-#include "main.h"
+#include "common.h"
 #include "cvrstgfile.h"
-#include "bufmanag.h"
-#include "msg.h"
-#include "support.h"
-#include "stegano.h"
-#include "hash.h"
-#include "bmpfile.h"
-#include "wavfile.h"
 #include "aufile.h"
+#include "bmpfile.h"
+#include "error.h"
 #include "jpegfile.h"
+#include "msg.h"
+#include "wavfile.h"
 
 CvrStgFile::CvrStgFile (void)
 {
@@ -68,7 +60,7 @@ void CvrStgFile::read (BinaryIO *io)
 {
 	setBinIO (io) ;
 
-	if (args->command.getValue() == EMBED) {
+	if (Args.Command.getValue() == EMBED) {
 		if (getBinIO()->is_std()) {
 			VerboseMessage v (_("reading cover file from standard input.")) ;
 			v.printMessage() ;
@@ -78,7 +70,7 @@ void CvrStgFile::read (BinaryIO *io)
 			v.printMessage() ;
 		}
 	}
-	else if (args->command.getValue() == EXTRACT) {
+	else if (Args.Command.getValue() == EXTRACT) {
 		if (getBinIO()->is_std()) {
 			VerboseMessage v (_("reading stego file from standard input.")) ;
 			v.printMessage() ;
@@ -144,47 +136,35 @@ int CvrStgFile::guessff (BinaryIO *io)
 	return retval ;
 }
 
-CvrStgFile* CvrStgFile::readfile (string fn)
+CvrStgFile *CvrStgFile::readFile (string fn)
 {
 	BinaryIO *BinIO = new BinaryIO (fn, BinaryIO::READ) ;
 
 	CvrStgFile *file = NULL ;
 	switch (guessff (BinIO)) {
-		case FF_UNKNOWN:
-		{
+		case FF_UNKNOWN: {
 			throw UnSupFileFormat (BinIO) ;	
-			break ;
-		}
+		break ; }
 
-		case FF_BMP:
-		{
+		case FF_BMP: {
 			file = new BmpFile (BinIO) ;
-			break ;
-		}
+		break ; }
 
-		case FF_WAV:
-		{
+		case FF_WAV: {
 			file = new WavFile (BinIO) ;
-			break ;
-		}
+		break ; }
 
-		case FF_AU:
-		{
+		case FF_AU: {
 			file = new AuFile (BinIO) ;
-			break ;
-		}
+		break ; }
 
-		case FF_JPEG:
-		{
+		case FF_JPEG: {
 			file = new JpegFile (BinIO) ;
-			break ;
-		}
+		break ; }
 
-		default:
-		{
+		default: {
 			assert (0) ;
-			break ;
-		}
+		break ; }
 	}
 
 	return file ;

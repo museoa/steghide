@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.6b - a steganography program
+ * steghide 0.5.1 - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -24,6 +24,7 @@
 #include <vector>
 
 #include "binaryio.h"
+#include "common.h"
 #include "cvrstgobject.h"
 
 /**
@@ -250,9 +251,11 @@ class JpegContainer : public JpegObject, public CvrStgObject {
 	void read (BinaryIO *io) ;
 	void write (BinaryIO *io) ;
 
-	unsigned long getCapacity (void) const ;
-	void embedBit (unsigned long pos, int bit) ;
-	int extractBit (unsigned long pos) const ;
+	unsigned long getNumSamples (void) ;
+	unsigned long getNumSBits (void) ;
+	Bit getSBitValue (SBitPos pos) ;
+	void replaceSample (SamplePos pos, CvrStgSample *s) ;
+	CvrStgSample* getSample (SamplePos pos) ;
 
 	protected:
 	/**
@@ -270,7 +273,8 @@ class JpegContainer : public JpegObject, public CvrStgObject {
 	void clearObjs (void) ;
 
 	private:
-	CvrStgObject *calcCvrStgObject (unsigned long *pos) const ;
+	CvrStgObject *calcCvrStgObject_SBitPos (SBitPos *pos) const ;
+	CvrStgObject *calcCvrStgObject_SamplePos (SamplePos *pos) const ;
 
 	/**
 	 * contains all JpegObjects in this JpegContainer

@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.6b - a steganography program
+ * steghide 0.5.1 - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -18,20 +18,13 @@
  *
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
+#include <cstdio>
+#include <cstdlib>
 
-#include <libintl.h>
-#define _(S) gettext (S)
-
-#include "error.h"
-#include "main.h"
+#include "common.h"
 #include "cvrstgfile.h"
 #include "bmpfile.h"
-#include "bufmanag.h"
-#include "support.h"
-#include "msg.h"
+#include "error.h"
 
 BmpFile::BmpFile ()
 	: CvrStgFile()
@@ -70,13 +63,31 @@ void BmpFile::write ()
 	writedata() ;
 }
 
-unsigned long BmpFile::getCapacity () const
+unsigned long BmpFile::getNumSamples()
+{
+	unsigned long retval = 0 ;
+	switch (getSubformat()) {
+		case WIN: {
+			retval = bmi_win.bmih.biWidth * bmi_win.bmih.biHeight ;
+		break ; }
+
+		case OS2: {
+			retval = bmi_os2.bmch.bcWidth * bmi_os2.bmch.bcHeight ;
+		break ; }
+
+		default: {
+			assert (0) ;
+		break ; }
+	}
+	return retval ;
+}
+
+unsigned long BmpFile::getNumSBits()
 {
 	unsigned long linelength = 0, retval = 0 ;
 
 	switch (getSubformat()) {
-		case WIN:
-		{
+		case WIN: {
 			if (bmi_win.bmih.biBitCount * bmi_win.bmih.biWidth % 8 == 0) {
 				linelength = bmi_win.bmih.biBitCount * bmi_win.bmih.biWidth / 8 ;
 			}
@@ -84,11 +95,9 @@ unsigned long BmpFile::getCapacity () const
 				linelength = (bmi_win.bmih.biBitCount * bmi_win.bmih.biWidth / 8) + 1;
 			}
 			retval = bmi_win.bmih.biHeight * linelength ;
-			break ;
-		}
+		break ; }
 
-		case OS2:
-		{
+		case OS2: {
 			if (bmi_os2.bmch.bcBitCount * bmi_os2.bmch.bcWidth % 8 == 0) {
 				linelength = bmi_os2.bmch.bcBitCount * bmi_os2.bmch.bcWidth / 8 ;
 			}
@@ -96,19 +105,95 @@ unsigned long BmpFile::getCapacity () const
 				linelength = (bmi_os2.bmch.bcBitCount * bmi_os2.bmch.bcWidth / 8) + 1;
 			}
 			retval = bmi_os2.bmch.bcHeight * linelength ;
-			break ;
-		}
+		break ; }
 
-		default:
-		{
+		default: {
 			assert (0) ;
-			break ;
-		}
+		break ; }
 	}
 
 	return retval ;
 }
 
+Bit BmpFile::getSBitValue (SBitPos pos)
+{
+	assert (pos < getNumSBits()) ;
+	unsigned long row = 0, column = 0 ;
+	calcRC (pos, &row, &column) ;
+	return (bitmap[row][column] & 0x01) ;
+}
+
+void BmpFile::replaceSample (SamplePos pos, CvrStgSample *s)
+{
+	unsigned int BitCount = 0 ;
+	switch (getSubformat()) {
+		case WIN: {
+			BitCount = bmi_win.bmih.biBitCount ;
+		break ; }
+
+		case OS2: {
+			BitCount = bmi_os2.bmch.bcBitCount ;
+		break ; }
+
+		default: {
+			assert (0) ;
+		break ; }
+	}
+
+	// TODO - finish this
+	switch (BitCount) {
+		case 1: case 4: case 8: {
+		break ; }
+
+		case 24: {
+		break ; }
+
+		default: {
+			assert (0) ;
+		break ; }
+	}
+}
+
+unsigned int BmpFile::getSamplesPerEBit()
+{
+	unsigned int BitCount = 0 ;
+	switch (getSubformat()) {
+		case WIN: {
+			BitCount = bmi_win.bmih.biBitCount ;
+		break ; }
+
+		case OS2: {
+			BitCount = bmi_os2.bmch.bcBitCount ;
+		break ; }
+
+		default: {
+			assert (0) ;
+		break ; }
+	}
+
+	unsigned int retval = 0 ;
+	switch (BitCount) {
+		case 1: case 4: case 8: {
+			retval = 2 ;
+		break ; }
+
+		case 24: {
+			retval = 1 ;
+		break ; }
+
+		default: {
+			assert (0) ;
+		break ; }
+	}
+	return retval ;
+}
+
+CvrStgSample *BmpFile::getSample (SamplePos pos)
+{
+	// TODO 
+}
+
+#if 0
 void BmpFile::embedBit (unsigned long pos, int value)
 {
 	assert (pos < getCapacity()) ;
@@ -127,14 +212,14 @@ int BmpFile::extractBit (unsigned long pos) const
 	calcRC (pos, &row, &column) ;
 	return (bitmap[row][column] & 0x01) ;
 }
+#endif
 
 void BmpFile::calcRC (unsigned long pos, unsigned long *row, unsigned long *column) const
 {
 	unsigned long width = 0 /* in bytes */, height = 0 ;
 
 	switch (getSubformat()) {
-		case WIN:
-		{
+		case WIN: {
 			if (bmi_win.bmih.biBitCount * bmi_win.bmih.biWidth % 8 == 0) {
 				width = bmi_win.bmih.biBitCount * bmi_win.bmih.biWidth / 8 ;
 			}
@@ -142,11 +227,9 @@ void BmpFile::calcRC (unsigned long pos, unsigned long *row, unsigned long *colu
 				width = (bmi_win.bmih.biBitCount * bmi_win.bmih.biWidth / 8) + 1;
 			}
 			height = bmi_win.bmih.biHeight ;
-			break ;
-		}
+		break ; }
 
-		case OS2:
-		{
+		case OS2: {
 			if (bmi_os2.bmch.bcBitCount * bmi_os2.bmch.bcWidth % 8 == 0) {
 				width = bmi_os2.bmch.bcBitCount * bmi_os2.bmch.bcWidth / 8 ;
 			}
@@ -154,14 +237,11 @@ void BmpFile::calcRC (unsigned long pos, unsigned long *row, unsigned long *colu
 				width = (bmi_os2.bmch.bcBitCount * bmi_os2.bmch.bcWidth / 8) + 1;
 			}
 			height = bmi_os2.bmch.bcHeight ;
-			break ;
-		}
+		break ; }
 
-		default:
-		{
+		default: {
 			assert (0) ;
-			break ;
-		}
+		break ; }
 	}
 
 	*row = height - (pos / width) - 1 ;
@@ -180,57 +260,45 @@ void BmpFile::readheaders ()
 		
 		unsigned long tmpSize = getBinIO()->read32_le() ;
 		switch (tmpSize) {
-			case SizeBMINFOHEADER:	/* file has windows bmp format */
-			{
+			case SizeBMINFOHEADER: {
+				// this file is in the Windows bmp format
 				subformat = WIN ;
 				bmpwin_readheaders () ;
-				break ;
-			}
+			break ; }
 
-			case SizeBMCOREHEADER:	/* file has OS/2 bmp format */
-			{
+			case SizeBMCOREHEADER: {
+				// this file is in the OS/2 bmp format
 				subformat = OS2 ;
 				bmpos2_readheaders () ;
-				break ;
-			}
+			break ; }
 
-			default:
-			{
+			default: {
 				if (getBinIO()->is_std()) {
 					throw SteghideError (_("the bmp data from standard input has a format that is not supported.")) ;
 				}
 				else {
 					throw SteghideError (_("the bmp file \"%s\" has a format that is not supported."), getBinIO()->getName().c_str()) ;
 				}
-				break ;
-			}
+			break ; }
 		}
 	}
 	catch (BinaryInputError e) {
 		switch (e.getType()) {
-			case BinaryInputError::FILE_ERR:
-			{
+			case BinaryInputError::FILE_ERR: {
 				throw SteghideError (_("an error occured while reading the bmp headers from the file \"%s\"."), getBinIO()->getName().c_str()) ;
-				break ;
-			}
+			break ; }
 
-			case BinaryInputError::FILE_EOF:
-			{
+			case BinaryInputError::FILE_EOF: {
 				throw SteghideError (_("premature end of file \"%s\" while reading bmp headers."), getBinIO()->getName().c_str()) ;
-				break ;
-			}
+			break ; }
 
-			case BinaryInputError::STDIN_ERR:
-			{
+			case BinaryInputError::STDIN_ERR: {
 				throw SteghideError (_("an error occured while reading the bmp headers from standard input.")) ;
-				break ;
-			}
+			break ; }
 
-			case BinaryInputError::STDIN_EOF:
-			{
+			case BinaryInputError::STDIN_EOF: {
 				throw SteghideError (_("premature end of data from standard input while reading bmp headers.")) ;
-				break ;
-			}
+			break ; }
 		}
 	}
 }
@@ -269,37 +337,29 @@ void BmpFile::bmpwin_readheaders ()
 	else {
 		/* a color table exists */
 		switch (bmi_win.bmih.biBitCount) {
-			case 1:
-			{
-				if (args->command.getValue() == EMBED) {
+			case 1: {
+				if (Args.Command.getValue() == EMBED) {
 					Warning w (_("using a black/white bitmap as cover is very insecure!")) ;
 					w.printMessage() ;
 				}
 				bmi_win.ncolors = 2 ;
-				break ;
-			}
+			break ; }
 
-			case 4:
-			{
-				if (args->command.getValue() == EMBED) {
+			case 4: {
+				if (Args.Command.getValue() == EMBED) {
 					Warning w (_("using a 16-color bitmap as cover is very insecure!")) ;
 					w.printMessage() ;
 				}
 				bmi_win.ncolors = 16 ;
-				break ;
-			}
+			break ; }
 
-			case 8:
-			{
+			case 8: {
 				bmi_win.ncolors = 256 ;
-				break ;
-			}
+			break ; }
 
-			default:
-			{
+			default: {
 				assert (0) ;
-				break ;
-			}
+			break ; }
 		}
 		if (bmi_win.bmih.biClrUsed != 0) {
 			bmi_win.ncolors = bmi_win.bmih.biClrUsed ;
@@ -338,37 +398,29 @@ void BmpFile::bmpos2_readheaders ()
 	else {
 		/* a color table exists */
 		switch (bmi_os2.bmch.bcBitCount) {
-			case 1:
-			{
-				if (args->command.getValue() == EMBED) {
+			case 1: {
+				if (Args.Command.getValue() == EMBED) {
 					Warning w (_("using a black/white bitmap as cover is very insecure!")) ;
 					w.printMessage() ;
 				}
 				bmi_os2.ncolors = 2 ;
-				break ;
-			}
+			break ; }
 
-			case 4:
-			{
-				if (args->command.getValue() == EMBED) {
+			case 4: {
+				if (Args.Command.getValue() == EMBED) {
 					Warning w (_("using a 16-color bitmap as cover is very insecure!")) ;
 					w.printMessage() ;
 				}
 				bmi_os2.ncolors = 16 ;
-				break ;
-			}
+			break ; }
 
-			case 8:
-			{
+			case 8: {
 				bmi_os2.ncolors = 256 ;
-				break ;
-			}
+			break ; }
 
-			default:
-			{
+			default: {
 				assert (0) ;
-				break ;
-			}
+			break ; }
 		}
 
 		bmi_os2.colors = vector<RGBTRIPLE> (bmi_os2.ncolors) ;
@@ -393,38 +445,28 @@ void BmpFile::writeheaders ()
 		getBinIO()->write32_le (bmfh.bfOffBits) ;
 
 		switch (getSubformat()) {
-			case WIN:
-			{
+			case WIN: {
 				bmpwin_writeheaders() ;
-				break ;
-			}
+			break ; }
 
-			case OS2:
-			{
+			case OS2: {
 				bmpos2_writeheaders() ;
-				break ;
-			}
+			break ; }
 
-			default:
-			{
+			default: {
 				assert (0) ;
-				break ;
-			}
+			break ; }
 		}
 	}
 	catch (BinaryOutputError e) {
 		switch (e.getType()) {
-			case BinaryOutputError::FILE_ERR:
-			{
+			case BinaryOutputError::FILE_ERR: {
 				throw SteghideError (_("an error occured while writing the bmp headers to the file \"%s\"."), getBinIO()->getName().c_str()) ;
-				break ;
-			}
+			break ; }
 
-			case BinaryOutputError::STDOUT_ERR:
-			{
+			case BinaryOutputError::STDOUT_ERR: {
 				throw SteghideError (_("an error occured while writing the bmp headers to standard output.")) ;
-				break ;
-			}
+			break ; }
 		}
 	}
 }
@@ -476,33 +518,27 @@ long BmpFile::calcLinelength ()
 	long retval = 0 ;
 
 	switch (getSubformat()) {
-		case WIN:
-		{
+		case WIN: {
 			if (bmi_win.bmih.biBitCount * bmi_win.bmih.biWidth % 8 == 0) {
 				retval = bmi_win.bmih.biBitCount * bmi_win.bmih.biWidth / 8 ;
 			}
 			else {
 				retval = (bmi_win.bmih.biBitCount * bmi_win.bmih.biWidth / 8) + 1;
 			}
-			break ;
-		}
+		break ; }
 
-		case OS2:
-		{
+		case OS2: {
 			if (bmi_os2.bmch.bcBitCount * bmi_os2.bmch.bcWidth % 8 == 0) {
 				retval = bmi_os2.bmch.bcBitCount * bmi_os2.bmch.bcWidth / 8 ;
 			}
 			else {
 				retval = (bmi_os2.bmch.bcBitCount * bmi_os2.bmch.bcWidth / 8) + 1;
 			}
-			break ;
-		}
+		break ; }
 		
-		default:
-		{
+		default: {
 			assert (0) ;
-			break ;
-		}
+		break ; }
 	}
 
 	return retval ;
@@ -513,23 +549,17 @@ long BmpFile::getHeight ()
 	long retval = 0 ;
 
 	switch (getSubformat()) {
-		case WIN:
-		{
+		case WIN: {
 			retval = bmi_win.bmih.biHeight ;
-			break ;
-		}
+		break ; }
 
-		case OS2:
-		{
+		case OS2: {
 			retval = bmi_os2.bmch.bcHeight ;
-			break ;
-		}
+		break ; }
 
-		default:
-		{
+		default: {
 			assert (0) ;
-			break ;
-		}
+		break ; }
 	}
 
 	return retval ;
@@ -570,29 +600,21 @@ void BmpFile::readdata ()
 	}
 	catch (BinaryInputError e) {
 		switch (e.getType()) {
-			case BinaryInputError::FILE_ERR:
-			{
+			case BinaryInputError::FILE_ERR: {
 				throw SteghideError (_("an error occured while reading the bmp data from the file \"%s\"."), getBinIO()->getName().c_str()) ;
-				break ;
-			}
+			break ; }
 
-			case BinaryInputError::FILE_EOF:
-			{
+			case BinaryInputError::FILE_EOF: {
 				throw SteghideError (_("premature end of file \"%s\" while reading bmp data."), getBinIO()->getName().c_str()) ;
-				break ;
-			}
+			break ; }
 
-			case BinaryInputError::STDIN_ERR:
-			{
+			case BinaryInputError::STDIN_ERR: {
 				throw SteghideError (_("an error occured while reading the bmp data from standard input.")) ;
-				break ;
-			}
+			break ; }
 
-			case BinaryInputError::STDIN_EOF:
-			{
+			case BinaryInputError::STDIN_EOF: {
 				throw SteghideError (_("premature end of bmp data from standard input.")) ;
-				break ;
-			}
+			break ; }
 		}
 	}
 }
@@ -628,18 +650,13 @@ void BmpFile::writedata ()
 	}
 	catch (BinaryOutputError e) {
 		switch (e.getType()) {
-			case BinaryOutputError::FILE_ERR:
-			{
+			case BinaryOutputError::FILE_ERR: {
 				throw SteghideError (_("an error occured while writing the bitmap data to the file \"%s\"."), getBinIO()->getName().c_str()) ;
-				break ;
-			}
+			break ; }
 
-			case BinaryOutputError::STDOUT_ERR:
-			{
+			case BinaryOutputError::STDOUT_ERR: {
 				throw SteghideError (_("an error occured while writing the bitmap data to standard output.")) ;
-				break ;
-			}
+			break ; }
 		}
-
 	}
 }

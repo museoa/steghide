@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.6b - a steganography program
+ * steghide 0.5.1 - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -64,22 +64,32 @@ void JpegFile::write ()
 	EOI.write (getBinIO()) ;
 }
 
-unsigned long JpegFile::getCapacity (void) const
+unsigned long JpegFile::getNumSamples()
 {
-	return frame->getCapacity() ;
+	return frame->getNumSamples() ;
 }
 
-void JpegFile::embedBit (unsigned long pos, int bit)
+unsigned long JpegFile::getNumSBits()
 {
-	assert (pos < getCapacity()) ;
-	assert (bit == 0 || bit == 1) ;
-
-	frame->embedBit (pos, bit) ;
+	return frame->getNumSBits() ;
 }
 
-int JpegFile::extractBit (unsigned long pos) const
+Bit JpegFile::getSBitValue (SBitPos pos)
 {
-	assert (pos < getCapacity()) ;
+	return frame->getSBitValue(pos) ;
+}
 
-	return frame->extractBit (pos) ;
+void JpegFile::replaceSample (SamplePos pos, CvrStgSample *s)
+{
+	frame->replaceSample (pos, s) ;
+}
+
+unsigned int JpegFile::getSamplesPerEBit()
+{
+	return 2 ;
+}
+
+CvrStgSample *JpegFile::getSample (SamplePos pos)
+{
+	return frame->getSample(pos) ;
 }

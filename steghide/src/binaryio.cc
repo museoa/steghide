@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.6b - a steganography program
+ * steghide 0.5.1 - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -18,17 +18,12 @@
  *
  */
 
-#include <stdio.h>
+#include <cstdio>
 #include <sstream>
 
-#include <libintl.h>
-#define _(S) gettext (S)
-
-#include "arguments.h"
 #include "binaryio.h"
+#include "common.h"
 #include "error.h"
-#include "msg.h"
-#include "support.h"
 
 BinaryIO::BinaryIO (void)
 {
@@ -95,27 +90,50 @@ void BinaryIO::setMode (BinaryIO::MODE m)
 	mode = m ;
 }
 
+bool BinaryIO::Fileexists (string fn)
+{
+	bool retval = false ;
+	FILE *fd = fopen (fn.c_str(), "r") ;
+    if (fd != NULL) {
+        retval = true ;
+        fclose (fd) ;
+    }
+    return retval ;
+}
+
+void BinaryIO::checkForce (string fn)
+{
+	if (!Args.Force.getValue()) {
+		if (Fileexists (fn)) {
+			if (Args.stdin_isused()) {
+				throw SteghideError (_("the file \"%s\" does already exist."), fn.c_str()) ;
+			}
+			else {
+				Question q (_("the file \"%s\" does already exist. overwrite ?"), fn.c_str()) ;
+				q.printMessage() ;
+				if (!q.getAnswer()) {
+					throw SteghideError (_("did not write to file \"%s\"."), fn.c_str()) ;
+				}
+			}
+		}
+	}
+}
+
 void BinaryIO::open (string fn, MODE m)
 {
 	if (fn == "") {
 		switch (m) {
-			case READ:
-			{
+			case READ: {
 				setStream (stdin) ;
-				break ;
-			}
+			break ; }
 
-			case WRITE:
-			{
+			case WRITE: {
 				setStream (stdout) ;
-				break ;
-			}
+			break ; }
 
-			default:
-			{
+			default: {
 				assert (0) ;
-				break ;
-			}
+			break ; }
 		}
 	}
 	else {
@@ -123,18 +141,14 @@ void BinaryIO::open (string fn, MODE m)
 		char *cmode ;
 
 		switch (m) {
-			case READ:
-			{
+			case READ: {
 				cmode = "rb" ;
-				break ;
-			}
+			break ; }
 
-			case WRITE:
-			{
-				checkforce (fn.c_str()) ;
+			case WRITE: {
+				checkForce (fn) ;
 				cmode = "wb" ;
-				break ;
-			}
+			break ; }
 		}
 
 		if ((s = fopen (fn.c_str(), cmode)) == NULL) {

@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.6b - a steganography program
+ * steghide 0.5.1 - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -23,8 +23,6 @@
 
 #include <string>
 
-#include "stegano.h"
-
 template<class T> class Arg {
 	public:
 	Arg (void) ;
@@ -39,14 +37,12 @@ template<class T> class Arg {
 	bool set ;
 } ;
 
-enum Command { EMBED, EXTRACT, SHOWVERSION, SHOWLICENSE, SHOWHELP } ;
-enum Verbosity { QUIET, NORMAL, VERBOSE } ;
+enum COMMAND { EMBED, EXTRACT, ENCINFO, SHOWVERSION, SHOWLICENSE, SHOWHELP } ;
+enum VERBOSITY { QUIET, NORMAL, VERBOSE } ;
 
-typedef Arg<Command> ArgCommand ;
-typedef Arg<unsigned int> ArgUInt ;
-typedef Arg<Verbosity> ArgVerbosity ;
+typedef Arg<COMMAND> ArgCommand ;
+typedef Arg<VERBOSITY> ArgVerbosity ;
 typedef Arg<bool> ArgBool ;
 typedef Arg<string> ArgString ;
-typedef Arg<DMTDINFO> ArgDMTDINFO ;
 
 #endif /* ndef SH_ARG_H */

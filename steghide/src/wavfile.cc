@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.6b - a steganography program
+ * steghide 0.5.1 - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -18,21 +18,15 @@
  *
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <assert.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
-#include <libintl.h>
-#define _(S) gettext (S)
-
-#include "error.h"
-#include "main.h"
+#include "common.h"
 #include "cvrstgfile.h"
-#include "wavfile.h"
-#include "bufmanag.h"
-#include "support.h"
+#include "error.h"
 #include "msg.h"
+#include "wavfile.h"
 
 WavFile::WavFile ()
 	: CvrStgFile()
@@ -49,7 +43,6 @@ WavFile::WavFile (BinaryIO *io)
 WavFile::~WavFile ()
 {
 	free (unsupchunks1.data) ;
-	buffree (data) ;
 	free (unsupchunks2.data) ;
 }
 
@@ -69,7 +62,7 @@ void WavFile::write ()
 	writedata () ;
 }
 
-unsigned long WavFile::getCapacity () const
+unsigned long WavFile::getNumSamples()
 {
 	unsigned int bytespersample = 0 ;
 
@@ -80,30 +73,38 @@ unsigned long WavFile::getCapacity () const
 		bytespersample = (fmtch.BitsPerSample / 8) + 1 ;
 	}
 
-	assert (data->length % bytespersample == 0) ;
+	assert (data.size() % bytespersample == 0) ;
 
-	return data->length / bytespersample ;
+	return data.size() / bytespersample ;
 }
 
-void WavFile::embedBit (unsigned long pos, int value)
+unsigned long WavFile::getNumSBits()
 {
-	assert (value == 0 || value == 1) ;
-	assert (pos < getCapacity()) ;
+	return getNumSamples() ;
+}
 
+Bit WavFile::getSBitValue (SBitPos pos)
+{
+	assert (pos < getNumSBits()) ;
 	unsigned long bytepos = 0 ;
 	unsigned int bitpos = 0 ;
 	calcpos (pos, &bytepos, &bitpos) ;
-	bufsetbit (data, bytepos, bitpos, value) ;
+	return ((Bit) ((data[bytepos] & (1 << bitpos)) >> bitpos)) ;
 }
 
-int WavFile::extractBit (unsigned long pos) const
+void WavFile::replaceSample (SamplePos pos, CvrStgSample *s)
 {
-	assert (pos < getCapacity()) ;
+	// TODO
+}
 
-	unsigned long bytepos = 0 ;
-	unsigned int bitpos = 0 ;
-	calcpos (pos, &bytepos, &bitpos) ;
-	return bufgetbit (data, bytepos, bitpos) ;
+unsigned int WavFile::getSamplesPerEBit()
+{
+	return 2 ;
+}
+
+CvrStgSample *WavFile::getSample (SamplePos pos)
+{
+	// TODO - in WavSample muss BitsPerSample berücksichtigt werden - ev. in CvrStgSample einen pointer auf CvrStgFile ?? - Speicherverbrauch
 }
 
 /* calculate position in buffer for n-th embedded bit */
@@ -126,11 +127,9 @@ void WavFile::calcpos (unsigned long n, unsigned long *bytepos, unsigned int *bi
 void WavFile::readdata (void)
 {
 	try {
-		data = bufcreate (0) ;
-
-		unsigned long pos = 0 ;
+		data.clear() ;
 		while (!getBinIO()->eof()) {
-			bufsetbyte (data, pos++, getBinIO()->read8()) ;
+			data.push_back (getBinIO()->read8()) ;
 		}
 
 		unsupchunks2.data = NULL ;
@@ -149,29 +148,21 @@ void WavFile::readdata (void)
 	}
 	catch (BinaryInputError e) {
 		switch (e.getType()) {
-			case BinaryInputError::FILE_ERR:
-			{
+			case BinaryInputError::FILE_ERR: {
 				throw SteghideError (_("an error occured while reading the audio data from the file \"%s\"."), getBinIO()->getName().c_str()) ;
-				break ;
-			}
+			break ; }
 
-			case BinaryInputError::FILE_EOF:
-			{
+			case BinaryInputError::FILE_EOF: {
 				throw SteghideError (_("premature end of file \"%s\" while reading audio data."), getBinIO()->getName().c_str()) ;
-				break ;
-			}
+			break ; }
 
-			case BinaryInputError::STDIN_ERR:
-			{
+			case BinaryInputError::STDIN_ERR: {
 				throw SteghideError (_("an error occured while reading the audio data from standard input.")) ;
-				break ;
-			}
+			break ; }
 
-			case BinaryInputError::STDIN_EOF:
-			{
+			case BinaryInputError::STDIN_EOF: {
 				throw SteghideError (_("premature end of data from standard input while reading audio data.")) ;
-				break ;
-			}
+			break ; }
 		}
 	}
 }
@@ -180,11 +171,8 @@ void WavFile::readdata (void)
 void WavFile::writedata (void)
 {
 	try {
-		int c = EOF ;
-		unsigned long pos = 0 ;
-
-		while ((c = bufgetbyte (data, pos++)) != ENDOFBUF) {
-			getBinIO()->write8 ((unsigned char) c) ;
+		for (vector<unsigned char>::iterator i = data.begin() ; i != data.end() ; i++) {
+			getBinIO()->write8 (*i) ;
 		}
 
 		if (unsupchunks2.len > 0) {
@@ -196,17 +184,13 @@ void WavFile::writedata (void)
 	}
 	catch (BinaryOutputError e) {
 		switch (e.getType()) {
-			case BinaryOutputError::FILE_ERR:
-			{
+			case BinaryOutputError::FILE_ERR: {
 				throw SteghideError (_("an error occured while writing the audio data to the file \"%s\"."), getBinIO()->getName().c_str()) ;
-				break ;
-			}
+			break ; }
 
-			case BinaryOutputError::STDOUT_ERR:
-			{
+			case BinaryOutputError::STDOUT_ERR: {
 				throw SteghideError (_("an error occured while writing the audio data to standard output.")) ;
-				break ;
-			}
+			break ; }
 		}
 	}
 }
@@ -386,4 +370,21 @@ void WavFile::putChhdr (ChunkHeader *chhdr)
 	getBinIO()->write8 (chhdr->id[2]) ;
 	getBinIO()->write8 (chhdr->id[3]) ;
 	getBinIO()->write32_le (chhdr->len) ;
+}
+
+void *WavFile::s_realloc (void *ptr, size_t size)
+{
+	void *retval = NULL ;
+	if ((retval = realloc (ptr, size)) == NULL) {
+		throw SteghideError (_("could not reallocate memory.")) ;
+	}
+	return retval ;
+}
+
+void WavFile::cp32ul2uc_le (unsigned char *dest, unsigned long src)
+{
+	dest[0] = src & 0xFF ;
+	dest[1] = (src >> 8) & 0xFF ;
+	dest[2] = (src >> 16) & 0xFF ;
+	dest[3] = (src >> 24) & 0xFF ;
 }

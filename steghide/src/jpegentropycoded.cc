@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.6b - a steganography program
+ * steghide 0.5.1 - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -18,18 +18,14 @@
  *
  */
 
-#include <assert.h>
-
-#include <libintl.h>
-#define _(S) gettext (S)
-
 #include "binaryio.h"
-#include "bufmanag.h"
+#include "common.h"
 #include "error.h"
 #include "jpegbase.h"
 #include "jpegentropycoded.h"
 #include "jpegframe.h"
 #include "jpegframehdr.h"
+#include "jpegsample.h"
 #include "jpegscan.h"
 #include "jpegscanhdr.h"
 
@@ -286,6 +282,44 @@ void JpegEntropyCoded::write (BinaryIO *io)
 	}
 }
 
+unsigned long JpegEntropyCoded::getNumSamples()
+{
+	return ((unsigned long) dctcoeffs.size()) ;
+}
+
+unsigned long JpegEntropyCoded::getNumSBits()
+{
+	return ((unsigned long) dctcoeffs.size()) ;
+}
+
+Bit JpegEntropyCoded::getSBitValue (SBitPos pos)
+{
+	assert (pos < dctcoeffs.size()) ;
+	Bit retval = 0 ;
+	if (dctcoeffs[pos] >= 0) {
+		retval = dctcoeffs[pos] % 2 ;
+	}
+	else {
+		retval = (-dctcoeffs[pos] % 2) ;
+	}
+	return retval ;
+}
+
+void JpegEntropyCoded::replaceSample (SamplePos pos, CvrStgSample *s)
+{
+	assert (pos < dctcoeffs.size()) ;
+	JpegSample *sample = dynamic_cast<JpegSample*> (s) ;
+	assert (sample != NULL) ;
+	dctcoeffs[pos] = sample->getDctCoeff() ;
+}
+
+CvrStgSample *JpegEntropyCoded::getSample (SamplePos pos)
+{
+	assert (pos < dctcoeffs.size()) ;
+	return ((CvrStgSample *) new JpegSample (dctcoeffs[pos])) ;
+}
+
+#if 0
 unsigned long JpegEntropyCoded::getCapacity () const
 {
 	return ((unsigned long) dctcoeffs.size()) ;
@@ -328,6 +362,7 @@ int JpegEntropyCoded::extractBit (unsigned long pos) const
 
 	return retval ;
 }
+#endif
 
 unsigned char JpegEntropyCoded::decode (BinaryIO *io, JpegHuffmanTable *ht)
 {

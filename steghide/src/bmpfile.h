@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.6b - a steganography program
+ * steghide 0.5.1 - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -23,8 +23,8 @@
 
 #include <vector>
 
-#include "arguments.h"
 #include "binaryio.h"
+#include "common.h"
 #include "cvrstgfile.h"
 
 class BmpFile : public CvrStgFile {
@@ -36,9 +36,12 @@ class BmpFile : public CvrStgFile {
 	void read (BinaryIO *io) ;
 	void write (void) ;
 
-	unsigned long getCapacity (void) const ;
-	void embedBit (unsigned long pos, int bit) ;
-	int extractBit (unsigned long pos) const ;
+	unsigned long getNumSamples (void) ;
+	unsigned long getNumSBits (void) ;
+	Bit getSBitValue (SBitPos pos) ;
+	void replaceSample (SamplePos pos, CvrStgSample *s) ;
+	CvrStgSample* getSample (SamplePos pos) ;
+	unsigned int getSamplesPerEBit (void) ;
 
 	protected:
 #ifdef WIN32

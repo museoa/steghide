@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.6b - a steganography program
+ * steghide 0.5.1 - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -18,13 +18,12 @@
  *
  */
 
-#include <assert.h>
-#include <limits.h>
-
+#include <climits>
 #include <iostream>
 
-#include "error.h"
 #include "binaryio.h"
+#include "common.h"
+#include "error.h"
 #include "jpegbase.h"
 #include "jpeghufftable.h"
 

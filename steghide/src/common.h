@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.6b - a steganography program
+ * steghide 0.5.1 - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -18,27 +18,37 @@
  *
  */
 
-#ifndef SH_PLNFILE_H
-#define SH_PLNFILE_H
+#ifndef SH_COMMON_H
+#define SH_COMMON_H
 
-#include "bufmanag.h"
+// this file contains some definitions that are/can be used throughout the whole program
 
-/* PLNFILE describes a plaindata file */
-typedef struct struct_PLNFILE {	
-	/* file as data stream */
-	FILE	*stream ;
-	/* name of file */
-	char	*filename ;
-	/* first element of linked list of buffers that contain the data of the file */
-	BUFFER	*plndata ;
-} PLNFILE ;
+// the program name
+#define PROGNAME "steghide"
 
-/* function prototypes */
-PLNFILE *pln_readfile (char *filename) ;
-void pln_writefile (PLNFILE *plnfile) ;
-void assemble_plndata (PLNFILE *plnfile) ;
-void deassemble_plndata (PLNFILE *plnfile) ;
-PLNFILE *pln_createfile (void) ;
-void pln_cleanup (PLNFILE *plnfile) ;
+// gettext support
+#include <libintl.h>
+#define _(S) gettext (S)
 
-#endif // SH_PLNFILE_H
+// include config.h
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+// every class should (be able to) do assertions
+#include <cassert>
+
+// every class has access to the command line arguments
+#include "arguments.h"
+extern Arguments Args ;
+
+// every class has access to random data
+#include "randomsource.h"
+extern RandomSource RndSrc ;
+
+// typedefs
+typedef int Bit ;
+typedef unsigned long SBitPos ;
+typedef unsigned long SamplePos ;
+
+#endif // ndef SH_COMMON_H

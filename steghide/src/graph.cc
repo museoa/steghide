@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.6b - a steganography program
+ * steghide 0.5.1 - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -18,16 +18,31 @@
  *
  */
 
-#ifndef SH_HASH_H
-#define SH_HASH_H
+#include "graph.h"
 
-#include "plnfile.h"
+Graph::Graph()
+{
+}
 
-#define SIZE_BLOWFISHKEY	16
+Graph::~Graph()
+{
+	for (vector<Vertex*>::iterator i = Vertices.begin() ; i != Vertices.end() ; i++) {
+		delete *i ;
+	}
+}
 
-unsigned long getseed (char *passphrase) ;
-void *getcrc32 (PLNFILE *plnfile) ;
-int checkcrc32 (PLNFILE *plnfile, void *crc32) ;
-void *getblowfishkey (char *passphrase) ;
+void Graph::addVertex(Vertex *v)
+{
+	Vertices.push_back (v) ;
+}
 
-#endif // ndef SH_HASH_H
+unsigned long Graph::getNumVertices() const
+{
+	return Vertices.size() ;
+}
+
+Vertex *Graph::getVertex(unsigned long i) const
+{
+	assert (i < Vertices.size()) ;
+	return Vertices[i] ;
+}

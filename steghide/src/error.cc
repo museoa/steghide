@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.6b - a steganography program
+ * steghide 0.5.1 - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -20,14 +20,11 @@
 
 #include <iostream>
 #include <string>
-#include <stdio.h>
-#include <stdarg.h>
+#include <cstdio>
+#include <cstdarg>
 
-#include <libintl.h>
-#define _(S) gettext (S)
-
+#include "common.h"
 #include "error.h"
-#include "main.h"
 
 //
 // class SteghideError

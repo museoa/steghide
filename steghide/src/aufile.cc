@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.6b - a steganography program
+ * steghide 0.5.1 - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -18,22 +18,17 @@
  *
  */
 
-#include <cassert>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <vector>
 
-#include <libintl.h>
-#define _(S) gettext (S)
-
 #include "aufile.h"
-#include "bufmanag.h"
-#include "error.h"
-#include "main.h"
+#include "ausample.h"
+#include "common.h"
 #include "cvrstgfile.h"
-#include "support.h"
-#include "msg.h"
+#include "cvrstgobject.h"
+#include "error.h"
 
 AuFile::AuFile (void)
 	: CvrStgFile()
@@ -77,26 +72,39 @@ void AuFile::write()
 	writedata () ;
 }
 
-unsigned long AuFile::getCapacity() const
+unsigned int AuFile::getSamplesPerEBit()
+{
+	return 2 ;
+}
+
+unsigned long AuFile::getNumSamples()
 {
 	return data.size() ;
 }
 
-void AuFile::embedBit (unsigned long pos, int value)
+unsigned long AuFile::getNumSBits()
 {
-	assert (value == 0 || value == 1) ;
-	assert (pos < getCapacity()) ;
-
-	data[pos] = (data[pos] & (unsigned char) ~0x01) | value ;
-
-	return ;
+	return data.size() ;
 }
 
-int AuFile::extractBit (unsigned long pos) const
+Bit AuFile::getSBitValue (SBitPos pos)
 {
-	assert (pos < getCapacity()) ;
-
+	assert (pos < getNumSBits()) ;
 	return (data[pos] & 0x01) ;
+}
+
+void AuFile::replaceSample (SamplePos pos, CvrStgSample *s)
+{
+	AuSample *sample = dynamic_cast<AuSample*> (s) ;
+	assert (sample != NULL) ;
+	assert (pos < getNumSamples()) ;
+	data[pos] = sample->getValue() ;
+}
+
+CvrStgSample *AuFile::getSample (SamplePos pos)
+{
+	assert (pos < getNumSamples()) ;
+	return ((CvrStgSample *) new AuSample (data[pos])) ;
 }
 
 void AuFile::readheaders (void)

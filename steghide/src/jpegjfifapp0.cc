@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.6b - a steganography program
+ * steghide 0.5.1 - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -20,10 +20,8 @@
 
 #include <string>
 
-#include <libintl.h>
-#define _(S) gettext (S)
-
 #include "binaryio.h"
+#include "common.h"
 #include "error.h"
 #include "jpegbase.h"
 #include "jpegjfifapp0.h"
@@ -31,21 +29,16 @@
 JpegJFIFAPP0::JpegJFIFAPP0 ()
 	: JpegSegment (JpegElement::MarkerAPP0)
 {
-	thumbnail = NULL ;
 }
 
 JpegJFIFAPP0::JpegJFIFAPP0 (BinaryIO *io)
 	: JpegSegment (JpegElement::MarkerAPP0)
 {
-	thumbnail = NULL ;
 	read (io) ;
 }
 
 JpegJFIFAPP0::~JpegJFIFAPP0 ()
 {
-	if (thumbnail != NULL) {
-		buffree (thumbnail) ;
-	}
 }
 
 void JpegJFIFAPP0::read (BinaryIO *io)
@@ -74,15 +67,13 @@ void JpegJFIFAPP0::read (BinaryIO *io)
 	Ythumbnail = io->read8() ;
 
 	unsigned int n = Xthumbnail * Ythumbnail ; 
-	if (thumbnail != NULL) {
-		buffree (thumbnail) ;
-	}
-	thumbnail = bufcreate (3 * n) ;
+	thumbnail.clear() ;
+	thumbnail = vector<unsigned char> (3 * n) ;
 	for (unsigned int i = 0 ; i < n ; i++) {
 		// R, G and B component
-		bufsetbyte (thumbnail, i, io->read8()) ;
-		bufsetbyte (thumbnail, i, io->read8()) ;
-		bufsetbyte (thumbnail, i, io->read8()) ;
+		thumbnail[3 * i] = io->read8() ;
+		thumbnail[3 * i + 1] = io->read8() ;
+		thumbnail[3 * i + 2] = io->read8() ;
 	}
 }
 
@@ -100,8 +91,8 @@ void JpegJFIFAPP0::write (BinaryIO *io)
 	io->write8 (Ythumbnail) ;
 	unsigned int n = Xthumbnail * Ythumbnail ;
 	for (unsigned int i = 0 ; i < n ; i++) {
-		io->write8 (bufgetbyte (thumbnail, i)) ;
-		io->write8 (bufgetbyte (thumbnail, i)) ;
-		io->write8 (bufgetbyte (thumbnail, i)) ;
+		io->write8 (thumbnail[3 * i]) ;
+		io->write8 (thumbnail[3 * i + 1]) ;
+		io->write8 (thumbnail[3 * i + 2]) ;
 	}
 }

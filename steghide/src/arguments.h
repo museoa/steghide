@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.6b - a steganography program
+ * steghide 0.5.1 - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -24,46 +24,49 @@
 #include <string>
 
 #include "arg.h"
-#include "stegano.h"
 
 class Arguments {
 	public:
-	ArgCommand		command ;
-	ArgUInt			dmtd ;
-	ArgDMTDINFO		dmtdinfo ;
-	ArgBool			sthdrencryption ;
-	ArgBool			encryption ;
-	ArgBool			checksum ;
-	ArgBool			embedplnfn ;
-	ArgBool			compatibility ;
-	ArgVerbosity	verbosity ;
-	ArgBool			force ;
-	ArgString		cvrfn ;
-	ArgString		plnfn ;
-	ArgString		stgfn ;
-	ArgString		passphrase ;
+	ArgCommand		Command ;
+	ArgString		EmbFn ;
+	ArgString		CvrFn ;
+	ArgString		EncAlgo ;
+	ArgString		EncMode ;
+	ArgBool			Checksum ;
+	ArgBool			EmbedEmbFn ;
+	ArgString		ExtFn ;
+	ArgString		Passphrase ;
+	ArgString		StgFn ;
+	ArgBool			Force ;
+	ArgVerbosity	Verbosity ;
 
 	Arguments (void) ;
 	Arguments (int argc, char *argv[]) ;
 
 	void parse (int argc, char *argv[]) ;
 
-	private:
-	static const unsigned int	Default_dmtd = DMTD_PRNDI ;
-	static const bool			Default_sthdrencryption = true ;
-	static const bool			Default_encryption = true ;
-	static const bool			Default_checksum = true ;
-	static const bool			Default_embedplnfn = true ;
-	static const bool			Default_compatibility = false ;
-	static const Verbosity		Default_verbosity = NORMAL ;
-	static const bool			Default_force = false ;
+	bool stdin_isused (void) ;
 
+	private:
+	// FIXME
+#if 0
+	static const char		Default_EncAlgo = "rijndael-128" ;
+	static const char		Default_EncMode = "cbc" ;
+#endif
+#define Default_EncAlgo "rijndael-128"
+#define Default_EncMode "cbc"	
+	static const bool		Default_Checksum = true ;
+	static const bool		Default_EmbedEmbFn = true ;
+	static const bool		Default_Force = false ;
+	static const VERBOSITY	Default_Verbosity = NORMAL ;
+
+	static const unsigned int	PassphraseMaxLen = 255 ;
+
+	string getPassphrase (bool doublecheck = false) ;
 	void setDefaults (void) ;
 } ;
 
-extern Arguments *args ;
-
-#endif /* ndef SH_ARGUMENTS_H */
-
 // gcc does not support the export keyword
 #include "arg.cc"
+
+#endif /* ndef SH_ARGUMENTS_H */

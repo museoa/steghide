@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.6b - a steganography program
+ * steghide 0.5.1 - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -18,9 +18,8 @@
  *
  */
 
-#include <assert.h>
-
 #include "binaryio.h"
+#include "common.h"
 #include "jpegbase.h"
 
 //
@@ -218,6 +217,43 @@ void JpegContainer::write (BinaryIO *io)
 	}
 }
 
+unsigned long JpegContainer::getNumSamples ()
+{
+	unsigned long sum = 0 ;
+	for (vector<CvrStgObject*>::const_iterator i = cvrstgobjs.begin() ; i != cvrstgobjs.end() ; i++) {
+		sum += (*i)->getNumSamples() ;
+	}
+	return sum ;
+}
+
+unsigned long JpegContainer::getNumSBits ()
+{
+	unsigned long sum = 0 ;
+	for (vector<CvrStgObject*>::const_iterator i = cvrstgobjs.begin() ; i != cvrstgobjs.end() ; i++) {
+		sum += (*i)->getNumSBits() ;
+	}
+	return sum ;
+}
+
+Bit JpegContainer::getSBitValue (SBitPos pos)
+{
+	CvrStgObject *cso = calcCvrStgObject_SBitPos (&pos) ;
+	return cso->getSBitValue (pos) ;
+}
+
+void JpegContainer::replaceSample (SamplePos pos, CvrStgSample *s)
+{
+	CvrStgObject *cso = calcCvrStgObject_SamplePos (&pos) ;
+	cso->replaceSample (pos, s) ;
+}
+
+CvrStgSample *JpegContainer::getSample (SamplePos pos)
+{
+	CvrStgObject *cso = calcCvrStgObject_SamplePos (&pos) ;
+	return cso->getSample (pos) ;
+}
+
+#if 0
 unsigned long JpegContainer::getCapacity (void) const
 {
 	unsigned long sum = 0 ;
@@ -255,5 +291,32 @@ CvrStgObject *JpegContainer::calcCvrStgObject (unsigned long *pos) const
 		curCapacity = (*i)->getCapacity() ;
 	}
 
+	return *i ;
+}
+#endif
+
+CvrStgObject *JpegContainer::calcCvrStgObject_SamplePos (SamplePos *pos) const
+{
+	vector<CvrStgObject*>::const_iterator i = cvrstgobjs.begin() ;
+	unsigned long curNumSamples = (*i)->getNumSamples() ;
+	while (*pos >= curNumSamples) {
+		*pos -= curNumSamples ;
+		i++ ;
+		assert (i != cvrstgobjs.end()) ;
+		curNumSamples = (*i)->getNumSamples() ;
+	}
+	return *i ;
+}
+
+CvrStgObject *JpegContainer::calcCvrStgObject_SBitPos (SBitPos *pos) const
+{
+	vector<CvrStgObject*>::const_iterator i = cvrstgobjs.begin() ;
+	unsigned long curNumSBits = (*i)->getNumSBits() ;
+	while (*pos >= curNumSBits) {
+		*pos -= curNumSBits ;
+		i++ ;
+		assert (i != cvrstgobjs.end()) ;
+		curNumSBits = (*i)->getNumSBits() ;
+	}
 	return *i ;
 }

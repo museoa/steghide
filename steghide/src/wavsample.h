@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.6b - a steganography program
+ * steghide 0.5.1 - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -18,26 +18,41 @@
  *
  */
 
-#ifndef SH_MAIN_H
-#define SH_MAIN_H
+#ifndef SH_WAVSAMPLE_H
+#define SH_WAVSAMPLE_H
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "cvrstgsample.h"
+#include "common.h"
 
-#include "stegano.h"
+class WavSample : public CvrStgSample {
+} ;
 
-#define PROGNAME "steghide"
+class WavPCMsmallSample : public WavSample {
+	public:
+	WavPCMsmallSample (void) {} ;
+	WavPCMsmallSample (unsigned char v) : Value(v) {} ;
 
-#ifdef WIN32
-#include <windows.h>
+	float calcDistance (CvrStgSample *s) ;
+	CvrStgSample* getNearestOppositeNeighbour (void) ;
 
-typedef struct struct_LCIDENTRY {
-	LCID localeID ;
-	char language[3] ;
-} LCIDENTRY ;
-#endif
+	unsigned char getValue (void) ;
 
-#define INTERVAL_DEFAULT	10
+	private:
+	unsigned char Value ;
+} ;
 
-#endif // ndef SH_MAIN_H
+class WavPCMbigSample : public WavSample {
+	public:
+	WavPCMbigSample (void) {} ;
+	WavPCMbigSample (int v) : Value (v) {} ;
+
+	float calcDistance (CvrStgSample *s) ;
+	CvrStgSample* getNearestOppositeNeighbour (void) ;
+
+	int getValue (void) ;
+
+	private:
+	int Value ;
+} ;
+
+#endif // ndef SH_WAVSAMPLE_H

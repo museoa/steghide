@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.6b - a steganography program
+ * steghide 0.5.1 - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -21,8 +21,9 @@
 #ifndef SH_WAVFILE_H
 #define SH_WAVFILE_H
 
+#include <vector>
+
 #include "binaryio.h"
-#include "bufmanag.h"
 #include "cvrstgfile.h"
 
 class WavFile : public CvrStgFile {
@@ -34,9 +35,12 @@ class WavFile : public CvrStgFile {
 	void read (BinaryIO *io) ;
 	void write (void) ;
 
-	unsigned long getCapacity (void) const ;
-	void embedBit (unsigned long pos, int bit) ;
-	int extractBit (unsigned long pos) const ;
+	unsigned long getNumSamples (void) ;
+	unsigned long getNumSBits (void) ;
+	Bit getSBitValue (SBitPos pos) ;
+	void replaceSample (SamplePos pos, CvrStgSample *s) ;
+	CvrStgSample* getSample (SamplePos pos) ;
+	unsigned int getSamplesPerEBit (void) ;
 
 	private:
 	static const signed short	FormatPCM = 1 ;
@@ -68,7 +72,7 @@ class WavFile : public CvrStgFile {
 	PCMFormatChunk fmtch ;
 	UnsupChunks unsupchunks1 ;
 	ChunkHeader datachhdr ;
-	BUFFER *data ;
+	vector<unsigned char> data ;
 	UnsupChunks	unsupchunks2 ;
 
 	void readheaders (void) ;
@@ -78,6 +82,8 @@ class WavFile : public CvrStgFile {
 	void calcpos (unsigned long n, unsigned long *bytepos, unsigned int *bitpos) const ;
 	ChunkHeader *getChhdr (void) ;
 	void putChhdr (ChunkHeader *chhdr) ;
+	void *s_realloc (void *ptr, size_t size) ;
+	void cp32ul2uc_le (unsigned char *dest, unsigned long src) ;
 } ;
 
 #endif // ndef SH_WAVFILE_H

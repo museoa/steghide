@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.6b - a steganography program
+ * steghide 0.5.1 - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -21,38 +21,66 @@
 #ifndef SH_CVRSTGOBJECT_H
 #define SH_CVRSTGOBJECT_H
 
+#include "common.h"
+#include "cvrstgsample.h"
+
 /**
  * \class CvrStgObject
  * \brief an object that can hold embedded data
  *
- * This abstract base class provides an interface for every class
- * that is able to hold embedded data.
+ * This abstract base class provides an interface for every class that is able
+ * to hold embedded data.
+ *
+ * Definitions:
+ * Embedded Bit...a bit to be embedded (one bit in the original or extracted embfile)
+ * Steganographic Bit...an embedded bit (one bit (a LSB) in the cvrstgfile)
+ * Sample...the smallest data unit in a file (e.g. a RGB triple, a DCT coefficient)
+ *
+ * One sample can contain one or more SBits.
+ *
+ * The value of an EBit is the xor of several SBits - to change the value of an EBit only
+ * one of the SBits involved needs to be changed.
+ *
+ * One sample must not contain SBits that define different EBits.
  **/
 class CvrStgObject {
 	public:
 	/**
-	 * return the capacity of this object
-	 * \return the number of bits that can be embedded in this object (capacity)
+	 * get the number of samples in this CvrStgObject
 	 **/
-	virtual unsigned long getCapacity (void) const = 0 ;
+	virtual unsigned long getNumSamples (void) = 0 ;
 
 	/**
-	 * embed a bit
-	 * \param pos the position where the bit should be embedded (must be in 0...getCapacity() - 1)
-	 * \param bit the bit to embed (must be 0 or 1)
-	 *
-	 * The derived class should check the conditions given above in its embedBit Implementation.
+	 * get the number of sbits in this CvrStgObject (is a multiple of the number of samples)
 	 **/
-	virtual void embedBit (unsigned long pos, int bit) = 0 ;
+	virtual unsigned long getNumSBits (void) = 0 ;
 
 	/**
-	 * extract a bit
-	 * \param pos the position from where the bit should be extracted (must be in 0...getCapacity() - 1)
-	 * \return the extracted bit (0 or 1)
+	 * get the value of one sbit
+	 * \param pos the position of the sbit (must be in 0...getNumSBits()-1)
+	 * \return the value of the sbit
 	 *
-	 * The derived class should check the conditions given above in its extractBit Implementation.
+	 * The derived class should check the condition(s) given above in its Implementation of this function.
 	 **/
-	virtual int extractBit (unsigned long pos) const = 0 ;
+	virtual Bit getSBitValue (SBitPos pos) = 0 ;
+
+	/**
+	 * replace a sample thus altering the value of one or more sbits
+	 * \param pos the position of the sample (must be in 0...getNumSamples()-1)
+	 * \param s the sample value that should replace the current sample value (must be of correct type for this CvrStgObject)
+	 *
+	 * The derived class should check the condition(s) given above in its Implementation of this function.
+	 **/
+	virtual void replaceSample (SamplePos pos, CvrStgSample *s) = 0 ;
+
+	/**
+	 * get the sample at position pos
+	 * \param pos the position of a sample (must be in 0...getNumSamples()-1)
+	 * \return the sample at the given position
+	 *
+	 * The derived class should check the condition(s) given above in its Implementation of this function.
+	 **/
+	virtual CvrStgSample* getSample (SamplePos pos) = 0 ;
 } ;
 
 #endif //ndef SH_CVRSTGOBJECT_H

@@ -1,13 +1,26 @@
 INCLUDES = -I../intl -DLOCALEDIR=\"$(localedir)\"
 bin_PROGRAMS = steghide
 EXTRA_DIST = \
-arg.h        bmpfile.h     cvrstgobject.h  jpegentropycoded.h  jpeghufftable.h  jpegscanhdr.h    plnfile.h \
-arguments.h  bufmanag.h    error.h         jpegfile.h          jpegjfifapp0.h   jpegunusedseg.h  stegano.h \
-aufile.h     crypto.h      hash.h          jpegframe.h         jpegrestart.h    main.h           support.h \
-binaryio.h   cvrstgfile.h  jpegbase.h      jpegframehdr.h      jpegscan.h       msg.h            wavfile.h
+arg.h arguments.h aufile.h ausample.h \
+binaryio.h bitstring.h bmpfile.h bmpsample.h \
+common.h cvrstgfile.h cvrstgobject.h cvrstgsample.h \
+embdata.h embedder.h error.h extractor.h \
+graph.h jpegbase.h jpegentropycoded.h jpegfile.h \
+jpegframe.h jpegframehdr.h jpeghufftable.h jpegjfifapp0.h \
+jpegrestart.h jpegsample.h jpegscan.h jpegscanhdr.h \
+jpegunusedseg.h mcryptpp.h mhashkeygenpp.h mhashpp.h \
+msg.h permutation.h randomsource.h session.h \
+terminal.h vertex.h wavfile.h wavsample.h
 steghide_SOURCES = \
-arg.cc        binaryio.cc  crypto.cc      hash.cc              jpegfile.cc      jpeghufftable.cc  jpegscan.cc       main.cc     stegano.cc \
-arguments.cc  bmpfile.cc   cvrstgfile.cc  jpegbase.cc          jpegframe.cc     jpegjfifapp0.cc   jpegscanhdr.cc    msg.cc      support.cc \
-aufile.cc     bufmanag.cc  error.cc       jpegentropycoded.cc  jpegframehdr.cc  jpegrestart.cc    jpegunusedseg.cc  plnfile.cc  wavfile.cc
+arg.cc arguments.cc aufile.cc ausample.cc \
+binaryio.cc bitstring.cc bmpfile.cc bmpsample.cc \
+cvrstgfile.cc embdata.cc embedder.cc error.cc \
+extractor.cc graph.cc jpegbase.cc jpegentropycoded.cc \
+jpegfile.cc jpegframe.cc jpegframehdr.cc jpeghufftable.cc \
+jpegjfifapp0.cc jpegrestart.cc jpegsample.cc jpegscan.cc \
+jpegscanhdr.cc jpegunusedseg.cc main.cc mcryptpp.cc \
+mhashkeygenpp.cc mhashpp.cc msg.cc permutation.cc \
+randomsource.cc session.cc terminal.cc vertex.cc \
+wavfile.cc wavsample.cc
 localedir = $(datadir)/locale
 LIBTOOL = $(SHELL) libtool

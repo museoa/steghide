@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.6b - a steganography program
+ * steghide 0.5.1 - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -23,15 +23,9 @@
 #include <cstdio>
 #include <iostream>
 
-#include <termios.h>
-
-#include <libintl.h>
-#define _(S) gettext (S)
-
-#include "arguments.h"
-#include "main.h"
+#include "common.h"
 #include "msg.h"
-#include "support.h"
+#include "terminal.h"
 
 //
 // class MessageBase
@@ -106,8 +100,8 @@ Message::Message (const char *msgfmt, ...)
 
 void Message::printMessage ()
 {
-	if (args->verbosity.getValue() == NORMAL ||
-		args->verbosity.getValue() == VERBOSE) {
+	if (Args.Verbosity.getValue() == NORMAL ||
+		Args.Verbosity.getValue() == VERBOSE) {
 
 		cerr << getMessage() << endl ;
 	}
@@ -127,7 +121,7 @@ VerboseMessage::VerboseMessage (const char *msgfmt, ...)
 
 void VerboseMessage::printMessage ()
 {
-	if (args->verbosity.getValue() == VERBOSE) {
+	if (Args.Verbosity.getValue() == VERBOSE) {
 		cerr << getMessage() << endl ;
 	}
 }
@@ -146,8 +140,8 @@ Warning::Warning (const char *msgfmt, ...)
 
 void Warning::printMessage ()
 {
-	if (args->verbosity.getValue() == NORMAL ||
-		args->verbosity.getValue() == VERBOSE) {
+	if (Args.Verbosity.getValue() == NORMAL ||
+		Args.Verbosity.getValue() == VERBOSE) {
 
 		cerr << PROGNAME << _(": warning: ") << getMessage() << endl ;
 	}
@@ -201,22 +195,23 @@ Question::Question (const char *msgfmt, ...)
 
 void Question::printMessage ()
 {
-	assert (!stdin_isused()) ;
+	assert (!Args.stdin_isused()) ;
 
 	cerr << getMessage() << " (" << yeschar << "/" << nochar << ") " ;
 }
 
 bool Question::getAnswer ()
 {
-	assert (!stdin_isused()) ;
+	assert (!Args.stdin_isused()) ;
 
-	struct termios oldattr = termios_singlekey_on () ;
+	Terminal term ;
+	term.SingleKeyOn() ;
 	char input[2] ;
 	input[0] = cin.get() ;
 	input[1] = '\0' ;
 	bool retval = (string (input) == yeschar) ;
-	termios_reset (oldattr) ;
-
+	term.reset() ;
 	cerr << endl ;
+
 	return retval ;
 }

@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.6b - a steganography program
+ * steghide 0.5.1 - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -28,6 +28,8 @@
 
 class CvrStgFile : public CvrStgObject {
 	public:
+	static CvrStgFile *readFile (string fn) ;
+
 	CvrStgFile (void) ;
 	CvrStgFile (BinaryIO *io) ;
 	virtual ~CvrStgFile (void) ;
@@ -36,7 +38,15 @@ class CvrStgFile : public CvrStgObject {
 	virtual void write (void) ;
 	void transform (string fn) ;
 
-	static CvrStgFile *readfile (string fn) ;
+
+	virtual unsigned int getSamplesPerEBit (void) = 0 ;
+
+	/**
+	 * get the number of sbits per sample
+	 **/
+	unsigned int getSBitsPerSample (void) { return getNumSBits() / getNumSamples() ; } ;
+
+	unsigned int getSBitsPerEBit (void) { return getSamplesPerEBit() * getSBitsPerSample() ; } ;
 
 	protected:
 	void setBinIO (BinaryIO *io) ;
