@@ -215,19 +215,34 @@ int SampleValueOppositeNeighbourhood::roundup (float x)
 	return retval ;
 }
 
-// FIXME - check if sorted!!
-
-bool SampleValueOppositeNeighbourhood::check (void) const
+bool SampleValueOppositeNeighbourhood::check (bool verbose) const
 {
-	return check_soundness() && check_completeness() ;
+	bool retval = true ;
+	retval = check_size (verbose) && retval ;
+	retval = check_soundness (verbose) && retval ;
+	retval = check_completeness (verbose) && retval ;
+	return retval ;
 }
 
-bool SampleValueOppositeNeighbourhood::check_soundness (void) const
+bool SampleValueOppositeNeighbourhood::check_size (bool verbose) const
 {
+	bool size = (OppNeighs.size() == TheGraph->SampleValues.size()) ;
+	if (!size && verbose) {
+		std::cerr << std::endl << "---- FAILED: check_size ----" << std::endl ;
+		std::cerr << "OppNeighs.size(): " << OppNeighs.size() << std::endl ;
+		std::cerr << "TheGraph->SampleValues.size(): " << TheGraph->SampleValues.size() << std::endl ;
+		std::cerr << "-------------------------------------" << std::endl ;
+	}
+	return size ;
+}
+
+bool SampleValueOppositeNeighbourhood::check_soundness (bool verbose) const
+{
+	unsigned long numsvs = TheGraph->SampleValues.size() ;
+
+	// check if everything in OppNeighs really is an opposite neighbour
 	bool err_nonopp = false ;
 	bool err_nonneigh = false ;
-
-	unsigned long numsvs = TheGraph->SampleValues.size() ;
 	for (SampleValueLabel srclbl = 0 ; srclbl < numsvs ; srclbl++) {
 		SampleValue* srcsv = TheGraph->SampleValues[srclbl] ;
 		const std::vector<SampleValue*> &oppneighs = OppNeighs[srclbl] ;
@@ -235,17 +250,44 @@ bool SampleValueOppositeNeighbourhood::check_soundness (void) const
 			if (srcsv->getBit() == (*destsv)->getBit()) {
 				err_nonopp = true ;
 			}
-
 			if (!srcsv->isNeighbour(*destsv)) {
 				err_nonneigh = true ;
 			}
 		}
 	}
 
-	return !(err_nonopp || err_nonneigh) ;
+	// check if OppNeighs[l][1...n] have increasing distance
+	bool err_unsorted = false ;
+	for (SampleValueLabel srclbl = 0 ; srclbl < numsvs ; srclbl++) {
+		SampleValue* srcsv = TheGraph->SampleValues[srclbl] ;
+		const std::vector<SampleValue*> &oppneighs = OppNeighs[srclbl] ;
+		if (oppneighs.size() > 1) {
+			for (unsigned int i = 0 ; i < (oppneighs.size() - 1) ; i++) {
+				float d1 = srcsv->calcDistance (oppneighs[i]) ;
+				float d2 = srcsv->calcDistance (oppneighs[i + 1]) ;
+				if (!(d1 <= d2)) {
+					err_unsorted = true ;
+					if (verbose) {
+						std::cerr << std::endl << "---- FAILED: check_soundness ----" << std::endl ;
+						std::cerr << "source sample:" << std::endl ;
+						srcsv->print(1) ;
+						std::cerr << "dest sample at position " << i << ":" << std::endl ;
+						oppneighs[i]->print(1) ;
+						std::cerr << "dest sample at position " << i + 1 << ":" << std::endl ;
+						oppneighs[i + 1]->print(1) ;
+						std::cerr << "-------------------------------------" << std::endl ;
+					}
+					srclbl = numsvs ;
+					break ;
+				}
+			}
+		}
+	}
+
+	return !(err_nonopp || err_nonneigh || err_unsorted) ;
 }
 
-bool SampleValueOppositeNeighbourhood::check_completeness (void) const
+bool SampleValueOppositeNeighbourhood::check_completeness (bool verbose) const
 {
 	bool err = false ;
 

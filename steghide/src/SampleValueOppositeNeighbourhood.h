@@ -41,7 +41,7 @@ class SampleValueOppositeNeighbourhood : private GraphAccess {
 	/**
 	 * check the integrity of this data structure (only used for debugging and testing)
 	 **/
-	bool check (void) const ;
+	bool check (bool verbose = false) const ;
 
 	private:
 	/**
@@ -70,8 +70,9 @@ class SampleValueOppositeNeighbourhood : private GraphAccess {
 	 **/
 	int roundup (float x) ;
 
-	bool check_soundness (void) const ;
-	bool check_completeness (void) const ;
+	bool check_size (bool verbose = false) const ;
+	bool check_soundness (bool verbose = false) const ;
+	bool check_completeness (bool verbose = false) const ;
 } ;
 
 #endif // ndef SH_SVALUEOPPNEIGHS_H

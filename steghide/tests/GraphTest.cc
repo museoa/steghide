@@ -103,14 +103,14 @@ GraphTest::~GraphTest()
 
 void GraphTest::testVertices()
 {
-	addTestResult (g1->check_Vertices()) ;
-	addTestResult (g2->check_Vertices()) ;
-	addTestResult (g3->check_Vertices()) ;
-	addTestResult (g4->check_Vertices()) ;
-	addTestResult (g5->check_Vertices()) ;
-	addTestResult (g6->check_Vertices()) ;
-	addTestResult (g7->check_Vertices()) ;
-	addTestResult (g8->check_Vertices()) ;
+	addTestResult (g1->check_Vertices(ArgVerbose)) ;
+	addTestResult (g2->check_Vertices(ArgVerbose)) ;
+	addTestResult (g3->check_Vertices(ArgVerbose)) ;
+	addTestResult (g4->check_Vertices(ArgVerbose)) ;
+	addTestResult (g5->check_Vertices(ArgVerbose)) ;
+	addTestResult (g6->check_Vertices(ArgVerbose)) ;
+	addTestResult (g7->check_Vertices(ArgVerbose)) ;
+	addTestResult (g8->check_Vertices(ArgVerbose)) ;
 
 	// violate label consistency
 	Vertex* tmp = g_f->Vertices[10] ;
@@ -121,14 +121,14 @@ void GraphTest::testVertices()
 
 void GraphTest::testSampleValues()
 {
-	addTestResult (g1->check_SampleValues()) ;
-	addTestResult (g2->check_SampleValues()) ;
-	addTestResult (g3->check_SampleValues()) ;
-	addTestResult (g4->check_SampleValues()) ;
-	addTestResult (g5->check_SampleValues()) ;
-	addTestResult (g6->check_SampleValues()) ;
-	addTestResult (g7->check_SampleValues()) ;
-	addTestResult (g8->check_SampleValues()) ;
+	addTestResult (g1->check_SampleValues(ArgVerbose)) ;
+	addTestResult (g2->check_SampleValues(ArgVerbose)) ;
+	addTestResult (g3->check_SampleValues(ArgVerbose)) ;
+	addTestResult (g4->check_SampleValues(ArgVerbose)) ;
+	addTestResult (g5->check_SampleValues(ArgVerbose)) ;
+	addTestResult (g6->check_SampleValues(ArgVerbose)) ;
+	addTestResult (g7->check_SampleValues(ArgVerbose)) ;
+	addTestResult (g8->check_SampleValues(ArgVerbose)) ;
 
 	// violate uniqueness
 	g_f->SampleValues[0] = g_f->SampleValues[1] ;
@@ -137,40 +137,40 @@ void GraphTest::testSampleValues()
 
 void GraphTest::testVertexContents()
 {
-	addTestResult (g1->check_VertexContents()) ;
-	addTestResult (g2->check_VertexContents()) ;
-	addTestResult (g3->check_VertexContents()) ;
-	addTestResult (g4->check_VertexContents()) ;
-	addTestResult (g5->check_VertexContents()) ;
-	addTestResult (g6->check_VertexContents()) ;
-	addTestResult (g7->check_VertexContents()) ;
-	addTestResult (g8->check_VertexContents()) ;
+	addTestResult (g1->check_VertexContents(ArgVerbose)) ;
+	addTestResult (g2->check_VertexContents(ArgVerbose)) ;
+	addTestResult (g3->check_VertexContents(ArgVerbose)) ;
+	addTestResult (g4->check_VertexContents(ArgVerbose)) ;
+	addTestResult (g5->check_VertexContents(ArgVerbose)) ;
+	addTestResult (g6->check_VertexContents(ArgVerbose)) ;
+	addTestResult (g7->check_VertexContents(ArgVerbose)) ;
+	addTestResult (g8->check_VertexContents(ArgVerbose)) ;
 
 	// TODO - violate pointer equivalence
 }
 
 void GraphTest::testSampleOccurences()
 {
-	addTestResult (g1->check_SampleOccurences()) ;
-	addTestResult (g2->check_SampleOccurences()) ;
-	addTestResult (g3->check_SampleOccurences()) ;
-	addTestResult (g4->check_SampleOccurences()) ;
-	addTestResult (g5->check_SampleOccurences()) ;
-	addTestResult (g6->check_SampleOccurences()) ;
-	addTestResult (g7->check_SampleOccurences()) ;
-	addTestResult (g8->check_SampleOccurences()) ;
+	addTestResult (g1->check_SampleOccurences(ArgVerbose)) ;
+	addTestResult (g2->check_SampleOccurences(ArgVerbose)) ;
+	addTestResult (g3->check_SampleOccurences(ArgVerbose)) ;
+	addTestResult (g4->check_SampleOccurences(ArgVerbose)) ;
+	addTestResult (g5->check_SampleOccurences(ArgVerbose)) ;
+	addTestResult (g6->check_SampleOccurences(ArgVerbose)) ;
+	addTestResult (g7->check_SampleOccurences(ArgVerbose)) ;
+	addTestResult (g8->check_SampleOccurences(ArgVerbose)) ;
 }
 
 void GraphTest::testSampleValueOppNeighs()
 {
-	addTestResult (g1->SampleValueOppNeighs.check()) ;
-	addTestResult (g2->SampleValueOppNeighs.check()) ;
-	addTestResult (g3->SampleValueOppNeighs.check()) ;
-	addTestResult (g4->SampleValueOppNeighs.check()) ;
-	addTestResult (g5->SampleValueOppNeighs.check()) ;
-	addTestResult (g6->SampleValueOppNeighs.check()) ;
-	addTestResult (g7->SampleValueOppNeighs.check()) ;
-	addTestResult (g8->SampleValueOppNeighs.check()) ;
+	addTestResult (g1->SampleValueOppNeighs.check(ArgVerbose)) ;
+	addTestResult (g2->SampleValueOppNeighs.check(ArgVerbose)) ;
+	addTestResult (g3->SampleValueOppNeighs.check(ArgVerbose)) ;
+	addTestResult (g4->SampleValueOppNeighs.check(ArgVerbose)) ;
+	addTestResult (g5->SampleValueOppNeighs.check(ArgVerbose)) ;
+	addTestResult (g6->SampleValueOppNeighs.check(ArgVerbose)) ;
+	addTestResult (g7->SampleValueOppNeighs.check(ArgVerbose)) ;
+	addTestResult (g8->SampleValueOppNeighs.check(ArgVerbose)) ;
 
 	// TODO - violate sorting
 }

@@ -40,6 +40,12 @@ class Vertex ;
  * k is the number of samples per vertex. In a VertexContent object
  * the sample values are sorted by their getKey()s to make it easier
  * to compare two vertex contents.
+ *
+ * All vertices with the same vertex content have the same degree,
+ * but in general it is not true that all vertices with the same vertex
+ * content have the same set of adjacent vertices. If SelfDegree > 0
+ * the vertices with this vertex content will have different sets of
+ * adjacent vertices.
  **/
 class VertexContent : private GraphAccess {
 	public:

@@ -1,0 +1,5 @@
+.*.swp
+.deps
+Makefile
+Makefile.in
+unittests

@@ -178,7 +178,6 @@ Graph::~Graph()
 	for (std::vector<Vertex*>::iterator i = Vertices.begin() ; i != Vertices.end() ; i++) {
 		delete *i ;
 	}
-	// TODO - delete more...
 }
 
 void Graph::unmarkDeletedAllVertices ()
@@ -262,18 +261,18 @@ void Graph::printVerboseInfo()
 	}
 }
 
-bool Graph::check() const
+bool Graph::check (bool verbose) const
 {
 	bool retval = true ;
-	retval = check_Vertices() && retval ;
-	retval = check_SampleValues() && retval ;
-	retval = check_VertexContents() && retval ;
-	retval = check_SampleOccurences() && retval ;
-	retval = SampleValueOppNeighs.check() && retval ;
+	retval = check_Vertices(verbose) && retval ;
+	retval = check_SampleValues(verbose) && retval ;
+	retval = check_VertexContents(verbose) && retval ;
+	retval = check_SampleOccurences(verbose) && retval ;
+	retval = SampleValueOppNeighs.check(verbose) && retval ;
 	return retval ;
 }
 
-bool Graph::check_Vertices() const
+bool Graph::check_Vertices (bool verbose) const
 {
 	bool label_consistency = true ;
 	for (unsigned long i = 0 ; i < Vertices.size() ; i++) {
@@ -282,7 +281,7 @@ bool Graph::check_Vertices() const
 	return label_consistency ;
 }
 
-bool Graph::check_SampleValues() const
+bool Graph::check_SampleValues (bool verbose) const
 {
 	unsigned long n = SampleValues.size() ;
 
@@ -303,17 +302,30 @@ bool Graph::check_SampleValues() const
 	return (label_consistency && sv_uniqueness) ;
 }
 
-bool Graph::check_VertexContents() const
+bool Graph::check_VertexContents (bool verbose) const
 {
 	bool retval = true ;
-	retval = (VertexContents.size() == SampleValues.size()) && retval ;
-	retval = check_VertexContents_soundness() && retval ;
-	retval = check_VertexContents_completeness() && retval ;
-	retval = check_VertexContents_pointerequiv() && retval ;
+	retval = check_VertexContents_size (verbose) && retval ;
+	retval = check_VertexContents_soundness (verbose) && retval ;
+	retval = check_VertexContents_completeness (verbose) && retval ;
+	retval = check_VertexContents_pointerequiv (verbose) && retval ;
+	retval = check_VertexContents_degrees (verbose) && retval ;
 	return retval ;
 }
 
-bool Graph::check_VertexContents_soundness() const
+bool Graph::check_VertexContents_size (bool verbose) const
+{
+	bool size = (VertexContents.size() == SampleValues.size()) ;
+	if (!size && verbose) {
+		std::cerr << std::endl << "---- FAILED: check_VertexContents_size ----" << std::endl ;
+		std::cerr << "VertexContents.size(): " << VertexContents.size() << std::endl ;
+		std::cerr << "SampleValues.size(): " << SampleValues.size() << std::endl ;
+		std::cerr << "-------------------------------------" << std::endl ;
+	}
+	return size ;
+}
+
+bool Graph::check_VertexContents_soundness (bool verbose) const
 {
 	bool soundness = true ;
 
@@ -334,7 +346,7 @@ bool Graph::check_VertexContents_soundness() const
 	return soundness ;
 }
 
-bool Graph::check_VertexContents_completeness() const
+bool Graph::check_VertexContents_completeness (bool verbose) const
 {
 	bool completeness = true ;
 
@@ -357,7 +369,7 @@ bool Graph::check_VertexContents_completeness() const
 	return completeness ;
 }
 
-bool Graph::check_VertexContents_pointerequiv() const
+bool Graph::check_VertexContents_pointerequiv (bool verbose) const
 {
 	bool pointerequiv = true ;
 
@@ -373,15 +385,65 @@ bool Graph::check_VertexContents_pointerequiv() const
 	return pointerequiv ;
 }
 
-bool Graph::check_SampleOccurences (void) const
+bool Graph::check_VertexContents_degrees (bool verbose) const
+{
+	bool degrees = true ;
+
+	// checking if the vertex degrees stored in contents are equal to those
+	// calculated from the SampleOccurences data structure
+	for (std::vector<Vertex*>::const_iterator vit = Vertices.begin() ; vit != Vertices.end() ; vit++) {
+		VertexContent *vc = (*vit)->getContent() ;
+
+		unsigned long degree_socc = 0 ;
+		for (unsigned short i = 0 ; i < SamplesPerEBit ; i++) {
+			SampleValue *srcsample = vc->getSampleValue(i) ;
+			const std::vector<SampleValue*>& oppneighs = SampleValueOppNeighs[srcsample] ;
+			for (std::vector<SampleValue*>::const_iterator nit = oppneighs.begin() ; nit != oppneighs.end() ; nit++) {
+				for (std::list<SampleOccurence>::const_iterator occit = SampleOccurences[(*nit)->getLabel()].begin() ;
+						occit != SampleOccurences[(*nit)->getLabel()].end() ; occit++) {
+					if (*(occit->getVertex()) != **vit) {
+						degree_socc++ ;
+					}
+				}
+			}
+		}
+
+		if (degree_socc != (*vit)->getDegree()) {
+			degrees = false ;
+			if (verbose) {
+				std::cerr << std::endl << "---- FAILED: check_VertexContents_degrees ----" << std::endl ;
+				std::cerr << "real degree (as calculated from SampleOccurences): " << degree_socc << std::endl ;
+				std::cerr << "stored degree (from VertexContent::getDegree): " << (*vit)->getDegree() << std::endl ;
+				std::cerr << "-------------------------------------" << std::endl ;
+			}
+		}
+	}
+
+	return degrees ;
+}
+
+bool Graph::check_SampleOccurences (bool verbose) const
 {
 	bool retval = true ;
-	retval = check_SampleOccurences_correctness() && retval ;
-	retval = check_SampleOccurences_completeness() && retval ;
+	retval = check_SampleOccurences_size (verbose) && retval ;
+	retval = check_SampleOccurences_correctness (verbose) && retval ;
+	retval = check_SampleOccurences_completeness (verbose) && retval ;
 	return retval ;
 }
 
-bool Graph::check_SampleOccurences_correctness (void) const
+bool Graph::check_SampleOccurences_size (bool verbose) const
+{
+	bool size = (SampleOccurences.size() == SampleValues.size()) ;
+	if (!size && verbose) {
+		std::cerr << std::endl << "---- FAILED: check_SampleOccurences_size ----" << std::endl ;
+		std::cerr << "SampleOccurences.size(): " << SampleOccurences.size() << std::endl ;
+		std::cerr << "SampleValues.size(): " << SampleValues.size() << std::endl ;
+		std::cerr << "-------------------------------------" << std::endl ;
+	}
+	return size ;
+}
+
+bool Graph::check_SampleOccurences_correctness (bool verbose) const
 {
 	bool correctness = true ;
 
@@ -396,7 +458,7 @@ bool Graph::check_SampleOccurences_correctness (void) const
 	return correctness ;
 }
 
-bool Graph::check_SampleOccurences_completeness (void) const
+bool Graph::check_SampleOccurences_completeness (bool verbose) const
 {
 	bool completeness = true ;
 
@@ -410,7 +472,6 @@ bool Graph::check_SampleOccurences_completeness (void) const
 
 	return completeness ;
 }
-
 
 #ifdef DEBUG
 void Graph::print (void) const
@@ -456,103 +517,4 @@ void Graph::print_Vertices (unsigned short spc) const
 		(*vit)->print(spc + 1) ;
 	}
 }
-#endif
-
-#if 0
-bool Graph::check_matching (std::vector<Edge*> *m) const
-{
-	bool retval = true ;
-
-	std::cerr << "checking if std::vector<Edge*> Matching is a matching (without loops)" << std::endl ;
-	std::vector<bool> inmatching (Vertices.size(), false) ;
-	for (std::vector<Edge*>::const_iterator i = m->begin() ; i != m->end() ; i++) {
-		VertexLabel v1lbl = (*i)->getVertex1()->getLabel() ;
-		VertexLabel v2lbl = (*i)->getVertex2()->getLabel() ;
-		if (v1lbl == v2lbl) {
-			retval = false ;
-			std::cerr << "FAILED: matching contains a loop" << std::endl ;
-			break ;
-		}
-		if (inmatching[v1lbl]) {
-			std::cerr << "FAILED: matching contains vertex with label " << v1lbl << " twice." << std::endl ;
-			retval = false ;
-			break ;
-		}
-		else {
-			inmatching[v1lbl] = true ;
-		}
-		if (inmatching[v2lbl]) {
-			std::cerr << "FAILED: matching contains vertex with label " << v2lbl << " twice." << std::endl ;
-			retval = false ;
-			break ;
-		}
-		else {
-			inmatching[v2lbl] = true ;
-		}
-	}
-
-	return retval ;
-}
-
-unsigned long Graph::check_degree (Vertex *v) const
-{
-	unsigned long degree = 0 ;
-	for (unsigned short i = 0 ; i < SamplesPerEBit ; i++) {
-		SampleValue *srcsample = v->getSampleValue(i) ;
-		const std::vector<SampleValue*> oppneighs = SampleValueOppNeighs[srcsample] ;
-		for (std::vector<SampleValue*>::const_iterator it = oppneighs.begin() ; it != oppneighs.end() ; it++) {
-			degree += SampleOccurences[(*it)->getLabel()].size() ;
-		}
-	}
-	return degree ;
-}
-
-bool Graph::check_ds (void) const
-{
-	bool retval = true ;
-
-	retval = check_sizes() && retval ;
-	retval = check_samples() && retval ;
-	retval = check_vertices() && retval ;
-	retval = check_degrees() && retval ;
-	retval = check_sampleoppositeneighbourhood() && retval ;
-	retval = check_vertexcontents() && retval ;
-	retval = check_SampleOccurences() && retval ;
-
-	return retval ;
-}
-
-bool Graph::check_sizes (void) const
-{
-	std::cerr << "checking sizes" << std::endl ;
-	unsigned long n = SampleValues.size() ;
-	bool retval = (n == SampleOccurences.size()) ;
-	if (!retval) {
-		std::cerr << "FAILED: sizes don't match" << std::endl ;
-	}
-	return retval ;
-}
-
-bool Graph::check_degrees (void) const
-{
-	bool retval = true ;
-
-	std::cerr << "checking vertex degrees (real vs. stored)" << std::endl ;
-	for (std::vector<Vertex*>::const_iterator i = Vertices.begin() ; i != Vertices.end() ; i++) {
-		unsigned long deg_real = check_degree(*i) ;
-		unsigned long deg_stored = (*i)->getDegree() ;
-		if (deg_real != deg_stored) {
-			std::cerr << "check_degree == getDegree failed" << std::endl ;
-			(*i)->print() ;
-			std::cerr << "getDegree: " << deg_stored << std::endl ;
-			std::cerr << "check_degree: " << deg_real << std::endl ;
-
-			retval = false ;
-			break ;
-		}
-	}
-
-	return retval ;
-}
-
 #endif

@@ -85,28 +85,28 @@ class Graph {
 	 * check the integrity of all data structures,
 	 * only used for debugging and testing
 	 **/
-	bool check (void) const ;
+	bool check (bool verbose = false) const ;
 	/**
 	 * check the integrity of the Vertices data structure,
 	 * only used for debugging and testing
 	 **/
-	bool check_Vertices (void) const ;
+	bool check_Vertices (bool verbose = false) const ;
 	/**
 	 * check the integrity of the SampleValues data structure,
 	 * only used for debugging and testing
 	 **/
-	bool check_SampleValues (void) const ;
+	bool check_SampleValues (bool verbose = false) const ;
 	/**
 	 * check the integrity of the VertexContents data structure,
 	 * only used for debugging and testing
 	 **/
-	bool check_VertexContents (void) const ;
+	bool check_VertexContents (bool verbose = false) const ;
 	/**
 	 * check the integrity of the SampleOccurences data structure,
 	 * it is assumed that DeletedSampleOccurences is empty,
 	 * only used for debugging and testing
 	 **/
-	bool check_SampleOccurences (void) const ;
+	bool check_SampleOccurences (bool verbose = false) const ;
 
 #ifdef DEBUG
 	/**
@@ -196,34 +196,17 @@ class Graph {
 	CvrStgFile *File ;
 	unsigned short SamplesPerEBit ;
 
-	bool check_VertexContents_soundness (void) const ;
-	bool check_VertexContents_completeness (void) const ;
-	bool check_VertexContents_pointerequiv (void) const ;
-	bool check_SampleOccurences_correctness (void) const ;
-	bool check_SampleOccurences_completeness (void) const ;
+	bool check_VertexContents_size (bool verbose = false) const ;
+	bool check_VertexContents_soundness (bool verbose = false) const ;
+	bool check_VertexContents_completeness (bool verbose = false) const ;
+	bool check_VertexContents_pointerequiv (bool verbose = false) const ;
+	bool check_VertexContents_degrees (bool verbose = false) const ;
+	bool check_SampleOccurences_size (bool verbose = false) const ;
+	bool check_SampleOccurences_correctness (bool verbose = false) const ;
+	bool check_SampleOccurences_completeness (bool verbose = false) const ;
 
 #ifdef DEBUG
 	unsigned long NumVertexContents ;
-#endif
-
-#if 0
-	public:
-	// FIXME - clean up these functions
-
-	void printUnmatchedVertices (void) const ;
-	void printUnmatchedVerticescontaining (unsigned long samplekey) const ;
-
-	unsigned long check_degree (Vertex *v) const ;
-
-	bool check_matching (std::vector<Edge*> *m) const ;
-
-	bool check_ds (void) const ;
-	bool check_sizes (void) const ;
-	bool check_samples (void) const ;
-	bool check_vertices (void) const ;
-	bool check_degrees (void) const ;
-	bool check_vertexcontents (void) const ;
-
 #endif
 } ;
 

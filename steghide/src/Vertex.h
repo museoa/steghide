@@ -102,6 +102,9 @@ class Vertex : private GraphAccess {
 	bool operator== (const Vertex& v) const
 		{ return getLabel() == v.getLabel() ; } ;
 
+	bool operator!= (const Vertex& v) const
+		{ return getLabel() != v.getLabel() ; } ;
+
 	VertexLabel getLabel (void) const
 		{ return Label ; } ;
 
