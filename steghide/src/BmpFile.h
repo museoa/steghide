@@ -48,9 +48,6 @@ class BmpFile : public CvrStgFile {
 	ColorPalette *getPalette (void) const ;
 
 	protected:
-#ifdef WIN32
-#include <windows.h>
-#else
 	typedef struct struct_BITMAPFILEHEADER {
 		unsigned short	bfType ;
 		unsigned long	bfSize ;
@@ -82,7 +79,6 @@ class BmpFile : public CvrStgFile {
 		unsigned short	bcPlanes;
 		unsigned short	bcBitCount;
 	} BITMAPCOREHEADER ;
-#endif /* def WIN32 */
 
 	private:
 	static const unsigned int IdBm = 19778 ;

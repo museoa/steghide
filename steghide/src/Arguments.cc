@@ -22,7 +22,7 @@
 #include <iostream>
 #include <string>
 
-#include "MCrypt.h"
+#include "MCryptPP.h"
 #include "Terminal.h"
 #include "common.h"
 #include "error.h"
@@ -478,7 +478,7 @@ bool Arguments::parse_Encryption (ArgIt& curarg)
 				EncMode.setValue (s2) ;
 			}
 
-			if (!MCrypt::AlgoSupportsMode (EncAlgo.getValue(), EncMode.getValue())) {
+			if (!MCryptPP::AlgoSupportsMode (EncAlgo.getValue(), EncMode.getValue())) {
 				throw SteghideError (_("the encryption algorithm \"%s\" can not be used with the mode \"%s\"."),
 					EncAlgo.getValue().getStringRep().c_str(), EncAlgo.getValue().getStringRep().c_str()) ;
 			}

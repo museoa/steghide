@@ -23,8 +23,8 @@
 #include "BitString.h"
 #include "EmbData.h"
 #include "error.h"
-#include "MCrypt.h"
-#include "MHash.h"
+#include "MCryptPP.h"
+#include "MHashPP.h"
 
 EmbData::EmbData ()
 {
@@ -104,7 +104,7 @@ void EmbData::addBits (BitString bits)
 			printDebug (1, "in the READNEMBBITS state") ;
 			NEmbBits = bits.getValue (0, NumBitsNeeded) ;
 #ifdef USE_LIBMCRYPT
-			NumBitsNeeded = MCrypt::getEncryptedSize (EncAlgo, EncMode, NEmbBits) ;
+			NumBitsNeeded = MCryptPP::getEncryptedSize (EncAlgo, EncMode, NEmbBits) ;
 #else
 			myassert (EncAlgo.getIntegerRep() == EncryptionAlgorithm::NONE) ;
 			NumBitsNeeded = NEmbBits ;
@@ -120,7 +120,7 @@ void EmbData::addBits (BitString bits)
 				decrypted = bits ;
 			}
 			else {
-				MCrypt crypto (EncAlgo, EncMode) ;
+				MCryptPP crypto (EncAlgo, EncMode) ;
 				decrypted = crypto.decrypt (bits, Args.Passphrase.getValue()) ;
 			}
 #else
@@ -183,11 +183,11 @@ void EmbData::addBits (BitString bits)
 
 			if (Checksum) {
 				// test if checksum is ok
-				MHash hash (MHASH_CRC32) ;
+				MHashPP hash (MHASH_CRC32) ;
 				for (std::vector<unsigned char>::iterator i = Data.begin() ; i != Data.end() ; i++) {
 					hash << *i ;
 				}
-				hash << MHash::endhash ;
+				hash << MHashPP::endhash ;
 				unsigned long calccrc32 = hash.getHashBits().getValue(0, NBitsCrc32) ;
 
 				if (calccrc32 == extcrc32) {
@@ -283,11 +283,11 @@ BitString EmbData::getBitString ()
 	
 	main.append (Checksum) ;
 	if (Checksum) {
-		MHash hash (MHASH_CRC32) ;
+		MHashPP hash (MHASH_CRC32) ;
 		for (std::vector<unsigned char>::iterator i = Data.begin() ; i != Data.end() ; i++) {
 			hash << *i ;
 		}
-		hash << MHash::endhash ;
+		hash << MHashPP::endhash ;
 		main.append (hash.getHashBits()) ;
 	}
 	
@@ -316,7 +316,7 @@ BitString EmbData::getBitString ()
 	
 #ifdef USE_LIBMCRYPT
 	if (EncAlgo.getIntegerRep() != EncryptionAlgorithm::NONE) {
-		MCrypt crypto (EncAlgo, EncMode) ;
+		MCryptPP crypto (EncAlgo, EncMode) ;
 		main = crypto.encrypt (main, Args.Passphrase.getValue()) ;
 	}
 #else
