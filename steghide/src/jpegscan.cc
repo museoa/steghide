@@ -19,12 +19,14 @@
  */
 
 #include <vector>
+#include <limits.h>
 
 #include <libintl.h>
 #define _(S) gettext (S)
 
 #include "binaryio.h"
 #include "error.h"
+#include "jpegbase.h"
 #include "jpeghufftable.h"
 #include "jpegscan.h"
 #include "jpegscanhdr.h"
@@ -99,12 +101,7 @@ void JpegScan::read (BinaryIO *io)
 	while (!scanread) {
 		if (!havemarker) {
 			if ((marker[0] = io->read8()) != 0xff) {
-				if (io->is_std()) {
-					throw SteghideError (_("corrupt jpeg file on standard input. could not find start of marker (0xff).")) ;
-				}
-				else {
-					throw SteghideError (_("corrupt jpeg file \"%s\". could not find start of marker (0xff)."), io->getName().c_str()) ;
-				}
+				throw CorruptJpegError (io, _("could not find start of marker (0xff).")) ;
 			}
 			marker[1] = io->read8() ;
 		}
@@ -113,19 +110,12 @@ void JpegScan::read (BinaryIO *io)
 		havemarker = false ;
 		switch (marker[1]) {
 			case JpegElement::MarkerDHT:
-			cerr << "found DHT" << endl ;
+			//cerr << "found DHT" << endl ;
 
 			hufft = new JpegHuffmanTable (io) ;
 
-			// FIXME - für sequential nur >2 ! - ev. ändern
-			// FIXME ev. Klasse CorruptJpegError
 			if (hufft->getDestId() > 3) {
-				if (io->is_std()) {
-					throw SteghideError (_("corrupt jpeg file on standard input. Huffman table has destination identifier %u (4 is the maximum)."), hufft->getDestId()) ;
-				}
-				else {
-					throw SteghideError (_("corrupt jpeg file \"%s\". Huffman table has destination identifier %u (4 is the maximum)."), io->getName().c_str(), hufft->getDestId()) ;
-				}
+				throw CorruptJpegError (io, _("huffman table has destination specifier %u (0-3 is allowed)."), hufft->getDestId()) ;
 			}
 			switch (hufft->getClass()) {
 				case JpegHuffmanTable::DCTABLE:
@@ -141,21 +131,22 @@ void JpegScan::read (BinaryIO *io)
 			break ;
 
 			case JpegElement::MarkerSOS:
-			cerr << "found SOS" << endl ;
+			//cerr << "found SOS" << endl ;
 
 			scanhdr = new JpegScanHeader (io) ;
 			appendObj (scanhdr) ;
 
+			// TODO - support more than one ecs (also deal with restart markers)
 			ecs = new JpegEntropyCoded (this, io) ;
 			appendObj (ecs) ;
 
 			marker[0] = 0xFF ;
-			marker[1] = ecs->getTerminatingMarker() ; //ev. auf NULL überprüfen FIXME
+			marker[1] = ecs->getTerminatingMarker() ;
 			havemarker = true ;
 			break ;
 
 			case JpegElement::MarkerEOI:
-			cerr << "found EOI" << endl ;
+			//cerr << "found EOI" << endl ;
 			termmarker = JpegElement::MarkerEOI ;
 			scanread = true ;
 			break ;
@@ -170,4 +161,140 @@ void JpegScan::read (BinaryIO *io)
 			break ;
 		}
 	}
+}
+
+void JpegScan::write (BinaryIO *io)
+{
+	recalcACTables() ;
+	JpegContainer::write(io) ;
+}
+
+void JpegScan::recalcACTables (void)
+{
+	vector<vector <unsigned long> > freqs = ecs->getFreqs() ;
+	vector<JpegObject*> jpegobjs = getJpegObjects() ;
+	
+	for (vector<JpegObject*>::iterator i = jpegobjs.begin() ; i != jpegobjs.end() ; i++) {	
+		if (JpegHuffmanTable *ht = dynamic_cast<JpegHuffmanTable*> (*i)) {
+			if (ht->getClass() == JpegHuffmanTable::ACTABLE) {
+				vector<unsigned int> codesize = calcCodeSize (freqs[ht->getDestId()]) ;
+				vector<unsigned int> bits = calcBits (codesize) ;
+				vector<unsigned int> huffval = calcHuffVal (codesize) ;
+
+				ht->reset (bits, huffval) ;
+			}
+		}
+	}
+}
+
+vector<unsigned int> JpegScan::calcCodeSize (vector<unsigned long> freq)
+{
+	vector<unsigned int> codesize(257) ;
+	vector<long int> others(257) ;
+	for (vector<long int>::iterator j = others.begin() ; j != others.end() ; j++) {
+		*j = -1 ;
+	}
+
+	bool v2found = true ;
+	while (v2found) {
+		unsigned long minfreq = ULONG_MAX ;
+		unsigned long v1 = 0 ;
+		for (unsigned long j = 0 ; j < freq.size() ; j++) {
+			if ((freq[j] > 0) && (freq[j] <= minfreq)) {
+				minfreq = freq[j] ;
+				v1 = j ;
+			}
+		}
+
+		minfreq = ULONG_MAX ;
+		unsigned long v2 = 0 ;
+		v2found = false ;
+		for (unsigned long j = 0 ; j < freq.size() ; j++) {
+			if ((freq[j] > 0) && (freq[j] <= minfreq) && (j != v1)) {
+				minfreq = freq[j] ;
+				v2 = j ;
+				v2found = true ;
+			}
+		}
+
+		if (v2found) {
+			freq[v1] += freq[v2] ;
+			freq[v2] = 0 ;
+
+			codesize[v1]++ ;
+			while (others[v1] != -1) {
+				v1 = others[v1] ;
+				codesize[v1]++ ;
+			}
+
+			others[v1] = v2 ;
+
+			codesize[v2]++ ;
+			while (others[v2] != -1) {
+				v2 = others[v2] ;
+				codesize[v2]++ ;
+			}
+		}
+	}
+
+	return codesize ;
+}
+
+vector<unsigned int> JpegScan::calcBits (vector<unsigned int> codesize)
+{
+	vector<unsigned int> bits (33) ;
+
+	for (unsigned int i = 0 ; i < 257 ; i++) {
+		if (codesize[i] > 0) {
+			bits[codesize[i]]++ ;
+		}
+	}
+
+	// adjust bits
+	unsigned int i = 32 ;
+	while (i > 16) {
+		// start
+		if (bits[i] > 0) {
+			unsigned int j = i - 1 ;
+
+			do {
+				j-- ;
+			} while (!(bits[j] > 0)) ;
+
+			bits[i] -= 2 ;
+			bits[i - 1]++ ;
+			bits[j + 1] += 2 ;
+			bits[j]-- ;
+		}
+		else {
+			i-- ;
+			if (i == 16) {
+				while (bits[i] == 0) {
+					i-- ;
+				}
+				bits[i]-- ;
+			}
+		}
+	}
+
+	for (unsigned int i = 0 ; i < 16 ; i++) {
+		bits[i] = bits[i + 1] ;
+	}
+	bits.erase (bits.begin() + 16, bits.end()) ;
+
+	return bits ;
+}
+
+vector<unsigned int> JpegScan::calcHuffVal (vector<unsigned int> codesize)
+{
+	vector<unsigned int> huffval ;
+	for (unsigned int i = 1 ; i <= 32 ; i++) {
+		for (unsigned j = 0 ; j <= 255 ; j++) {
+			if (codesize[j] == i) {
+				huffval.push_back (j) ;
+			}
+		}
+	}
+
+	return huffval ;
 }

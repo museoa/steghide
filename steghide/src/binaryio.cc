@@ -94,7 +94,7 @@ void BinaryIO::setMode (BinaryIO::MODE m)
 {
 	mode = m ;
 }
-// FIXME nur eine dieser beiden Arten MODE anzugeben !!
+
 void BinaryIO::open (string fn, MODE m)
 {
 	if (fn == "") {

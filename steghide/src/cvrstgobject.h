@@ -21,8 +21,6 @@
 #ifndef SH_CVRSTGOBJECT_H
 #define SH_CVRSTGOBJECT_H
 
-// FIXME - was passiert wenn pos bei embed/extractBit >= getCapacity() ??
-
 /**
  * \class CvrStgObject
  * \brief an object that can hold embedded data
@@ -36,12 +34,14 @@ class CvrStgObject {
 	 * return the capacity of this object
 	 * \return the number of bits that can be embedded in this object (capacity)
 	 **/
-	virtual unsigned long getCapacity (void) = 0 ;
+	virtual unsigned long getCapacity (void) const = 0 ;
 
 	/**
 	 * embed a bit
 	 * \param pos the position where the bit should be embedded (must be in 0...getCapacity() - 1)
 	 * \param bit the bit to embed (must be 0 or 1)
+	 *
+	 * The derived class should check the conditions given above in its embedBit Implementation.
 	 **/
 	virtual void embedBit (unsigned long pos, int bit) = 0 ;
 
@@ -49,8 +49,10 @@ class CvrStgObject {
 	 * extract a bit
 	 * \param pos the position from where the bit should be extracted (must be in 0...getCapacity() - 1)
 	 * \return the extracted bit (0 or 1)
+	 *
+	 * The derived class should check the conditions given above in its extractBit Implementation.
 	 **/
-	virtual int extractBit (unsigned long pos) = 0 ;
+	virtual int extractBit (unsigned long pos) const = 0 ;
 } ;
 
 #endif //ndef SH_CVRSTGOBJECT_H

@@ -34,9 +34,6 @@
 #include "support.h"
 #include "msg.h"
 
-/* TODO for au file format:
-   wieso wird audio enconding nicht verwendet - muss nicht immer 8 bit sein !! */
-
 AuFile::AuFile (void)
 	: CvrStgFile()
 {
@@ -63,7 +60,7 @@ BUFFER* AuFile::getData (void)
 
 void AuFile::setData (BUFFER *d)
 {
-	// FIXME free old buffer
+	buffree (data) ;
 	data = d ;
 }
 
@@ -74,7 +71,7 @@ AuFile::AuHeader* AuFile::getHeader (void)
 
 void AuFile::setHeader (AuHeader *h)
 {
-	// FIXME free old header
+	delete header ;
 	header = h ;
 }
 
@@ -86,7 +83,7 @@ void AuFile::read (BinaryIO *io)
 	readdata () ;
 }
 
-void AuFile::write (void)
+void AuFile::write()
 {
 	CvrStgFile::write () ;
 
@@ -94,7 +91,7 @@ void AuFile::write (void)
 	writedata () ;
 }
 
-unsigned long AuFile::getCapacity (void)
+unsigned long AuFile::getCapacity() const
 {
 	return data->length ;
 }
@@ -102,16 +99,16 @@ unsigned long AuFile::getCapacity (void)
 void AuFile::embedBit (unsigned long pos, int value)
 {
 	assert (value == 0 || value == 1) ;
-	assert (pos <= getCapacity()) ;
+	assert (pos < getCapacity()) ;
 
 	bufsetbit (data, pos, 0, value) ;
 
 	return ;
 }
 
-int AuFile::extractBit (unsigned long pos)
+int AuFile::extractBit (unsigned long pos) const
 {
-	assert (pos <= getCapacity()) ;
+	assert (pos < getCapacity()) ;
 
 	return bufgetbit (data, pos, 0) ;
 }
@@ -119,7 +116,7 @@ int AuFile::extractBit (unsigned long pos)
 void AuFile::readheaders (void)
 {
 	try {
-		header = (AuHeader *) s_malloc (sizeof (AuHeader)) ;
+		header = new AuHeader ;
 
 		header->id[0] = '.' ;
 		header->id[1] = 's' ;
@@ -208,12 +205,11 @@ void AuFile::readdata (void)
 {
 	try {
 		/* if available, use size of audio data (in bytes) to create buffer */
-		/* FIXME - wie oft 0xFFFFFFFF ?? */
 		if (header->size == 0xFFFFFFFF) {
 			data = bufcreate (0) ;
 		}
 		else {
-			data = bufcreate (header->size) ; /* FIXME - test this */
+			data = bufcreate (header->size) ;
 		}
 
 		unsigned long bufpos = 0 ;

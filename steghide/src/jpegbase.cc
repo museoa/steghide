@@ -174,9 +174,11 @@ JpegContainer::JpegContainer (JpegObject *p)
 {
 }
 
-// FIXME - wo werden jpegobjs wieder freigegeben, d.h. zerstört ? - hier ?
 JpegContainer::~JpegContainer ()
 {
+	for (vector<JpegObject*>::iterator i = jpegobjs.begin() ; i != jpegobjs.end() ; i++) {
+		delete (*i) ;
+	}
 }
 
 vector<JpegObject*> JpegContainer::getJpegObjects ()
@@ -189,12 +191,18 @@ vector<CvrStgObject*> JpegContainer::getCvrStgObjects ()
 	return cvrstgobjs ;
 }
 
-void JpegContainer::appendObj (JpegObject *o)
+void JpegContainer::appendObj(JpegObject *o)
 {
 	jpegobjs.push_back (o) ;
 	if (CvrStgObject *cso = dynamic_cast<CvrStgObject*>(o)) {
 		cvrstgobjs.push_back (cso) ;
 	}
+}
+
+void JpegContainer::clearObjs()
+{
+	jpegobjs.clear() ;
+	cvrstgobjs.clear() ;
 }
 
 void JpegContainer::read (BinaryIO *io)
@@ -205,17 +213,16 @@ void JpegContainer::read (BinaryIO *io)
 void JpegContainer::write (BinaryIO *io)
 {
 	// writing is only done here, not in derived classes
-
 	for (vector<JpegObject*>::iterator i = jpegobjs.begin() ; i != jpegobjs.end() ; i++) {
 		(*i)->write (io) ;
 	}
 }
 
-unsigned long JpegContainer::getCapacity (void)
+unsigned long JpegContainer::getCapacity (void) const
 {
 	unsigned long sum = 0 ;
 
-	for (vector<CvrStgObject*>::iterator i = cvrstgobjs.begin() ; i != cvrstgobjs.end() ; i++) {
+	for (vector<CvrStgObject*>::const_iterator i = cvrstgobjs.begin() ; i != cvrstgobjs.end() ; i++) {
 		sum += (*i)->getCapacity() ;
 	}
 
@@ -229,16 +236,16 @@ void JpegContainer::embedBit (unsigned long pos, int bit)
 	return ;
 }
 
-int JpegContainer::extractBit (unsigned long pos)
+int JpegContainer::extractBit (unsigned long pos) const
 {
 	CvrStgObject *cso = calcCvrStgObject(&pos) ;
 	return cso->extractBit (pos) ;
 }
 
-CvrStgObject *JpegContainer::calcCvrStgObject (unsigned long *pos)
+CvrStgObject *JpegContainer::calcCvrStgObject (unsigned long *pos) const
 {
 	unsigned long curCapacity = 0 ;
-	vector<CvrStgObject*>::iterator i = cvrstgobjs.begin() ;
+	vector<CvrStgObject*>::const_iterator i = cvrstgobjs.begin() ;
 
 	curCapacity = (*i)->getCapacity() ;
 	while (*pos >= curCapacity) {

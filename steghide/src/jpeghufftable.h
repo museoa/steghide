@@ -28,7 +28,12 @@
 
 /**
  * \class JpegHuffmanTable
- * \brief a jpeg segment containing a huffman table specification
+ * \brief a huffman table in a jpeg file
+ *
+ * This class represents a huffman table as well as the jpeg segment containing
+ * a huffman table definition. Consequently, it contains methods for
+ * reading/writing this jpeg segment as well as methods for accessing and
+ * working with the huffman table.
  **/
 class JpegHuffmanTable : public JpegSegment {
 	public:
@@ -36,6 +41,7 @@ class JpegHuffmanTable : public JpegSegment {
 
 	JpegHuffmanTable (void) ;
 	JpegHuffmanTable (BinaryIO *io) ;
+
 	virtual ~JpegHuffmanTable (void) ;
 
 	/**
@@ -59,6 +65,13 @@ class JpegHuffmanTable : public JpegSegment {
 	 * returns the table destination identifier
 	 **/
 	unsigned int getDestId (void) ;
+
+	/**
+	 * create a new huffman table from the bits and the huffval arrays
+	 * \param b the bits array (going from 0 to 15)
+	 * \param hv the huffval array (starting at 0)
+	 **/
+	void reset (vector<unsigned int> b, vector<unsigned int> hv) ;
 
 	/**
 	 * get the number of codes with length l
@@ -102,7 +115,32 @@ class JpegHuffmanTable : public JpegSegment {
 	 **/
 	int getValPtr (unsigned int l) ;
 
-	// FIXME DELME
+	/**
+	 * get the size of the huffman code representing the value v
+	 * \param v a value to be huffman encoded (0 <= v)
+	 **/
+	unsigned int getEHuffSize (unsigned int v) ;
+
+	/**
+	 * get the huffman code representing the value v
+	 * \param v a value to be huffman encoded (0 <= v)
+	 **/
+	unsigned int getEHuffCode (unsigned int v) ;
+
+	/**
+	 * get the size of the huffman code + additional bit field returned by getXHuffCode
+	 * \param v the diff value of the DC coefficient
+	 **/
+	unsigned int getXHuffSize (int v) ;
+
+	/**
+	 * get the huffman code + additional bit field for fully specifying a DC coefficient
+	 * \param v the diff value of the DC coefficient
+	 **/
+	unsigned long getXHuffCode (int v) ;
+
+#ifdef DEBUG
+	void print (void) ;
 	void printBits (void) ;
 	void printHuffVal (void) ;
 	void printHuffSize (void) ;
@@ -110,12 +148,26 @@ class JpegHuffmanTable : public JpegSegment {
 	void printMinCode (void) ;
 	void printMaxCode (void) ;
 	void printValPtr (void) ;
+	void printEHuffSize (void) ;
+	void printEHuffCode (void) ;
+#endif
 
 	private:
 	static const unsigned char Len_bits = 16 ;
 
+	/**
+	 * calculates the tables huffsize, huffcode, mincode, maxcode, valptr, ehuffsize and ehuffcode
+	 **/
 	void calcTables (void) ;
 
+	public:
+	/**
+	 * returns the difference magnitude category for the diff value of a DC coefficient
+	 * \param v the diff value of the DC coefficient
+	 **/
+	unsigned int csize (int v) ;
+
+	private:
 	unsigned char tableclass ;
 	unsigned char tabledestid ;
 	vector<unsigned int> bits ;
@@ -130,6 +182,10 @@ class JpegHuffmanTable : public JpegSegment {
 	vector<int> maxcode ;
 	/// valptr[l] contains the index to the start of the list of values in huffval which are decoded by code word of length l
 	vector<int> valptr ;
+	/// ehuffsize[v] contains the size of the huffman code representing the value v
+	vector<unsigned int> ehuffsize ;
+	/// ehuffcode[v] contains the huffman code representing the value v
+	vector<unsigned int> ehuffcode ;
 } ;
 
 #endif // ndef SH_JPEGHUFFTABLE_H

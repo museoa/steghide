@@ -95,8 +95,6 @@ BUFFER *extractdata (CvrStgFile *cvrstgfile, unsigned long firststgpos)
 
 	dmtd_reset (sthdr.dmtd, sthdr.dmtdinfo, stgpos_byte) ;
 
-	plndata = bufcreate (0) ; /* FIXME - length should be set more intelligently */
-
 	if (sthdr.encryption == ENC_MCRYPT) {
 		if (sthdr.nbytesplain % BLOCKSIZE_BLOWFISH == 0) {
 			size = sthdr.nbytesplain + BLOCKSIZE_BLOWFISH /* IV */ ;
@@ -108,6 +106,8 @@ BUFFER *extractdata (CvrStgFile *cvrstgfile, unsigned long firststgpos)
 	else {
 		size = sthdr.nbytesplain ;
 	}
+
+	plndata = bufcreate (size) ;
 
 	while (plnpos_byte < size) {
 		bit = cvrstgfile->extractBit (stgpos_byte) ;
@@ -420,6 +420,9 @@ static unsigned int findmaxilen_prndi (unsigned long cvrbytes, unsigned long pln
 		}
 
 		else if (!est_ok[0] && !est_ok[1]) {
+			if (est_imlen == 0) {
+				throw SteghideError (_("the cover file is too short to embed the plain data. use another cover file.")) ;
+			}
 			est_imlen-- ;
 			est_ok[1] = est_ok[0] ;
 			est_ok[0] = simprndi_ok (cvrbytes, plnbits, firstplnpos, est_imlen) ;

@@ -29,73 +29,20 @@
 JpegHuffmanTable::JpegHuffmanTable ()
 	: JpegSegment (JpegElement::MarkerDHT)
 {
+	tableclass = 0xFF ;
+	tabledestid = 0xFF ;
 }
 
 JpegHuffmanTable::JpegHuffmanTable (BinaryIO *io)
 	: JpegSegment (JpegElement::MarkerDHT)
 {
+	tableclass = 0xFF ;
+	tabledestid = 0xFF ;
 	read (io) ;
 }
 
 JpegHuffmanTable::~JpegHuffmanTable ()
 {
-}
-
-//FIXME DELME - alle print*
-void JpegHuffmanTable::printMinCode ()
-{
-	cerr << "mincode:" << endl ;
-	for (unsigned int i = 0 ; i < mincode.size() ; i++) {
-		cerr << i << " " << mincode[i] << endl ;
-	}
-}
-
-void JpegHuffmanTable::printBits ()
-{
-	cerr << "bits:" << endl ;
-	for (unsigned int i = 0 ; i < bits.size() ; i++) {
-		cerr << i << " " << bits[i] << endl ;
-	}
-}
-
-void JpegHuffmanTable::printMaxCode ()
-{
-	cerr << "maxcode:" << endl ;
-	for (unsigned int i = 0 ; i < maxcode.size() ; i++) {
-		cerr << i << " " << maxcode[i] << endl ;
-	}
-}
-
-void JpegHuffmanTable::printHuffVal ()
-{
-	cerr << "huffval:" << endl ;
-	for (unsigned int i = 0 ; i < huffval.size() ; i++) {
-		cerr << i << " " << huffval[i] << endl ;
-	}
-}
-
-void JpegHuffmanTable::printHuffSize ()
-{
-	cerr << "huffsize:" << endl ;
-	for (unsigned int i = 0 ; i < huffsize.size() ; i++) {
-		cerr << i << " " << huffsize[i] << endl ;
-	}
-}
-
-void JpegHuffmanTable::printHuffCode ()
-{
-	cerr << "huffcode:" << endl ;
-	for (unsigned int i = 0 ; i < huffcode.size() ; i++) {
-		cerr << i << " " << huffcode[i] << endl ;
-	}
-}
-
-void JpegHuffmanTable::printValPtr ()
-{
-	cerr << "valptr:" << endl ;
-	for (unsigned int i = 0 ; i < valptr.size() ; i++) {
-		cerr << i << " " << valptr[i] << endl ;
-	}
 }
 
 JpegHuffmanTable::Class JpegHuffmanTable::getClass ()
@@ -124,6 +71,17 @@ unsigned int JpegHuffmanTable::getDestId ()
 	return tabledestid ;
 }
 
+void JpegHuffmanTable::reset (vector<unsigned int> b, vector<unsigned int> hv)
+{
+	assert (b.size() == 16) ;
+
+	setLength (2 + 1 + b.size() + hv.size()) ;
+
+	bits = b ;
+	huffval = hv ;
+	calcTables() ;
+}
+
 unsigned int JpegHuffmanTable::getHuffSize (unsigned int i)
 {
 	assert (i < huffsize.size()) ;
@@ -136,20 +94,15 @@ unsigned int JpegHuffmanTable::getHuffCode (unsigned int i)
 	return huffcode[i] ;
 }
 
-//DEBUG
 unsigned int JpegHuffmanTable::getBits (unsigned int l)
 {
-	if (!(1 <= l && l <= Len_bits)) {
-		assert (1 <= l && l <= Len_bits) ;
-	}
+	assert (1 <= l && l <= Len_bits) ;
 	return bits[l - 1] ;
 }
 
-//DEBUG
 unsigned int JpegHuffmanTable::getHuffVal (unsigned int i)
 {
-	if (!(i < huffval.size()))
-		assert (i < huffval.size()) ;
+	assert (i < huffval.size()) ;
 	return huffval[i] ;
 }
 
@@ -169,6 +122,55 @@ int JpegHuffmanTable::getValPtr (unsigned int l)
 {
 	assert (1 <= l && l <= valptr.size()) ;
 	return valptr[l - 1] ;
+}
+
+unsigned int JpegHuffmanTable::getEHuffCode (unsigned int v)
+{
+	assert (v < ehuffcode.size()) ;
+	return ehuffcode[v] ;
+}
+
+unsigned int JpegHuffmanTable::getEHuffSize (unsigned int v)
+{
+	assert (v < ehuffsize.size()) ;
+	return ehuffsize[v] ;
+}
+
+unsigned long JpegHuffmanTable::getXHuffCode (int v)
+{
+	unsigned int ssss = csize (v) ;
+
+	if (v < 0) {
+		v-- ;
+	}
+
+	unsigned long retval = getEHuffCode (ssss) ;
+	for (unsigned int i = ssss ; i > 0 ; i--) {
+		int bit = (v & (1 << (i - 1))) >> (i - 1) ;
+		retval = retval << 1 ;
+		retval = retval | bit ;
+	}
+
+	return retval ;
+}
+
+unsigned int JpegHuffmanTable::getXHuffSize (int v)
+{
+	unsigned int ssss = csize (v) ;
+	return (getEHuffSize (ssss) + ssss) ;
+}
+
+unsigned int JpegHuffmanTable::csize (int v)
+{
+	if (v < 0) {
+		v = -v ;
+	}
+	unsigned int rv = 0 ;
+	while (v != 0) {
+		v = v / 2 ;
+		rv++ ;
+	}
+	return rv ;
 }
 
 void JpegHuffmanTable::read (BinaryIO *io)
@@ -209,6 +211,7 @@ void JpegHuffmanTable::write (BinaryIO *io)
 void JpegHuffmanTable::calcTables ()
 {
 	// generate huffsize
+	huffsize.clear() ;
 	for (unsigned int l = 1 ; l <= Len_bits ; l++) {
 		for (unsigned int j = 0 ; j < getBits(l) ; j++) {
 			huffsize.push_back (l) ;
@@ -216,6 +219,7 @@ void JpegHuffmanTable::calcTables ()
 	}
 
 	// generate huffcode
+	huffcode.clear() ;
 	unsigned char cursize = huffsize[0] ;
 	unsigned int code = 0 ;
 	for (unsigned char k = 0 ; k < huffsize.size() ; k++) {
@@ -228,6 +232,9 @@ void JpegHuffmanTable::calcTables ()
 	}
 
 	// generate mincode, maxcode and valptr
+	mincode.clear() ;
+	maxcode.clear() ;
+	valptr.clear() ;
 	unsigned int j = 0 ;
 	for (unsigned int l = 1 ; l <= 16 ; l++) {
 		if (getBits (l) == 0) {
@@ -244,4 +251,107 @@ void JpegHuffmanTable::calcTables ()
 			maxcode.push_back (huffcode[j - 1]) ;
 		}
 	}
+
+	// generate ehuffcode and ehuffsize
+	ehuffcode.clear() ;
+	ehuffsize.clear() ;
+	for (unsigned int k = 0 ; k < huffval.size() ; k++) {
+		unsigned int i = huffval[k] ;
+		if (ehuffcode.size() < (i + 1)) {
+			ehuffcode.resize (i + 1) ;
+			ehuffsize.resize (i + 1) ;
+		}
+		ehuffcode[i] = huffcode[k] ;
+		ehuffsize[i] = huffsize[k] ;
+	}
 }
+
+#ifdef DEBUG
+void JpegHuffmanTable::print ()
+{
+	cerr << "huffman table:" << endl ;
+	cerr << "tableclass: " << (unsigned int) tableclass << endl ;
+	cerr << "tabledestid: " << (unsigned int) tabledestid << endl ;
+	printBits() ;
+	printHuffVal() ;
+	printHuffSize() ;
+	printHuffCode() ;
+	printMinCode() ;
+	printMaxCode() ;
+	printValPtr() ;
+	printEHuffSize() ;
+	printEHuffCode() ;
+}
+
+void JpegHuffmanTable::printBits ()
+{
+	cerr << "bits:" << endl ;
+	for (unsigned int i = 0 ; i < bits.size() ; i++) {
+		cerr << i << " " << bits[i] << endl ;
+	}
+}
+
+void JpegHuffmanTable::printHuffVal ()
+{
+	cerr << "huffval:" << endl ;
+	for (unsigned int i = 0 ; i < huffval.size() ; i++) {
+		cerr << i << " " << huffval[i] << endl ;
+	}
+}
+
+void JpegHuffmanTable::printHuffSize ()
+{
+	cerr << "huffsize:" << endl ;
+	for (unsigned int i = 0 ; i < huffsize.size() ; i++) {
+		cerr << i << " " << huffsize[i] << endl ;
+	}
+}
+
+void JpegHuffmanTable::printHuffCode ()
+{
+	cerr << "huffcode:" << endl ;
+	for (unsigned int i = 0 ; i < huffcode.size() ; i++) {
+		cerr << i << " " << huffcode[i] << endl ;
+	}
+}
+
+void JpegHuffmanTable::printMinCode ()
+{
+	cerr << "mincode:" << endl ;
+	for (unsigned int i = 0 ; i < mincode.size() ; i++) {
+		cerr << i << " " << mincode[i] << endl ;
+	}
+}
+
+void JpegHuffmanTable::printMaxCode ()
+{
+	cerr << "maxcode:" << endl ;
+	for (unsigned int i = 0 ; i < maxcode.size() ; i++) {
+		cerr << i << " " << maxcode[i] << endl ;
+	}
+}
+
+void JpegHuffmanTable::printValPtr ()
+{
+	cerr << "valptr:" << endl ;
+	for (unsigned int i = 0 ; i < valptr.size() ; i++) {
+		cerr << i << " " << valptr[i] << endl ;
+	}
+}
+
+void JpegHuffmanTable::printEHuffSize ()
+{
+	cerr << "ehuffsize:" << endl ;
+	for (unsigned int i = 0 ; i < ehuffsize.size() ; i++) {
+		cerr << i << " " << ehuffsize[i] << endl ;
+	}
+}
+
+void JpegHuffmanTable::printEHuffCode ()
+{
+	cerr << "ehuffcode:" << endl ;
+	for (unsigned int i = 0 ; i < ehuffcode.size() ; i++) {
+		cerr << i << " " << ehuffcode[i] << endl ;
+	}
+}
+#endif

@@ -8,7 +8,7 @@ only be extracted with the correct passphrase.
 
 The current version of steghide is 0.4.6.
 Features:
-support for bmp, wav and au files
+support for JPEG, BMP, WAV and AU files
 encryption of plain data before embedding (blowfish encryption algorithm)
 pseudo-random distribution of hidden bits in stego file
 embedding of a crc32 checksum of the plain data
@@ -71,19 +71,18 @@ Here are some examples how steghide can be used. If you want more detailed
 information please take a look at the manpage (type "man steghide" on
 Unix/Linux systems, open the file usage.txt on Windows).
 
-To embed the file secret.txt in the wav file cvr.wav and save the resulting
-stego file as stg.wav type:
+To embed the file secret.txt in the jpeg file cvr.jpg and save the resulting
+stego file as stg.jpg type:
 
-  $ steghide embed -pf secret.txt -cf cvr.wav -sf stg.wav
+  $ steghide embed -pf secret.txt -cf cvr.jpg -sf stg.jpg
   Enter passhrase:
   Re-Enter passphrase:
-  wrote stego file to "stg.wav".
 
 To extract this data again type:
 
-  $ steghide extract -sf stg.wav
+  $ steghide extract -sf stg.jpg
   Enter passphrase:
-  wrote plain file to "secret.txt".
+  writing plain file to "secret.txt".
 
 When embedding data, the name of the original plain file is embedded too: The
 extract command above will create a file secret.txt in the current directory
@@ -93,16 +92,15 @@ You can override the embedded plain file name if you specify a -pf argument
 when extracting. The following command will put the embedded data into the file
 plain.txt:
 
-  $ steghide extract -sf stg.wav -pf plain.txt
+  $ steghide extract -sf stg.jpg -pf plain.txt
   Enter passphrase:
-  wrote plain file to "plain.txt".
+  writing plain file to "plain.txt".
 
 If you are using a system that supports pipes you can pass data via
 standard input to steghide. In the following example data is compressed before
 it is (encrypted and) embedded:
 
   $ gzip -c pln.txt | steghide embed -cf cvr.bmp -sf stg.bmp -pf - -p "This is a passphrase."
-  wrote stego file to "stg.bmp".
 
 To extract (and view) the data from this file again, you could do something
 like this:

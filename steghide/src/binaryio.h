@@ -55,12 +55,12 @@ class BinaryIO {
 	void writestring (string s) ;
 
 	protected:
-	FILE *getStream (void) ;
 	void setStream (FILE *s) ;
-	MODE getMode (void) ;
-	void setMode (MODE m) ;
+	FILE *getStream (void) ;
 	void setName (string fn) ;
 	void set_open (bool fo) ;
+	MODE getMode (void) ;
+	void setMode (BinaryIO::MODE m) ;
 
 	private:
 	string filename ;

@@ -18,43 +18,45 @@
  *
  */
 
-#ifndef SH_CVRSTGFILE_H
-#define SH_CVRSTGFILE_H
-
-#include <string>
+#include <vector>
 
 #include "binaryio.h"
-#include "cvrstgobject.h"
+#include "jpegbase.h"
+#include "jpegunsupseg.h"
 
-class CvrStgFile : public CvrStgObject {
-	public:
-	CvrStgFile (void) ;
-	CvrStgFile (BinaryIO *io) ;
-	virtual ~CvrStgFile (void) ;
+JpegUnsupportedSegment::JpegUnsupportedSegment()
+	: JpegSegment()
+{
+}
 
-	virtual void read (BinaryIO *io) ;
-	virtual void write (void) ;
-	void transform (string fn) ;
+JpegUnsupportedSegment::JpegUnsupportedSegment(JpegMarker m)
+	: JpegSegment(m)
+{
+}
 
-	static CvrStgFile *readfile (string fn) ;
+JpegUnsupportedSegment::JpegUnsupportedSegment(JpegMarker m, BinaryIO *io)
+	: JpegSegment(m)
+{
+	read(io) ;
+}
 
-	protected:
-	void setBinIO (BinaryIO *io) ;
-	BinaryIO *getBinIO (void) ;
+JpegUnsupportedSegment::~JpegUnsupportedSegment()
+{
+}
 
-	private:
-	static int guessff (BinaryIO *io) ;
+void JpegUnsupportedSegment::read(BinaryIO *io)
+{
+	JpegSegment::read(io) ;
+	data.clear() ;
+	for (unsigned int i = 0 ; i < getLength() - 2 ; i++) {
+		data.push_back (io->read8()) ;
+	}
+}
 
-	BinaryIO *BinIO ;
-} ;
-
-CvrStgFile *cvrstg_readfile (string filename) ;
-
-/* constants that indicate the cover file format */
-#define FF_UNKNOWN	0
-#define FF_BMP		1
-#define FF_WAV		2
-#define FF_AU		3
-#define FF_JPEG		4
-
-#endif /* ndef SH_CVRSTGFILE_H */
+void JpegUnsupportedSegment::write (BinaryIO *io)
+{
+	JpegSegment::write (io) ;
+	for (vector<unsigned char>::iterator i = data.begin() ; i != data.end() ; i++) {
+		io->write8 (*i) ;
+	}
+}

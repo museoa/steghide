@@ -1,4 +1,4 @@
-.\" Steghide 0.4.5 man page
+.\" Steghide 0.4.6 man page
 .TH steghide 1 "13 Mar 2002"
 .SH NAME
 steghide \- a steganography program
@@ -16,9 +16,9 @@ secret message. After that, the secret message is imperceptible and can only be
 extracted with the correct passphrase. The result of the embedding process
 (an innocuous looking file with an embedded message) is called stego file.
 
-The bmp, wav and au file formats are supported by steghide. You can use a file
-of any of these formats as cover/stego file. There are no restrictions on the
-format of the plain file.
+The jpeg, bmp, wav and au file formats are supported by steghide. You can use a
+file of any of these formats as cover/stego file. There are no restrictions on
+the format of the plain file.
 
 The plain data is encrypted before embedding. The encryption algorithm
 blowfish is used together with the hash algorithm MD5 (to create a key for
@@ -219,19 +219,18 @@ also use the -H argument with the extract command. Otherwise steghide will
 assume that the stego header is encrypted and will fail.
 
 .SH EXAMPLES
-To embed the file secret.txt in the wav file cvr.wav and save the resulting
-stego file as stg.wav type:
+To embed the file secret.txt in the jpeg file cvr.jpg and save the resulting
+stego file as stg.jpg type:
 
-  $ steghide embed -pf secret.txt -cf cvr.wav -sf stg.wav
+  $ steghide embed -pf secret.txt -cf cvr.jpg -sf stg.jpg
   Enter passhrase:
   Re-Enter passphrase:
-  wrote stego file to "stg.wav".
 
 To extract this data again type:
 
-  $ steghide extract -sf stg.wav
+  $ steghide extract -sf stg.jpg
   Enter passphrase:
-  wrote plain file to "secret.txt".
+  writing plain file to "secret.txt".
 
 When embedding data, the name of the original plain file is embedded too: The
 extract command above will create a file secret.txt in the current directory
@@ -241,16 +240,15 @@ You can override the embedded plain file name if you specify a -pf argument
 when extracting. The following command will put the embedded data into the file
 plain.txt:
 
-  $ steghide extract -sf stg.wav -pf plain.txt
+  $ steghide extract -sf stg.jpg -pf plain.txt
   Enter passphrase:
-  wrote plain file to "plain.txt".
+  writing plain file to "plain.txt".
 
 If you are using a system that supports pipes you can pass data via
 standard input to steghide. In the following example data is compressed before
 it is (encrypted and) embedded:
 
   $ gzip -c pln.txt | steghide embed -cf cvr.bmp -sf stg.bmp -pf - -p "This is a passphrase."
-  wrote stego file to "stg.bmp".
 
 To extract (and view) the data from this file again, you could do something
 like this:

@@ -324,7 +324,7 @@ static void embedfile (string cvrfilename, string stgfilename, string plnfilenam
 	unsigned long nbytesplain = 0 ;
 	unsigned long firstplnpos = 0 ;
 
-	cvrstgfile = cvrstg_readfile (cvrfilename) ;
+	cvrstgfile = CvrStgFile::readfile (cvrfilename) ;
 
 	plnfile = pln_readfile (plnfilename == "" ? NULL : (char *) plnfilename.c_str()) ;
 
@@ -360,7 +360,7 @@ static void extractfile (string stgfilename, string plnfilename)
 	PLNFILE *plnfile = NULL ;
 	unsigned long firstplnpos = 0 ;
 
-	CvrStgFile *stgfile = cvrstg_readfile (stgfilename) ;
+	CvrStgFile *stgfile = CvrStgFile::readfile (stgfilename) ;
 
 	setsthdrdmtd () ;
 

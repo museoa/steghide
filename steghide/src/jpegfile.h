@@ -39,12 +39,13 @@ class JpegFile : public CvrStgFile {
 
 	void read (BinaryIO *io) ;
 	void write (void) ;
-	unsigned long getCapacity (void) ;
+
+	unsigned long getCapacity (void) const ;
 	void embedBit (unsigned long pos, int bit) ;
-	int extractBit (unsigned long pos) ;
+	int extractBit (unsigned long pos) const ;
 
 	private:
-	/// the frameof the jpeg file
+	/// the frame of the jpeg file
 	JpegFrame *frame ;
 } ;
 

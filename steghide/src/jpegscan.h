@@ -41,6 +41,7 @@ class JpegScan : public JpegContainer {
 	~JpegScan (void) ;
 
 	void read (BinaryIO *io) ;
+	void write (BinaryIO *io) ;
 
 	JpegMarker getTerminatingMarker (void) ;
 	JpegScanHeader *getScanHeader (void) ;
@@ -60,8 +61,13 @@ class JpegScan : public JpegContainer {
 	JpegHuffmanTable *getACTable (unsigned char ds) ;
 
 	private:
+	void recalcACTables (void) ;
+	vector<unsigned int> calcCodeSize (vector<unsigned long> freq) ;
+	vector<unsigned int> calcBits (vector<unsigned int> codesize) ;
+	vector<unsigned int> calcHuffVal (vector<unsigned int> codesize) ;
+
 	JpegScanHeader *scanhdr ;
-	// TODO support more than one ecs
+
 	JpegEntropyCoded *ecs ;
 
 	vector<JpegHuffmanTable*> DCTables ;

@@ -27,10 +27,10 @@
 #include "binaryio.h"
 #include "msg.h"
 
-class SteghideError : MessageBase {
+class SteghideError : public MessageBase {
 	public:
-	SteghideError (void) : MessageBase() {} ;
-	SteghideError (string msg) : MessageBase (msg) {} ;
+	SteghideError (void) ;
+	SteghideError (string msg) ;
 	SteghideError (const char *msgfmt, ...) ;
 
 	void printMessage (void) ;	
@@ -71,4 +71,8 @@ class UnSupFileFormat : public SteghideError {
 	UnSupFileFormat (BinaryIO *io) ;
 } ;
 
+class CorruptJpegError : public SteghideError {
+	public:
+	CorruptJpegError (BinaryIO *io, const char *msgfmt, ...) ;	
+} ;
 #endif

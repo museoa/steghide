@@ -63,7 +63,7 @@ PLNFILE *pln_readfile (char *filename)
 		plnfile->filename = filename ;
 	}
 
-	plnfile->plndata = bufcreate (0) ; /* FIXME - ? set length more intelligently */
+	plnfile->plndata = bufcreate (0) ;
 
 	while ((c = getc (plnfile->stream)) != EOF) {
 		bufsetbyte (plnfile->plndata, bufpos, c) ;
@@ -253,7 +253,7 @@ PLNFILE *pln_createfile (void)
 /* clean up a PLNFILE structure (closes file, frees memory) */
 void pln_cleanup (PLNFILE *plnfile)
 {
-	/* FIXME - rewrite as destructor 
+	/*
 	if ((plnfile->filename != "-") && (plnfile->stream != NULL)) {
 		fclose (plnfile->stream) ;
 	}

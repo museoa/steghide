@@ -31,11 +31,12 @@ class BmpFile : public CvrStgFile {
 	BmpFile (BinaryIO *io) ;
 	~BmpFile (void) ;
 
-	void read (BinaryIO *io) ;	
+	void read (BinaryIO *io) ;
 	void write (void) ;
-	unsigned long getCapacity (void) ;
+
+	unsigned long getCapacity (void) const ;
 	void embedBit (unsigned long pos, int bit) ;
-	int extractBit (unsigned long pos) ;
+	int extractBit (unsigned long pos) const ;
 
 	protected:
 #ifdef WIN32
@@ -104,12 +105,6 @@ class BmpFile : public CvrStgFile {
 		BMPINFO_OS2	os2 ;
 	} BMPINFO ;
 
-
-	BITMAPFILEHEADER *getBMFH (void) ;
-	void setBMFH (BITMAPFILEHEADER *x) ;
-	BMPINFO *getBmpInfo (void) ;
-	void setBmpInfo (BMPINFO *x) ;
-
 	private:
 	static const unsigned int IdBm = 19778 ;
 	static const unsigned short SizeBMFILEHEADER = 14 ;
@@ -119,12 +114,10 @@ class BmpFile : public CvrStgFile {
 
 	enum SUBFORMAT { WIN, OS2 } ;
 
-	public:
 	BITMAPFILEHEADER bmfh ;
 	BMPINFO bmi ;
 	unsigned char **bitmap ;
 
-	private:
 	void readheaders () ;
 	void bmpwin_readheaders () ;
 	void bmpos2_readheaders () ;
@@ -133,10 +126,10 @@ class BmpFile : public CvrStgFile {
 	void bmpos2_writeheaders () ;
 	void readdata () ;
 	void writedata () ;
-	void calcRC (unsigned long pos, unsigned long *row, unsigned long *column) ;
+	void calcRC (unsigned long pos, unsigned long *row, unsigned long *column) const ;
 	long calcLinelength () ;
 	long getHeight () ;
-	SUBFORMAT getSubformat (void) ;
+	SUBFORMAT getSubformat (void) const ;
 } ;
 
 #endif /* ndef SH_BMPFILE_H */

@@ -113,7 +113,7 @@ void CvrStgFile::transform (string stgfn)
 }
 
 // guesses the file format by looking for magic values in the first few bytes
-static int guessff (BinaryIO *io)
+int CvrStgFile::guessff (BinaryIO *io)
 {
 	char buf[4] = { '\0', '\0', '\0', '\0' } ;
 	int retval = FF_UNKNOWN ;
@@ -144,9 +144,9 @@ static int guessff (BinaryIO *io)
 	return retval ;
 }
 
-CvrStgFile *cvrstg_readfile (string filename)
+CvrStgFile* CvrStgFile::readfile (string fn)
 {
-	BinaryIO *BinIO = new BinaryIO (filename, BinaryIO::READ) ;
+	BinaryIO *BinIO = new BinaryIO (fn, BinaryIO::READ) ;
 
 	CvrStgFile *file = NULL ;
 	switch (guessff (BinIO)) {

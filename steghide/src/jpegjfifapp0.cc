@@ -20,6 +20,9 @@
 
 #include <string>
 
+#include <libintl.h>
+#define _(S) gettext (S)
+
 #include "binaryio.h"
 #include "error.h"
 #include "jpegbase.h"
@@ -34,7 +37,7 @@ JpegJFIFAPP0::JpegJFIFAPP0 ()
 JpegJFIFAPP0::JpegJFIFAPP0 (BinaryIO *io)
 	: JpegSegment (JpegElement::MarkerAPP0)
 {
-	thumbnail = NULL ;	// FIXME - überall sonst: diese Zeile durch JpegJFIFAPP0() zu ersetzen erzeugt segfault (d.h. initialisiert NICHT!! thumbnail)
+	thumbnail = NULL ;
 	read (io) ;
 }
 
@@ -56,14 +59,19 @@ void JpegJFIFAPP0::read (BinaryIO *io)
 	}
 
 	version = io->read16_be() ;
-	// FIXME check if compatible version
+	if ((version >> 8) != 0x01) {
+		if (io->is_std()) {
+			throw SteghideError (_("the version of the jpeg file on standard input is not supported.")) ;
+		}
+		else {
+			throw SteghideError (_("the version of the jpeg file \"%s\" is not supported."), io->getName().c_str()) ;
+		}
+	}
 	units = io->read8() ;
 	Xdensity = io->read16_be() ;
 	Ydensity = io->read16_be() ;
 	Xthumbnail = io->read8() ;
 	Ythumbnail = io->read8() ;
-	// FIXME - ?? in thumbnail auch verstecken ??
-	// ev. andere Datenstruktur (nicht BUFFER, ähnlich bmp)
 
 	unsigned int n = Xthumbnail * Ythumbnail ; 
 	if (thumbnail != NULL) {

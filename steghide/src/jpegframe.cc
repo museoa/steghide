@@ -28,15 +28,18 @@
 #include "jpegjfifapp0.h"
 #include "jpegquanttable.h"
 #include "jpegscan.h"
+#include "jpegunsupseg.h"
 
 JpegFrame::JpegFrame ()
 	: JpegContainer()
 {
+	framehdr = NULL ;
 }
 
 JpegFrame::JpegFrame (BinaryIO *io)
 	: JpegContainer()
 {
+	framehdr = NULL ;
 	read (io) ;
 }
 
@@ -57,57 +60,51 @@ void JpegFrame::read (BinaryIO *io)
 
 	bool eoifound = false ;
 	while (!eoifound) {
-		unsigned char marker[2] ;
-		if ((marker[0] = io->read8()) != 0xff) {
-			if (io->is_std()) {
-				throw SteghideError (_("corrupt jpeg file on standard input. could not find start of marker (0xff).")) ;
-			}
-			else {
-				throw SteghideError (_("corrupt jpeg file \"%s\". could not find start of marker (0xff)."), io->getName().c_str()) ;
-			}
+		if (io->read8() != 0xff) {
+			throw CorruptJpegError (io, _("could not find start of marker (0xff).")) ;
 		}
-		marker[1] = io->read8() ;
+		JpegMarker marker ;
+		while ((marker = io->read8()) == 0xff)
+			;
 
-		JpegObject* next = NULL ;
-		switch (marker[1]) {
-			case JpegElement::MarkerAPP0:
-			cerr << "found APP0" << endl ;
-			next = new JpegJFIFAPP0 (io) ;
-			break ;
+		if (marker == JpegElement::MarkerAPP0) {
+			//cerr << "found APP0" << endl ;
+			appendObj (new JpegJFIFAPP0 (io)) ;
+		}
+		else if (marker == JpegElement::MarkerCOM) {
+			//cerr << "found COM" << endl ;
+			appendObj (new JpegComment (io)) ;
+		}
+		else if (marker == JpegElement::MarkerDQT) {
+			//cerr << "found DQT" << endl ;
+			appendObj (new JpegQuantizationTable (io)) ;
+		}
+		else if (marker == JpegElement::MarkerSOF0) {
+			//cerr << "found SOF0" << endl ;
+			framehdr = new JpegFrameHeader (marker, io) ;
+			appendObj (framehdr) ;
 
-			case JpegElement::MarkerCOM:
-			cerr << "found COM" << endl ;
-			next = new JpegComment (io) ;
-			break ;
-
-			case JpegElement::MarkerDQT:
-			cerr << "found DQT" << endl ;
-			next = new JpegQuantizationTable (io) ;
-			break ;	
-
-			case JpegElement::MarkerSOF0:
-			cerr << "found SOF0" << endl ;
-			framehdr = new JpegFrameHeader (marker[1], io) ;
-			appendObj (next) ;
 			// TODO - support more than one scan
-			next = new JpegScan (this, io) ;
-			if (((JpegScan*) next)->getTerminatingMarker() == JpegElement::MarkerEOI) {
+			JpegScan *scan = new JpegScan (this, io) ;
+			appendObj (scan) ;
+			if (scan->getTerminatingMarker() == JpegElement::MarkerEOI) {
 				eoifound = true ;
 			}
-			break ;
-
-			default:
+		}
+		else if (((marker >= JpegElement::MarkerAPP1) && (marker <= JpegElement::MarkerAPP15)) ||
+				(false)) {
+			//cerr << "found unsupported: " << hex << (unsigned int) marker << endl ;
+			appendObj (new JpegUnsupportedSegment (marker, io)) ;
+		}
+		else {
 			if (io->is_std()) {
-				throw SteghideError (_("encountered unknown marker code 0x%x in jpeg file on standard input while reading frame."), marker[1]) ;
+				throw SteghideError (_("encountered unknown marker code 0x%x in jpeg file on standard input while reading frame."), marker) ;
 			}
 			else {
-				throw SteghideError (_("encountered unknown marker code 0x%x in jpeg file \"%s\" while reading frame."), marker[1], io->getName().c_str()) ;
+				throw SteghideError (_("encountered unknown marker code 0x%x in jpeg file \"%s\" while reading frame."), marker, io->getName().c_str()) ;
 			}
-			break ;
-		}
-
-		if (next != NULL) {
-			appendObj (next) ;
 		}
 	}
+
+	return ;
 }

@@ -33,9 +33,10 @@ class WavFile : public CvrStgFile {
 
 	void read (BinaryIO *io) ;
 	void write (void) ;
-	unsigned long getCapacity (void) ;
+
+	unsigned long getCapacity (void) const ;
 	void embedBit (unsigned long pos, int bit) ;
-	int extractBit (unsigned long pos) ;
+	int extractBit (unsigned long pos) const ;
 
 	private:
 	static const signed short	FormatPCM = 1 ;
@@ -74,7 +75,7 @@ class WavFile : public CvrStgFile {
 	void readdata (void) ;
 	void writeheaders (void) ;
 	void writedata (void) ;
-	void calcpos (unsigned long n, unsigned long *bytepos, unsigned int *bitpos) ;
+	void calcpos (unsigned long n, unsigned long *bytepos, unsigned int *bitpos) const ;
 	ChunkHeader *getChhdr (void) ;
 	void putChhdr (ChunkHeader *chhdr) ;
 } ;

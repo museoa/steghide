@@ -69,7 +69,7 @@ void WavFile::write ()
 	writedata () ;
 }
 
-unsigned long WavFile::getCapacity ()
+unsigned long WavFile::getCapacity () const
 {
 	unsigned int bytespersample = 0 ;
 
@@ -88,7 +88,7 @@ unsigned long WavFile::getCapacity ()
 void WavFile::embedBit (unsigned long pos, int value)
 {
 	assert (value == 0 || value == 1) ;
-	assert (pos <= getCapacity()) ;
+	assert (pos < getCapacity()) ;
 
 	unsigned long bytepos = 0 ;
 	unsigned int bitpos = 0 ;
@@ -96,9 +96,9 @@ void WavFile::embedBit (unsigned long pos, int value)
 	bufsetbit (data, bytepos, bitpos, value) ;
 }
 
-int WavFile::extractBit (unsigned long pos)
+int WavFile::extractBit (unsigned long pos) const
 {
-	assert (pos <= getCapacity()) ;
+	assert (pos < getCapacity()) ;
 
 	unsigned long bytepos = 0 ;
 	unsigned int bitpos = 0 ;
@@ -107,7 +107,7 @@ int WavFile::extractBit (unsigned long pos)
 }
 
 /* calculate position in buffer for n-th embedded bit */
-void WavFile::calcpos (unsigned long n, unsigned long *bytepos, unsigned int *bitpos)
+void WavFile::calcpos (unsigned long n, unsigned long *bytepos, unsigned int *bitpos) const
 {
 	unsigned int bytespersample = 0 ;
 
@@ -126,7 +126,7 @@ void WavFile::calcpos (unsigned long n, unsigned long *bytepos, unsigned int *bi
 void WavFile::readdata (void)
 {
 	try {
-		data = bufcreate (0) ; /* FIXME - set length smarter */
+		data = bufcreate (0) ;
 
 		unsigned long pos = 0 ;
 		while (!getBinIO()->eof()) {

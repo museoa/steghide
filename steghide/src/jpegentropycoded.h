@@ -40,19 +40,28 @@ class JpegEntropyCoded : public JpegObject, public CvrStgObject {
 	void read (BinaryIO *io) ;
 	void write (BinaryIO *io) ;
 
-	unsigned long getCapacity (void) ;
+	unsigned long getCapacity (void) const ;
 	void embedBit (unsigned long pos, int bit) ;
-	int extractBit (unsigned long pos) ;
+	int extractBit (unsigned long pos) const ;
+
+	vector<vector<unsigned long> > getFreqs (void) ;
 
 	JpegMarker getTerminatingMarker (void) ;
 
 	private:
 	/**
-	 * read a bit of encoded jepg data
+	 * read a bit of encoded jpeg data
 	 * \param io the jpeg stream
 	 * \return the next bit
 	 **/
-	int nextbit (BinaryIO *io) ;
+	int readbit (BinaryIO *io) ;
+
+	/**
+	 * write a bit of encoded jpeg data
+	 * \param io the jpeg stream
+	 * \param bit the bit to be written
+	 **/
+	void writebit (BinaryIO *io, int bit) ;
 
 	/**
 	 * decode and return an 8-bit value
@@ -68,17 +77,38 @@ class JpegEntropyCoded : public JpegObject, public CvrStgObject {
 	 * \param nbits number of bits to read
 	 * \return the next nbits from io
 	 **/
-	// FIXME - Datentyp !?!
 	int receive (BinaryIO *io, unsigned char nbits) ;
 
 	int extend (int val, unsigned char t) ;
 
+	unsigned int csize (int ac) ;
+
+	/**
+	 * encode and write an ac coefficient
+	 * \param io the jpeg stream
+	 * \param ht the huffman table to be used for encoding this coefficient
+	 * \param r the runlength of zero coefficients
+	 * \param coeff the coefficient to be encoded and written
+	 **/
+	void encode (BinaryIO *io, JpegHuffmanTable *ht, unsigned int r, int coeff) ;
+
+	/**
+	 * write the n lower order bits of v to io
+	 * \param io the jpeg stream
+	 * \param v the value to be written
+	 * \param n the number of bits to write
+	 **/
+	void writebits (BinaryIO *io, unsigned long v, unsigned int n) ;
+
 	// contains the DCT coefficients; for i % 64 == 0 we have a DC, else an AC coefficient in dctcoeffs[i]
-	vector<int> dctcoeffs ; // FIXME - vector.capacity() und .reserve() verwenden ??
-	/// contains (the rest of) a byte read in nextbit
+	vector<int> dctcoeffs ;
+	/// contains (the rest of) a byte read in readbit
 	unsigned char readbyte ;
 	/// the number of (original jpeg) bits in readbyte
-	unsigned char readbytecontains ;
+	unsigned int readbytecontains ;
+
+	unsigned char writebyte ;
+	unsigned int writebytecontains ;
 
 	/// the marker code that terminated the data from this entropy coded segment
 	JpegMarker termmarker ;

@@ -26,11 +26,13 @@
 JpegComment::JpegComment ()
 	: JpegSegment (JpegElement::MarkerCOM)
 {
+	comment = "" ;
 }
 
 JpegComment::JpegComment (BinaryIO *io)
 	: JpegSegment (JpegElement::MarkerCOM)
 {
+	comment = "" ;
 	read (io) ;
 }
 

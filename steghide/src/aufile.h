@@ -33,9 +33,10 @@ class AuFile : public CvrStgFile {
 
 	void read (BinaryIO *io) ;
 	void write (void) ;
-	unsigned long getCapacity (void) ;
+
+	unsigned long getCapacity (void) const ;
 	void embedBit (unsigned long pos, int bit) ;
-	int extractBit (unsigned long pos) ;
+	int extractBit (unsigned long pos) const ;
 
 	protected:
 	typedef struct struct_AuHeader {

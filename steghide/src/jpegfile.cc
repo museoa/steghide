@@ -33,6 +33,7 @@ JpegFile::JpegFile ()
 JpegFile::JpegFile (BinaryIO *io)
 	: CvrStgFile()
 {
+	frame = NULL ;
 	read (io) ;
 }
 
@@ -63,18 +64,22 @@ void JpegFile::write ()
 	EOI.write (getBinIO()) ;
 }
 
-unsigned long JpegFile::getCapacity (void)
+unsigned long JpegFile::getCapacity (void) const
 {
 	return frame->getCapacity() ;
 }
 
 void JpegFile::embedBit (unsigned long pos, int bit)
 {
+	assert (pos < getCapacity()) ;
+	assert (bit == 0 || bit == 1) ;
+
 	frame->embedBit (pos, bit) ;
-	return ;
 }
 
-int JpegFile::extractBit (unsigned long pos)
+int JpegFile::extractBit (unsigned long pos) const
 {
+	assert (pos < getCapacity()) ;
+
 	return frame->extractBit (pos) ;
 }

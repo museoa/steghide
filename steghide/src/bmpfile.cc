@@ -45,28 +45,6 @@ BmpFile::BmpFile (BinaryIO *io)
 	read (io) ;
 }
 
-// FIXME - die nächsten vier funkt ordentlich machen !
-// Daten als Pointer!!
-BmpFile::BITMAPFILEHEADER *BmpFile::getBMFH (void)
-{
-	return &bmfh ;
-}
-
-void BmpFile::setBMFH (BITMAPFILEHEADER *x)
-{
-	bmfh = *x ;
-}
-
-BmpFile::BMPINFO *BmpFile::getBmpInfo (void)
-{
-	return &bmi ;
-}
-
-void BmpFile::setBmpInfo (BMPINFO *x)
-{
-	bmi = *x ;
-}
-
 BmpFile::~BmpFile ()
 {
 	switch (getSubformat()) {
@@ -96,11 +74,10 @@ BmpFile::~BmpFile ()
 	}
 }
 
-BmpFile::SUBFORMAT BmpFile::getSubformat ()
+BmpFile::SUBFORMAT BmpFile::getSubformat () const
 {
 	SUBFORMAT retval ;
 
-	/* FIXME - funktioniert das mit union sicher ? */
 	switch (bmi.win.bmih.biSize) {
 		case SizeBMINFOHEADER:
 		retval = WIN ;
@@ -134,7 +111,7 @@ void BmpFile::write ()
 	writedata() ;
 }
 
-unsigned long BmpFile::getCapacity ()
+unsigned long BmpFile::getCapacity () const
 {
 	unsigned long linelength = 0, retval = 0 ;
 
@@ -169,7 +146,7 @@ unsigned long BmpFile::getCapacity ()
 
 void BmpFile::embedBit (unsigned long pos, int value)
 {
-	assert (pos <= getCapacity()) ;
+	assert (pos < getCapacity()) ;
 	assert (value == 0 || value == 1) ;
 
 	unsigned long row = 0, column = 0 ;
@@ -177,16 +154,16 @@ void BmpFile::embedBit (unsigned long pos, int value)
 	bitmap[row][column] = (bitmap[row][column] & (unsigned char) ~1) | value ;
 }
 
-int BmpFile::extractBit (unsigned long pos)
+int BmpFile::extractBit (unsigned long pos) const
 {
-	assert (pos <= getCapacity()) ;
+	assert (pos < getCapacity()) ;
 
 	unsigned long row = 0, column = 0 ;
 	calcRC (pos, &row, &column) ;
 	return (bitmap[row][column] & 1) ;
 }
 
-void BmpFile::calcRC (unsigned long pos, unsigned long *row, unsigned long *column)
+void BmpFile::calcRC (unsigned long pos, unsigned long *row, unsigned long *column) const
 {
 	unsigned long width = 0 /* in bytes */, height = 0 ;
 

@@ -19,6 +19,7 @@
  */
 
 #include <iostream>
+#include <string>
 #include <stdio.h>
 #include <stdarg.h>
 
@@ -31,6 +32,16 @@
 //
 // class SteghideError
 //
+SteghideError::SteghideError (void)
+	: MessageBase(_("error, exiting. (no error message defined)"))
+{
+}
+
+SteghideError::SteghideError(string msg)
+	: MessageBase(msg)
+{
+}
+
 SteghideError::SteghideError (const char *msgfmt, ...)
 	: MessageBase()
 {
@@ -49,24 +60,25 @@ void SteghideError::printMessage (void)
 // class BinaryInputError
 //
 BinaryInputError::BinaryInputError (string fn, FILE* s)
+	: SteghideError()
 {
 	if (feof (s)) {
 		if (fn == "") {
-			SteghideError (_("premature end of data from standard input.")) ;
+			setMessage(_("premature end of data from standard input.")) ;
 			setType (STDIN_EOF) ;
 		}
 		else {
-			SteghideError (compose (_("premature end of file \"%s\"."), fn.c_str())) ;
+			setMessage(compose (_("premature end of file \"%s\"."), fn.c_str())) ;
 			setType (FILE_EOF) ;
 		}
 	}
 	else {
 		if (fn == "") {
-			SteghideError (_("an error occured while reading data from standard input.")) ;
+			setMessage(_("an error occured while reading data from standard input.")) ;
 			setType (STDIN_ERR) ;
 		}
 		else {
-			SteghideError (compose (_("an error occured while reading data from the file \"%s\"."), fn.c_str())) ;
+			setMessage(compose (_("an error occured while reading data from the file \"%s\"."), fn.c_str())) ;
 			setType (FILE_ERR) ;
 		}
 	}
@@ -86,14 +98,15 @@ void BinaryInputError::setType (BinaryInputError::TYPE t)
 // class BinaryOutputError
 //
 BinaryOutputError::BinaryOutputError (string fn)
+	: SteghideError()
 {
 	if (fn == "") {
-		SteghideError (_("an error occured while writing data to standard output.")) ;
-		setType (STDOUT_ERR) ;
+		setMessage(_("an error occured while writing data to standard output.")) ;
+		setType(STDOUT_ERR) ;
 	}
 	else {
-		SteghideError (compose (_("an error occured while writing data to the file \"%s\"."), fn.c_str())) ;
-		setType (FILE_ERR) ;
+		setMessage(compose (_("an error occured while writing data to the file \"%s\"."), fn.c_str())) ;
+		setType(FILE_ERR) ;
 	}
 }
 
@@ -108,14 +121,37 @@ void BinaryOutputError::setType (BinaryOutputError::TYPE t)
 }
 
 //
-// UnSupFileFormat
+// class UnSupFileFormat
 //
 UnSupFileFormat::UnSupFileFormat (BinaryIO *io)
+	: SteghideError()
 {
 	if (io->is_std()) {
-		SteghideError (_("the file format of the data from standard input is not supported.")) ;
+		setMessage(_("the file format of the data from standard input is not supported.")) ;
 	}
 	else {
-		SteghideError (compose (_("the file format of the file \"%s\" is not supported."), io->getName().c_str())) ;
+		setMessage(compose (_("the file format of the file \"%s\" is not supported."), io->getName().c_str())) ;
 	}
+}
+
+//
+// class CorruptJpegError
+//
+CorruptJpegError::CorruptJpegError (BinaryIO *io, const char *msgfmt, ...)
+	: SteghideError()
+{
+	va_list ap ;
+	va_start (ap, msgfmt) ;
+	string auxmsg = vcompose (msgfmt, ap) ;
+	va_end (ap) ;
+
+	string mainmsg ;
+	if (io->is_std()) {
+		mainmsg = string (_("corrupt jpeg file on standard input:")) ;
+	}
+	else {
+		mainmsg = compose (_("corrupt jpeg file \"%s\":"), io->getName().c_str()) ;
+	}
+
+	setMessage(mainmsg + " " + auxmsg) ;
 }

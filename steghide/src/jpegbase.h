@@ -92,6 +92,36 @@ class JpegElement : public JpegObject {
 	static const JpegMarker MarkerSOI = 0xD8 ;	
 	/// APP0 marker
 	static const JpegMarker MarkerAPP0 = 0xE0 ;
+	/// APP1 marker
+	static const JpegMarker MarkerAPP1 = 0xE1 ;
+	/// APP2 marker
+	static const JpegMarker MarkerAPP2 = 0xE2 ;
+	/// APP3 marker
+	static const JpegMarker MarkerAPP3 = 0xE3 ;
+	/// APP4 marker
+	static const JpegMarker MarkerAPP4 = 0xE4 ;
+	/// APP5 marker
+	static const JpegMarker MarkerAPP5 = 0xE5 ;
+	/// APP6 marker
+	static const JpegMarker MarkerAPP6 = 0xE6 ;
+	/// APP7 marker
+	static const JpegMarker MarkerAPP7 = 0xE7 ;
+	/// APP8 marker
+	static const JpegMarker MarkerAPP8 = 0xE8 ;
+	/// APP9 marker
+	static const JpegMarker MarkerAPP9 = 0xE9 ;
+	/// APP10 marker
+	static const JpegMarker MarkerAPP10 = 0xEA ;
+	/// APP11 marker
+	static const JpegMarker MarkerAPP11 = 0xEB ;
+	/// APP12 marker
+	static const JpegMarker MarkerAPP12 = 0xEC ;
+	/// APP13 marker
+	static const JpegMarker MarkerAPP13 = 0xED ;
+	/// APP14 marker
+	static const JpegMarker MarkerAPP14 = 0xEE ;
+	/// APP15 marker
+	static const JpegMarker MarkerAPP15 = 0xEF ;
 	/// comment marker
 	static const JpegMarker MarkerCOM = 0xFE ;
 	/// end of image marker
@@ -212,22 +242,27 @@ class JpegContainer : public JpegObject, public CvrStgObject {
 	void read (BinaryIO *io) ;
 	void write (BinaryIO *io) ;
 
-	unsigned long getCapacity (void) ;
+	unsigned long getCapacity (void) const ;
 	void embedBit (unsigned long pos, int bit) ;
-	int extractBit (unsigned long pos) ;
+	int extractBit (unsigned long pos) const ;
 
 	protected:
 	/**
 	 * appends a JpegObject
 	 * \param o the jpeg object to append
 	 *
-	 * This functions append o to the vector jpegobjs and if o is a CvrStgObject
+	 * This function appends o to the vector jpegobjs and if o is a CvrStgObject
 	 * also appends it to the vector cvrstgobjs.
 	 **/
 	void appendObj (JpegObject *o) ;
 
+	/**
+	 * clears the vector of jpeg objects and the vector of cvrstg objects
+	 **/
+	void clearObjs (void) ;
+
 	private:
-	CvrStgObject *calcCvrStgObject (unsigned long *pos) ;
+	CvrStgObject *calcCvrStgObject (unsigned long *pos) const ;
 
 	/**
 	 * contains all JpegObjects in this JpegContainer
