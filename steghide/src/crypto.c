@@ -34,6 +34,7 @@
 #include "crypto.h"
 #include "hash.h"
 #include "support.h"
+#include "main.h"
 #include "msg.h"
 
 void encrypt_sthdr (void *buf, int buflen, char *passphrase)
@@ -41,11 +42,19 @@ void encrypt_sthdr (void *buf, int buflen, char *passphrase)
     MCRYPT mcryptd ;
     void *key = NULL ;
 	int err = -1 ;
+	char *cryptoalgo = NULL ;
 
 	assert (buflen % BLOCKSIZE_BLOWFISH == 0) ;
 
-    if ((mcryptd = mcrypt_module_open (CRYPTOALGO_STHDR, CRYPTOALGODIR, CRYPTOMODE_STHDR, CRYPTOMODEDIR)) == MCRYPT_FAILED) {
-		exit_err (_("could not open libmcrypt module \"%s\",\"%s\"."), CRYPTOALGO_STHDR, CRYPTOMODE_STHDR) ;
+	if (args.compatibility.value) {
+		cryptoalgo = CRYPTOALGO_STHDR_COMPAT ;
+	}
+	else {
+		cryptoalgo = CRYPTOALGO_STHDR ;
+	}
+
+    if ((mcryptd = mcrypt_module_open (cryptoalgo, CRYPTOALGODIR, CRYPTOMODE_STHDR, CRYPTOMODEDIR)) == MCRYPT_FAILED) {
+		exit_err (_("could not open libmcrypt module \"%s\",\"%s\"."), cryptoalgo, CRYPTOMODE_STHDR) ;
     }
 
     key = getblowfishkey (passphrase) ;
@@ -69,11 +78,19 @@ void decrypt_sthdr (void *buf, int buflen, char *passphrase)
     MCRYPT mcryptd ;
     void *key = NULL ;
 	int err = -1 ;
+	char *cryptoalgo = NULL ;
 
 	assert (buflen % BLOCKSIZE_BLOWFISH == 0) ;
 
-    if ((mcryptd = mcrypt_module_open (CRYPTOALGO_STHDR, CRYPTOALGODIR, CRYPTOMODE_STHDR, CRYPTOMODEDIR)) == MCRYPT_FAILED) {
-		exit_err (_("could not open libmcrypt module \"%s\",\"%s\"."), CRYPTOALGO_STHDR, CRYPTOMODE_STHDR) ;
+	if (args.compatibility.value) {
+		cryptoalgo = CRYPTOALGO_STHDR_COMPAT ;
+	}
+	else {
+		cryptoalgo = CRYPTOALGO_STHDR ;
+	}
+
+    if ((mcryptd = mcrypt_module_open (cryptoalgo, CRYPTOALGODIR, CRYPTOMODE_STHDR, CRYPTOMODEDIR)) == MCRYPT_FAILED) {
+		exit_err (_("could not open libmcrypt module \"%s\",\"%s\"."), cryptoalgo, CRYPTOMODE_STHDR) ;
     }
 
     key = getblowfishkey (passphrase) ;
@@ -101,6 +118,7 @@ void encrypt_plnfile (PLNFILE *plnfile, char *passphrase)
 	unsigned long nblocks_src = 0, blocknum = 0, plnpos = 0, bufpos = 0 ;
 	unsigned char IV[BLOCKSIZE_BLOWFISH] ;
 	int i = 0, err = -1 ;
+	char *cryptoalgo = NULL ;
 
 	pverbose (_("encrypting plain data.")) ;
 
@@ -117,8 +135,15 @@ void encrypt_plnfile (PLNFILE *plnfile, char *passphrase)
 		bufsetbyte (result, i, IV[i]) ;
 	}
 
-	if ((mcryptd = mcrypt_module_open (CRYPTOALGO_DATA, CRYPTOALGODIR, CRYPTOMODE_DATA, CRYPTOMODEDIR)) == MCRYPT_FAILED) {
-		exit_err (_("could not open libmcrypt module \"%s\",\"%s\"."), CRYPTOALGO_STHDR, CRYPTOMODE_STHDR) ;
+	if (args.compatibility.value) {
+		cryptoalgo = CRYPTOALGO_DATA_COMPAT ;
+	}
+	else {
+		cryptoalgo = CRYPTOALGO_DATA ;
+	}
+
+	if ((mcryptd = mcrypt_module_open (cryptoalgo, CRYPTOALGODIR, CRYPTOMODE_DATA, CRYPTOMODEDIR)) == MCRYPT_FAILED) {
+		exit_err (_("could not open libmcrypt module \"%s\",\"%s\"."), cryptoalgo, CRYPTOMODE_DATA) ;
 	}
 
 	key = getblowfishkey (passphrase) ;
@@ -169,6 +194,7 @@ void decrypt_plnfile (PLNFILE *plnfile, char *passphrase)
 	unsigned char IV[BLOCKSIZE_BLOWFISH], buf[BLOCKSIZE_BLOWFISH] ;
 	unsigned long plnpos = 0, bufpos = 0 ;
 	int i = 0, blocknum = 0, err = -1 ;
+	char *cryptoalgo = NULL ;
 
 	pverbose (_("decrypting plain data.")) ;
 
@@ -180,8 +206,15 @@ void decrypt_plnfile (PLNFILE *plnfile, char *passphrase)
 		IV[plnpos] = bufgetbyte (plnfile->plndata, plnpos) ;
 	}
 
-	if ((mcryptd = mcrypt_module_open (CRYPTOALGO_DATA, CRYPTOALGODIR, CRYPTOMODE_DATA, CRYPTOMODEDIR)) == MCRYPT_FAILED) {
-		exit_err (_("could not open libmcrypt module \"%s\",\"%s\"."), CRYPTOALGO_STHDR, CRYPTOMODE_STHDR) ;
+	if (args.compatibility.value) {
+		cryptoalgo = CRYPTOALGO_DATA_COMPAT ;
+	}
+	else {
+		cryptoalgo = CRYPTOALGO_DATA ;
+	}
+
+	if ((mcryptd = mcrypt_module_open (cryptoalgo, CRYPTOALGODIR, CRYPTOMODE_DATA, CRYPTOMODEDIR)) == MCRYPT_FAILED) {
+		exit_err (_("could not open libmcrypt module \"%s\",\"%s\"."), cryptoalgo, CRYPTOMODE_DATA) ;
 	}
 
 	key = getblowfishkey (passphrase) ;

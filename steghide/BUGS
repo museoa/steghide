@@ -1,11 +1,3 @@
-* The steghide package for Windows contains a version of libmcrypt that has a
-  broken implementation of the blowfish algorithm that is not compatible to
-  the blowfish implementation in libmcrypt versions 2.4.9 and higher. That
-  means that somebody with a newer libmcrypt version than 2.4.9 is not able
-  to extract something that has been embedded by somebody with an older version
-  than 2.4.9 and vice versa. If no encryption has been used (with -H -E as
-  arguments) this does not apply.
-
 * The configure script has been done a bit lazy. Those parts of steghide that
   need a certain library should not compile if the configure script has
   determined that this library is not available.

@@ -328,6 +328,17 @@ static void parsearguments (int argc, char* argv[])
 			args.embedplnfn.value = 0 ;
 		}
 
+		else if ((strncmp (argv[i], "-c\0", 3) == 0) || (strncmp (argv[i], "--compatibility\0", 16) == 0)) {
+			if (args.compatibility.is_set) {
+				exit_err (_("the compatibility argument can be used only once. type \"%s --help\" for help."), argv[0]) ;
+			}
+			else {
+				args.compatibility.is_set = 1 ;
+			}
+
+			args.compatibility.value = 1 ;
+		}
+
 		else if ((strncmp (argv[i], "-p\0", 3) == 0) || (strncmp (argv[i], "--passphrase\0", 13) == 0)) {
 			int j = 0 ;
 
@@ -500,6 +511,9 @@ static void args_setdefaults (void)
 	args.embedplnfn.is_set = 0 ;
 	args.embedplnfn.value = DEFAULT_EMBEDPLNFN ;
 
+	args.compatibility.is_set = 0 ;
+	args.compatibility.value = DEFAULT_COMPATIBILITY ;
+
 	args.verbosity.is_set = 0 ;
 	args.verbosity.value = DEFAULT_VERBOSITY ;
 
@@ -628,6 +642,7 @@ static void usage (void)
 		"   -pf <filename>        use <filename> as plain file\n"
 		" -h, --sthdrencryption   encrypt stego header before embedding (default)\n"
 		" -H, --nosthdrencryption do not encrypt stego header before embedding\n"
+		" -c, --compatibility     compatibility with libmcrypt version < 2.4.9\n"
 		" -f, --force             overwrite existing files\n"
 		" -q, --quiet             suppress information messages\n"
 		" -v, --verbose           display detailed information\n"

@@ -41,6 +41,7 @@
 #define DEFAULT_ENCRYPTION		1
 #define DEFAULT_CHECKSUM		1
 #define DEFAULT_EMBEDPLNFN		1
+#define DEFAULT_COMPATIBILITY	0
 #define DEFAULT_VERBOSITY		ARGS_VERBOSITY_NORMAL
 #define DEFAULT_FORCE			0
 
@@ -69,6 +70,7 @@ typedef struct struct_ARGS {
 	ARGBOOL encryption ;
 	ARGBOOL checksum ;
 	ARGBOOL embedplnfn ;
+	ARGBOOL compatibility ;
 	ARGINT verbosity ;
 	ARGBOOL force ;
 	ARGSTRING cvrfn ;

@@ -52,7 +52,7 @@ msgstr "Verschlüssle Klartextdaten."
 #: src/crypto.c:146
 #, c-format
 msgid "could not encrypt plain data. failed at block number %lu"
-msgstr "Die Klartextdaten konnten nicht verschlüsselt werden. Fehler bei Block Nummer %ul"
+msgstr "Die Klartextdaten konnten nicht verschlüsselt werden. Fehler bei Block Nummer %lu"
 
 #: src/crypto.c:157
 msgid "could not finish encryption of plain data."

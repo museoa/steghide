@@ -25,10 +25,13 @@
 
 #define PASSPHRASE_MAXLEN	512
 
-#define CRYPTOALGO_STHDR	"blowfish"
-#define CRYPTOMODE_STHDR	"ecb"
-#define CRYPTOALGO_DATA		"blowfish"
-#define CRYPTOMODE_DATA		"cbc"
+#define CRYPTOALGO_STHDR		"blowfish"
+#define CRYPTOALGO_STHDR_COMPAT	"blowfish-compat"
+#define CRYPTOMODE_STHDR		"ecb"
+
+#define CRYPTOALGO_DATA			"blowfish"
+#define CRYPTOALGO_DATA_COMPAT	"blowfish-compat"
+#define CRYPTOMODE_DATA			"cbc"
 
 #ifdef __CYGWIN__
 #define CRYPTOALGODIR	"./modules/"
