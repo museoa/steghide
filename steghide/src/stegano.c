@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.4 - a steganography program
+ * steghide 0.4.5 - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -294,7 +294,7 @@ void extractsthdr (BUFFER *stgdata, int dmtd, DMTDINFO dmtdinfo, int enc, char *
 		if (tmp == 0) {
 			exit_err (_("the mask saved in the stego header is zero (file corruption ?).")) ;
 		}
-		sthdr.mask = (unsigned int) tmp ; /* FIXME - kann andere maske als 1 überhaupt noch behandelt werden ? */
+		sthdr.mask = (unsigned int) tmp ;
 	}
 	else {
 		sthdr.mask = 1 ;

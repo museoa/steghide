@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.4 - a steganography program
+ * steghide 0.4.5 - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -66,16 +66,19 @@ int pquestion (char *fmt, ...)
 	va_list ap ;
 	struct termios oldattr ;
 	int retval = 0 ;
-
+	char *yeschar = _("y"), *nochar = _("n") ;
+	char input[2] ;
+	
 	va_start (ap, fmt) ;
 	vfprintf (stderr, fmt, ap) ;
 	va_end (ap) ;
 
-	/* FIXME l10n !!! */
-	fprintf (stderr, " (y/n) ") ;
+	fprintf (stderr, " (%s/%s) ", yeschar, nochar) ;
 
 	oldattr = termios_singlekey_on () ;
-	if (getchar () == 'y') {
+	input[0] = getchar () ;
+	input[1] = '\0' ;
+	if (strcmp (input, yeschar) == 0) {
 		retval = 1 ;
 	}
 	termios_reset (oldattr) ;
