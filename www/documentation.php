@@ -11,7 +11,6 @@ init("documentation");
 <body>
 <?php pBodyPrologue(); ?>
 
-<h2>What to Read:</h2>
 If you are impatient and want to start using steghide as fast as possible take a look at the
 Quick Start section below. As a reference you will most likely want
 to consult the <a href="documentation/manpage.php">man(ual) page</a> that comes with the distribution
@@ -20,8 +19,9 @@ to consult the <a href="documentation/manpage.php">man(ual) page</a> that comes 
 If you are interested in the details
 of the implementation of steghide take a look at the source code documentation that comes with the
 source code distribution (for more details see the <a href="development.php">development section</a>).
+<p>
 
-<h2>Quick Start:</h2>
+<?php pBoxHead("Quick Start:"); ?>
 Here are some examples of how steghide can be used. Take a look at these to get
 a first impression. If you want more detailed information please read the
 <a href="documentation/manpage.php">man(ual) page</a>.
@@ -65,8 +65,7 @@ After printing some general information about the stego file (format, capacity) 
 asked if steghide should try to get information about the embedded data. If you answer with
 yes you have to supply a passphrase. Steghide will then try to extract the embedded data
 with that passphrase and - if it succeeds - print some information about it.
-
-
+<?php pBoxEnd(); ?>
 
 <?php pBodyEpilogue(getlastmod()); ?>
 </body>

@@ -50,7 +50,7 @@ To run the test suite type <code>make check</code> after building steghide. If a
 
 <h2>Internationalization:</h2>
 The output of steghide is fully internationalized using <a href="http://www.gnu.org/software/gettext/">GNU gettext</a>. Translations
-into french, spanish and german exist. If you want to translate steghide into another language you need to download the source code
+into french, spanish, romanian and german exist. If you want to translate steghide into another language you need to download the source code
 distribution and fill in the empty lines in the file <code>steghide.pot</code> that can be found in the <code>po</code> subdirectory
 (see <code>de.po</code> for an example).
 

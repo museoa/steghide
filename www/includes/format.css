@@ -22,65 +22,58 @@
   font-weight: bold;
 }
 
+/* format for main table's td that contains the hierachy table */
+#conthierachytable {
+  background: #EFEFE7;
+  border-left: solid 1px black;
+  border-right: solid 1px black;
+}
+
+/* format for main table's td that contains the last change area */
+#contlastchange {
+  font-size: small; 
+  background: #EFEFE7;
+  border-left: solid 1px black;
+  border-right: solid 1px black;
+  border-bottom: solid 1px black;
+}
+
 /* format for a closed section */
-td.seccloseddefault {
+td.secclosed {
   height: 30px;
   background: #B5A58C;
-  border-top: solid 1px black;
-  border-left: solid 1px black;
-  border-right: solid 1px black;
+  border-bottom: solid 1px black;
 }
-td.seccloseddefault:hover {
+td.secclosed:hover {
   height: 30px;
   background: #DDDDDD;
-  border-top: solid 1px black;
-  border-left: solid 1px black;
-  border-right: solid 1px black;
-}
-td.secclosedfirst {
-  height: 30px;
-  background: #B5A58C;
-  border-left: solid 1px black;
-  border-right: solid 1px black;
-}
-td.secclosedfirst:hover {
-  height: 30px;
-  background: #DDDDDD;
-  border-left: solid 1px black;
-  border-right: solid 1px black;
+  border-bottom: solid 1px black;
 }
 
-/* format for an open section (and subsections) */
-td.secopendefault {
+/* format for an open section */
+td.secopen {
   height: 30px;
   background: #B5A58C;
-  border-top: solid 1px black;
-  border-left: solid 1px black;
-  border-right: solid 1px black;
-}
-td.secopenfirst {
-  height: 30px;
-  background: #B5A58C;
-  border-left: solid 1px black;
-  border-right: solid 1px black;
 }
 
+/* formats for subsections */
 td.ssecleft {
   background: #B5A58C;
-  border-left: solid 1px black;
   height: 30px;
+  border-bottom: solid 1px black;
 }
 
 td.ssecrightfirstclosed {
   background: #DED6C6;
-  border: solid 1px black;
+  border-left: solid 1px black;
+  border-bottom: solid 1px black;
+  border-top: solid 1px black;
   padding: 3px;
   height: 30px;
 }
 td.ssecrightdefaultclosed {
   background: #DED6C6;
   border-left: solid 1px black;
-  border-right: solid 1px black;
   border-bottom: solid 1px black;
   padding: 3px;
   height: 30px;
@@ -88,29 +81,30 @@ td.ssecrightdefaultclosed {
 td.ssecrightlastclosed {
   background: #DED6C6;
   border-left: solid 1px black;
-  border-right: solid 1px black;
+  border-bottom: solid 1px black;
   padding: 3px;
   height: 30px;
 }
 td.ssecrightonlyclosed {
   background: #DED6C6;
-  border-top: solid 1px black;
   border-left: solid 1px black;
-  border-right: solid 1px black;
+  border-bottom: solid 1px black;
+  border-top: solid 1px black;
   padding: 3px;
   height: 30px;
 }
 
 td.ssecrightfirstclosed:hover {
   background: #DDDDDD;
-  border: solid 1px black;
+  border-left: solid 1px black;
+  border-bottom: solid 1px black;
+  border-top: solid 1px black;
   padding: 3px;
   height: 30px;
 }
 td.ssecrightdefaultclosed:hover {
   background: #DDDDDD;
   border-left: solid 1px black;
-  border-right: solid 1px black;
   border-bottom: solid 1px black;
   padding: 3px;
   height: 30px;
@@ -118,29 +112,29 @@ td.ssecrightdefaultclosed:hover {
 td.ssecrightlastclosed:hover {
   background: #DDDDDD;
   border-left: solid 1px black;
-  border-right: solid 1px black;
+  border-bottom: solid 1px black;
   padding: 3px;
   height: 30px;
 }
 td.ssecrightonlyclosed:hover {
   background: #DDDDDD;
-  border-top: solid 1px black;
   border-left: solid 1px black;
-  border-right: solid 1px black;
+  border-bottom: solid 1px black;
   padding: 3px;
   height: 30px;
 }
 
 td.ssecrightfirstopen {
   background: #DED6C6;
-  border: solid 1px black;
+  border-left: solid 1px black;
+  border-top: solid 1px black;
+  border-bottom: solid 1px black;
   padding: 3px;
   height: 30px;
 }
 td.ssecrightdefaultopen {
   background: #DED6C6;
   border-left: solid 1px black;
-  border-right: solid 1px black;
   border-bottom: solid 1px black;
   padding: 3px;
   height: 30px;
@@ -148,15 +142,15 @@ td.ssecrightdefaultopen {
 td.ssecrightlastopen {
   background: #DED6C6;
   border-left: solid 1px black;
-  border-right: solid 1px black;
+  border-bottom: solid 1px black;
   padding: 3px;
   height: 30px;
 }
 td.ssecrightonlyopen {
   background: #DED6C6;
-  border-top: solid 1px black;
   border-left: solid 1px black;
-  border-right: solid 1px black;
+  border-bottom: solid 1px black;
+  border-top: solid 1px black;
   padding: 3px;
   height: 30px;
 }
@@ -207,13 +201,6 @@ a.sseclinkactive {
   font-weight: bold;
   color: #4632BE;
   text-decoration: none;
-}
-
-/* format for the "last update"-box (bottom-left) */
-#lastupdate {
-  background: #EFEFE7;
-  border: solid 1px black;
-  font-size: small; 
 }
 
 /* definitions to harmonize main text with overall look */

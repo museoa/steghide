@@ -1,15 +1,23 @@
 <?php
 include 'definitions.php';
 
+$Debug = false ;
 $ToRoot = "";
-$SectionID = "";
+$ActiveSectionID = "";
+$FirstSectionID = "";
+$NavRows = 0;	// size of the navigation part of the main table in rows
 
 function init ($secid)
 {
-	global $SectionID, $ToRoot;
-	$SectionID = $secid;
+	global $ActiveSectionID, $ToRoot, $NavRows, $DefSections, $FirstSectionID, $Debug;
+	$ActiveSectionID = $secid;
 	if (strpos ($secid, "/")) {
 		$ToRoot = "../";
+	}
+	$FirstSectionID = "home";
+	$NavRows = count($DefSections) + 1 ; // also count the "last change"-area
+	if ($Debug) {
+		echo "\n<!-- DEBUG: after init: FirstSectionID: $FirstSectionID, NavRows: $NavRows -->\n" ;
 	}
 }
 
@@ -65,28 +73,30 @@ function getSectionInfo ($secid)
 	}
 }
 
-function pseclinktr ($active, $css_td, $css_a, $imgsrc, $imgalt, $linkhref, $linkname, $spc)
+/**
+ * print a <td>...</td> that contains a section link in the MAIN or in one of the SECTION_* tables
+ * \param tabletype MAIN or SECTION
+ **/ 
+function pseclinktd ($tabletype, $active, $css_td, $css_a, $imgsrc, $imgalt, $linkhref, $linkname, $spc)
 {
 	global $ToRoot;
 
-	echo "$spc<tr>\n";
-	echo "$spc <td class=\"$css_td\"";
-	if ($active) {
+	echo "$spc<td class=\"$css_td\"";
+	if ($active && $tabletype == "SECTION") {
 		echo " colspan=\"2\"";
 	}
 	echo ">\n";
-	echo "$spc  <table cellspacing=\"0\" cellpadding=\"3\">\n";
-	echo "$spc   <tr>\n";
-	echo "$spc    <td><img src=\"$ToRoot$imgsrc\" alt=\"$imgalt\" border=\"0\"></td>\n";
-	echo "$spc    <td><a class=\"$css_a\"";
+	echo "$spc <table cellspacing=\"0\" cellpadding=\"3\">\n";
+	echo "$spc  <tr>\n";
+	echo "$spc   <td><img src=\"$ToRoot$imgsrc\" alt=\"$imgalt\" border=\"0\"></td>\n";
+	echo "$spc   <td><a class=\"$css_a\"";
 	if ($linkhref != "") {
 		echo " href=\"$ToRoot$linkhref\"";
 	}
 	echo ">$linkname</a></td>\n";
-	echo "$spc   </tr>\n";
-	echo "$spc  </table>\n";
-	echo "$spc </td>\n";
-	echo "$spc</tr>\n";
+	echo "$spc  </tr>\n";
+	echo "$spc </table>\n";
+	echo "$spc</td>\n";
 }
 
 /**
@@ -114,69 +124,64 @@ function psseclinktd ($link, $linkname, $pos, $isactive, $spc)
 	if ($pos == "default" || $pos == "last") {
 		echo "<tr>";
 	}
-	echo "<td class=\"$css_td\"><a class=\"$css_a\"";
+	echo " <td class=\"$css_td\">\n";
+	echo "$spc  <a class=\"$css_a\"";
 	if (!$isactive) {
 		echo " href=\"$ToRoot$link\"";
 	}
-	echo ">$linkname</a></td></tr>\n";
+	echo ">$linkname</a>\n";
+	echo "$spc </td>\n";
+	echo "$spc</tr>\n";
 }
 
 /**
- * print a section in the hierachy table
- * \param sec the section id of the section to print
- * \param sectioninfo the sectioninfo for the section to print
- * \param activesecid id of active section or subsection
- * \param isfirst TRUE iff this is the first section in the hierachy table
- * \param spc space to be left in front of every line of html output
+ * print a <td>...</td> in the MAIN table that contains a section
+ * \param $secid the section id of the section to print
+ * \param $spc the amount of space to be kept before the opening <td>
  **/
-function psection ($sec, $sectioninfo, $activesecid, $isfirst, $spc)
+function psectiontd ($sec, $spc)
 {
-	global $ToRoot;
+	global $Debug, $ToRoot, $DefSections, $FirstSectionID, $ActiveSectionID ;
+	if ($Debug) {
+		echo "\n<!-- DEBUG: psectiontd called with sec: $sec, space: >$spc< -->\n";
+	}
+	$isfirst = ($sec == $FirstSectionID);
+	$sectioninfo = $DefSections[$sec] ;
 
-	if ($sec == getsec($activesecid)) {
-		/* this section is active */
+	if ($sec == getsec($ActiveSectionID)) { // is this section active ?
 		if (array_key_exists("subsections", $sectioninfo)) {
 			/* this section is active and has subsections (one of them may be active) */
-			if (isssec($activesecid)) {
-				$activesec = getsec($activesecid);
-				$activessec = getssec($activesecid);
-				echo "<!-- activessec: $activessec -->";
+			if (isssec($ActiveSectionID)) {
+				$activesec = getsec($ActiveSectionID);
+				$activessec = getssec($ActiveSectionID);
 			}
 			else {
-				$activesec = $activesecid;
+				$activesec = $ActiveSectionID;
 			}
 
 			$numsubsections = count($sectioninfo["subsections"]);
-			echo "$spc<tr> <!-- active section: $sec -->\n";
-			echo "$spc <td>\n"; // is part of hierachy table
-			echo "$spc  <table cellspacing=\"0\" cellpadding=\"0\" width=\"100%\" height=\"100%\">\n"; // create table to contain section and open subsections
+			echo "$spc<td height=\"100%\"> <!-- section: $sec, ACTIVE -->\n";
+			echo "$spc <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\"";
+			if ($Debug) {
+				echo " style=\"border: solid 1px lime\"";
+			}
+			echo "> <!-- table: SECTION_$sec -->\n";
+			echo "$spc  <tr>\n";
 
 			// section name
-			if ($sec == $activesecid) {
-				if ($isfirst) {
-					$csssection = "secopenfirst";
-				}
-				else {
-					$csssection = "secopendefault";
-				}
-
-				pseclinktr (TRUE, $csssection, "seclinkactive", "images/arrow_sec_down.png", "arrow down",
-					"", $sectioninfo["linkname"], $spc . "  ");
+			if ($sec == $ActiveSectionID) {
+				pseclinktd ("SECTION", TRUE, "secopen", "seclinkactive", "images/arrow_sec_down.png", "arrow down",
+					"", $sectioninfo["linkname"], $spc . "   ");
 			}
 			else {
-				if ($isfirst) {
-					$csssection = "secclosedfirst";
-				}
-				else {
-					$csssection = "seccloseddefault";
-				}
-
-				pseclinktr (TRUE, $csssection, "seclinkactive", "images/arrow_sec_down.png", "arrow down",
-					$sectioninfo["link"], $sectioninfo["linkname"], $spc);
+				pseclinktd ("SECTION", TRUE, "secopen", "seclinkactive", "images/arrow_sec_down.png", "arrow down",
+					$sectioninfo["link"], $sectioninfo["linkname"], $spc . "   ");
 			}
+			echo "$spc  </tr>\n";
 
 			// dark area on the left - &nbsp; to make mozilla draw the left border
-			echo "$spc<tr><td class=\"ssecleft\" rowspan=\"$numsubsections\" width=\"30\">&nbsp;</td>\n";
+			echo "$spc  <tr>\n";
+			echo "$spc   <td class=\"ssecleft\" rowspan=\"$numsubsections\" width=\"30\">&nbsp;</td>\n";
 
 			// print subsections
 			$ssections = $sectioninfo["subsections"];
@@ -184,8 +189,7 @@ function psection ($sec, $sectioninfo, $activesecid, $isfirst, $spc)
 			if (count($ssections) == 1) {
 				// the only subsection
 				$ssinfo = current($ssections);
-				echo "<!-- key(ssections): " . key($ssections) . ", activessec: " . $activessec . " -->\n" ;
-				psseclinktd ($ssinfo["link"], $ssinfo["linkname"], "only", (key($ssections) == $activessec), $spc);
+				psseclinktd ($ssinfo["link"], $ssinfo["linkname"], "only", (key($ssections) == $activessec), $spc . "   ");
 			}
 			else {
 				$firstssec = array_splice ($ssections, 0, 1);
@@ -194,83 +198,59 @@ function psection ($sec, $sectioninfo, $activesecid, $isfirst, $spc)
 
 				// first subsection (special treatment)
 				$ssinfo = current($firstssec);
-				psseclinktd ($ssinfo["link"], $ssinfo["linkname"], "first", (key($firstssec) == $activessec), $spc);
+				psseclinktd ($ssinfo["link"], $ssinfo["linkname"], "first", (key($firstssec) == $activessec), $spc . "   ");
 
 				// other subsections
 				while (list($ssid, $ssinfo) = each ($otherssec)) { // other subsections
-					psseclinktd ($ssinfo["link"], $ssinfo["linkname"], "default", ($ssid == $activessec), $spc);
+					psseclinktd ($ssinfo["link"], $ssinfo["linkname"], "default", ($ssid == $activessec), $spc . "   ");
 				}
 
 				// last subsection (special treatment)
 				$ssinfo = current($lastssec);
-				psseclinktd ($ssinfo["link"], $ssinfo["linkname"], "last", (key($lastssec) == $activessec), $spc);
+				psseclinktd ($ssinfo["link"], $ssinfo["linkname"], "last", (key($lastssec) == $activessec), $spc . "   ");
 			}
 
-			echo "$spc</table>\n";
-			echo "$spc</td></tr>\n";
+			echo "$spc  </table> <!-- end of table: SECTION_$sec -->\n";
+			echo "$spc </td>\n";
 		}
 		else {
 			/* this section is active but has no subsections */
-			if ($isfirst) {
-				$csssection = "secclosedfirst";
-			}
-			else {
-				$csssection = "seccloseddefault";
-			}
-			pseclinktr (TRUE, $csssection, "seclinkactive", "images/arrow_sec_down.png", "arrow down",
+			pseclinktd ("MAIN", TRUE, "secclosed", "seclinkactive", "images/arrow_sec_down.png", "arrow down",
 				"", $sectioninfo["linkname"], $spc);
 		}
 	}
 	else {
-		/* this section is not active */
-		if ($isfirst) {
-			$csssection = "secclosedfirst";
-		}
-		else {
-			$csssection = "seccloseddefault";
-		}
-		pseclinktr (FALSE, $csssection, "seclinkclickable", "images/arrow_sec_right.png", "arrow right",
+		pseclinktd ("MAIN", FALSE, "secclosed", "seclinkclickable", "images/arrow_sec_right.png", "arrow right",
 			$sectioninfo["link"], $sectioninfo["linkname"], $spc);
 	}
 }
 
-/**
- * print the navigation area (hierachy table and bottom left area)
- * $activesec contains the name of the active section
- * $spc is the space to print at the beginning of every line
- **/
-function pnavarea ($activesec, $spc)
+function phierachytable ($spc)
 {
-	global $DefSections, $ToRoot;
+	global $DefSections, $Debug;
 
-	echo "$spc<table width=\"100%\" height=\"100%\" cellspacing=\"0\" cellpadding=\"0\"> <!-- start of navigation area -->\n";
+	echo $spc . "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\"";
+	if ($Debug) {
+		echo " style=\"border: solid 1px red\"";
+	}
+	echo "> <!-- table: HIERACHY -->\n";
 	$isfirst = TRUE ;
 	foreach ($DefSections as $sectionid => $sectioninfo) {
-		psection ($sectionid, $sectioninfo, $activesec, $isfirst, $spc . " ");
+		echo "$spc <tr>\n";
+		psectiontd ($sectionid, $spc . "  ");
+		echo "$spc </tr>\n";
 		$isfirst &= FALSE;
 	}
-	echo "$spc <tr>\n"; // lower area (lastupdate)
-	echo "$spc  <td id=\"lastupdate\" align=\"center\" valign=\"bottom\">\n" ;
-	echo "$spc   <a href=\"http://validator.w3.org/check/referer\"><img border=\"0\" src=\"" . $ToRoot . "images/valid-html401.png\"\n";
-	echo "$spc   alt=\"Valid HTML 4.01!\" height=\"31\" width=\"88\"></a>\n";
-	echo "$spc   <p>\n";
-	echo "$spc   hosted by:<br>\n";
-	include "sflogo.html";
-	echo "$spc   <p>\n";
-	echo "$spc   last change:<br>";
-	echo date("F j, Y", $ts_lastupdate) . "</td>\n"; // print last update
-	echo "$spc </tr>\n";
-	echo "$spc</table> <!-- end of navigation area -->\n";
+	echo $spc . "</table> <!-- end of table: HIERACHY -->\n";
 }
 
 /**
- * print everything that should go between the <head> and </head> tags for the section $SectionID
+ * print everything that should go between the <head> and </head> tags for the section $ActiveSectionID
  **/
 function pHead ()
 {
-	global $CSSFile, $ToRoot, $SectionID;
-
-	$secinfo = getSectionInfo($SectionID);
+	global $CSSFile, $ToRoot, $ActiveSectionID;
+	$secinfo = getSectionInfo($ActiveSectionID);
 	echo "<title>" . $secinfo["title"] . "</title>\n";
 	echo "<meta name=\"author\" content=\"Stefan Hetzl <shetzl@chello.at>\">\n";
 	echo "<meta http-equiv=\"content-type\" content=\"text/html; charset=ISO-8859-1\">\n";
@@ -278,35 +258,54 @@ function pHead ()
 }
 
 /**
- * print everything that should be printed in the body before the real text starts (including the hierachy table)
+ * print everything that should be printed in the body before the real text starts
  **/
 function pBodyPrologue ()
 {
-	global $SectionID, $ToRoot;
-	$sectioninfo = getSectionInfo($SectionID); 
+	global $DefSections, $ActiveSectionID, $ToRoot, $FirstSectionID, $NavRows, $Debug;
+	$sectioninfo = getSectionInfo($ActiveSectionID); 
 
-	echo " <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\"> <!-- table: main -->\n"; // main table to get 3(left)+2(right)=5 areas
+	echo " <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\"";
+	if ($Debug) {
+		echo " border=\"2\"";
+	}
+	echo "> <!-- table: MAIN -->\n";
   	echo "  <tr>\n"; // upper areas (logo, title)
 	echo "   <td id=\"topleft\"><img src=\"" . $ToRoot . "images/logo.png" . "\" alt=\"steghide logo\"></td>\n"; // top left area (logo)
 	echo "   <td id=\"topright\">" . $sectioninfo["title"] . "</td>\n"; // top right area (title)
 	echo "  </tr>\n";
-	echo "  <tr>\n"; // lower areas (navigation, text)
-	echo "   <td width=\"170\" height=\"100%\" valign=\"top\">\n"; // navigation area
-	pnavarea ($SectionID, "    ");
+	echo "  <tr>\n";
+	echo "   <td id=\"conthierachytable\" valign=\"top\">\n";
+	phierachytable("    ");
 	echo "   </td>\n";
-	echo "   <td>\n"; // lower right area containing the text
-	echo "    <table width=\"100%\" cellpadding=\"10\"><tr><td> <!-- main text position -->\n"; // 1x1 table used for spacing only
+	echo "   <td style=\"padding: 10px\" rowspan=\"2\"> <!-- main text -->\n";
 }
 
 /**
- * print everything that should be printed in the body after the real text has ended (including the "last update"-block)
+ * print everything that should be printed in the body after the real text has ended
  **/
-function pBodyEpilogue ($ts_lastupdate)
+function pBodyEpilogue ($ts_lastchange)
 {
-	echo "     </td></tr></table> <!-- main text position -->\n"; // end of 1x1 table
+	global $ActiveSectionID, $DefSections, $ToRoot;
+
+	echo "   </td> <!-- end of main text -->\n";
+	echo "  </tr>\n";
+
+	// print "last change"-area
+	echo "  <tr>\n";
+	echo "   <td id=\"contlastchange\" height=\"100%\" align=\"center\" valign=\"bottom\">\n" ;
+	echo "    <a href=\"http://validator.w3.org/check/referer\"><img border=\"0\" src=\"" . $ToRoot . "images/valid-html401.png\"\n";
+	echo "    alt=\"Valid HTML 4.01!\" height=\"31\" width=\"88\"></a>\n";
+	echo "    <p>\n";
+	echo "    hosted by:<br>\n";
+	include "sflogo.html";
+	echo "    <p>\n";
+	echo "    last change:<br>";
+	echo date("F j, Y", $ts_lastchange) . "\n";
 	echo "   </td>\n";
-	echo "  </tr>\n"; // end of second row in 3,2 table
-	echo " </table>\n"; // end of main table
+	echo "  </tr>\n";
+
+	echo " </table> <!-- table: MAIN -->\n";
 }
 
 function pBoxHead ($title)
