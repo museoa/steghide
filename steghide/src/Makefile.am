@@ -39,7 +39,7 @@ AuSampleValue.cc AugmentingPathHeuristic.cc \
 BinaryIO.cc BitString.cc \
 BmpFile.cc BmpPaletteSampleValue.cc \
 BmpRGBSampleValue.cc BmpSampleValue.cc \
-ConstructionHeuristic.cc \
+ColorPalette.cc ConstructionHeuristic.cc \
 CvrStgFile.cc Edge.cc \
 EdgeIterator.cc EmbData.cc \
 Embedder.cc EncryptionAlgorithm.cc \

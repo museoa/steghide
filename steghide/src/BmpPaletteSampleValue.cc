@@ -18,8 +18,6 @@
  *
  */
 
-#include <cfloat>
-
 #include "BmpFile.h"
 #include "BmpPaletteSampleValue.h"
 
@@ -36,21 +34,8 @@ BmpPaletteSampleValue::BmpPaletteSampleValue (const CvrStgFile* f, unsigned char
 
 SampleValue* BmpPaletteSampleValue::getNearestOppositeSampleValue () const
 {
-	RGBTriple thistriple = (*Palette)[Index] ;
-
-	unsigned int idx_nearest = 0 ;
-	float mindist = FLT_MAX ;
-	unsigned int n = Palette->getSize() ;
-	for (unsigned int i = ((getBit() == 1) ? 0 : 1) ; i < n ; i += 2) {
-		const RGBTriple& curtriple = (*Palette)[i] ;
-		float curdist = thistriple.calcDistance (curtriple) ;
-		if (curdist < mindist) {
-			mindist = curdist ;
-			idx_nearest = i ;
-		}
-	}
-
-	return ((SampleValue *) new BmpPaletteSampleValue (getFile(), idx_nearest)) ;
+	unsigned int nosv_idx = Palette->getNearest (Index, (getBit() == 1 ? ColorPalette::EVENINDICES : ColorPalette::ODDINDICES)) ;
+	return ((SampleValue*) new BmpPaletteSampleValue (getFile(), nosv_idx)) ;
 }
 
 unsigned char BmpPaletteSampleValue::getIndex() const
