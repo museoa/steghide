@@ -101,6 +101,8 @@ typedef struct struct_ERRMSG {
 #define ERR_MHASH				501 /* error while calling a function from libmhash */
 #define ERR_LIBMCRYPT			502 /* error while calling a function from libmcrypt */
 
+#define ERR_OTHER				600 /* just for cvs version - error handling will be changed for 0.4.2 */
+
 /* function prototypes */
 void perr (int errn) ;
 

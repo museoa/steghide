@@ -23,6 +23,8 @@
 
 #include "io.h"
 
+#define PASSPHRASE_MAXLEN	512
+
 #define CRYPTOALGO_STHDR	"blowfish"
 #define CRYPTOMODE_STHDR	"ecb"
 #define CRYPTOALGO_DATA		"blowfish"

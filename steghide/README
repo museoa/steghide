@@ -67,27 +67,41 @@ Unix/Linux systems, open the file usage.txt on Windows).
 
 To embed the file mysecret.txt in the wav file cover.wav and save the resulting
 stego file as stego.wav type:
-  steghide embed -pf mysecret.txt -cf cover.wav -sf stego.wav -p "a passphrase"
+
+  $ steghide embed -pf mysecret.txt -cf cover.wav -sf stego.wav
+  Enter passhrase:
+  Re-Enter passphrase:
 
 To extract this data again type:
-  steghide extract -sf stego.wav -p "a passphrase"
-When embedding data, the name of the original plain file is embedded too, so
-this command will create a file mysecret.txt in the current directory and write
-the embedded data to mysecret.txt.
+
+  $ steghide extract -sf stego.wav
+  Enter passphrase:
+
+When embedding data, the name of the original plain file is embedded too: The
+extract command above will create a file mysecret.txt in the current directory
+and write the embedded data to mysecret.txt.
 
 You can override the embedded plain file name if you specify a -pf argument
 when extracting. The following command will put the embedded data into the file
 plain.txt:
-  steghide extract -sf stego.wav -pf plain.txt -p "a passphrase"
+
+  steghide extract -sf stego.wav -pf plain.txt
+  Enter passphrase:
 
 If you are using a system that supports pipes you can pass data via
 standard input to steghide. In the following example data is compressed before
 it is (encrypted and) embedded:
+
   gzip -c pln.txt | steghide embed -cf cvr.bmp -sf stg.bmp -pf - -p "This is another passphrase."
 
 To extract (and view) the data from this file again, you could do something
 like this:
-  steghide extract -sf stg.bmp -pf - -p "This is another passphrase." | gunzip | less 
+
+  steghide extract -sf stg.bmp -pf - -p "This is another passphrase." | gunzip | less
+
+If you pass data to steghide via standard input or from steghide to another
+program via standard output, you need to specify the passphrase on the command
+line with the -p argument (as shown in the two commands above).
 
 Contact :
 =========
@@ -110,6 +124,20 @@ If you want to be informed, when a new version of steghide is released please
 subscribe to the steghide announcement mailing list at:
 http://lists.sourceforge.net/lists/listinfo/steghide-announce
 
+Anonymous CVS access :
+----------------------
+
+You can access the most recent development source code via anonymous cvs. Just
+type the following lines:
+
+$ cvs -d:pserver:anonymous@cvs.steghide.sourceforge.net:/cvsroot/steghide login
+CVS password:  [ Hit RETURN here ]
+
+$ cvs -z3 -d:pserver:anonymous@cvs.steghide.sourceforge.net:/cvsroot/steghide co steghide
+
+You can also browse the cvs repository on the web:
+http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/steghide/
+
 Author :
 --------
-You can also contact me personally via e-mail: shetzl@teleweb.at
+You can contact me (Stefan Hetzl) via e-mail: shetzl@teleweb.at

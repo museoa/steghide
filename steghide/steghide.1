@@ -35,12 +35,12 @@ extract commands. For a detailed description of these arguments see section
 The embed command embeds the plain file in the cover file, resulting in the
 stego file. This command needs the following arguments: the name of the cover
 file (-cf), the name of the plain file (-pf), a name for the stego file that
-will be created (-sf) and a passphrase (-p).
+will be created (-sf).
 .TP
 .B "extract, --extract"
 The extract command extracts the plain data from a stego file. This command
 needs the following arguments: the name of the stego file (-sf), the name of
-the plain file that will be created (-pf) and the passphrase (-p).
+the plain file that will be created (-pf).
 .TP
 .B "version, --version"
 Displays a short version information. No arguments required.
@@ -117,7 +117,8 @@ Use the string that is following this argument as the passphrase. If your
 passphrase is more that one word long you have to enclose it in quotes, e.g.
 -p "a very long passphrase".
 
-The passphrase is mandatory for the embed and the extract command.
+If the passphrase is not given with the -p argument, a prompt to enter the
+passphrase will be displayed.
 
 .TP
 .B "-e, --encryption"
@@ -158,21 +159,25 @@ assume that the stego header is encrypted and will fail.
 To embed the file mysecret.txt in the wav file cover.wav and save the resulting
 stego file as stego.wav type:
 
-  steghide embed -pf mysecret.txt -cf cover.wav -sf stego.wav -p "a passphrase"
+  $ steghide embed -pf mysecret.txt -cf cover.wav -sf stego.wav
+  Enter passhrase:
+  Re-Enter passphrase:
 
 To extract this data again type:
 
-  steghide extract -sf stego.wav -p "a passphrase"
+  $ steghide extract -sf stego.wav
+  Enter passphrase:
 
-When embedding data, the name of the original plain file is embedded too, so
-this command will create a file mysecret.txt in the current directory and write
-the embedded data to mysecret.txt.
+When embedding data, the name of the original plain file is embedded too: The
+extract command above will create a file mysecret.txt in the current directory
+and write the embedded data to mysecret.txt.
 
 You can override the embedded plain file name if you specify a -pf argument
 when extracting. The following command will put the embedded data into the file
 plain.txt:
 
-  steghide extract -sf stego.wav -pf plain.txt -p "a passphrase"
+  steghide extract -sf stego.wav -pf plain.txt
+  Enter passphrase:
 
 If you are using a system that supports pipes you can pass data via
 standard input to steghide. In the following example data is compressed before
@@ -184,6 +189,10 @@ To extract (and view) the data from this file again, you could do something
 like this:
 
   steghide extract -sf stg.bmp -pf - -p "This is another passphrase." | gunzip | less
+
+If you pass data to steghide via standard input or from steghide to another
+program via standard output, you need to specify the passphrase on the command
+line with the -p argument (as shown in the two commands above).
 
 .SH AUTHOR
 Stefan Hetzl <shetzl@teleweb.at>

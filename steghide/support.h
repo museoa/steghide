@@ -26,12 +26,16 @@
 #define CHILD_ARGCMAX	20
 #define CHILD_ARGLENMAX 512
 
+#define PP_DOUBLECHECK		1
+#define PP_NODOUBLECHECK	0
+
 /* function prototypes */
 void srnd (unsigned long seed) ;
 int rnd (unsigned long max) ;
-unsigned long readnum (char *s) ;
 char *stripdir (char *filename) ;
 void swap (unsigned long *x, unsigned long *y) ;
+char *get_passphrase (int doublecheck) ;
+unsigned long readnum (char *s) ;
 int read16_le (FILE *file) ;
 int read16_be (FILE *file) ;
 unsigned long read32_le (FILE *file) ;

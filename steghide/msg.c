@@ -96,7 +96,9 @@ ERRMSG errmsgs[] = {
  { ERR_STGTOOSHORT,			"the stego file is too short to contain plain data of specified length (file corruption?)" },
 
  { ERR_MHASH,				"an error occured while calling a function from libmhash" },
- { ERR_LIBMCRYPT,			"an error occured while calling a function from libmcrypt" }
+ { ERR_LIBMCRYPT,			"an error occured while calling a function from libmcrypt" },
+
+ { ERR_OTHER,				"an other error has occured - error handling will be changed for 0.4.2 version" }
 } ;
 
 /* prints error message on stderr and exits */

@@ -27,8 +27,6 @@
 #define ACTN_LICENSE	4
 #define ACTN_HELP		5
 
-#define PASSPHRASE_MAXLEN	512
-
 #define INTERVAL_DEFAULT	10
 
 #define PROGNAME	"steghide"

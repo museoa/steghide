@@ -21,11 +21,17 @@
 #include <limits.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <termios.h>
 #include <stdio.h>
 #include <string.h>
 
+#include "crypto.h"
 #include "support.h"
 #include "msg.h"
+
+/* function prototypes */
+static void echo_off (void) ;
+static void echo_on (void) ;
 
 /* used by the internal random number generator */
 #define RND_B		31415821UL
@@ -70,6 +76,82 @@ unsigned long readnum (char *s)
 		retval = strtoul (s, NULL, 0) ;
 
 	return retval ;
+}
+
+char *get_passphrase (int doublecheck)
+{
+	char *p1, *p2 ;
+	int i = 0 ;
+	int c = '\n' ;
+
+	if ((p1 = malloc (PASSPHRASE_MAXLEN)) == NULL) {
+		perr (ERR_MEMALLOC) ;
+	}
+
+	if ((p2 = malloc (PASSPHRASE_MAXLEN)) == NULL) {
+		perr (ERR_MEMALLOC) ;
+	}
+
+	printf ("Enter passphrase: ") ;
+	echo_off () ;
+	while ((c = getchar ()) != '\n') {
+		if (i == PASSPHRASE_MAXLEN) {
+			perr (ERR_OTHER) ;
+		}
+		p1[i++] = c ;
+	}
+	echo_on () ;
+	printf ("\n") ;
+
+	if (doublecheck == PP_DOUBLECHECK) {
+		printf ("Re-Enter passphrase: ") ;
+		echo_off () ;
+		i = 0 ;
+		while ((c = getchar ()) != '\n') {
+			if (i == PASSPHRASE_MAXLEN) {
+				perr (ERR_OTHER) ;
+			}
+			p2[i++] = c ;
+		}
+		echo_on () ;
+		printf ("\n") ;
+
+		if (strcmp (p1, p2) != 0) {
+			perr (ERR_OTHER) ;
+		}
+	}
+
+	return p1 ;
+}
+
+static void echo_off (void)
+{
+	struct termios attr ;
+
+	if ((tcgetattr (STDIN_FILENO, &attr)) != 0) {
+		perr (ERR_OTHER) ;
+	}
+
+	attr.c_lflag &= ~ECHO ;
+
+	if ((tcsetattr (STDIN_FILENO, TCSANOW, &attr)) != 0) {
+		perr (ERR_OTHER) ;
+	}
+}
+
+static void echo_on (void)
+{
+	struct termios attr ;
+
+	if ((tcgetattr (STDIN_FILENO, &attr)) != 0) {
+		perr (ERR_OTHER) ;
+	}
+
+	attr.c_lflag |= ECHO ;
+
+	if ((tcsetattr (STDIN_FILENO, TCSANOW, &attr)) != 0) {
+		perr (ERR_OTHER) ;
+	}
 }
 
 void swap (unsigned long *x, unsigned long *y)

@@ -287,7 +287,13 @@ static void parsearguments (int argc, char* argv[])
 
 	/* argument post-processing */
 	if (arggiven_passphrase == 0) {
-		perr (ERR_NOPASSPHRASE) ;
+		/* prompt for passphrase */
+		if (args_action == ACTN_EMBED) {
+			args_passphrase = get_passphrase (PP_DOUBLECHECK) ;
+		}
+		else if (args_action == ACTN_EXTRACT) {
+			args_passphrase = get_passphrase (PP_NODOUBLECHECK) ;
+		}
 	}
 
 	if (args_action == ACTN_EMBED) {
