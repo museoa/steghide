@@ -117,13 +117,13 @@ class EdgeIterator {
 	void print (unsigned short spc = 0) const ;
 
 	private:
-	// FIXME - save some memory here (e.g. by using CurrentEdge.Vertex1 (and .Index1) instead of SrcVertex, SrcIndex
-
+#if 0
 	/// the vertex that is common to all edges this edge iterator will iterate trough
 	Vertex* SrcVertex ;
 
 	/// the index of the sample value in the source vertex that is part of the current edge
 	unsigned short SrcIndex ;
+#endif
 
 	/// the current edge (is returned by operator*)
 	Edge CurrentEdge ;

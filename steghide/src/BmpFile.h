@@ -97,7 +97,7 @@ class BmpFile : public CvrStgFile {
 
 	static const EmbValue EmbValueModulus_SmallPalette = 2 ;
 	static const EmbValue EmbValueModulus_LargePalette = 4 ;
-	static const EmbValue EmbValueModulus_RGB = 4 ;
+	static const EmbValue EmbValueModulus_RGB = 4 ; // if changed here - also change BmpRGBSampleValue::calcEValue
 
 	enum SUBFORMAT { WIN, OS2 } ;
 

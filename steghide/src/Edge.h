@@ -46,11 +46,17 @@ class Edge {
 	Vertex *getVertex1 (void) const
 		{ return Vertex1 ; } ;
 
+	void setVertex1 (Vertex* v)
+		{ Vertex1 = v ; } ;
+
 	Vertex *getVertex2 (void) const
 		{ return Vertex2 ; } ;
 
 	unsigned short getIndex1 (void) const
 		{ return Index1 ; } ;
+
+	void setIndex1 (unsigned short i)
+		{ Index1 = i ; } ;
 
 	unsigned short getIndex2 (void) const
 		{ return Index2 ; } ;

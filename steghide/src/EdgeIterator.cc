@@ -26,7 +26,7 @@
 #include "common.h"
 
 EdgeIterator::EdgeIterator ()
-	: SrcVertex(NULL), SVALIndices(NULL)
+	: SVALIndices(NULL)
 {
 	SVALIndices = new unsigned long[Globs.TheCvrStgFile->getSamplesPerVertex()] ;
 }
@@ -39,8 +39,10 @@ EdgeIterator::EdgeIterator (Vertex *v, ITERATIONMODE m)
 
 EdgeIterator::EdgeIterator (const EdgeIterator& eit)
 {
+#if 0
 	SrcVertex = eit.SrcVertex ;
 	SrcIndex = eit.SrcIndex ;
+#endif
 	CurrentEdge = eit.CurrentEdge ;
 	Mode = eit.Mode ;
 	SVALIndices = new unsigned long[Globs.TheCvrStgFile->getSamplesPerVertex()] ;
@@ -61,11 +63,14 @@ EdgeIterator& EdgeIterator::operator++ ()
 {
 	myassert (!Finished) ;
 
+	Vertex* srcv = CurrentEdge.getVertex1() ;
+	unsigned short srcidx = CurrentEdge.getIndex1() ;
+
 	switch (Mode) {
 		case SAMPLEOCCURENCE:
 		{
-			SampleValue* srcsv = SrcVertex->getSampleValue(SrcIndex) ;
-			SampleValue* destsv = (*(Globs.TheGraph->SVALists[SrcVertex->getTargetValue(SrcIndex)]))[srcsv][SVALIndices[SrcIndex]] ;
+			SampleValue* srcsv = srcv->getSampleValue(srcidx) ;
+			SampleValue* destsv = (*(Globs.TheGraph->SVALists[srcv->getTargetValue(srcidx)]))[srcsv][SVALIndices[srcidx]] ;
 
 			bool cont = false ;
 			do {
@@ -73,7 +78,7 @@ EdgeIterator& EdgeIterator::operator++ ()
 
 				cont = false ;
 				if (SampleOccurenceIt != Globs.TheGraph->SampleOccurences[destsv->getLabel()].end()) {
-					if ((srcsv->getEmbeddedValue() != SampleOccurenceIt->getVertex()->getTargetValue(SampleOccurenceIt->getIndex())) || (SampleOccurenceIt->getVertex()->getLabel() == SrcVertex->getLabel())) {
+					if ((srcsv->getEmbeddedValue() != SampleOccurenceIt->getVertex()->getTargetValue(SampleOccurenceIt->getIndex())) || (SampleOccurenceIt->getVertex()->getLabel() == srcv->getLabel())) {
 						cont = true ;
 					}
 				}
@@ -81,14 +86,14 @@ EdgeIterator& EdgeIterator::operator++ ()
 
 			if (SampleOccurenceIt == Globs.TheGraph->SampleOccurences[destsv->getLabel()].end()) {
 				// search new destination sample value
-				SVALIndices[SrcIndex]++ ;
+				SVALIndices[srcidx]++ ;
 				findNextEdge() ;
 			}
 			break ;
 		}
 		case SAMPLEVALUE:
 		{
-			SVALIndices[SrcIndex]++ ;
+			SVALIndices[srcidx]++ ;
 			findNextEdge() ;
 			break ;
 		}
@@ -100,7 +105,7 @@ EdgeIterator& EdgeIterator::operator++ ()
 	}
 
 	if (!Finished) {
-		CurrentEdge.set (SrcVertex, SrcIndex, SampleOccurenceIt->getVertex(), SampleOccurenceIt->getIndex()) ;
+		CurrentEdge.set2 (SampleOccurenceIt->getVertex(), SampleOccurenceIt->getIndex()) ;
 	}
 
 	return *this ;
@@ -116,13 +121,13 @@ void EdgeIterator::reset (ITERATIONMODE m)
 	findNextEdge() ;
 	EdgeIndex = 0 ;
 	if (!Finished) {
-		CurrentEdge.set (SrcVertex, SrcIndex, SampleOccurenceIt->getVertex(), SampleOccurenceIt->getIndex()) ;
+		CurrentEdge.set2 (SampleOccurenceIt->getVertex(), SampleOccurenceIt->getIndex()) ;
 	}
 }
 
 void EdgeIterator::reset (Vertex* v, ITERATIONMODE m)
 {
-	SrcVertex = v ;
+	CurrentEdge.setVertex1 (v) ;
 	reset(m) ;
 }
 
@@ -130,20 +135,21 @@ void EdgeIterator::findNextEdge ()
 {
 	UWORD32 mindist = UWORD32_MAX ;
 	for (unsigned short i = 0 ; i < Globs.TheCvrStgFile->getSamplesPerVertex() ; i++) {
-		SampleValue* srcsv = SrcVertex->getSampleValue(i) ;
+		Vertex* srcv = CurrentEdge.getVertex1() ;
+		SampleValue* srcsv = srcv->getSampleValue(i) ;
 		SampleValue* destsv = NULL ;
 		std::list<SampleOccurence>::const_iterator soccit_candidate ;
 
 		// increment SVALIndices[i] until it points to a valid destination sample value
-		while (SVALIndices[i] < (*(Globs.TheGraph->SVALists[SrcVertex->getTargetValue(i)]))[srcsv].size()) {
-			destsv = (*(Globs.TheGraph->SVALists[SrcVertex->getTargetValue(i)]))[srcsv][SVALIndices[i]] ;
+		while (SVALIndices[i] < (*(Globs.TheGraph->SVALists[srcv->getTargetValue(i)]))[srcsv].size()) {
+			destsv = (*(Globs.TheGraph->SVALists[srcv->getTargetValue(i)]))[srcsv][SVALIndices[i]] ;
 
 			// look for a sample occurence of destsv - thereby setting soccit_candidate
 			bool found = false ;
 			const std::list<SampleOccurence>& socc = Globs.TheGraph->SampleOccurences[destsv->getLabel()] ;
 			soccit_candidate = socc.begin() ;
 			while (!found && soccit_candidate != socc.end()) {
-				if ((soccit_candidate->getVertex()->getLabel() == SrcVertex->getLabel()) || 
+				if ((soccit_candidate->getVertex()->getLabel() == srcv->getLabel()) || 
 					(srcsv->getEmbeddedValue() != soccit_candidate->getVertex()->getTargetValue(soccit_candidate->getIndex()))) {
 					soccit_candidate++ ;
 				}
@@ -160,12 +166,12 @@ void EdgeIterator::findNextEdge ()
 			}
 		}
 
-		// test if the destination sample value leads to edge with (until now) minimal distance - thereby setting SrcIndex and SampleOccurenceIt
-		if (SVALIndices[i] < (*(Globs.TheGraph->SVALists[SrcVertex->getTargetValue(i)]))[srcsv].size()) {
+		// test if the destination sample value leads to edge with (until now) minimal distance - thereby setting CurrentEdge.Index1 and SampleOccurenceIt
+		if (SVALIndices[i] < (*(Globs.TheGraph->SVALists[srcv->getTargetValue(i)]))[srcsv].size()) {
 			UWORD32 thisdist = srcsv->calcDistance(destsv) ;
 			if (thisdist < mindist) {
 				mindist = thisdist ;
-				SrcIndex = i ;
+				CurrentEdge.setIndex1(i) ;
 				SampleOccurenceIt = soccit_candidate ;
 			}
 		}
@@ -186,9 +192,6 @@ void EdgeIterator::print (unsigned short spc) const
 	}
 	space[spc] = '\0' ;
 
-	std::cerr << space << "Source Vertex:" << std::endl ;
-	SrcVertex->print(spc + 1) ;
-	std::cerr << space << "Source Index: " << SrcIndex << std::endl ;
 	std::cerr << space << "Current Edge:" << std::endl ;
 	CurrentEdge.print(spc + 1) ;
 	std::cerr << space << "SampleOccurenceIt: <" << SampleOccurenceIt->getVertex()->getLabel() << "," << SampleOccurenceIt->getIndex() << ">" << std::endl ;

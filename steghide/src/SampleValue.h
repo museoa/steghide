@@ -130,8 +130,6 @@ class SampleValue {
 	void print (unsigned short spc = 0) const ;
 
 	protected:
-	// FIXME - time/memory: use EValue, Key ?
-
 	/// the bit that is embedded in this sample value - must be set in constructor of derived class
 	EmbValue EValue ;
 
