@@ -28,6 +28,7 @@
 #include "BmpOS2FileTest.h"
 #include "BmpWinFileTest.h"
 #include "EmbDataTest.h"
+#include "ConstructionHeuristicTest.h"
 #include "ColorPaletteTest.h"
 #include "GraphTest.h"
 #include "MatchingTest.h"
@@ -98,6 +99,9 @@ int main (int argc, char *argv[])
 
 	MatchingTest mt (&ts) ;
 	ts.addUnitTest (&mt) ;
+
+	ConstructionHeuristicTest cht (&ts) ;
+	ts.addUnitTest (&cht) ;
 
 	AugmentingPathHeuristicTest apht (&ts) ;
 	ts.addUnitTest (&apht) ;

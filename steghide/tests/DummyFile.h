@@ -69,6 +69,7 @@ class DummyFile : public CvrStgFile {
 	 * if two vertices are adjacent, one end of the edge is at index 0 of the vertex with
 	 * the lower vertex label and the other end of the edge is at index 1 of the vertex with
 	 * the higher vertex label.
+	 * The distance between vertex with label i and vertex with label j is for i < j : 2*j + 1 - 2*i
 	 **/
 	static void createGraph (std::vector<std::list<UWORD16> >& adjlist, BitString** bs, CvrStgFile** f, Selector** s) ;
 

@@ -72,9 +72,19 @@ void ConstructionHeuristic::run ()
 
 		if (!VerticesDeg1.empty()) {
 			v = findVertexDeg1 (k) ;
+#ifdef DEBUG
+			if (v != NULL) {
+				printDebug (5, "ConstructionHeuristic: vertex %lu has been chosen from VerticesDeg1.", v->getLabel()) ;
+			}
+#endif
 		}
 		else {
 			v = findVertexDegG (k) ;
+#ifdef DEBUG
+			if (v != NULL) {
+				printDebug (5, "ConstructionHeuristic: vertex %lu has been chosen from VerticesDegG.", v->getLabel()) ;
+			}
+#endif
 		}
 
 		if (v != NULL) {
@@ -89,7 +99,7 @@ void ConstructionHeuristic::insertInMatching (Edge *e)
 	Vertex *v2 = e->getVertex2() ;
 
 #ifdef DEBUG
-	printDebug (2, "inserting vertices %lu and %lu in matching", v1->getLabel(), v2->getLabel()) ;
+	printDebug (5, "ConstructionHeuristic: inserting edge %lu - %lu into matching", v1->getLabel(), v2->getLabel()) ;
 #endif
 	TheMatching->addEdge (e) ;
 
@@ -229,3 +239,37 @@ bool ConstructionHeuristic::LongerShortestEdge::operator() (const Vertex* v1, co
 	}
 	return retval ;
 }
+
+#ifdef DEBUG
+void ConstructionHeuristic::print (unsigned short spc)
+{
+	char* space = new char[spc + 1] ;
+	for (unsigned short i = 0 ; i < spc ; i++) {
+		space[i] = ' ' ;
+	}
+	space[spc] = '\0' ;
+
+	std::cerr << space << "VerticesDeg1 (top->down): " ;
+	printPQ (VerticesDeg1) ;
+	std::cerr << std::endl ;
+
+	std::cerr << space << "VerticesDegG (top->down): " ;
+	printPQ (VerticesDegG) ;
+	std::cerr << std::endl ;
+}
+
+void ConstructionHeuristic::printPQ (std::priority_queue<Vertex*, std::vector<Vertex*>, LongerShortestEdge>& pq)
+{
+	std::vector<Vertex*> backup ;
+	while (!pq.empty()) {
+		Vertex *v = pq.top() ;
+		pq.pop() ;
+		std::cerr << v->getLabel() << ", " ;
+		backup.push_back(v) ;
+	}
+
+	for (std::vector<Vertex*>::const_iterator it = backup.begin() ; it != backup.end() ; it++) {
+		pq.push (*it) ;
+	}
+}
+#endif

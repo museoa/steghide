@@ -31,6 +31,7 @@ class Matching ;
 #include "MatchingAlgorithm.h"
 class ProgressOutput ;
 class Vertex ;
+#include "common.h"
 
 /**
  * \class ConstructionHeuristic
@@ -45,13 +46,16 @@ class Vertex ;
  **/
 class ConstructionHeuristic : public MatchingAlgorithm {
 	public:
+	/**
+	 * \param g the underlying graph
+	 * \param m the inital matching (should be empty)
+	 **/
 	ConstructionHeuristic (Graph* g, Matching* m, float goal) ;
 
 	~ConstructionHeuristic (void) ;
 
 	void run (void) ;
 
-	private:
 	/**
 	 * \class LongerShortestEdge
 	 * \brief a comparison operator
@@ -67,6 +71,12 @@ class ConstructionHeuristic : public MatchingAlgorithm {
 		bool operator() (const Vertex *v1, const Vertex *v2) ;
 	} ;
 
+#ifdef DEBUG
+	void print (unsigned short spc = 0) ;
+	void printPQ (std::priority_queue<Vertex*, std::vector<Vertex*>, LongerShortestEdge>& pq) ;
+#endif
+
+	private:
 	static const unsigned int PriorityQueueRange = 1 ;
 
 	/**
