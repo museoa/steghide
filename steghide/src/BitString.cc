@@ -31,14 +31,17 @@ namespace zlib {
 #define BITPOS(n) (n % 8)
 #define BYTEPOS(n) (n / 8)
 
-BitString::BitString ()
+BitString::BitString (EmbValue arity)
+	: Length(0)
 {
-	Length = 0 ;
+	setArity(arity) ;
 }
 
 BitString::BitString (const BitString& bs)
 {
 	Length = bs.Length ;
+	Arity = bs.Arity ;
+	ArityNBits = bs.ArityNBits ;
 	Data.resize(bs.Data.size()) ;
 	for (unsigned long i = 0 ; i < bs.Data.size() ; i++) {
 		Data[i] = bs.Data[i] ;
@@ -57,18 +60,32 @@ BitString::BitString (unsigned long l)
 
 	Data = std::vector<BYTE> (nbytes, 0) ; // is initialized to zeros in std::vector's constructor
 	Length = l ;
+	setArity(2) ;
 }
 
 BitString::BitString (const std::vector<BYTE> &d)
+	: Length(0)
 {
-	Length = 0 ;
+	setArity(2) ;
 	append (d) ;
 }
 
 BitString::BitString (const std::string &d)
+	: Length(0)
 {
-	Length = 0 ;
+	setArity(2) ;
 	append (d) ;
+}
+
+void BitString::setArity (EmbValue arity)
+{
+	BYTE tmp = Arity = arity ;
+	ArityNBits = 0 ;
+	while (tmp > 1) {
+		myassert (tmp % 2 == 0) ; // only implemented for arity = 2^i
+		tmp /= 2 ;
+		ArityNBits++ ;
+	}
 }
 
 BitString& BitString::clear()
@@ -178,7 +195,9 @@ BitString BitString::cutBits (unsigned long s, unsigned long l)
 		}
 	}
 	Length -= l ;
-	Data.resize (AUtils::div_roundup (Length, (UWORD32) 8)) ;
+	Data.resize (AUtils::div_roundup<UWORD32> (Length, 8)) ;
+	clearUnused() ;
+
 	return retval ;
 }
 
@@ -217,6 +236,8 @@ BitString& BitString::truncate (const unsigned long s, const unsigned long e)
 	}
 	Length = newsize_i ;
 
+	clearUnused() ;
+
 	return *this ;
 }
 
@@ -236,39 +257,19 @@ BitString& BitString::padRandom (unsigned long mult)
 	return *this ;
 }
 
-BYTE BitString::getNAry (BYTE n, unsigned long p) const
-	// only implemented for n that is 2^m
+BYTE BitString::getNAry (unsigned long p) const
 {
-	// find number of bits per n-ary digit
-	BYTE tmp = n ;
-	unsigned short nbits = 0 ;
-	while (tmp > 1) {
-		myassert (tmp % 2 == 0) ;
-		tmp /= 2 ;
-		nbits++ ;
-	}
-
-	unsigned long pbinary = p * nbits ;
+	unsigned long pbinary = p * ArityNBits ;
 	BYTE retval = 0 ;
-	for (unsigned short i = 0 ; i < nbits ; i++) {
+	for (unsigned short i = 0 ; (i < ArityNBits) && (pbinary + i < Length /* Length not a multiple of ArityNBits */) ; i++) {
 		retval |= (*this)[pbinary + i] << i ;
 	}
 	return retval ;
 }
 
-void BitString::appendNAry (BYTE n, BYTE v)
-	// only implemented for n that is 2^m
+void BitString::appendNAry (BYTE v)
 {
-	// find number of bits per n-ary digit
-	BYTE tmp = n ;
-	unsigned short nbits = 0 ;
-	while (tmp > 1) {
-		myassert (tmp % 2 == 0) ;
-		tmp /= 2 ;
-		nbits++ ;
-	}
-
-	for (unsigned short i = 0 ; i < nbits ; i++) {
+	for (unsigned short i = 0 ; i < ArityNBits ; i++) {
 		_append ((v & (1 << i)) >> i) ;
 	}
 }
@@ -364,6 +365,8 @@ BitString& BitString::uncompress (unsigned long idestlen)
 	}
 	Length = idestlen ;
 
+	clearUnused() ;
+
 	delete[] srcbuf ;
 	delete[] destbuf ;
 	return *this ;
@@ -420,6 +423,20 @@ BitString& BitString::operator^= (const BitString &v)
 	return *this ;
 }
 
+void BitString::clearUnused ()
+{
+	if (Length % 8 != 0) {
+		// clear unused part of last byte (_append depends on this)
+		unsigned short nbitsfilled = Length % 8 ;
+		BYTE mask = 0x00 ;
+		for (unsigned short i = 0 ; i < nbitsfilled ; i++) {
+			mask <<= 1 ;
+			mask |= 1 ;
+		}
+		Data[Data.size() - 1] &= mask ;
+	}
+}
+
 void BitString::print (unsigned short spc) const
 {
 	char* space = new char[spc + 1] ;
@@ -433,7 +450,10 @@ void BitString::print (unsigned short spc) const
 
 	std::cerr << space ;
 	for (unsigned long i = 0 ; i < getLength() ; i++) {
-		if (i % 8 == 0) {
+		if ((i % 64 == 0) && (i > 0)) { // new line
+			std::cerr << std::endl << space ;
+		}
+		if (i % 8 == 0) { // new byte
 			std::cerr << " " ;
 		}
 		std::cerr << ((*this)[i]) ;

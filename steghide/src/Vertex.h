@@ -109,10 +109,8 @@ class Vertex {
 	EmbValue getTargetValue (unsigned short i) const
 		{ return TargetValues[i] ; } ;
 
-#ifdef DEBUG
 	void print (unsigned short spc = 0) const ;
 	void printEdges (void) const ;
-#endif
 
 	private:
 	/// the vertex label of this vertex
@@ -135,6 +133,9 @@ class Vertex {
 
 	/// true iff this vertex is not deleted
 	bool valid ;
+
+	/// the number of loop edges (loop edges are not valid edges)
+	unsigned short SelfDegree ;
 } ;
 
 #endif // ndef SH_VERTEX_H

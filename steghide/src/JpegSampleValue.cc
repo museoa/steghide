@@ -25,7 +25,7 @@
 #include "JpegSampleValue.h"
 
 JpegSampleValue::JpegSampleValue (int c)
-	: DctCoeff (c)
+	: SampleValue(), DctCoeff (c)
 {
 	Key = (UWORD32) DctCoeff ;
 	EValue = calcEValue (DctCoeff) ;

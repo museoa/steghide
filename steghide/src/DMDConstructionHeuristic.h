@@ -18,36 +18,31 @@
  *
  */
 
-#ifndef SH_BMPPALETTESAMPLEVALUE_H
-#define SH_BMPPALETTESAMPLEVALUE_H
+#ifndef SH_DMDCONSTRUCTIONHEURISTIC_H
+#define SH_DMDCONSTRUCTIONHEURISTIC_H
 
-#include "BmpSampleValue.h"
-#include "CvrStgFile.h"
-#include "ColorPalette.h"
+#include "MatchingAlgorithm.h"
+class Vertex ;
 #include "common.h"
 
 /**
- * \class BmpPaletteSampleValue
- * \brief a sample in a bmp palette (i.e. in a 1-,4- or 8-bit) file
+ * \class DMDConstructionHeuristic
+ * \brief an implementation of the "dynamic minimum degree" heuristic for contruction a matching
  **/
-class BmpPaletteSampleValue : public BmpSampleValue {
+class DMDConstructionHeuristic : public MatchingAlgorithm {
 	public:
-	BmpPaletteSampleValue (BYTE i) ;
+	DMDConstructionHeuristic (Graph* g, Matching* m, float goal = 100.0) ;
 
-	SampleValue* getNearestTargetSampleValue (EmbValue t) const ;
-	std::string getName (void) const ;
+	virtual ~DMDConstructionHeuristic (void) {} ;
 
-	BYTE getIndex (void) const { return Index ; } ;
-	BYTE getRed (void) const { return (*Palette)[Index].Red ; } ;
-	BYTE getGreen (void) const { return (*Palette)[Index].Green ; } ;
-	BYTE getBlue (void) const { return (*Palette)[Index].Blue ; } ;
+	void run (void) ;
 
 	private:
-	ColorPalette* Palette ;
-	BYTE Index ;
+	static const VertexLabel MinDegNotFound = VERTEXLABEL_MAX ;
 
-	EmbValue calcEValue (BYTE idx) const
-		{ return (idx % Globs.TheCvrStgFile->getEmbValueModulus()) ; } ;
+	std::vector<Vertex*> AvailableVertices ;
+
+	VertexLabel findMinDegIndex (const std::vector<Vertex*>& vertices) ;
 } ;
 
-#endif // ndef SH_BMPPALETTESAMPLEVALUE_H
+#endif // ndef SH_DMDCONSTRUCTIONHEURISTIC_H

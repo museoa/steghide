@@ -24,7 +24,12 @@
 MatchingAlgorithm::MatchingAlgorithm (Graph* g, Matching* m, float goal)
 	: TheGraph(g), TheMatching(m)
 {
-	// if goal is 100.0 and g has an odd number of vertices the algorithm won't spend time
+	setGoal(goal) ;
+}
+
+void MatchingAlgorithm::setGoal (float goal)
+{
+	// if goal is 100.0 and the graph has an odd number of vertices the algorithm won't spend time
 	// searching an edge for the last vertex as / rounds down to the next smaller integer
-	CardinalityGoal = (unsigned long) (((float) g->getNumVertices()) * (goal / 100.0)) / 2 ;
+	CardinalityGoal = (unsigned long) (((float) TheGraph->getNumVertices()) * (goal / 100.0)) / 2 ;
 }

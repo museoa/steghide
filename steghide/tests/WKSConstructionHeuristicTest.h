@@ -18,11 +18,11 @@
  *
  */
 
-#ifndef SH_CONSTRUCTIONHEURISTICTEST_H
-#define SH_CONSTRUCTIONHEURISTICTEST_H
+#ifndef SH_WKSCONSTRUCTIONHEURISTICTEST_H
+#define SH_WKSCONSTRUCTIONHEURISTICTEST_H
 
 class BitString ;
-class ConstructionHeuristic ;
+class WKSConstructionHeuristic ;
 class CvrStgFile ;
 class Graph ;
 class Matching ;
@@ -31,9 +31,9 @@ class Selector ;
 #include "UnitTest.h"
 #include "TestSuite.h"
 
-class ConstructionHeuristicTest : public UnitTest {
+class WKSConstructionHeuristicTest : public UnitTest {
 	public:
-	ConstructionHeuristicTest (TestSuite* s) ;
+	WKSConstructionHeuristicTest (TestSuite* s) ;
 
 	void setup (void) ;
 	void cleanup (void) ;
@@ -45,9 +45,9 @@ class ConstructionHeuristicTest : public UnitTest {
 	CvrStgFile *f1, *f2, *f3 ;
 	Selector *s1, *s2, *s3 ;
 	Graph *g1, *g2, *g3 ;
-	ConstructionHeuristic *ch1, *ch2, *ch3 ;
+	WKSConstructionHeuristic *ch1, *ch2, *ch3 ;
 	Matching *m1, *m2, *m3 ;
 	Globals gl1, gl2, gl3 ;
 } ;
 
-#endif // ndef SH_CONSTRUCTIONHEURISTICTEST_H
+#endif // ndef SH_WKSCONSTRUCTIONHEURISTICTEST_H

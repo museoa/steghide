@@ -18,8 +18,8 @@
  *
  */
 
-#ifndef SH_CONSTRUCTIONHEURISTIC_H
-#define SH_CONSTRUCTIONHEURISTIC_H
+#ifndef SH_WKSCONSTRUCTIONHEURISTIC_H
+#define SH_WKSCONSTRUCTIONHEURISTIC_H
 
 #include <functional>
 #include <queue>
@@ -34,7 +34,7 @@ class Vertex ;
 #include "common.h"
 
 /**
- * \class ConstructionHeuristic
+ * \class WKSConstructionHeuristic
  * \brief a heuristic algorithm for constructing a matching
  *
  * This class implements a construction heuristic for the maximum matching
@@ -42,17 +42,18 @@ class Vertex ;
  * "Maximum matchings in sparse random graphs", in 22nd Annual Symposium on Foundations
  * of Computer Science. The modification consists of the priority queues, resp. of
  * the fact that the vertices in the priority queues are ordered by the length of their
- * shortest edge. This biases the heuristic to choosing shorter edges on average.
+ * shortest edge, thus creating a weighted version of this heuristic by biasing the
+ * algorithm to choose shorter edges on average.
  **/
-class ConstructionHeuristic : public MatchingAlgorithm {
+class WKSConstructionHeuristic : public MatchingAlgorithm {
 	public:
 	/**
 	 * \param g the underlying graph
 	 * \param m the inital matching (should be empty)
 	 **/
-	ConstructionHeuristic (Graph* g, Matching* m, float goal) ;
+	WKSConstructionHeuristic (Graph* g, Matching* m, float goal = 100.0) ;
 
-	virtual ~ConstructionHeuristic (void) ;
+	virtual ~WKSConstructionHeuristic (void) {} ;
 
 	void run (void) ;
 
@@ -77,22 +78,15 @@ class ConstructionHeuristic : public MatchingAlgorithm {
 #endif
 
 	private:
-	static const unsigned int PriorityQueueRange = 1 ;
+	/**
+	 * get the Vertex from VerticesDeg1 that is nearest to top (with updated degrees and shortest edges)
+	 **/
+	Vertex *findVertexDeg1 (void) ;
 
 	/**
-	 * get the Vertex from VerticesDeg1 that is k-nearest to top (with updated degrees and shortest edges)
+	 * get the Vertex from VerticesDegG that is nearest to top (with updated degrees and shortest edges)
 	 **/
-	Vertex *findVertexDeg1 (unsigned int k) ;
-
-	/**
-	 * get the Vertex from VerticesDegG that is k-nearest to top (with updated degrees and shortest edges)
-	 **/
-	Vertex *findVertexDegG (unsigned int k) ;
-
-	/**
-	 * insert the edge e into the matching m and invalidate the two vertices for the matching algorithm
-	 **/
-	void insertInMatching (Edge *e) ;
+	Vertex *findVertexDegG (void) ;
 
 	/**
 	 * copy all Neighbours of v that have degree 1 to VerticesDeg1
@@ -105,4 +99,4 @@ class ConstructionHeuristic : public MatchingAlgorithm {
 	std::priority_queue<Vertex*, std::vector<Vertex*>, LongerShortestEdge> VerticesDegG ;
 } ;
 
-#endif // ndef SH_CONSTRUCTIONHEURISTIC_H
+#endif // ndef SH_WKSCONSTRUCTIONHEURISTIC_H

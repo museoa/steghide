@@ -206,6 +206,33 @@ void BitStringTest::testDatatypeInput()
 		bs2.append(false).append(true).append(true).append(false).append(bs1) ;
 		addTestResult (bs2.getLength() == 8 && bs2.Data[0] == 0x56) ;
 	}
+
+	{
+		BitString bs1 ;
+		bs1.append(false).append(true).append(true).append(true).append(true).append(true) ;
+		bs1.cutBits (1, 5) ;
+		BitString bs2 ;
+		bs2.append(true).append(false).append(true).append(true).append(false).append(true).append(false).append(true) ;
+		bs2.append(true).append(false).append(false).append(false).append(false).append(false).append(false).append(false) ;
+		bs2.append(false).append(false).append(false).append(false).append(false).append(false).append(false).append(false) ;
+		bs2.append(false).append(false).append(false).append(false).append(false).append(false).append(false).append(false) ;
+		bs1.append (bs2) ;
+
+		BitString bsref ;
+		bsref.append(false).append(true).append(false).append(true).append(true).append(false).append(true).append(false) ;
+		bsref.append(true).append(true).append(false).append(false).append(false).append(false).append(false).append(false) ;
+		bsref.append(false).append(false).append(false).append(false).append(false).append(false).append(false).append(false) ;
+		bsref.append(false).append(false).append(false).append(false).append(false).append(false).append(false).append(false) ;
+		bsref.append(false) ;
+
+		if (bs1 != bsref) {
+			std::cerr << "bs1:" << std::endl ;
+			bs1.print(1) ;
+			std::cerr << "bsref:" << std::endl ;
+			bsref.print(1) ;
+		}
+		addTestResult (bs1 == bsref) ;
+	}
 }
 
 void BitStringTest::testDatatypeOutput()
@@ -287,6 +314,26 @@ void BitStringTest::testCutting ()
 		BitString cutted = bs1.cutBits(4, 4) ;
 		addTestResult (cutted == bs2 && bs1 == bs3) ;
 	}
+
+	{
+		BitString bs1 ;
+		bs1.append(false) ;
+		BitString bs2 ;
+		bs2.append(true).append(false).append(true).append(true).append(false).append(true).append(false).append(true) ;
+		bs2.append(true).append(false).append(false).append(false).append(false).append(false).append(false).append(false) ;
+		bs2.append(false).append(false).append(false).append(false).append(false).append(false).append(false).append(false) ;
+		bs2.append(false).append(false).append(false).append(false).append(false).append(false).append(false).append(false) ;
+		bs1.append (bs2) ;
+		BitString bs3 = bs1.cutBits (0, 32) ;
+
+		BitString bsref ;
+		bsref.append(false).append(true).append(false).append(true).append(true).append(false).append(true).append(false) ;
+		bsref.append(true).append(true).append(false).append(false).append(false).append(false).append(false).append(false) ;
+		bsref.append(false).append(false).append(false).append(false).append(false).append(false).append(false).append(false) ;
+		bsref.append(false).append(false).append(false).append(false).append(false).append(false).append(false).append(false) ;
+
+		addTestResult (bs3 == bsref && bs1 == *bs_0) ;
+	}
 }
 
 void BitStringTest::testCompression ()
@@ -313,17 +360,17 @@ void BitStringTest::testCompression ()
 
 void BitStringTest::testArity ()
 {
-	addTestResult (bs_0->getNAry(2, 0) == 0) ;
-	addTestResult (bs_1->getNAry(2, 0) == 1) ;
-	addTestResult (bs_10010->getNAry(4, 1) != 3) ;
-	addTestResult (bs_101011101->getNAry(8, 2) == 5) ;
+	bs_0->setArity(2) ; addTestResult (bs_0->getNAry(0) == 0) ;
+	bs_1->setArity(2) ; addTestResult (bs_1->getNAry(0) == 1) ;
+	bs_10010->setArity(4) ; addTestResult (bs_10010->getNAry(1) != 3) ;
+	bs_101011101->setArity(8) ; addTestResult (bs_101011101->getNAry(2) == 5) ;
 
 	{
 		BitString bs1 ;
-		bs1.appendNAry (2, 0) ;
-		bs1.appendNAry (8, 6) ;
-		bs1.appendNAry (8, 1) ;
-		bs1.appendNAry (4, 3) ;
+		bs1.setArity(2) ; bs1.appendNAry (0) ;
+		bs1.setArity(8) ; bs1.appendNAry (6) ;
+		bs1.appendNAry (1) ;
+		bs1.setArity(4) ; bs1.appendNAry (3) ;
 
 		BitString bs2 ;
 		bs2.append(false) ;

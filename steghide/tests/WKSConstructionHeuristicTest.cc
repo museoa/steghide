@@ -18,7 +18,7 @@
  *
  */
 
-#include "ConstructionHeuristic.h"
+#include "WKSConstructionHeuristic.h"
 #include "BitString.h"
 #include "Edge.h"
 #include "Graph.h"
@@ -26,17 +26,17 @@
 #include "Selector.h"
 
 #include "DummyFile.h"
-#include "ConstructionHeuristicTest.h"
+#include "WKSConstructionHeuristicTest.h"
 
 #define CREATEEDGE(G,V1,V2) (new Edge ((G)->getVertex(V1), 0, (G)->getVertex(V2), 1))
 
-ConstructionHeuristicTest::ConstructionHeuristicTest (TestSuite* s)
-	: UnitTest ("ConstructionHeuristic", s)
+WKSConstructionHeuristicTest::WKSConstructionHeuristicTest (TestSuite* s)
+	: UnitTest ("WKSConstructionHeuristic", s)
 {
-	ADDTESTCATEGORY (ConstructionHeuristicTest, testAlgorithm) ;
+	ADDTESTCATEGORY (WKSConstructionHeuristicTest, testAlgorithm) ;
 }
 
-void ConstructionHeuristicTest::setup ()
+void WKSConstructionHeuristicTest::setup ()
 {
 	UnitTest::setup() ;
 
@@ -48,7 +48,7 @@ void ConstructionHeuristicTest::setup ()
 		DummyFile::createGraph (adjlist, &bs1, &f1, &s1) ;
 		g1 = new Graph (f1, *bs1, *s1) ;
 		m1 = new Matching (g1) ;
-		ch1 = new ConstructionHeuristic (g1, m1, 100.0) ;
+		ch1 = new WKSConstructionHeuristic (g1, m1, 100.0) ;
 		gl1 = Globs ;
 	}
 
@@ -61,7 +61,7 @@ void ConstructionHeuristicTest::setup ()
 		DummyFile::createGraph (adjlist, &bs2, &f2, &s2) ;
 		g2 = new Graph (f2, *bs2, *s2) ;
 		m2 = new Matching (g2) ;
-		ch2 = new ConstructionHeuristic (g2, m2, 100.0) ;
+		ch2 = new WKSConstructionHeuristic (g2, m2, 100.0) ;
 		gl2 = Globs ;
 	}
 
@@ -74,14 +74,14 @@ void ConstructionHeuristicTest::setup ()
 		DummyFile::createGraph (adjlist, &bs3, &f3, &s3) ;
 		g3 = new Graph (f3, *bs3, *s3) ;
 		m3 = new Matching (g3) ;
-		ch3 = new ConstructionHeuristic (g3, m3, 100.0) ;
+		ch3 = new WKSConstructionHeuristic (g3, m3, 100.0) ;
 		gl3 = Globs ;
 	}
 
 	// FIXME - test with real (i.e. large) graphs
 }
 
-void ConstructionHeuristicTest::cleanup ()
+void WKSConstructionHeuristicTest::cleanup ()
 {
 	UnitTest::cleanup() ;
 
@@ -90,7 +90,7 @@ void ConstructionHeuristicTest::cleanup ()
 	Globs = gl3 ; delete ch3 ; delete m3 ; delete g3 ; delete s3 ; delete bs3 ; delete f3 ;
 }
 
-void ConstructionHeuristicTest::testAlgorithm ()
+void WKSConstructionHeuristicTest::testAlgorithm ()
 {
 	{
 		Globs = gl1 ;

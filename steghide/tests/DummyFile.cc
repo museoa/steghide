@@ -91,6 +91,6 @@ void DummyFile::createGraph (std::vector<std::list<UWORD16> >& adjlist, BitStrin
 	}
 
 	(*f) = (CvrStgFile*) new DummyFile (2 * numvertices, svam) ;
-	(*bs) = new BitString (numvertices) ; // zeros only
+	(*bs) = new BitString ((unsigned long) numvertices) ; // zeros only
 	(*s) = new Selector (2 * numvertices) ; // identity permutation
 }

@@ -57,16 +57,6 @@ void MHashPPTest::testMD5 (void)
 
 void MHashPPTest::testCRC32 (void)
 {
-	/* FIXME - these test vectors don't work
-	std::vector<unsigned char> data (40) ;
-
-	for (unsigned int i = 0 ; i < 40 ; i++) {
-		data[i] = 0x00 ;
-	}
-	BYTE shouldbe1[] = { 0x86, 0x4d, 0x7f, 0x99 } ;
-	addTestResult (genericTestMHashPP (MHASH_CRC32, BitString(data), shouldbe1)) ;
-	*/
-
 	// the test vector used by libmhash
 	BYTE shouldbe2[] = { 0x7F, 0xBE, 0xB0, 0x2E } ;
 	addTestResult (genericTestMHashPP (MHASH_CRC32, BitString(std::string("checksum")), shouldbe2)) ;

@@ -25,6 +25,7 @@
 #include "TestSuite.h"
 #include "AudioSampleValueTest.h"
 #include "AuFileTest.h"
+#include "AUtilsTest.h"
 #include "AugmentingPathHeuristicTest.h"
 #include "BitStringTest.h"
 #include "BmpFileTest.h"
@@ -34,7 +35,7 @@
 #include "BmpWinFileTest.h"
 #include "EdgeIteratorTest.h"
 #include "EmbDataTest.h"
-#include "ConstructionHeuristicTest.h"
+#include "WKSConstructionHeuristicTest.h"
 #include "GraphTest.h"
 #include "JpegFileTest.h"
 #include "JpegSampleValueTest.h"
@@ -76,6 +77,9 @@ int main (int argc, char *argv[])
 	TestSuite ts ;
 
 	// basic classes
+	AUtilsTest at (&ts) ;
+	ts.addUnitTest (&at) ;
+
 	BitStringTest bst (&ts) ;
 	ts.addUnitTest (&bst) ;
 
@@ -143,7 +147,7 @@ int main (int argc, char *argv[])
 	MatchingTest mt (&ts) ;
 	ts.addUnitTest (&mt) ;
 
-	ConstructionHeuristicTest cht (&ts) ;
+	WKSConstructionHeuristicTest cht (&ts) ;
 	ts.addUnitTest (&cht) ;
 
 	AugmentingPathHeuristicTest apht (&ts) ;

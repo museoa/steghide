@@ -87,11 +87,6 @@ void AuFile::read (BinaryIO *io)
 			Data = new AuPCM16AudioData (this) ;
 			break ;
 
-			case PCM32:
-			setRadius (Radius_PCM32) ;
-			Data = new AuPCM32AudioData (this) ;
-			break ;
-
 			default:
 			if (getBinIO()->is_std()) {
 				throw NotImplementedError (_("the au file on standard input uses the unkown encoding %d."), encoding) ;
@@ -193,7 +188,6 @@ std::list<CvrStgFile::Property> AuFile::getProperties () const
 
 		case PCM8:
 		case PCM16:
-		case PCM32:
 			formatstring += _(", PCM encoding") ;
 		break ;
 	}
@@ -216,10 +210,6 @@ unsigned short AuFile::AuHeader::getBytesPerSample () const
 
 		case PCM16:
 		retval = 2 ;
-		break ;
-
-		case PCM32:
-		retval = 4 ;
 		break ;
 
 		default:

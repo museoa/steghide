@@ -80,9 +80,7 @@ void Arguments::parse ()
 		if (parse_Goal(curarg)) continue ;
 		if (parse_Force(curarg)) continue ;
 		if (parse_Verbosity(curarg)) continue ;
-#ifdef DEBUG
-		if (parse_Debug(curarg)) continue ;
-#endif
+		if (parse_Debug(curarg)) continue ; // TODO - rename Debug -> Undocumented
 
 		throw ArgError (_("unknown argument \"%s\"."), curarg->c_str()) ;
 	}
@@ -684,7 +682,6 @@ bool Arguments::parse_Verbosity (ArgIt& curarg)
 	return found ;
 }
 
-#ifdef DEBUG
 bool Arguments::parse_Debug (ArgIt& curarg)
 {
 	bool found = false ;
@@ -800,7 +797,6 @@ bool Arguments::parse_Debug (ArgIt& curarg)
 
 	return found ;
 }
-#endif
 
 std::string Arguments::getPassphrase (bool doublecheck)
 {
@@ -880,8 +876,6 @@ void Arguments::setDefaults (void)
 #ifdef DEBUG
 	DebugCommand.setValue (Default_DebugCommand, false) ;
 	DebugLevel.setValue (Default_DebugLevel, false) ;
-	PriorityQueueRange.setValue (Default_PriorityQueueRange, false) ;
-	NConstrHeur.setValue (Default_NConstrHeur, false) ;
 	GmlGraphRecDepth.setValue (Default_GmlGraphRecDepth, false) ;
 	GmlStartVertex.setValue (Default_GmlStartVertex, false) ;
 #endif

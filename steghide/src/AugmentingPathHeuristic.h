@@ -47,7 +47,7 @@ class AugmentingPathHeuristic : public MatchingAlgorithm {
 	 * \param mne the maximum number of edges that should be considered for every vertex
 	 * \param mo the mode for edge iteration
 	 **/
-	AugmentingPathHeuristic (Graph* g, Matching* m, float goal, UWORD32 mne = UWORD32_MAX, EdgeIterator::ITERATIONMODE mo = EdgeIterator::SAMPLEOCCURENCE) ;
+	AugmentingPathHeuristic (Graph* g, Matching* m, float goal = 100.0, UWORD32 mne = UWORD32_MAX, EdgeIterator::ITERATIONMODE mo = EdgeIterator::SAMPLEOCCURENCE) ;
 	virtual ~AugmentingPathHeuristic (void) ;
 
 	/**
@@ -79,12 +79,25 @@ class AugmentingPathHeuristic : public MatchingAlgorithm {
 		{ return isVisited(v->getLabel()) ; } ;
 
 	bool isVisited (VertexLabel vlbl) const
-		{ /* myassert (vlbl < TheGraph->getNumVertices) ;  FIXME DEBUG */ return (TimeCounters[vlbl] == TimeCounter) ; } ;
+		{ return (TimeCounters[vlbl] == TimeCounter) ; } ;
 
 	UWORD32 TimeCounter ;
 	UWORD32* TimeCounters ;
 	bool* VertexOnPath ;
 	EdgeIterator* EdgeIterators ;
+
+#ifdef DEBUG
+	/// the number of edges that have been examined in all successful searches
+	unsigned long long NEdgesSuccessful ;
+	/// the number of edges that have been examined in all unsuccessful searches
+	unsigned long long NEdgesUnsuccessful ;
+	/// the number of calls to searchAugmentingPath that have been sucessful
+	unsigned long NSuccessful ;
+	/// the number of calls to searchAugmentingPath that have been unsuccessful
+	unsigned long NUnsuccessful ;
+	/// string indicating if n-th search was successful
+	std::string SuccessString ;
+#endif
 } ;
 
 #endif // ndef SH_AUGMENTINGPATHHEURISTIC

@@ -36,11 +36,11 @@ EmbData* Extractor::extract ()
 
 	Selector sel (Globs.TheCvrStgFile->getNumSamples(), Passphrase) ;
 
-	unsigned int sam_ebit = Globs.TheCvrStgFile->getSamplesPerVertex() ;
-	unsigned long ebit_idx = 0 ;
+	unsigned long sv_idx = 0 ;
 	while (!embdata->finished()) {
-		unsigned long bitsneeded = embdata->getNumBitsNeeded() ;
-		if (ebit_idx + bitsneeded > Globs.TheCvrStgFile->getNumSamples()) {
+		unsigned short bitsperembvalue = AUtils::log2_ceil<unsigned short> (Globs.TheCvrStgFile->getEmbValueModulus()) ;
+		unsigned long embvaluesrequested = AUtils::div_roundup<unsigned long> (embdata->getNumBitsRequested(), bitsperembvalue) ;
+		if (sv_idx + (Globs.TheCvrStgFile->getSamplesPerVertex() * embvaluesrequested) >= Globs.TheCvrStgFile->getNumSamples()) {
 			if (Globs.TheCvrStgFile->is_std()) {
 				throw CorruptDataError (_("the stego data from standard input is too short to contain the embedded data.")) ;
 			}
@@ -48,13 +48,13 @@ EmbData* Extractor::extract ()
 				throw CorruptDataError (_("the stego file \"%s\" is too short to contain the embedded data."), Globs.TheCvrStgFile->getName().c_str()) ;
 			}
 		}
-		BitString bits ;
-		for (unsigned long i = 0 ; i < bitsneeded ; i++, ebit_idx++) {
+		BitString bits (Globs.TheCvrStgFile->getEmbValueModulus()) ;
+		for (unsigned long i = 0 ; i < embvaluesrequested ; i++) {
 			EmbValue ev = 0 ;
-			for (unsigned int j = 0 ; j < sam_ebit ; j++) {
-				ev = (ev + Globs.TheCvrStgFile->getEmbeddedValue (sel[(ebit_idx * sam_ebit) + j])) % Globs.TheCvrStgFile->getEmbValueModulus() ;
+			for (unsigned int j = 0 ; j < Globs.TheCvrStgFile->getSamplesPerVertex() ; j++, sv_idx++) {
+				ev = (ev + Globs.TheCvrStgFile->getEmbeddedValue (sel[sv_idx])) % Globs.TheCvrStgFile->getEmbValueModulus() ;
 			}
-			bits.appendNAry (Globs.TheCvrStgFile->getEmbValueModulus(), ev) ;
+			bits.appendNAry(ev) ;
 		}
 		embdata->addBits (bits) ;
 	}

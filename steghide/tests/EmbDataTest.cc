@@ -106,13 +106,13 @@ bool EmbDataTest::feed_to (const BitString& bs, EmbData& emb)
 {
 	UWORD32 idx = 0 ;
 	while (!emb.finished()) {
-		UWORD32 bitsneeded = emb.getNumBitsNeeded() ;
-		if (idx + bitsneeded > bs.getLength()) {
+		UWORD32 bitsrequested = emb.getNumBitsRequested() ;
+		if (idx + bitsrequested > bs.getLength()) {
 			return false ;
 		}
 
-		emb.addBits (bs.getBits (idx, bitsneeded)) ;
-		idx += bitsneeded ;
+		emb.addBits (bs.getBits (idx, bitsrequested)) ;
+		idx += bitsrequested ;
 	}
 
 	return (idx == bs.getLength()) ;

@@ -114,9 +114,7 @@ class EdgeIterator {
 	static void setMaxNumEdges (UWORD32 mne)
 		{ MaxNumEdges = mne ; } ;
 
-#ifdef DEBUG
 	void print (unsigned short spc = 0) const ;
-#endif
 
 	private:
 	// FIXME - save some memory here (e.g. by using CurrentEdge.Vertex1 (and .Index1) instead of SrcVertex, SrcIndex

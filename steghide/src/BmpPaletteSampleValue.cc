@@ -51,6 +51,7 @@ SampleValue* BmpPaletteSampleValue::getNearestTargetSampleValue (EmbValue t) con
 			}
 		}
 	}
+	myassert (sv_mindist != NULL) ;
 	return ((SampleValue*) sv_mindist) ;
 }
 

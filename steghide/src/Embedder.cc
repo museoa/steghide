@@ -23,8 +23,8 @@
 
 #include "AugmentingPathHeuristic.h"
 #include "BitString.h"
-#include "ConstructionHeuristic.h"
 #include "CvrStgFile.h"
+#include "DMDConstructionHeuristic.h"
 #include "EmbData.h"
 #include "Embedder.h"
 #include "Edge.h"
@@ -33,6 +33,7 @@
 #include "ProgressOutput.h"
 #include "Selector.h"
 #include "Vertex.h"
+#include "WKSConstructionHeuristic.h"
 #include "common.h"
 #include "error.h"
 #include "msg.h"
@@ -64,8 +65,9 @@ Embedder::Embedder ()
 
 	// read cover-/stego-file
 	CvrStgFile::readFile (Args.CvrFn.getValue()) ;
+	ToEmbed.setArity (Globs.TheCvrStgFile->getEmbValueModulus()) ;
 	
-	if ((ToEmbed.getLength() * Globs.TheCvrStgFile->getSamplesPerVertex()) > Globs.TheCvrStgFile->getNumSamples()) {
+	if ((ToEmbed.getNAryLength() * Globs.TheCvrStgFile->getSamplesPerVertex()) > Globs.TheCvrStgFile->getNumSamples()) {
 		throw SteghideError (_("the cover file is too short to embed the data.")) ;
 	}
 
@@ -129,73 +131,56 @@ void Embedder::embed ()
 
 const Matching* Embedder::calculateMatching (ProgressOutput* prout)
 {
-	Matching* bestmatching = NULL ;
+	VerboseMessage vmsg1 (_("calculating the matching...")) ;
+	vmsg1.printMessage() ;
 
-	if (Args.Algorithm.getValue() == Arguments::Algorithm_None) {
-		bestmatching = new Matching (Globs.TheGraph) ;
+	Matching* matching = new Matching (Globs.TheGraph) ;
+
+	std::vector<MatchingAlgorithm*> MatchingAlgos ;
+	if (Args.Algorithm.is_set()) {
+		switch (Args.Algorithm.getValue()) {
+			case Arguments::Algorithm_None:
+			// leave MatchingAlgos empty
+			break ;
+
+			case Arguments::Algorithm_CHOnly:
+			MatchingAlgos.push_back (new WKSConstructionHeuristic (Globs.TheGraph, matching)) ;
+			break ;
+
+			case Arguments::Algorithm_BoundedAPH:
+			MatchingAlgos.push_back (new WKSConstructionHeuristic (Globs.TheGraph, matching)) ;
+			MatchingAlgos.push_back (new AugmentingPathHeuristic (Globs.TheGraph, matching, Args.Goal.getValue(), (UWORD32) (Globs.TheGraph->getAvgVertexDegree() / 20), EdgeIterator::SAMPLEVALUE)) ;
+			break ;
+
+			case Arguments::Algorithm_UnboundedAPH:
+			MatchingAlgos.push_back (new WKSConstructionHeuristic (Globs.TheGraph, matching)) ;
+			MatchingAlgos.push_back (new AugmentingPathHeuristic (Globs.TheGraph, matching, Args.Goal.getValue())) ;
+			break ;
+
+			default:
+			myassert(false) ;
+			break ;
+		}
+
 	}
 	else {
-		VerboseMessage vmsg1 (_("calculating the matching...")) ;
-		vmsg1.printMessage() ;
-
-		// do construction heuristic (maybe more than once)
-		unsigned int nconstrheur = Default_NConstrHeur ;
-#ifdef DEBUG
-		if (Args.NConstrHeur.is_set()) {
-			nconstrheur = Args.NConstrHeur.getValue() ;
-		}
-#endif
-		for (unsigned int i = 0 ; i < nconstrheur ; i++) {
-			// create an empty matching for the construction heuristic to start with
-			Matching* thismatching = new Matching (Globs.TheGraph, prout) ;
-
-			ConstructionHeuristic ch (Globs.TheGraph, thismatching, Args.Goal.getValue()) ;
-			ch.run() ;
-
-			if ((bestmatching == NULL) || (thismatching->getCardinality() > bestmatching->getCardinality())) {
-				if (bestmatching != NULL) {
-					delete bestmatching ;
-				}
-				bestmatching = thismatching ;
-			}
-			else {
-				delete thismatching ;
-			}
-		}
-
-		VerboseMessage vmsg2 (_("best matching after construction heuristic:")) ;
-		vmsg2.printMessage() ;
-		bestmatching->printVerboseInfo() ;
-
-		if (Args.Algorithm.getValue() == Arguments::Algorithm_BoundedAPH) {
-			AugmentingPathHeuristic aph (Globs.TheGraph, bestmatching, Args.Goal.getValue(), (UWORD32) (Globs.TheGraph->getAvgVertexDegree() / 20), EdgeIterator::SAMPLEVALUE) ;
-			aph.run() ;
-			bestmatching = aph.getMatching() ;
-
-			VerboseMessage vmsg3 (_("best matching after bounded augmenting path heuristic:")) ;
-			vmsg3.printMessage() ;
-			bestmatching->printVerboseInfo() ;
-		}
-		else if (Args.Algorithm.getValue() == Arguments::Algorithm_UnboundedAPH) {
-			AugmentingPathHeuristic aph (Globs.TheGraph, bestmatching, Args.Goal.getValue()) ;
-			aph.run() ;
-			bestmatching = aph.getMatching() ;
-
-			VerboseMessage vmsg4 (_("best matching after unbounded augmenting path heuristic:")) ;
-			vmsg4.printMessage() ;
-			bestmatching->printVerboseInfo() ;
-		}
-		else {
-			myassert (Args.Algorithm.getValue() == Arguments::Algorithm_CHOnly) ;
-		}
+		MatchingAlgos = Globs.TheCvrStgFile->getMatchingAlgorithms (Globs.TheGraph, matching) ;
 	}
 
+	for (std::vector<MatchingAlgorithm*>::const_iterator ait = MatchingAlgos.begin() ; ait != MatchingAlgos.end() ; ait++) {
+		(*ait)->setGoal (Args.Goal.getValue()) ;
+		(*ait)->run() ;
+		delete *ait ;
+	}
+
+	matching->printVerboseInfo() ;
+
 	if (prout) {
-		prout->update (((float) (2 * bestmatching->getCardinality())) / ((float) Globs.TheGraph->getNumVertices()), true) ;
+		prout->update (((float) (2 * matching->getCardinality())) / ((float) Globs.TheGraph->getNumVertices()), true) ;
 		delete prout ;
 	}
 
-	return bestmatching ;
+	return matching ;
 }
  
 void Embedder::embedEdge (Edge *e)
@@ -229,8 +214,8 @@ void Embedder::embedExposedVertex (Vertex *v)
 	printDebug (1, "embedding vertex with label %lu by changing sample position %lu.", v->getLabel(), samplepos) ;
 #endif
 
-	BIT oldbit = Globs.TheCvrStgFile->getEmbeddedValue (samplepos) ;
+	EmbValue oldev = Globs.TheCvrStgFile->getEmbeddedValue (samplepos) ;
 	Globs.TheCvrStgFile->replaceSample (samplepos, newsample) ;
-	myassert (oldbit != Globs.TheCvrStgFile->getEmbeddedValue (samplepos)) ;
+	myassert (oldev != Globs.TheCvrStgFile->getEmbeddedValue (samplepos)) ;
 	delete newsample ;
 }

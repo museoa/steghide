@@ -42,11 +42,12 @@ Graph::Graph (CvrStgFile *cvr, const BitString& emb, Selector& sel)
 
 	File = cvr ;
 	EmbValueModulus = File->getEmbValueModulus() ;
+	SamplesPerVertex = File->getSamplesPerVertex() ;
 
 	// construct sposs and tvalues
 	std::vector<SamplePos*> sposs ;
 	std::vector<EmbValue> tvalues ;
-	unsigned long n = emb.getLength() ;
+	unsigned long n = emb.getNAryLength() ;
 	for (unsigned long i = 0 ; i < n ; i++) {
 		SamplePos *poss = new SamplePos[File->getSamplesPerVertex()] ;
 
@@ -56,9 +57,9 @@ Graph::Graph (CvrStgFile *cvr, const BitString& emb, Selector& sel)
 			modulosum = (modulosum + File->getEmbeddedValue(poss[j])) % File->getEmbValueModulus() ;
 		}
 
-		if (modulosum != emb.getNAry (File->getEmbValueModulus(), i)) {
+		if (modulosum != emb.getNAry(i)) {
 			sposs.push_back (poss) ;
-			tvalues.push_back (emb.getNAry (File->getEmbValueModulus(), i)) ;
+			tvalues.push_back (emb.getNAry(i)) ;
 		}
 		else {
 			delete[] poss ;
@@ -121,38 +122,46 @@ void Graph::constructVertices (std::vector<SamplePos*>& sposs, std::vector<Sampl
 
 void Graph::constructEdges ()
 {
-	// create SampleValueOppositeNeighbourhood
+	// create SampleValue Adjacency Lists
 	SVALists = File->calcSVAdjacencyLists (SampleValues) ;
 
-	// fill SampleOccurences
+	// allocate memory for SampleOccurences
 	SampleOccurences = std::vector<std::list<SampleOccurence> > (SampleValues.size()) ;
-	NumSampleOccurences = std::vector<UWORD32> (SampleValues.size()) ;
-
 	DeletedSampleOccurences = std::vector<std::list<SampleOccurence> > (SampleValues.size()) ;
-	NumDeletedSampleOccurences = std::vector<UWORD32> (SampleValues.size()) ;
+	NumSampleOccurences = std::vector<UWORD32*> (SampleValues.size()) ;
+	NumDeletedSampleOccurences = std::vector<UWORD32*> (SampleValues.size()) ;
 
+	for (SampleValueLabel lbl = 0 ; lbl < SampleValues.size() ; lbl++) {
+		NumSampleOccurences[lbl] = new UWORD32[EmbValueModulus] ;
+		NumDeletedSampleOccurences[lbl] = new UWORD32[EmbValueModulus] ;
+		for (unsigned short t = 0 ; t < EmbValueModulus ; t++) {
+			NumSampleOccurences[lbl][t] = 0 ;
+			NumDeletedSampleOccurences[lbl][t] = 0 ;
+		}
+	}
+
+	// fill SampleOccurences
 	for (std::vector<Vertex*>::iterator vit = Vertices.begin() ; vit != Vertices.end() ; vit++) {
 		for (unsigned short j = 0 ; j < Globs.TheCvrStgFile->getSamplesPerVertex() ; j++) {
 			SampleOccurence occ (*vit, j) ;
 			SampleValueLabel lbl = (*vit)->getSampleValue(j)->getLabel() ;
 			std::list<SampleOccurence>::iterator occit = SampleOccurences[lbl].insert (SampleOccurences[lbl].end(), occ) ;
-			NumSampleOccurences[lbl]++ ;
+			NumSampleOccurences[lbl][(*vit)->getTargetValue(j)]++ ;
 			(*vit)->setSampleOccurenceIt (j, occit) ;
 		}
 	}
 
-#if 0
-	// FIXME - use construction similar to this one ?
 	// compute NumEdges for all sample values
-	for (SampleValueLabel lbl = 0 ; lbl < SampleValues.size() ; lbl++) {
-		unsigned long numedges = 0 ;
-		unsigned long noppneighs = SampleValueOppNeighs[lbl].size() ;
-		for (unsigned long i = 0 ; i < noppneighs ; i++) {
-			numedges += NumSampleOccurences[SampleValueOppNeighs[lbl][i]->getLabel()] ;
+	for (SampleValueLabel srclbl = 0 ; srclbl < SampleValues.size() ; srclbl++) {
+		for (EmbValue t = 0 ; t < EmbValueModulus ; t++) {
+			UWORD32 numedges = 0 ;
+			for (std::vector<SampleValue*>::const_iterator destsv = (*(SVALists[t]))[srclbl].begin() ;
+					destsv != (*(SVALists[t]))[srclbl].end() ; destsv++) {
+				numedges += NumSampleOccurences[(*destsv)->getLabel()][SampleValues[srclbl]->getEmbeddedValue()] ;
+			}
+			SampleValues[srclbl]->setNumEdges(t, numedges) ;
 		}
-		SampleValues[lbl]->setNumEdges (numedges) ;
 	}
-#endif
 }
 
 Graph::~Graph()
@@ -167,6 +176,11 @@ Graph::~Graph()
 
 	for (EmbValue t = 0 ; t < EmbValueModulus ; t++) {
 		delete SVALists[t] ;
+	}
+
+	for (SampleValueLabel lbl = 0 ; lbl < SampleValues.size() ; lbl++) {
+		delete[] NumSampleOccurences[lbl] ;
+		delete[] NumDeletedSampleOccurences[lbl] ;
 	}
 }
 
@@ -183,8 +197,8 @@ std::list<SampleOccurence>::iterator Graph::markDeletedSampleOccurence (std::lis
 	unsigned short i = it->getIndex() ;
 	SampleValueLabel lbl = v->getSampleValue(i)->getLabel() ;
 	SampleOccurences[lbl].erase (it) ;
-	NumSampleOccurences[lbl]-- ;
-	NumDeletedSampleOccurences[lbl]++ ;
+	NumSampleOccurences[lbl][v->getTargetValue(i)]-- ;
+	NumDeletedSampleOccurences[lbl][v->getTargetValue(i)]++ ;
 	return DeletedSampleOccurences[lbl].insert (DeletedSampleOccurences[lbl].end(), SampleOccurence (v, i)) ;
 }
 
@@ -194,8 +208,8 @@ std::list<SampleOccurence>::iterator Graph::unmarkDeletedSampleOccurence (std::l
 	unsigned short i = it->getIndex() ;
 	SampleValueLabel lbl = v->getSampleValue(i)->getLabel() ;
 	DeletedSampleOccurences[lbl].erase (it) ;
-	NumDeletedSampleOccurences[lbl]-- ;
-	NumSampleOccurences[lbl]++ ;
+	NumDeletedSampleOccurences[lbl][v->getTargetValue(i)]-- ;
+	NumSampleOccurences[lbl][v->getTargetValue(i)]++ ;
 	return SampleOccurences[lbl].insert (SampleOccurences[lbl].end(), SampleOccurence (v, i)) ;
 }
 
@@ -228,7 +242,6 @@ void Graph::printVerboseInfo()
 		float avgdeg = ((float) sumdeg / (float) Vertices.size()) ;
 		myassert (sumdeg % 2 == 0) ;
 
-#ifdef DEBUG
 		if (Args.Verbosity.getValue() == STATS) {
 			printf ("%lu:%lu:%lu:%lu:%lu:%.1f:",
 					(unsigned long) SampleValues.size(),	// number of distinct sample values
@@ -239,23 +252,23 @@ void Graph::printVerboseInfo()
 					avgdeg // average vertex degree
 				   ) ;
 		}
-#endif
+		else { // Verbosity is VERBOSE
+			VerboseMessage vmsg1 (_("number of distinct sample values: %lu"), SampleValues.size()) ;
+			vmsg1.printMessage() ;
 
-		VerboseMessage vmsg1 (_("number of distinct sample values: %lu"), SampleValues.size()) ;
-		vmsg1.printMessage() ;
+			VerboseMessage vmsg2 (_("number of vertices: %lu"), Vertices.size()) ;
+			vmsg2.printMessage() ;
 
-		VerboseMessage vmsg2 (_("number of vertices: %lu"), Vertices.size()) ;
-		vmsg2.printMessage() ;
+			VerboseMessage vmsg3 (_("average vertex degree: %.1f"), avgdeg) ;
+			vmsg3.printMessage() ;
+			VerboseMessage vmsg4 (_("minimum vertex degree: %lu"), mindeg) ;
+			vmsg4.printMessage() ;
+			VerboseMessage vmsg5 (_("maximum vertex degree: %lu"), maxdeg) ;
+			vmsg5.printMessage() ;
 
-		VerboseMessage vmsg3 (_("average vertex degree: %.1f"), avgdeg) ;
-		vmsg3.printMessage() ;
-		VerboseMessage vmsg4 (_("minimum vertex degree: %lu"), mindeg) ;
-		vmsg4.printMessage() ;
-		VerboseMessage vmsg5 (_("maximum vertex degree: %lu"), maxdeg) ;
-		vmsg5.printMessage() ;
-
-		VerboseMessage vmsg6 (_("number of edges: %lu"), sumdeg / 2) ;
-		vmsg6.printMessage() ;
+			VerboseMessage vmsg6 (_("number of edges: %lu"), sumdeg / 2) ;
+			vmsg6.printMessage() ;
+		}
 	}
 }
 

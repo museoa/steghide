@@ -48,7 +48,8 @@ class BmpRGBSampleValue : public BmpSampleValue {
 		{ return (((UWORD32) rgb.Red << 16) | ((UWORD32) rgb.Green << 8) | ((UWORD32) rgb.Blue)) ;} ;
 
 	EmbValue calcEValue (const RGBTriple& rgb) const
-		{ return ((EmbValue) ((rgb.Red & 1) ^ (rgb.Green & 1) ^ (rgb.Blue & 1))) ; } ;
+		// FIXME - for Modulus 8: { return ((EmbValue) (((rgb.Red & 1) << 2) | ((rgb.Green & 1) << 1) | (rgb.Blue & 1))) ; } ;
+		{ return ((EmbValue) ((((rgb.Red & 1) ^ (rgb.Green & 1)) << 1) | ((rgb.Red & 1) ^ (rgb.Blue & 1)))) ; } ;
 
 	enum COLOR { RED, GREEN, BLUE } ;
 	enum DIRECTION { UP, DOWN } ;

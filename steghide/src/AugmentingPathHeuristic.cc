@@ -41,6 +41,14 @@ AugmentingPathHeuristic::AugmentingPathHeuristic (Graph* g, Matching* m, float g
 		EdgeIterators[l].reset (g->getVertex(l), mo) ;
 	}
 	EdgeIterator::setMaxNumEdges (mne) ;
+
+#ifdef DEBUG
+	NSuccessful = 0 ;
+	NUnsuccessful = 0 ;
+	NEdgesSuccessful = 0 ;
+	NEdgesUnsuccessful = 0 ;
+	SuccessString = "" ;
+#endif
 }
 
 AugmentingPathHeuristic::~AugmentingPathHeuristic ()
@@ -97,6 +105,10 @@ void AugmentingPathHeuristic::run ()
 	}
 
 	delete[] path ;
+
+#if 0
+	std::cout << NSuccessful << ":" << NEdgesSuccessful << ":" << NUnsuccessful << ":" << NEdgesUnsuccessful << ":" << SuccessString << std::endl ;
+#endif
 }
 
 #ifdef DEBUG
@@ -105,7 +117,8 @@ printDebug (6, "AugmentingPathHeuristic: pushing edge on path: %lu - %lu", EDGE-
 path[pathlen] = EDGE ; \
 pathlen++ ; \
 VertexOnPath[EDGE->getVertex1()->getLabel()] = true ; \
-VertexOnPath[EDGE->getVertex2()->getLabel()] = true ;
+VertexOnPath[EDGE->getVertex2()->getLabel()] = true ; \
+NEdgesPushed++ ;
 #else
 #define pushOnPath(EDGE) \
 path[pathlen] = EDGE ; \
@@ -118,6 +131,7 @@ unsigned long AugmentingPathHeuristic::searchAugmentingPath (Vertex *v0, const E
 {
 #ifdef DEBUG
 	printDebug (5, "AugmentingPathHeuristic: searching augmenting path for vertex with label %lu", v0->getLabel()) ;
+	unsigned long long NEdgesPushed = 0 ;
 #endif
 
 	TimeCounter++ ;
@@ -129,6 +143,11 @@ unsigned long AugmentingPathHeuristic::searchAugmentingPath (Vertex *v0, const E
 		Vertex *w = e->getOtherVertex (v0) ;
 
 		if (TheMatching->isExposed(w)) {
+#ifdef DEBUG
+			SuccessString += "+" ;
+			NSuccessful++ ;
+			NEdgesSuccessful += NEdgesPushed ;
+#endif
 			return pathlen ;
 		}
 		// add matched edge
@@ -144,6 +163,11 @@ unsigned long AugmentingPathHeuristic::searchAugmentingPath (Vertex *v0, const E
 				w = e_next->getOtherVertex (w_next) ;
 
 				if (TheMatching->isExposed(w)) {
+#ifdef DEBUG
+					SuccessString += "+" ;
+					NSuccessful++ ;
+					NEdgesSuccessful += NEdgesPushed ;
+#endif
 					return pathlen ;
 				}
 				// add matched edge
@@ -167,12 +191,6 @@ unsigned long AugmentingPathHeuristic::searchAugmentingPath (Vertex *v0, const E
 				pathlen-- ;
 
 				// unmatched edge: pop from path and delete (has been created only for path)
-#if 0
-				Edge *delme = path->back() ;
-				myassert (!TheMatching->includesEdge(delme)) ;
-				path->pop_back() ;
-				delete delme ;
-#endif
 				myassert (!TheMatching->includesEdge(path[pathlen - 1])) ;
 				pathlen-- ;
 
@@ -195,6 +213,12 @@ unsigned long AugmentingPathHeuristic::searchAugmentingPath (Vertex *v0, const E
 			}
 		}
 	}
+
+#ifdef DEBUG
+	SuccessString += "-" ;
+	NUnsuccessful++ ;
+	NEdgesUnsuccessful += NEdgesPushed ;
+#endif
 
 	return pathlen ;
 }

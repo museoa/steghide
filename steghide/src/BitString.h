@@ -24,6 +24,7 @@
 #include <vector>
 #include <string>
 
+#include "AUtils.h"
 #include "common.h"
 
 /**
@@ -43,7 +44,7 @@ class BitString {
 	/**
 	 * construct an empty BitString
 	 **/
-	BitString (void) ;
+	BitString (EmbValue arity = 2) ;
 	
 	/**
 	 * copy constructor
@@ -65,11 +66,22 @@ class BitString {
 	 **/
 	BitString (const std::string& d) ;
 
+	void setArity (EmbValue arity) ;
+
+	EmbValue getArity (void) const
+		{ return Arity ; } ;
+
 	/**
-	 * get the length of this bitstring (in bits)
+	 * get the number of bits in this BitString
 	 **/
 	UWORD32 getLength (void) const
 		{ return Length ; } ;
+
+	/**
+	 * get the number of EmbValues in this BitString (using this BitString's arity)
+	 **/
+	UWORD32 getNAryLength (void) const
+		{ return AUtils::div_roundup<UWORD32> (Length, ArityNBits) ; } ;
 
 	/**
 	 * delete the contents of this Bitstring
@@ -182,18 +194,16 @@ class BitString {
 
 	/**
 	 * get an n-ary digit from this BitString
-	 * \param n the base of the number system to be used
 	 * \param p the position (in the n-ary representation of this BitString)
 	 * \return the p-th n-ary digit
 	 **/
-	BYTE getNAry (BYTE n, unsigned long p) const ;
+	BYTE getNAry (unsigned long p) const ;
 
 	/**
 	 * append an n-ary digit to this BitString
-	 * \param n the base of the number system to be used
 	 * \param v the n-ary value to be appended
 	 **/
-	void appendNAry (BYTE n, BYTE v) ;
+	void appendNAry (BYTE v) ;
 
 #ifdef USE_ZLIB
 	/**
@@ -249,12 +259,22 @@ class BitString {
 	void printDebug (unsigned short level, unsigned short spc = 0) const ;
 #endif
 
-	protected:
+	private:
+	/// the number of bits in Data
+	UWORD32 Length ;
+	/// the arity that will be used for getLength/getNAry/appendNAry
+	EmbValue Arity ;
+	/// the number of Bits per n-ary digit (where n is Arity)
+	unsigned short ArityNBits ;
+	/// the actual data
+	std::vector<BYTE> Data ;
+
 	void _append (BIT v) ;
 
-	private:
-	UWORD32 Length ;
-	std::vector<BYTE> Data ;
+	/**
+	 * clear unused part of last byte (_append depends on this)
+	 **/
+	void clearUnused (void) ;
 } ;
 
 #endif // ndef SH_BITSTRING_H

@@ -163,7 +163,6 @@ SampleValue *Edge::getReplacingSampleValue (Vertex *v) const
 	return retval ;
 }
 
-#ifdef DEBUG
 void Edge::print (unsigned short spc) const
 {
 	char* space = new char[spc + 1] ;
@@ -186,4 +185,3 @@ void Edge::print (unsigned short spc) const
 	}
 	std::cerr << std::endl ;
 }
-#endif

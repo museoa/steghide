@@ -18,27 +18,22 @@
  *
  */
 
-#ifndef SH_MATCHINGALGORITHM_H
-#define SH_MATCHINGALGORITHM_H
+#ifndef SH_AUTILSTEST_H
+#define SH_AUTILSTEST_H
 
-class Graph ;
-class Matching ;
+#include "AUtils.h"
 
-class MatchingAlgorithm {
+#include "UnitTest.h"
+#include "TestSuite.h"
+
+class AUtilsTest : public UnitTest {
 	public:
-	MatchingAlgorithm (Graph* g, Matching* m, float goal) ;
+	AUtilsTest (TestSuite* s) ;
 
-	virtual void run (void) = 0 ;
+	void testLog2 (void) ;
 
-	Matching* getMatching (void) const
-		{ return TheMatching ; } ;
-
-	void setGoal (float goal) ;
-
-	protected:
-	Graph* TheGraph ;
-	Matching* TheMatching ;
-	unsigned long CardinalityGoal ;
+	private:
+	bool genericTestLog2 (int n, double res) ;
 } ;
 
-#endif // ndef SH_MATCHINGALGORITHM
+#endif // ndef SH_AUTILSTEST_H

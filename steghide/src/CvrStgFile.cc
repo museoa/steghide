@@ -22,14 +22,17 @@
 #include <cstdlib>
 #include <cstring>
 
-#include "CvrStgFile.h"
+#include "AugmentingPathHeuristic.h"
 #include "AuFile.h"
+#include "AUtils.h"
 #include "BmpFile.h"
+#include "CvrStgFile.h"
 #include "JpegFile.h"
 #include "SampleValue.h"
 #include "SampleValueAdjacencyList.h"
 #include "Utils.h"
 #include "WavFile.h"
+#include "WKSConstructionHeuristic.h"
 #include "common.h"
 #include "error.h"
 #include "msg.h"
@@ -125,13 +128,27 @@ std::vector<SampleValueAdjacencyList*> CvrStgFile::calcSVAdjacencyLists (const s
 	return lists ;
 }
 
-// FIXME - implement this in ...File to save some time - include tests: implementation in ...File is equivalent to getSample(pos)-> getBit()
+std::vector<MatchingAlgorithm*> CvrStgFile::getMatchingAlgorithms (Graph* g, Matching* m) const
+{
+	std::vector<MatchingAlgorithm*> retval ;
+	retval.push_back (new WKSConstructionHeuristic (g, m)) ;
+	retval.push_back (new AugmentingPathHeuristic (g, m)) ;
+	return retval ;
+}
+
 EmbValue CvrStgFile::getEmbeddedValue (const SamplePos pos) const
 {
 	SampleValue* sv = getSampleValue(pos) ;
 	EmbValue retval = sv->getEmbeddedValue() ;
 	delete sv ;
 	return retval ;
+}
+
+unsigned long CvrStgFile::getCapacity () const
+{
+	float maxnvertices = getNumSamples() / getSamplesPerVertex() ;
+	float maxnbits = maxnvertices * AUtils::log2(getEmbValueModulus()) ;
+	return ((unsigned long) (maxnbits / 8)) ;
 }
 
 std::string CvrStgFile::getHRCapacity () const

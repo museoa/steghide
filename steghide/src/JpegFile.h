@@ -51,6 +51,7 @@ class JpegFile : public CvrStgFile {
 	void write (void) ;
 
 	std::list<CvrStgFile::Property> getProperties (void) const ;
+	std::vector<MatchingAlgorithm*> getMatchingAlgorithms (Graph* g, Matching* m) const ;
 	
 	unsigned long getNumSamples (void) const ;
 	void replaceSample (const SamplePos pos, const SampleValue* s) ;
@@ -71,7 +72,7 @@ class JpegFile : public CvrStgFile {
 	/// the number of dct coefficients per block
 	static const unsigned int CoeffPerBlock = 64 ;
 
-	static const unsigned short SamplesPerVertex = 2 ;
+	static const unsigned short SamplesPerVertex = 3 ;
 	static const UWORD32 Radius = 1 ;
 	static const EmbValue EmbValueModulus = 2 ;
 

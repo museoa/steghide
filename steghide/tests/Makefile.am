@@ -4,9 +4,9 @@ AM_CPPFLAGS = -I../src
 check_PROGRAMS = unittests
 EXTRA_DIST = systemtests.pl STSupport.pm st_fileformats.pl
 noinst_HEADERS = \
-AuFileTest.h AudioSampleValueTest.h AugmentingPathHeuristicTest.h \
+AuFileTest.h AUtilsTest.h AudioSampleValueTest.h AugmentingPathHeuristicTest.h \
 BitStringTest.h BmpOS2FileTest.h BmpPaletteSampleValueTest.h \
-BmpRGBSampleValueTest.h BmpWinFileTest.h ConstructionHeuristicTest.h \
+BmpRGBSampleValueTest.h BmpWinFileTest.h WKSConstructionHeuristicTest.h \
 BmpFileTest.h CvrStgFileTest.h DummyFile.h \
 DummySampleValue.h EdgeIteratorTest.h EmbDataTest.h GraphTest.h JpegFileTest.h \
 JpegSampleValueTest.h MCryptPPTest.h MHashKeyGenTest.h MHashPPTest.h \
@@ -14,9 +14,9 @@ MatchingTest.h SampleValueAdjacencyListTest.h SampleValueTest.h SelectorTest.h \
 Test.h TestCategory.h TestCategoryCaller.h TestSuite.h UnitTest.h \
 WavFileTest.h WavPCMSampleValueTest.h utcommon.h
 unittests_SOURCES = \
-AuFileTest.cc AudioSampleValueTest.cc AugmentingPathHeuristicTest.cc \
+AuFileTest.cc AUtilsTest.cc AudioSampleValueTest.cc AugmentingPathHeuristicTest.cc \
 BitStringTest.cc BmpOS2FileTest.cc BmpPaletteSampleValueTest.cc \
-BmpRGBSampleValueTest.cc BmpWinFileTest.cc ConstructionHeuristicTest.cc \
+BmpRGBSampleValueTest.cc BmpWinFileTest.cc WKSConstructionHeuristicTest.cc \
 BmpFileTest.cc CvrStgFileTest.cc \
 DummyFile.cc DummySampleValue.cc EdgeIteratorTest.cc EmbDataTest.cc \
 GraphTest.cc JpegFileTest.cc JpegSampleValueTest.cc MCryptPPTest.cc \
@@ -28,8 +28,8 @@ unittests_LDADD = \
 ../src/AuSampleValues.o ../src/AugmentingPathHeuristic.o ../src/BinaryIO.o \
 ../src/BitString.o ../src/BmpFile.o ../src/BmpPaletteSampleValue.o \
 ../src/BmpRGBSampleValue.o ../src/BmpSampleValue.o \
-../src/ConstructionHeuristic.o ../src/CvrStgFile.o \
-../src/Edge.o ../src/EdgeIterator.o \
+../src/WKSConstructionHeuristic.o ../src/CvrStgFile.o \
+../src/Edge.o ../src/EdgeIterator.o ../src/DMDConstructionHeuristic.o \
 ../src/EmbData.o ../src/Embedder.o ../src/EncryptionAlgorithm.o \
 ../src/EncryptionMode.o ../src/Extractor.o ../src/Graph.o ../src/JpegFile.o \
 ../src/JpegSampleValue.o ../src/MCryptPP.o ../src/MHashKeyGen.o \

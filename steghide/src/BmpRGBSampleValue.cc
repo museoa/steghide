@@ -21,14 +21,14 @@
 #include "BmpRGBSampleValue.h"
 
 BmpRGBSampleValue::BmpRGBSampleValue (BYTE r, BYTE g, BYTE b)
-	: Color(r, g, b)
+	: BmpSampleValue(), Color(r, g, b)
 {
 	Key = calcKey (Color) ;
 	EValue = calcEValue (Color) ;
 }
 
 BmpRGBSampleValue::BmpRGBSampleValue (RGBTriple t)
-	: Color(t)
+	: BmpSampleValue(), Color(t)
 {
 	Key = calcKey (Color) ;
 	EValue = calcEValue (Color) ;

@@ -18,13 +18,13 @@
  *
  */
 
-#include "ConstructionHeuristic.h"
+#include "WKSConstructionHeuristic.h"
 #include "Edge.h"
 #include "Graph.h"
 #include "Matching.h"
 #include "common.h"
 
-ConstructionHeuristic::ConstructionHeuristic (Graph* g, Matching* m, float goal)
+WKSConstructionHeuristic::WKSConstructionHeuristic (Graph* g, Matching* m, float goal)
 	: MatchingAlgorithm (g, m, goal)
 {
 	unsigned long nvertices = g->getNumVertices() ;
@@ -49,47 +49,32 @@ ConstructionHeuristic::ConstructionHeuristic (Graph* g, Matching* m, float goal)
 	}
 }
 
-ConstructionHeuristic::~ConstructionHeuristic ()
+void WKSConstructionHeuristic::run ()
 {
-	TheGraph->unmarkDeletedAllVertices() ;
-}
-
-void ConstructionHeuristic::run ()
-{
-	unsigned int pqr = PriorityQueueRange ;
-#ifdef DEBUG
-	if (Args.PriorityQueueRange.is_set()) {
-		pqr = Args.PriorityQueueRange.getValue() ;
-	}
 	unsigned long numDegG = 0 ;
 	unsigned long numDeg1 = 0 ;
-#endif
 
 	while ((TheMatching->getCardinality() < CardinalityGoal) && !(VerticesDegG.empty() && VerticesDeg1.empty())) {
 		Vertex *v = NULL ;
-		unsigned int k = 1 ;
-		if (pqr > 1) {
-			k = RndSrc.getValue (pqr) + 1 ;
-		}
 
 		// get a vertex from one of the priority queues
 		if (!VerticesDeg1.empty()) {
-			v = findVertexDeg1 (k) ;
-#ifdef DEBUG
+			v = findVertexDeg1() ;
 			if (v != NULL) {
-				printDebug (5, "ConstructionHeuristic: vertex %lu has been chosen from VerticesDeg1.", v->getLabel()) ;
+#ifdef DEBUG
+				printDebug (5, "WKSConstructionHeuristic: vertex %lu has been chosen from VerticesDeg1.", v->getLabel()) ;
+#endif
 				numDeg1++ ;
 			}
-#endif
 		}
 		else {
-			v = findVertexDegG (k) ;
-#ifdef DEBUG
+			v = findVertexDegG() ;
 			if (v != NULL) {
-				printDebug (5, "ConstructionHeuristic: vertex %lu has been chosen from VerticesDegG.", v->getLabel()) ;
+#ifdef DEBUG
+				printDebug (5, "WKSConstructionHeuristic: vertex %lu has been chosen from VerticesDegG.", v->getLabel()) ;
+#endif
 				numDegG++ ;
 			}
-#endif
 		}
 
 		if (v != NULL) { // insert v's shortest edge into matching
@@ -97,7 +82,7 @@ void ConstructionHeuristic::run ()
 			Vertex* vother = e->getOtherVertex(v) ;
 
 #ifdef DEBUG
-			printDebug (5, "ConstructionHeuristic: inserting edge %lu - %lu into matching", v->getLabel(), vother->getLabel()) ;
+			printDebug (5, "WKSConstructionHeuristic: inserting edge %lu - %lu into matching", v->getLabel(), vother->getLabel()) ;
 #endif
 			TheMatching->addEdge(e) ;
 			v->markDeleted() ;
@@ -107,16 +92,16 @@ void ConstructionHeuristic::run ()
 		}
 	}
 
-#ifdef DEBUG
 	if (Args.Verbosity.getValue() == STATS) {
 		printf ("%.4f:", ((float) numDeg1) / ((float) (numDeg1 + numDegG))) ; // rate of appliances of Deg1-rule
 	}
-#endif
+
+	TheGraph->unmarkDeletedAllVertices() ;
 }
 
 // FIXME - speed improvement possible if checkNeighboursDeg1 takes an Edge as parameter ?
 // FIXME - speed improvement if getDegree() is called always (not just for real neighbours) ?
-void ConstructionHeuristic::checkNeighboursDeg1 (Vertex *v)
+void WKSConstructionHeuristic::checkNeighboursDeg1 (Vertex *v)
 {
 	// for all sample values in v...
 	for (unsigned short i = 0 ; i < Globs.TheCvrStgFile->getSamplesPerVertex() ; i++) {
@@ -142,14 +127,12 @@ void ConstructionHeuristic::checkNeighboursDeg1 (Vertex *v)
 	}
 }
 
-Vertex* ConstructionHeuristic::findVertexDegG (unsigned int k)
+Vertex* WKSConstructionHeuristic::findVertexDegG ()
 {
 	Vertex *v = NULL ;
 	bool usethisvertex = false ;
-	// buffer for the top k-1 vertices in the priority queue
-	std::vector<Vertex*> topk ;
 
-	// get the vertex that is the k-nearest to top (with updated len of shortest edge) and has degree > 1
+	// get the vertex that is nearest to top (with updated len of shortest edge) and has degree > 1
 	do {
 		myassert (!VerticesDegG.empty()) ;
 		v = VerticesDegG.top() ;
@@ -161,32 +144,11 @@ Vertex* ConstructionHeuristic::findVertexDegG (unsigned int k)
 			v->updateShortestEdge() ;
 
 			if (v->getShortestEdge()->getWeight() == weight_before) {
-				if (topk.size() == k - 1) {
-					for (unsigned int i = 0 ; i < k - 1 ; i++) {
-						VerticesDegG.push (topk[i]) ;
-					}
-					usethisvertex = true ;
-				}
-				else {
-					myassert (topk.size() < k - 1) ;
-					topk.push_back (v) ;
-				}
+				usethisvertex = true ;
 			}
 			else {
 				myassert (v->getShortestEdge()->getWeight() > weight_before) ;	// weight can only rise
 				VerticesDegG.push (v) ; // push v into a position that is further away from top
-			}
-		}
-
-		if (k != 1 && VerticesDegG.empty()) { // there were less than k valid vertices in VerticesDegree1
-			myassert (!usethisvertex) ;
-			unsigned int nfound = topk.size() ;
-			if (nfound > 0) {
-				usethisvertex = true ;
-				v = topk[nfound - 1] ;
-				for (unsigned int i = 0 ; i < nfound - 1 ; i++) {
-					VerticesDegG.push (topk[i]) ;
-				}
 			}
 		}
 	} while (!(usethisvertex || VerticesDegG.empty())) ;
@@ -194,47 +156,26 @@ Vertex* ConstructionHeuristic::findVertexDegG (unsigned int k)
 	return (usethisvertex ? v : NULL) ;
 }
 
-Vertex *ConstructionHeuristic::findVertexDeg1 (unsigned int k)
+Vertex *WKSConstructionHeuristic::findVertexDeg1 ()
 {
 	Vertex *v = NULL ;
-	std::vector<Vertex*> topk ;
 	bool usethisvertex = false ;
 
-	// get the vertex that is the k-nearest to top and still has degree 1
+	// get the vertex that is nearest to top and still has degree 1
 	do {
 		myassert (!VerticesDeg1.empty()) ;
 		v = VerticesDeg1.top() ;
 		VerticesDeg1.pop() ;
 
 		if ((TheMatching->isExposed(v)) && (v->getDegree() == 1)) { // implicitly delete vertices that have degree zero or have already been matched
-			if (topk.size() == k - 1) {
-				for (unsigned int i = 0 ; i < k - 1 ; i++) {
-					VerticesDeg1.push (topk[i]) ;
-				}
-				usethisvertex = true ;	// v is the vertex k-nearest to top with degree 1
-			}
-			else {
-				topk.push_back (v) ;
-			}
-		}
-
-		if (k != 1 && VerticesDeg1.empty()) {	// there were less than k vertices with degree 1 in VerticesDegree1
-			myassert (!usethisvertex) ;
-			unsigned int nfound = topk.size() ;
-			if (nfound > 0) {
-				usethisvertex = true ;
-				v = topk[nfound - 1] ;
-				for (unsigned int i = 0 ; i < nfound - 1 ; i++) {
-					VerticesDeg1.push (topk[i]) ;
-				}
-			}
+			usethisvertex = true ;
 		}
 	} while (!(usethisvertex || VerticesDeg1.empty())) ;
 
 	return (usethisvertex ? v : NULL) ;
 }
 
-bool ConstructionHeuristic::LongerShortestEdge::operator() (const Vertex* v1, const Vertex* v2)
+bool WKSConstructionHeuristic::LongerShortestEdge::operator() (const Vertex* v1, const Vertex* v2)
 {
 	bool retval = false ;
 	UWORD32 deg1 = v1->getDegree() ;
@@ -255,7 +196,7 @@ bool ConstructionHeuristic::LongerShortestEdge::operator() (const Vertex* v1, co
 }
 
 #ifdef DEBUG
-void ConstructionHeuristic::print (unsigned short spc)
+void WKSConstructionHeuristic::print (unsigned short spc)
 {
 	char* space = new char[spc + 1] ;
 	for (unsigned short i = 0 ; i < spc ; i++) {
@@ -272,7 +213,7 @@ void ConstructionHeuristic::print (unsigned short spc)
 	std::cerr << std::endl ;
 }
 
-void ConstructionHeuristic::printPQ (std::priority_queue<Vertex*, std::vector<Vertex*>, LongerShortestEdge>& pq)
+void WKSConstructionHeuristic::printPQ (std::priority_queue<Vertex*, std::vector<Vertex*>, LongerShortestEdge>& pq)
 {
 	std::vector<Vertex*> backup ;
 	while (!pq.empty()) {

@@ -52,9 +52,7 @@ template<class T> class Arg {
 
 enum COMMAND { EMBED, EXTRACT, INFO, ENCINFO, SHOWVERSION, SHOWLICENSE, SHOWHELP, PRINTFREQS } ;
 enum VERBOSITY { QUIET, NORMAL, VERBOSE, STATS } ;
-#ifdef DEBUG
 enum DEBUGCOMMAND { NONE, PRINTGRAPH, PRINTGMLGRAPH, PRINTGMLVERTEX } ;
-#endif
 
 typedef Arg<COMMAND> ArgCommand ;
 typedef Arg<VERBOSITY> ArgVerbosity ;
@@ -66,9 +64,7 @@ typedef Arg<float> ArgFloat ;
 typedef Arg<EncryptionAlgorithm> ArgEncAlgo ;
 typedef Arg<EncryptionMode> ArgEncMode ;
 typedef Arg<unsigned int> ArgUInt ;
-#ifdef DEBUG
 typedef Arg<std::list<std::string> > ArgStringList ;
 typedef Arg<DEBUGCOMMAND> ArgDebugCommand ;
-#endif
 
 #endif // ndef SH_ARG_H

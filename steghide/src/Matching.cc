@@ -191,28 +191,29 @@ Matching& Matching::augment (const std::vector<Edge*>& path)
 void Matching::printVerboseInfo (void) const
 {
 	if (Args.Verbosity.getValue() == VERBOSE || Args.Verbosity.getValue() == STATS) {
-		VerboseMessage vmsg8 (_("size of the matching: %lu"), getCardinality()) ;
-		vmsg8.printMessage() ;
 		unsigned long expvertices = TheGraph->getNumVertices() - (2 * getCardinality()) ;
-		VerboseMessage vmsg9 (_("number of unmatched vertices: %lu (%.1f%%)"), expvertices, 100.0 * ((float) expvertices / (float) TheGraph->getNumVertices())) ;
-		vmsg9.printMessage() ;
 
 		float sumweights = 0 ;
 		for (std::list<Edge*>::const_iterator it = MatchingEdges.begin() ; it != MatchingEdges.end() ; it++) {
 			sumweights += (*it)->getWeight() ;
 		}
 
-		VerboseMessage vmsg10 (_("average edge weight: %.1f"), (sumweights / (float) getCardinality())) ;
-		vmsg10.printMessage() ;
-
-#ifdef DEBUG
 		if (Args.Verbosity.getValue() == STATS) {
 			printf ("%.4f:%.1f:",
 				1.0 - (((float) (getCardinality() * 2)) / ((float) TheGraph->getNumVertices())),  // percentage of unmatched vertices
 				((float) sumweights / (float) getCardinality()) // average edge weight
 	   			) ;
 		}
-#endif
+		else { // Verbosity is VERBOSE
+			VerboseMessage vmsg8 (_("size of the matching: %lu"), getCardinality()) ;
+			vmsg8.printMessage() ;
+
+			VerboseMessage vmsg9 (_("number of unmatched vertices: %lu (%.1f%%)"), expvertices, 100.0 * ((float) expvertices / (float) TheGraph->getNumVertices())) ;
+			vmsg9.printMessage() ;
+
+			VerboseMessage vmsg10 (_("average edge weight: %.1f"), (sumweights / (float) getCardinality())) ;
+			vmsg10.printMessage() ;
+		}
 	}
 }
 

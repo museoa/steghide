@@ -53,7 +53,7 @@ class Graph {
 	/**
 	 * construct a graph
 	 * \param cvr the underlying cover file
-	 * \param emb the bitstring to be embedded
+	 * \param emb the bitstring to be embedded (with correct arity already set)
 	 **/
 	Graph (CvrStgFile* cvr, const BitString& emb, Selector& sel) ;
 
@@ -132,7 +132,7 @@ class Graph {
 	//
 	// friend-declarations
 	//
-	friend class ConstructionHeuristic ;
+	friend class WKSConstructionHeuristic ;
 	friend class EdgeIterator ;
 	friend class SampleValueAdjacencyList ;
 	friend class Vertex ;
@@ -149,14 +149,14 @@ class Graph {
 	/// SampleOccurences[l] contains all occurences of the sample value with label l
 	std::vector<std::list<SampleOccurence> > SampleOccurences ;
 
-	/// NumSampleOccurences[l] contains the number of vertices that contain the sample value with label l
-	std::vector<UWORD32> NumSampleOccurences ;
+	/**
+	 * NumSampleOccurences[l][t] contains the number vertices that contain the sample value with label l and associated target t
+	 **/
+	std::vector<UWORD32*> NumSampleOccurences ;
 
 	/// contains those sample occurences that have been marked as deleted from SampleOccurences
 	std::vector<std::list<SampleOccurence> > DeletedSampleOccurences ;
-
-	/// NumSampleOccurences[l] contains the number of vertices that contain the sample value with label l and have been marked as deleted
-	std::vector<UWORD32> NumDeletedSampleOccurences ;
+	std::vector<UWORD32*> NumDeletedSampleOccurences ;
 
 	std::list<SampleOccurence>::iterator markDeletedSampleOccurence (std::list<SampleOccurence>::iterator it) ;
 	std::list<SampleOccurence>::iterator unmarkDeletedSampleOccurence (std::list<SampleOccurence>::iterator it) ;
@@ -193,6 +193,7 @@ class Graph {
 
 	CvrStgFile *File ;
 	EmbValue EmbValueModulus ;
+	unsigned short SamplesPerVertex ;
 
 	bool check_SampleOccurences_size (bool verbose = false) const ;
 	bool check_SampleOccurences_correctness (bool verbose = false) const ;

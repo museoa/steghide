@@ -97,9 +97,7 @@ class Edge {
 	 **/
 	SampleValue *getReplacingSampleValue (Vertex *v) const ;
 
-#ifdef DEBUG
 	void print (unsigned short spc = 0) const ;
-#endif
 	
 	private:
 	Vertex *Vertex1 ;

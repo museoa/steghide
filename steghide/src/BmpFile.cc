@@ -35,7 +35,6 @@ BmpFile::BmpFile (BinaryIO *io)
 	: CvrStgFile()
 {
 	setRadius (Radius) ;
-	setEmbValueModulus (EmbValueModulus) ;
 	read (io) ;
 }
 
@@ -385,19 +384,35 @@ void BmpFile::bmpwin_readheaders ()
 	bmih.biPlanes = getBinIO()->read16_le () ;
 	myassert (bmih.biPlanes == 1) ;
 	bmih.biBitCount = getBinIO()->read16_le () ;
-	if ((bmih.biBitCount == 1) || (bmih.biBitCount == 4) || (bmih.biBitCount == 8)) {
+	switch (bmih.biBitCount) {
+		case 1:
 		setSamplesPerVertex (SamplesPerVertex_Palette) ;
-	}
-	else if (bmih.biBitCount == 24) {
+		setEmbValueModulus (EmbValueModulus_SmallPalette) ;
+		break ;
+
+		case 4:
+		setSamplesPerVertex (SamplesPerVertex_Palette) ;
+		setEmbValueModulus (EmbValueModulus_SmallPalette) ;
+		break ;
+
+		case 8:
+		setSamplesPerVertex (SamplesPerVertex_Palette) ;
+		setEmbValueModulus (EmbValueModulus_LargePalette) ;
+		break ;
+
+		case 24:
 		setSamplesPerVertex (SamplesPerVertex_RGB) ;
-	}
-	else {
-		if (getBinIO()->is_std()) {
-			throw NotImplementedError (_("the bmp data from standard input has a format that is not supported (biBitCount: %d)."), bmih.biBitCount) ;
-		}
-		else {
-			throw NotImplementedError (_("the bmp file \"%s\" has a format that is not supported (biBitCount: %d)."), getBinIO()->getName().c_str(), bmih.biBitCount) ;
-		}
+		setEmbValueModulus (EmbValueModulus_RGB) ;
+		break ;
+
+		default:
+			if (getBinIO()->is_std()) {
+				throw NotImplementedError (_("the bmp data from standard input has a format that is not supported (biBitCount: %d)."), bmih.biBitCount) ;
+			}
+			else {
+				throw NotImplementedError (_("the bmp file \"%s\" has a format that is not supported (biBitCount: %d)."), getBinIO()->getName().c_str(), bmih.biBitCount) ;
+			}
+		break ;
 	}
 	bmih.biCompression = getBinIO()->read32_le () ;
 	if (bmih.biCompression != COMPRESSION_BI_RGB) {
@@ -468,19 +483,35 @@ void BmpFile::bmpos2_readheaders ()
 	bmch.bcPlanes = getBinIO()->read16_le () ;
 	myassert (bmch.bcPlanes == 1) ;
 	bmch.bcBitCount = getBinIO()->read16_le () ;
-	if ((bmch.bcBitCount == 1) || (bmch.bcBitCount == 4) || (bmch.bcBitCount == 8)) {
+	switch (bmch.bcBitCount) {
+		case 1:
 		setSamplesPerVertex (SamplesPerVertex_Palette) ;
-	}
-	else if (bmch.bcBitCount == 24) {
+		setEmbValueModulus (EmbValueModulus_SmallPalette) ;
+		break ;
+
+		case 4:
+		setSamplesPerVertex (SamplesPerVertex_Palette) ;
+		setEmbValueModulus (EmbValueModulus_SmallPalette) ;
+		break ;
+
+		case 8:
+		setSamplesPerVertex (SamplesPerVertex_Palette) ;
+		setEmbValueModulus (EmbValueModulus_LargePalette) ;
+		break ;
+
+		case 24:
 		setSamplesPerVertex (SamplesPerVertex_RGB) ;
-	}
-	else {
-		if (getBinIO()->is_std()) {
-			throw NotImplementedError (_("the bmp data from standard input has a format that is not supported (bcBitCount: %d)."), bmch.bcBitCount) ;
-		}
-		else {
-			throw NotImplementedError (_("the bmp file \"%s\" has a format that is not supported (bcBitCount: %d)."), getBinIO()->getName().c_str(), bmch.bcBitCount) ;
-		}
+		setEmbValueModulus (EmbValueModulus_RGB) ;
+		break ;
+
+		default:
+			if (getBinIO()->is_std()) {
+				throw NotImplementedError (_("the bmp data from standard input has a format that is not supported (bcBitCount: %d)."), bmch.bcBitCount) ;
+			}
+			else {
+				throw NotImplementedError (_("the bmp file \"%s\" has a format that is not supported (bcBitCount: %d)."), getBinIO()->getName().c_str(), bmch.bcBitCount) ;
+			}
+		break ;
 	}
 
 	if (bmch.bcBitCount != 24) {

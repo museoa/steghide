@@ -26,6 +26,7 @@
 #include <iostream>
 
 #include "BinaryIO.h"
+#include "DMDConstructionHeuristic.h"
 #include "JpegFile.h"
 #include "JpegSampleValue.h"
 #include "AUtils.h"
@@ -193,6 +194,13 @@ void JpegFile::replaceSample (const SamplePos pos, const SampleValue* s)
 	myassert (sample != NULL) ;
 	myassert (pos <= StegoIndices.size()) ;
 	LinDctCoeffs[StegoIndices[pos]] = sample->getDctCoeff() ;
+}
+
+std::vector<MatchingAlgorithm*> JpegFile::getMatchingAlgorithms (Graph* g, Matching* m) const
+{
+	std::vector<MatchingAlgorithm*> retval ;
+	retval.push_back (new DMDConstructionHeuristic (g, m)) ;
+	return retval ;
 }
 
 #ifdef DEBUG

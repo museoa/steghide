@@ -233,6 +233,7 @@ bool EdgeIteratorTest::genericTestIterationLength (Graph* g)
 			std::cerr << "for vertex " << l << ": getDegree(): " << srcvertex->getDegree() << ", edgeit goes through: " << n << std::endl ;
 		}
 		ok = (n == srcvertex->getDegree()) && ok ;
+
 	}
 
 	if (!ok && ArgVerbose) {

@@ -38,13 +38,13 @@ class CvrStgFileTest : public UnitTest {
 	 * \param new_wfn wether to write the data to another file or to rfn (a backup copy is done)
 	 **/
 	bool genericTestReadWrite (const std::string& rfn, bool new_wfn = true) const ;
-	bool genericTestReadEmbedExtract (const std::string& fn, const BitString& emb) const ;
+	bool genericTestReadEmbedExtract (const std::string& fn, BitString& emb) const ;
 
 	/**
 	 * read fn and extract the first emb.getLength() bits, return true iff these equal emb
 	 **/
-	bool genericTestReadExtractCompare (const std::string& fn, const BitString& emb) const ;
-	bool genericTestReadEmbedWriteReadExtract (const std::string& cvrfn, const BitString& emb) const ;
+	bool genericTestReadExtractCompare (const std::string& fn, BitString& emb) const ;
+	bool genericTestReadEmbedWriteReadExtract (const std::string& cvrfn, BitString& emb) const ;
 	bool genericTestPosition (const CvrStgFile* f, const SamplePos pos, SampleValue* sv_r) const ;
 	bool genericTestSVALCalculation (const CvrStgFile* f, const Graph* g) const ;
 
@@ -52,6 +52,7 @@ class CvrStgFileTest : public UnitTest {
 	bool areEqual (const std::string& fn1, const std::string& fn2) const ;
 	void removeFile (const std::string& fn) const ;
 	void copyFile (const std::string& src, const std::string& dest) const ;
+	void moveFile (const std::string& src, const std::string& dest) const ;
 } ;
 
 #endif // ndef SH_CVRSTGFILETEST_H

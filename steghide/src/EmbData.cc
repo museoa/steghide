@@ -32,6 +32,7 @@ EmbData::EmbData (MODE m, std::string pp, std::string fn)
 {
 	if (m == EXTRACT) {
 		NumBitsNeeded = 1 ;
+		NumBitsRequested = 1 ;
 		Version = 0 ;
 		State = READ_VERSION ;
 		Reservoir = BitString() ;
@@ -44,28 +45,35 @@ bool EmbData::finished ()
 	return (State == END) ;
 }
 
-unsigned long EmbData::getNumBitsNeeded ()
+unsigned long EmbData::getNumBitsRequested ()
 {
 	myassert (Mode == EXTRACT) ;
-	return NumBitsNeeded ;
+	return NumBitsRequested ;
 }
 
 void EmbData::addBits (BitString addbits)
 {
 	myassert (Mode == EXTRACT) ;
 
+#ifdef DEBUG
+	printDebug (1, "\nEmbData::addBits called with") ;
+	printDebug (1, " addbits:") ;
+	addbits.printDebug (1, 2) ;
+	printDebug (1, " Reservoir:") ;
+	Reservoir.printDebug (1, 2) ;
+#endif
+
 	Reservoir.append (addbits) ;
 	BitString bits ;
 	if (Reservoir.getLength() >= NumBitsNeeded) {
-		bits = Reservoir.cutBits (0, NumBitsNeeded) ;
+		bits = Reservoir.cutBits (0, NumBitsNeeded) ; // take exactly the first NumBitsNeeded bits from Reservoir | addbits
 	}
 	else { // Reservoir.getLength() < NumBitsNeeded
 		myassert(false) ;
 	}
 
 #ifdef DEBUG
-	printDebug (1, "EmbData::addBits called with") ;
-	printDebug (1, " bits:") ;
+	printDebug (1, "bits is now:") ;
 	bits.printDebug (1, 2) ;
 #endif
 
@@ -83,7 +91,8 @@ void EmbData::addBits (BitString addbits)
 				if (Version > CodeVersion) {
 					throw CorruptDataError (_("attempting to read an embedding of version %d but steghide %s only supports embeddings of version %d."), Version, VERSION, CodeVersion) ;
 				}
-				NumBitsNeeded = AUtils::bminus (EncryptionAlgorithm::IRep_size + EncryptionMode::IRep_size, Reservoir.getLength()) ;
+				NumBitsNeeded = EncryptionAlgorithm::IRep_size + EncryptionMode::IRep_size ;
+				NumBitsRequested = AUtils::bminus<unsigned long> (NumBitsNeeded, Reservoir.getLength()) ;
 				State = READ_ENCINFO ;
 			}
 			break ;
@@ -103,7 +112,8 @@ void EmbData::addBits (BitString addbits)
 				EncMode.setValue ((EncryptionMode::IRep) mode) ;
 			}
 
-			NumBitsNeeded = AUtils::bminus (NBitsNPlainBits, Reservoir.getLength()) ;
+			NumBitsNeeded = NBitsNPlainBits ;
+			NumBitsRequested = AUtils::bminus<unsigned long> (NumBitsNeeded, Reservoir.getLength()) ;
 			State = READ_NPLAINBITS ;
 
 #ifndef USE_LIBMCRYPT
@@ -121,10 +131,11 @@ void EmbData::addBits (BitString addbits)
 			NPlainBits = bits.getValue (0, NBitsNPlainBits) ;
 
 #ifdef USE_LIBMCRYPT
-			NumBitsNeeded = AUtils::bminus ((UWORD32) MCryptPP::getEncryptedSize (EncAlgo, EncMode, NPlainBits), Reservoir.getLength()) ;
+			NumBitsNeeded = (UWORD32) MCryptPP::getEncryptedSize (EncAlgo, EncMode, NPlainBits) ;
 #else
-			NumBitsNeeded = AUtils::bminus<unsigned long> (NPlainBits, Reservoir.getLength()) ;
+			NumBitsNeeded = NPlainBits ;
 #endif
+			NumBitsRequested = AUtils::bminus<unsigned long> (NumBitsNeeded, Reservoir.getLength()) ;
 
 			State = READ_ENCRYPTED ;
 		break ; }
@@ -153,8 +164,14 @@ void EmbData::addBits (BitString addbits)
 
 			// read Compression (and uncompress)
 			Compression = ((plain[pos++]) ? 9 : 0) ; // to make compression contain a value that makes sense
+#ifdef DEBUG
+			printDebug (2, " compression: %d\n", plain[pos - 1]) ;
+#endif
 			if (Compression > 0) {
 				UWORD32 NUncompressedBits = plain.getValue (pos, NBitsNUncompressedBits) ;
+#ifdef DEBUG
+				printDebug (2, " nuncobits: %lu\n", NUncompressedBits) ;
+#endif
 				pos += NBitsNUncompressedBits ;
 
 				plain.truncate (pos, plain.getLength()) ;
@@ -164,9 +181,15 @@ void EmbData::addBits (BitString addbits)
 
 			// read Checksum
 			Checksum = plain[pos++] ;
+#ifdef DEBUG
+			printDebug (2, " checksum: %d\n", plain[pos - 1]) ;
+#endif
 			unsigned long extcrc32 = 0 ;
 			if (Checksum) {
 				extcrc32 = plain.getValue (pos, NBitsCrc32) ;
+#ifdef DEBUG
+				printDebug (2, " crc32: 0x%x\n", extcrc32) ;
+#endif
 				pos += NBitsCrc32 ;
 			}
 
@@ -212,6 +235,7 @@ void EmbData::addBits (BitString addbits)
 			}
 
 			NumBitsNeeded = 0 ;
+			NumBitsRequested = 0 ;
 			State = END ;
 		break ; }
 

@@ -10,7 +10,11 @@ our @EXPORT = qw(
 	runEmbExtCmp
 );
 
+# wether test script should print verbose output
+$Arg_Verbosity = 0 ;
+
 $curcategory = "";
+$catstatus = 0 ;
 $cursubcategory = "";
 $subcatstatus = 0 ;
 
@@ -23,6 +27,18 @@ use constant DEFAULTSTGFN => "stgfile" ;
 use constant DEFAULTEXTFN => "extfile" ;
 use constant DEFEMBARGBASE => (command => "embed", f => "", q => "", p => "\"a passphrase\"", sf => DEFAULTSTGFN) ;
 use constant DEFEXTARGBASE => (command => "extract", f => "", q => "", p => "\"a passphrase\"", sf => DEFAULTSTGFN, xf => DEFAULTEXTFN) ;
+
+#
+# parse arguments for a st_*.pl script
+#
+sub parseArgs {
+	while (@_) {
+		$ARGV = shift @_ ;
+		if ($ARGV eq "-v" || $ARGV eq "--verbose") {
+			$Arg_Verbosity = 1 ;
+		}
+	}
+}
 
 #
 # create a string of arguments ready to be fed to steghide
@@ -41,14 +57,29 @@ sub getArgString {
 	return $retval ;
 }
 
+#
+# start a category
+# first argument: category name, rest of list: arguments for execution of this category script
+#
 sub startCategory {
-	$curcategory = $_[0] ;
+	$curcategory = shift @_ ;
+	parseArgs (@_) ;
 	print "$curcategory:\n" ;
+	$catstatus = 1 ;
 }
 
+#
+#
+# return value: 1 if an error occured, 0 if everything was ok
 sub endCategory {
 	$curcategory = "" ;
 	print "\n" ;
+	if ($catstatus) { # no error
+		return 0 ;
+	}
+	else { # an error occured
+		return 1 ;
+	}
 }
 
 sub startSubCategory {
@@ -74,6 +105,7 @@ sub addTestResult {
 	else {
 		print "F";
 		$subcatstatus = 0 ;
+		$catstatus = 0 ;
 	}
 }
 
@@ -90,6 +122,10 @@ sub remove {
 # run an embed-extract-compare test
 # expects 1-4 arguments: cvrfn, embfn, callerembargs, callerextargs
 sub runEmbExtCmp {
+	if ($Arg_Verbosity) {
+		print "\n\nrunning EmbExtCmp with...\n" ;
+	}
+
 	# evaluate arguments
 	$cvrfn = shift @_ ;
 	$embfn = DATADIR . RND100 ;	# default
@@ -120,6 +156,11 @@ sub runEmbExtCmp {
 		%callerextargs
 	) ;
 	$extcommand = STEGHIDE . " " . getArgString(%extargs) ;
+
+	if ($Arg_Verbosity) {
+		print "embcommand: $embcommand\n" ;
+		print "extcommand: $extcommand\n" ;
+	}
 
 	# execute commands
 	`$embcommand 2>&1` ; # don't let it print to stderr or stdout

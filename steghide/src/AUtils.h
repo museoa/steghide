@@ -56,6 +56,16 @@ class AUtils {
 	 * round up x to nearest integer
 	 **/
 	template<class IT, class FT> static IT roundup (FT x) ;
+
+	/**
+	 * compute 2-logarithm of n (rounded up to nearest int), i.e. number of bits needed to store values from {0,...,n-1}
+	 **/
+	template<class T> static T log2_ceil (T n) ;
+
+	/**
+	 * compute 2-logarithm of n
+	 **/
+	template<class IT> static double log2 (IT n) ;
 } ;
 
 template<class T>
@@ -102,7 +112,7 @@ T AUtils::bplus (T a, T b, T top)
 template<class T, class CTYPE>
 T AUtils::modsum (T* s, CTYPE n, T m)
 {
-	T retval() ;
+	T retval = 0 ;
 	for (CTYPE i = CTYPE() ; i < n ; ++i) {
 		retval = (retval + s[i]) % m ;
 	}
@@ -121,6 +131,23 @@ IT AUtils::roundup (FT x)
 		retval = ((IT) x) + 1 ;
 	}
 	return retval ;
+}
+
+template<class T>
+T AUtils::log2_ceil (T n)
+{
+	T retval = 0 ;
+	while (n > 1) {
+		n = div_roundup<T> (n, 2) ;
+		++retval ;
+	}
+	return retval ;
+}
+
+template<class IT>
+double AUtils::log2 (IT n)
+{
+	return (log((double) n) / (log (2.0))) ;
 }
 
 #endif // ndef SH_AUTILS_H

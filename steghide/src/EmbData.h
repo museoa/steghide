@@ -47,7 +47,11 @@ class EmbData {
 
 	bool finished (void) ;
 
-	unsigned long getNumBitsNeeded (void) ;
+	/**
+	 * get the minimum length of the BitString that is to be passed to addBits
+	 **/
+	unsigned long getNumBitsRequested (void) ;
+
 	void addBits (BitString addbits) ;
 
 	void setEncAlgo (EncryptionAlgorithm a) ;
@@ -92,7 +96,11 @@ class EmbData {
 	
 	unsigned long NPlainBits ;
 
+	/// the number of bits that the caller must at least supply to addBits
+	unsigned long NumBitsRequested ;
+	/// exactly the number of bits that the next step will consume from Reservoir and addBits together
 	unsigned long NumBitsNeeded ;
+
 	BitString Reservoir ;
 
 	std::string Passphrase ;

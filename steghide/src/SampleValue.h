@@ -60,7 +60,9 @@ class CvrStgFile ;
  **/
 class SampleValue {
 	public:
-	SampleValue (void) : Label(0) {} ;
+	SampleValue (void) ;
+
+	virtual ~SampleValue (void) ;
 
 	/**
 	 * get the nearest (with the least distance to this sample value) sample value whose
@@ -117,13 +119,10 @@ class SampleValue {
 
 	bool operator< (const SampleValue& sv) const { return (getKey() < sv.getKey()) ; } ;
 
-	/**
-	 * get the number of edges that this sample value contributes to a vertex
-	 **/
-	unsigned long getNumEdges (void) const { return NumEdges ; } ;
-	void setNumEdges (unsigned long ne) { NumEdges = ne ; } ;
-	void incNumEdges (void) { NumEdges++ ; } ;
-	void decNumEdges (void) ;
+	UWORD32 getNumEdges (EmbValue t) const { return NumEdges[t] ; } ;
+	void setNumEdges (EmbValue t, UWORD32 ne) { NumEdges[t] = ne ; } ;
+	void incNumEdges (EmbValue t) ;
+	void decNumEdges (EmbValue t) ;
 
 	void setLabel (unsigned long l) { Label = l ; } ;
 	unsigned long getLabel (void) const { return Label ; } ;
@@ -142,8 +141,11 @@ class SampleValue {
 	private:
 	unsigned long Label ;
 
-	/// the number of edges that are added to a vertex if this sample value is added to it
-	unsigned long NumEdges ;
+	/**
+	 * NumEdges[t] contains the number of edges that are added to a vertex if
+	 * this sample value with corresponding target value t is added to the vertex
+	 **/
+	UWORD32* NumEdges ;
 } ;
 
 struct SampleValuesEqual : public std::binary_function<SampleValue*, SampleValue*, bool> {

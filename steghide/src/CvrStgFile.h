@@ -27,7 +27,9 @@
 
 #include "BinaryIO.h"
 #include "CvrStgObject.h"
-
+class Graph ;
+class Matching ;
+class MatchingAlgorithm ;
 class SampleValue ;
 class SampleValueAdjacencyList ;
 
@@ -84,6 +86,12 @@ class CvrStgFile : public CvrStgObject {
 	virtual std::vector<SampleValueAdjacencyList*> calcSVAdjacencyLists (const std::vector<SampleValue*>& svs) const ;
 
 	/**
+	 * get recommended list of matching algorithms
+	 * \param m an empty matching - will be used in construction of MatchingAlgorithm objects
+	 **/
+	virtual std::vector<MatchingAlgorithm*> getMatchingAlgorithms (Graph* g, Matching* m) const ;
+
+	/**
 	 * get the name of this cvrstgfile
 	 **/
 	const std::string& getName (void) const
@@ -96,9 +104,8 @@ class CvrStgFile : public CvrStgObject {
 	 * get the capacity of this cvrstgfile
 	 * \return the capacity in bytes
 	 **/
-	unsigned long getCapacity (void) const
-		{ return (getNumSamples() / getSamplesPerVertex()) / 8 ; } ;
-
+	unsigned long getCapacity (void) const ;
+	
 	/**
 	 * get the capacity as a human-readable string
 	 **/

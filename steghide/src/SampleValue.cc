@@ -22,18 +22,34 @@
 #include "SampleValue.h"
 #include "CvrStgFile.h"
 
+SampleValue::SampleValue ()
+	: Label(0)
+{
+	NumEdges = new UWORD32[Globs.TheCvrStgFile->getEmbValueModulus()] ;
+}
+
+SampleValue::~SampleValue ()
+{
+	delete[] NumEdges ;
+}
+
+void SampleValue::incNumEdges (EmbValue t)
+{
+	NumEdges[t]++ ;
+}
+
+void SampleValue::decNumEdges (EmbValue t)
+{
+	myassert (NumEdges[t] > 0) ;
+	NumEdges[t]-- ;
+}
+
 bool SampleValue::isNeighbour (const SampleValue *s) const
 {
 #ifdef DEBUG
 	printDebug (5, "SampleValue::isNeighbour: Distance: %lu, Radius: %lu\n", calcDistance(s), Globs.TheCvrStgFile->getRadius()) ;
 #endif
 	return (calcDistance (s) <= Globs.TheCvrStgFile->getRadius()) ;
-}
-
-void SampleValue::decNumEdges ()
-{
-	myassert (NumEdges > 0) ;
-	NumEdges-- ;
 }
 
 void SampleValue::print (unsigned short spc) const

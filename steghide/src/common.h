@@ -70,6 +70,7 @@ typedef UWORD32 SampleValueLabel ;
 typedef UWORD32 SampleKey ;
 
 #define SAMPLEKEY_MAX UWORD32_MAX
+#define VERTEXLABEL_MAX UWORD32_MAX
 
 //
 // gettext support

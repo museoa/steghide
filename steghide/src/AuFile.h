@@ -52,7 +52,7 @@ class AuFile : public CvrStgFile {
 		{ return Data->getSampleValue(pos) ; } ;
 
 	private:
-	enum ENCODING { MULAW8 = 1, PCM8 = 2, PCM16 = 3, PCM32 = 5 } ;
+	enum ENCODING { MULAW8 = 1, PCM8 = 2, PCM16 = 3 } ;
 	class AuHeader {
 		public:
 		char		id[4] ;
@@ -71,7 +71,6 @@ class AuFile : public CvrStgFile {
 	static const UWORD32 Radius_MuLaw8 = 1 ;
 	static const UWORD32 Radius_PCM8 = 1 ;
 	static const UWORD32 Radius_PCM16 = 20 ;
-	static const UWORD32 Radius_PCM32 = 20 ; // FIXME - find good value
 	static const unsigned short SamplesPerVertex = 2 ;
 	static const EmbValue EmbValueModulus = 2 ;
 
