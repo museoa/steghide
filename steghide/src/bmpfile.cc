@@ -24,6 +24,7 @@
 #include "common.h"
 #include "cvrstgfile.h"
 #include "bmpfile.h"
+#include "bmpsample.h"
 #include "error.h"
 
 BmpFile::BmpFile ()
@@ -44,6 +45,7 @@ BmpFile::~BmpFile ()
 
 BmpFile::SUBFORMAT BmpFile::getSubformat () const
 {
+	assert (subformat == WIN || subformat == OS2) ;
 	return subformat ;
 }
 
@@ -74,105 +76,43 @@ unsigned long BmpFile::getNumSamples()
 		case OS2: {
 			retval = bmi_os2.bmch.bcWidth * bmi_os2.bmch.bcHeight ;
 		break ; }
-
-		default: {
-			assert (0) ;
-		break ; }
 	}
 	return retval ;
-}
-
-unsigned long BmpFile::getNumSBits()
-{
-	unsigned long linelength = 0, retval = 0 ;
-
-	switch (getSubformat()) {
-		case WIN: {
-			if (bmi_win.bmih.biBitCount * bmi_win.bmih.biWidth % 8 == 0) {
-				linelength = bmi_win.bmih.biBitCount * bmi_win.bmih.biWidth / 8 ;
-			}
-			else {
-				linelength = (bmi_win.bmih.biBitCount * bmi_win.bmih.biWidth / 8) + 1;
-			}
-			retval = bmi_win.bmih.biHeight * linelength ;
-		break ; }
-
-		case OS2: {
-			if (bmi_os2.bmch.bcBitCount * bmi_os2.bmch.bcWidth % 8 == 0) {
-				linelength = bmi_os2.bmch.bcBitCount * bmi_os2.bmch.bcWidth / 8 ;
-			}
-			else {
-				linelength = (bmi_os2.bmch.bcBitCount * bmi_os2.bmch.bcWidth / 8) + 1;
-			}
-			retval = bmi_os2.bmch.bcHeight * linelength ;
-		break ; }
-
-		default: {
-			assert (0) ;
-		break ; }
-	}
-
-	return retval ;
-}
-
-Bit BmpFile::getSBitValue (SBitPos pos)
-{
-	assert (pos < getNumSBits()) ;
-	unsigned long row = 0, column = 0 ;
-	calcRC (pos, &row, &column) ;
-	return (bitmap[row][column] & 0x01) ;
 }
 
 void BmpFile::replaceSample (SamplePos pos, CvrStgSample *s)
 {
-	unsigned int BitCount = 0 ;
-	switch (getSubformat()) {
-		case WIN: {
-			BitCount = bmi_win.bmih.biBitCount ;
-		break ; }
+	unsigned long row = 0, column = 0 ;
+	unsigned short firstbit = 0 ;
+	calcRCB (pos, &row, &column, &firstbit) ;
 
-		case OS2: {
-			BitCount = bmi_os2.bmch.bcBitCount ;
-		break ; }
-
-		default: {
-			assert (0) ;
-		break ; }
-	}
-
-	// TODO - finish this
-	switch (BitCount) {
+	unsigned short bitcount = getBitCount() ;
+	switch (bitcount) {
 		case 1: case 4: case 8: {
+			BmpPaletteSample* sample = dynamic_cast<BmpPaletteSample*> (s) ;
+			assert (sample != NULL) ;
+
+			for (unsigned short i = 0 ; i < bitcount ; i++) {
+				bitmap[row][column] = bitmap[row][column] & (~(1 << (firstbit + i))) ;
+				bitmap[row][column] = bitmap[row][column] | ((sample->getIndex() & (1 << i)) << firstbit) ;
+			}
 		break ; }
 
 		case 24: {
-		break ; }
+			BmpRGBSample* sample = dynamic_cast<BmpRGBSample*> (s) ;
+			assert (sample != NULL) ;
 
-		default: {
-			assert (0) ;
+			bitmap[row][column] = sample->getRed() ;
+			bitmap[row][column] = sample->getGreen() ;
+			bitmap[row][column] = sample->getBlue() ;
 		break ; }
 	}
 }
 
 unsigned int BmpFile::getSamplesPerEBit()
 {
-	unsigned int BitCount = 0 ;
-	switch (getSubformat()) {
-		case WIN: {
-			BitCount = bmi_win.bmih.biBitCount ;
-		break ; }
-
-		case OS2: {
-			BitCount = bmi_os2.bmch.bcBitCount ;
-		break ; }
-
-		default: {
-			assert (0) ;
-		break ; }
-	}
-
 	unsigned int retval = 0 ;
-	switch (BitCount) {
+	switch (getBitCount()) {
 		case 1: case 4: case 8: {
 			retval = 2 ;
 		break ; }
@@ -180,17 +120,32 @@ unsigned int BmpFile::getSamplesPerEBit()
 		case 24: {
 			retval = 1 ;
 		break ; }
-
-		default: {
-			assert (0) ;
-		break ; }
 	}
 	return retval ;
 }
 
 CvrStgSample *BmpFile::getSample (SamplePos pos)
 {
-	// TODO 
+	unsigned long row = 0, column = 0 ;
+	unsigned short firstbit = 0 ;
+	calcRCB (pos, &row, &column, &firstbit) ;
+
+	unsigned short bitcount = getBitCount() ;
+	CvrStgSample *retval = NULL ;
+	switch (bitcount) {
+		case 1: case 4: case 8: {
+			unsigned char index = 0 ;
+			for (unsigned short i = 0 ; i < bitcount ; i++) {
+				index |= ((bitmap[row][column] & (1 << (firstbit + i))) >> firstbit) ;
+			}
+			retval = (CvrStgSample*) new BmpPaletteSample (this, index) ;
+		break ; }
+
+		case 24: {
+			retval = (CvrStgSample*) new BmpRGBSample (this, bitmap[row][column], bitmap[row][column + 1], bitmap[row][column + 2]) ;
+		break ; }
+	}
+	return retval ;
 }
 
 #if 0
@@ -214,38 +169,70 @@ int BmpFile::extractBit (unsigned long pos) const
 }
 #endif
 
-void BmpFile::calcRC (unsigned long pos, unsigned long *row, unsigned long *column) const
+// FIXME - test this!
+void BmpFile::calcRCB (SamplePos pos, unsigned long *row, unsigned long *column, unsigned short *firstbit) const
 {
-	unsigned long width = 0 /* in bytes */, height = 0 ;
+	unsigned long width = getWidth(), height = getHeight(), bitcount = getBitCount() ;
 
+	*row = pos / width ;
+	assert (*row < height) ;
+
+	pos = pos % width ;	// now searching for pos in a single row
+	if (bitcount >= 8) {
+		unsigned short bytespersample = bitcount / 8 ;
+		
+		*column = pos * bytespersample ;
+		assert (*column < (width * bytespersample)) ;
+		
+		*firstbit = 0 ;
+	}
+	else {
+		unsigned short samplesperbyte = 8 / bitcount ;
+
+		*column = pos / samplesperbyte ;
+		unsigned long bytesperline = 0 ;
+		if ((width % samplesperbyte) == 0) {
+			bytesperline = width / samplesperbyte ;
+		}
+		else {
+			bytesperline = (width / samplesperbyte) + 1 ;
+		}
+		assert (*column < bytesperline) ;
+
+		*firstbit = pos % samplesperbyte ;
+		assert (*firstbit < 8) ;
+	}
+}
+
+unsigned short BmpFile::getBitCount() const
+{
+	unsigned short retval = 0 ;
 	switch (getSubformat()) {
 		case WIN: {
-			if (bmi_win.bmih.biBitCount * bmi_win.bmih.biWidth % 8 == 0) {
-				width = bmi_win.bmih.biBitCount * bmi_win.bmih.biWidth / 8 ;
-			}
-			else {
-				width = (bmi_win.bmih.biBitCount * bmi_win.bmih.biWidth / 8) + 1;
-			}
-			height = bmi_win.bmih.biHeight ;
+			retval = bmi_win.bmih.biBitCount ;
 		break ; }
 
 		case OS2: {
-			if (bmi_os2.bmch.bcBitCount * bmi_os2.bmch.bcWidth % 8 == 0) {
-				width = bmi_os2.bmch.bcBitCount * bmi_os2.bmch.bcWidth / 8 ;
-			}
-			else {
-				width = (bmi_os2.bmch.bcBitCount * bmi_os2.bmch.bcWidth / 8) + 1;
-			}
-			height = bmi_os2.bmch.bcHeight ;
-		break ; }
-
-		default: {
-			assert (0) ;
+			retval = bmi_os2.bmch.bcBitCount ;
 		break ; }
 	}
+	assert (retval == 1 || retval == 4 || retval == 8 || retval == 24) ;
+	return retval ;
+}
 
-	*row = height - (pos / width) - 1 ;
-	*column = pos % width ;
+unsigned long BmpFile::getWidth() const
+{
+	unsigned long retval = 0 ;
+	switch (getSubformat()) {
+		case WIN:
+			retval = bmi_win.bmih.biWidth ;
+		break ;
+
+		case OS2:
+			retval = bmi_os2.bmch.bcWidth ;
+		break ;
+	}
+	return retval ;
 }
 
 /* reads the headers of a bmp file from disk */
@@ -544,9 +531,9 @@ long BmpFile::calcLinelength ()
 	return retval ;
 }
 
-long BmpFile::getHeight ()
+unsigned long BmpFile::getHeight() const
 {
-	long retval = 0 ;
+	unsigned long retval = 0 ;
 
 	switch (getSubformat()) {
 		case WIN: {
@@ -555,10 +542,6 @@ long BmpFile::getHeight ()
 
 		case OS2: {
 			retval = bmi_os2.bmch.bcHeight ;
-		break ; }
-
-		default: {
-			assert (0) ;
 		break ; }
 	}
 

@@ -22,67 +22,77 @@
 #include <cstdlib>
 
 #include "common.h"
+#include "wavfile.h"
 #include "wavsample.h"
 
-//
-// class WavPCMsmallSample
-//
-float WavPCMsmallSample::calcDistance (CvrStgSample *s)
+WavPCMSample::WavPCMSample (CvrStgFile *f, int v)
+	: CvrStgSample(f), Value(v)
 {
-	WavPCMsmallSample *sample = dynamic_cast<WavPCMsmallSample*> (s) ;
+	WavFile *wavfile = dynamic_cast<WavFile*> (f) ;
+	assert (wavfile != NULL) ;
+	unsigned short samplesize = wavfile->getBitsPerSample() ;
+
+	int maxvalue = 1 ;
+	int minvalue = 1 ;
+	if ((samplesize >= 1) && (samplesize <= 8)) {
+		// maxvalue is 2^samplesize
+		for (unsigned short i = 0 ; i < samplesize ; i++) {
+			maxvalue *= 2 ;
+		}
+
+		minvalue = 0 ;
+	}
+	else {
+		// maxvalue is (2^(samplesize - 1)) - 1
+		for (unsigned short i = 0 ; i < (samplesize - 1) ; i++) {
+			maxvalue *= 2 ;
+		}
+		maxvalue-- ;
+
+		// minvalue is -(2^(SampleSize - 1))
+		for (unsigned short i = 0 ; i < (samplesize - 1) ; i++) {
+			minvalue *= 2 ;
+		}
+		minvalue = -minvalue ;
+	}
+
+	MaxValue = maxvalue ;
+	MinValue = minvalue ;
+}
+
+Bit WavPCMSample::getBit()
+{
+	return ((Bit) (Value & 1)) ;
+}
+	
+float WavPCMSample::calcDistance (CvrStgSample *s)
+{
+	WavPCMSample *sample = dynamic_cast<WavPCMSample*> (s) ;
 	assert (sample != NULL) ;
 	return (abs ((float) Value - (float) sample->getValue())) ;
 }
 
-unsigned char WavPCMsmallSample::getValue()
+int WavPCMSample::getValue()
 {
 	return Value ;
 }
 
-CvrStgSample *WavPCMsmallSample::getNearestOppositeNeighbour()
+CvrStgSample *WavPCMSample::getNearestOppositeNeighbour()
 {
-	CvrStgSample *retval = NULL ;
-	if (Value == 0) {
-		retval = (CvrStgSample *) new WavPCMsmallSample (1) ;
+	int n_value = 0 ;
+	if (Value == MinValue) {
+		n_value = MinValue + 1 ;
 	}
-	else if (Value == 255) {
-		retval = (CvrStgSample *) new WavPCMsmallSample (254) ;
+	else if (Value == MaxValue) {
+		n_value = MaxValue - 1 ;
 	}
 	else {
 		if (RndSrc.getBit()) {
-			retval = (CvrStgSample *) new WavPCMsmallSample (Value - 1) ;
+			n_value = Value - 1 ;
 		}
 		else {
-			retval = (CvrStgSample *) new WavPCMsmallSample (Value + 1) ;
+			n_value = Value + 1 ;
 		}
 	}
-	return retval ;
-}
-
-//
-// class WavPCMbigSample
-//
-float WavPCMbigSample::calcDistance (CvrStgSample *s)
-{
-	WavPCMbigSample *sample = dynamic_cast<WavPCMbigSample*> (s) ;
-	assert (sample != NULL) ;
-	return (abs ((float) Value - (float) sample->getValue())) ;
-}
-
-int WavPCMbigSample::getValue()
-{
-	return Value ;
-}
-
-// FIXME - it is assumed that the maximum and minimum are never touched
-CvrStgSample *WavPCMbigSample::getNearestOppositeNeighbour()
-{
-	CvrStgSample *retval = NULL ;
-	if (RndSrc.getBit()) {
-		retval = (CvrStgSample *) new WavPCMbigSample (Value - 1) ;
-	}
-	else {
-		retval = (CvrStgSample *) new WavPCMbigSample (Value + 1) ;
-	}
-	return retval ;
+	return ((CvrStgSample *) new WavPCMSample (getFile(), n_value)) ;
 }

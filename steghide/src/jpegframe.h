@@ -27,6 +27,9 @@
 #include "jpeghufftable.h"
 #include "jpegscan.h"
 
+// declared here to prevent circulating #includes
+class JpegFile ;
+
 /**
  * \class JpegFrame
  * \brief a jpeg frame
@@ -34,7 +37,7 @@
 class JpegFrame : public JpegContainer {
 	public:
 	JpegFrame (void) ;
-	JpegFrame (BinaryIO *io) ;
+	JpegFrame (JpegFile *f, BinaryIO *io) ;
 	~JpegFrame (void) ;
 
 	void read (BinaryIO *io) ;
@@ -64,12 +67,15 @@ class JpegFrame : public JpegContainer {
 	 **/
 	void addHuffmanTable (JpegHuffmanTable *ht) ;
 
+	JpegFile *getFile (void) ;
+
 	private:
 	void recalcACTables (vector<vector <unsigned long> > freqs) ;
 	vector<unsigned int> calcCodeSize (vector<unsigned long> freq) ;
 	vector<unsigned int> calcBits (vector<unsigned int> codesize) ;
 	vector<unsigned int> calcHuffVal (vector<unsigned int> codesize) ;
 
+	JpegFile *File ;
 	JpegFrameHeader *framehdr ;
 	JpegScan *scan ;
 	vector<JpegHuffmanTable*> DCTables ;

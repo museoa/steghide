@@ -1,7 +1,7 @@
 These are things that I plan to implement in the future:
 (in no particular order)
 
-* compress plain data before embedding (zlib, libbzip2?)
+* compress plain data before embedding (zlib)
 
 * preserve color/sample frequencies to prevent detection by color frequency
   based statistical tests
@@ -20,5 +20,6 @@ These are things that I plan to implement in the future:
 
 * support for jpegs that use progressive DCT
 
+* matrix encoding
 
-? allow PGP encryption of data and/or stego header
+* allow PGP encryption of embedded data (gpgme?)

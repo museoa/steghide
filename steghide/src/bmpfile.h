@@ -37,11 +37,13 @@ class BmpFile : public CvrStgFile {
 	void write (void) ;
 
 	unsigned long getNumSamples (void) ;
-	unsigned long getNumSBits (void) ;
-	Bit getSBitValue (SBitPos pos) ;
 	void replaceSample (SamplePos pos, CvrStgSample *s) ;
 	CvrStgSample* getSample (SamplePos pos) ;
 	unsigned int getSamplesPerEBit (void) ;
+
+	unsigned short getBitCount (void) const ;
+	unsigned long getWidth (void) const ;
+	unsigned long getHeight (void) const ;
 
 	protected:
 #ifdef WIN32
@@ -130,9 +132,8 @@ class BmpFile : public CvrStgFile {
 	void bmpos2_writeheaders () ;
 	void readdata () ;
 	void writedata () ;
-	void calcRC (unsigned long pos, unsigned long *row, unsigned long *column) const ;
+	void calcRCB (SamplePos pos, unsigned long *row, unsigned long *column, unsigned short *firstbit) const ;
 	long calcLinelength () ;
-	long getHeight () ;
 	SUBFORMAT getSubformat (void) const ;
 } ;
 

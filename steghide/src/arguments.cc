@@ -129,50 +129,55 @@ void Arguments::parse (int argc, char *argv[])
 				}
 			}
 
-			bool s1_isalgo = false, s1_ismode = false ;
-			bool s2_isalgo = false, s2_ismode = false ;
-
-			if (s1 != "") {
-				s1_isalgo = MCryptpp::isValidAlgorithm (s1) ;
-				s1_ismode = MCryptpp::isValidMode (s1) ;
-
-				assert (!(s1_isalgo && s1_ismode)) ;
-				if (!(s1_isalgo || s1_ismode)) {
-					throw SteghideError (_("\"%s\" is neither an algorithm nor a mode supported by libmcrypt."), s1.c_str()) ;
-				}
-			}
-			if (s2 != "") {
-				s2_isalgo = MCryptpp::isValidAlgorithm (s2) ;
-				s2_ismode = MCryptpp::isValidMode (s2) ;
-
-				assert (!(s2_isalgo && s2_ismode)) ;
-				if (!(s2_isalgo || s2_ismode)) {
-					throw SteghideError (_("\"%s\" is neither an algorithm nor a mode supported by libmcrypt."), s2.c_str()) ;
-				}
-			}
-
-			if (s1_isalgo && s2_isalgo) {
-				throw SteghideError (_("\"%s\" and \"%s\" are both libmcrypt algorithms. please specify only one."), s1.c_str(), s2.c_str()) ;
-			}
-			if (s1_ismode && s2_ismode) {
-				throw SteghideError (_("\"%s\" and \"%s\" are both libmcrypt modes. please specify only one."), s1.c_str(), s2.c_str()) ;
-			}
-
-			if (s1_isalgo) {
+			if (s1 == "none") {
 				EncAlgo.setValue (s1) ;
 			}
-			if (s1_ismode) {
-				EncMode.setValue (s1) ;
-			}
-			if (s2_isalgo) {
-				EncAlgo.setValue (s2) ;
-			}
-			if (s2_ismode) {
-				EncMode.setValue (s2) ;
-			}
+			else {
+				bool s1_isalgo = false, s1_ismode = false ;
+				bool s2_isalgo = false, s2_ismode = false ;
 
-			if (!MCryptpp::AlgoSupportsMode (EncAlgo.getValue(), EncMode.getValue())) {
-				throw SteghideError (_("the encryption algorithm \"%s\" can not be used with the mode \"%s\"."), EncAlgo.getValue().c_str(), EncAlgo.getValue().c_str()) ;
+				if (s1 != "") {
+					s1_isalgo = MCryptpp::isValidAlgorithm (s1) ;
+					s1_ismode = MCryptpp::isValidMode (s1) ;
+
+					assert (!(s1_isalgo && s1_ismode)) ;
+					if (!(s1_isalgo || s1_ismode)) {
+						throw SteghideError (_("\"%s\" is neither an algorithm nor a mode supported by libmcrypt."), s1.c_str()) ;
+					}
+				}
+				if (s2 != "") {
+					s2_isalgo = MCryptpp::isValidAlgorithm (s2) ;
+					s2_ismode = MCryptpp::isValidMode (s2) ;
+
+					assert (!(s2_isalgo && s2_ismode)) ;
+					if (!(s2_isalgo || s2_ismode)) {
+						throw SteghideError (_("\"%s\" is neither an algorithm nor a mode supported by libmcrypt."), s2.c_str()) ;
+					}
+				}
+
+				if (s1_isalgo && s2_isalgo) {
+					throw SteghideError (_("\"%s\" and \"%s\" are both libmcrypt algorithms. please specify only one."), s1.c_str(), s2.c_str()) ;
+				}
+				if (s1_ismode && s2_ismode) {
+					throw SteghideError (_("\"%s\" and \"%s\" are both libmcrypt modes. please specify only one."), s1.c_str(), s2.c_str()) ;
+				}
+
+				if (s1_isalgo) {
+					EncAlgo.setValue (s1) ;
+				}
+				if (s1_ismode) {
+					EncMode.setValue (s1) ;
+				}
+				if (s2_isalgo) {
+					EncAlgo.setValue (s2) ;
+				}
+				if (s2_ismode) {
+					EncMode.setValue (s2) ;
+				}
+
+				if (!MCryptpp::AlgoSupportsMode (EncAlgo.getValue(), EncMode.getValue())) {
+					throw SteghideError (_("the encryption algorithm \"%s\" can not be used with the mode \"%s\"."), EncAlgo.getValue().c_str(), EncAlgo.getValue().c_str()) ;
+				}
 			}
 		}
 
@@ -379,26 +384,29 @@ void Arguments::parse (int argc, char *argv[])
 
 string Arguments::getPassphrase (bool doublecheck)
 {
+    int c = EOF ;
+
 	cerr << _("Enter passphrase: ") ;
 	Terminal term ;
 	term.EchoOff() ;
-	string s1 ;
-	cin >> s1 ;
-	if (s1.size() > PassphraseMaxLen) {
-		// FIXME - wieso ist Länge der Passphrase eigentlich beschränkt ?
-		throw SteghideError (_("the maximum length of the passphrase is %d characters."), PassphraseMaxLen) ;
-	}
+	
+    string s1 = "" ;
+    while ((c = cin.get()) != '\n') {
+        s1 += c ;
+    }
+
 	term.reset() ;
 	cerr << endl ;
 
 	if (doublecheck) {
 		cerr << _("Re-Enter passphrase: ") ;
 		term.EchoOff() ;
-		string s2 ;
-		cin >> s2 ;
-		if (s2.size() > PassphraseMaxLen) {
-			throw SteghideError (_("the maximum length of the passphrase is %d characters."), PassphraseMaxLen) ;
+
+		string s2 = "" ;
+		while ((c = cin.get()) != '\n') {
+			s2 += c ;
 		}
+
 		term.reset() ;
 		cerr << endl ;
 
@@ -441,3 +449,6 @@ void Arguments::setDefaults (void)
 	Force.setValue (Default_Force, false) ;
 	Verbosity.setValue (Default_Verbosity, false) ;
 }
+
+const char* Arguments::Default_EncAlgo = "rijndael-128" ;
+const char* Arguments::Default_EncMode = "cbc" ;

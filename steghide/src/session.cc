@@ -31,12 +31,12 @@ void Session::run ()
 {
 	switch (Args.Command.getValue()) {
 		case EMBED: {
-			Embedder emb (Args.CvrFn.getValue(), Args.StgFn.getValue(), Args.EmbFn.getValue()) ;
+			Embedder emb ;
 			emb.embed() ;
 		break ; }
 
 		case EXTRACT: {
-			Extractor ext (Args.StgFn.getValue(), Args.ExtFn.getValue()) ;
+			Extractor ext ;
 			ext.extract() ;
 		break ; }
 
@@ -86,7 +86,7 @@ void Session::printVersion ()
 	cout << "steghide version " << VERSION << endl ;
 }
 
-// FIXME - arguments.* an das hier anpassen - Lang- u. Kurzformen von Argumenten beachten (!)
+// TODO - Lang- u. Kurzformen von Argumenten testen
 // FIXME - in übersetzungen nachsehen - alle fehlermeldungen mit punkt beenden
 // FIXME ? soll "steghide embed -cf cvr.jpg -ef emb.txt" cvr.jpg als stego file verwenden ?
 void Session::printHelp ()

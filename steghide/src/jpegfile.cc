@@ -49,7 +49,7 @@ void JpegFile::read (BinaryIO *io)
 	CvrStgFile::read (io) ;
 
 	// SOI has been read in guesff
-	frame = new JpegFrame (io) ;
+	frame = new JpegFrame (this, io) ;
 	// EOI is read in JpegFrame
 }
 
@@ -67,16 +67,6 @@ void JpegFile::write ()
 unsigned long JpegFile::getNumSamples()
 {
 	return frame->getNumSamples() ;
-}
-
-unsigned long JpegFile::getNumSBits()
-{
-	return frame->getNumSBits() ;
-}
-
-Bit JpegFile::getSBitValue (SBitPos pos)
-{
-	return frame->getSBitValue(pos) ;
 }
 
 void JpegFile::replaceSample (SamplePos pos, CvrStgSample *s)

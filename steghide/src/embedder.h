@@ -32,7 +32,6 @@
 class Embedder {
 	public:
 	Embedder (void) ;
-	Embedder (string cfn, string sfn, string efn) ;
 
 	void embed (void) ;
 

@@ -40,15 +40,7 @@ class JpegEntropyCoded : public JpegObject, public CvrStgObject {
 	void read (BinaryIO *io) ;
 	void write (BinaryIO *io) ;
 
-#if 0
-	unsigned long getCapacity (void) const ;
-	void embedBit (unsigned long pos, int bit) ;
-	int extractBit (unsigned long pos) const ;
-#endif
-
 	unsigned long getNumSamples (void) ;
-	unsigned long getNumSBits (void) ;
-	Bit getSBitValue (SBitPos pos) ;
 	void replaceSample (SamplePos pos, CvrStgSample *s) ;
 	CvrStgSample* getSample (SamplePos pos) ;
 

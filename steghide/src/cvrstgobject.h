@@ -22,7 +22,8 @@
 #define SH_CVRSTGOBJECT_H
 
 #include "common.h"
-#include "cvrstgsample.h"
+// declared here to prevent circulating #includes
+class CvrStgSample ;
 
 /**
  * \class CvrStgObject
@@ -33,15 +34,7 @@
  *
  * Definitions:
  * Embedded Bit...a bit to be embedded (one bit in the original or extracted embfile)
- * Steganographic Bit...an embedded bit (one bit (a LSB) in the cvrstgfile)
  * Sample...the smallest data unit in a file (e.g. a RGB triple, a DCT coefficient)
- *
- * One sample can contain one or more SBits.
- *
- * The value of an EBit is the xor of several SBits - to change the value of an EBit only
- * one of the SBits involved needs to be changed.
- *
- * One sample must not contain SBits that define different EBits.
  **/
 class CvrStgObject {
 	public:
@@ -49,20 +42,6 @@ class CvrStgObject {
 	 * get the number of samples in this CvrStgObject
 	 **/
 	virtual unsigned long getNumSamples (void) = 0 ;
-
-	/**
-	 * get the number of sbits in this CvrStgObject (is a multiple of the number of samples)
-	 **/
-	virtual unsigned long getNumSBits (void) = 0 ;
-
-	/**
-	 * get the value of one sbit
-	 * \param pos the position of the sbit (must be in 0...getNumSBits()-1)
-	 * \return the value of the sbit
-	 *
-	 * The derived class should check the condition(s) given above in its Implementation of this function.
-	 **/
-	virtual Bit getSBitValue (SBitPos pos) = 0 ;
 
 	/**
 	 * replace a sample thus altering the value of one or more sbits

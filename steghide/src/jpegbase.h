@@ -252,8 +252,6 @@ class JpegContainer : public JpegObject, public CvrStgObject {
 	void write (BinaryIO *io) ;
 
 	unsigned long getNumSamples (void) ;
-	unsigned long getNumSBits (void) ;
-	Bit getSBitValue (SBitPos pos) ;
 	void replaceSample (SamplePos pos, CvrStgSample *s) ;
 	CvrStgSample* getSample (SamplePos pos) ;
 
@@ -273,8 +271,7 @@ class JpegContainer : public JpegObject, public CvrStgObject {
 	void clearObjs (void) ;
 
 	private:
-	CvrStgObject *calcCvrStgObject_SBitPos (SBitPos *pos) const ;
-	CvrStgObject *calcCvrStgObject_SamplePos (SamplePos *pos) const ;
+	CvrStgObject *calcCvrStgObject (SamplePos *pos) const ;
 
 	/**
 	 * contains all JpegObjects in this JpegContainer

@@ -20,19 +20,17 @@
 
 #include <string>
 
+#include "common.h"
 #include "cvrstgfile.h"
+#include "cvrstgsample.h"
 #include "embdata.h"
 #include "extractor.h"
 #include "permutation.h"
 
 Extractor::Extractor ()
 {
-}
-
-Extractor::Extractor (string sfn, string xfn)
-{
-	StegoFileName = sfn ;
-	ExtractFileName = xfn ;
+	StegoFileName = Args.StgFn.getValue() ;
+	ExtractFileName = Args.ExtFn.getValue() ;
 }
 
 void Extractor::extract ()
@@ -43,19 +41,14 @@ void Extractor::extract ()
 	Permutation perm (stgfile->getNumSamples(), Args.Passphrase.getValue()) ;
 
 	unsigned int sam_ebit = stgfile->getSamplesPerEBit() ;
-	unsigned int sbit_sam = stgfile->getSBitsPerSample() ;
 	while (!embdata.finished()) {
 		unsigned long bitsneeded = embdata.getNumBitsNeeded() ;
 		BitString bits ;
 		for (unsigned long i = 0 ; i < bitsneeded ; i++) {
 			Bit xorresult = 0 ;
 			for (unsigned int j = 0 ; j < sam_ebit ; j++) {
-				// process one sample
-				SBitPos firstsbitpos = (*perm) * sbit_sam ;
-				for (unsigned int k = 0 ; k < sbit_sam ; k++) {
-					// process one sbit
-					xorresult ^= stgfile->getSBitValue (firstsbitpos + k) ;
-				}
+				CvrStgSample *sample = stgfile->getSample (*perm) ;
+				xorresult ^= sample->getBit() ;
 				++perm ;
 			}
 			bits.append (xorresult) ;

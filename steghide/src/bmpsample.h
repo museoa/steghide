@@ -24,40 +24,30 @@
 #include "cvrstgsample.h"
 #include "common.h"
 
-class BmpSample : public CvrStgSample {
+class BmpPaletteSample : public CvrStgSample {
 	public:
-	virtual unsigned char getRed (void) = 0 ;
-	virtual unsigned char getGreen (void) = 0 ;
-	virtual unsigned char getBlue (void) = 0 ;
+	BmpPaletteSample (void) : CvrStgSample(NULL) {} ;
+	BmpPaletteSample (CvrStgFile *f, unsigned char i) ;
 
+	Bit getBit (void) ;
 	float calcDistance (CvrStgSample *s) ;
-} ;
-
-class BmpPaletteSample : public BmpSample {
-	public:
-	BmpPaletteSample (void) {} ;
-	BmpPaletteSample (unsigned char i, unsigned char r, unsigned char g, unsigned char b) : Index(i), Red(r), Green(g), Blue(b) {} ;
-
 	CvrStgSample* getNearestOppositeNeighbour (void) ;
 
 	unsigned char getIndex (void) ;
-	unsigned char getRed (void) ;
-	unsigned char getGreen (void) ;
-	unsigned char getBlue (void) ;
 
 	private:
 	unsigned char Index ;
-	// FIXME - take rgb values from a palette
-	unsigned char Red ;
-	unsigned char Green ;
-	unsigned char Blue ;
+	unsigned char MaxIndex ;
+	unsigned char MinIndex ;
 } ;
 
-class BmpRGBSample : public BmpSample {
+class BmpRGBSample : public CvrStgSample {
 	public:
-	BmpRGBSample (void) {} ;
-	BmpRGBSample (unsigned char r, unsigned char g, unsigned char b) : Red(r), Green(g), Blue(b) {} ;
+	BmpRGBSample (void) : CvrStgSample(NULL) {} ;
+	BmpRGBSample (CvrStgFile *f, unsigned char r, unsigned char g, unsigned char b) : CvrStgSample (f), Red(r), Green(g), Blue(b) {} ;
 
+	Bit getBit (void) ;
+	float calcDistance (CvrStgSample *s) ;
 	CvrStgSample* getNearestOppositeNeighbour (void) ;
 
 	unsigned char getRed (void) ;
@@ -68,6 +58,8 @@ class BmpRGBSample : public BmpSample {
 	unsigned char Red ;
 	unsigned char Green ;
 	unsigned char Blue ;
+
+	unsigned char getNearestOppositeComponent (unsigned char c) ;
 } ;
 
 #endif // ndef SH_BMPSAMPLE_H

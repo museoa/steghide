@@ -48,7 +48,6 @@ extern RandomSource RndSrc ;
 
 // typedefs
 typedef int Bit ;
-typedef unsigned long SBitPos ;
 typedef unsigned long SamplePos ;
 
 #endif // ndef SH_COMMON_H

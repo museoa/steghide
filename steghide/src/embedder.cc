@@ -30,13 +30,9 @@
 
 Embedder::Embedder ()
 {
-}
-
-Embedder::Embedder (string cfn, string sfn, string efn)
-{
-	CoverFileName = cfn ;
-	StegoFileName = sfn ;
-	EmbedFileName = efn ;
+	CoverFileName = Args.CvrFn.getValue() ;
+	StegoFileName = Args.StgFn.getValue() ;
+	EmbedFileName = Args.EmbFn.getValue() ;
 }
 
 void Embedder::embed ()
@@ -61,24 +57,6 @@ void Embedder::embed ()
 			i_modify++ ;
 		}
 	}
-#if 0
-		Bit xorresult = 0 ;
-		for (unsigned int j = 0 ; j < sam_ebit ; j++) {
-			// process one sample
-			SBitPos firstsbitpos = (*perm) * sbit_sam ;
-			for (unsigned int k = 0 ; k < sbit_sam ; k++) {
-				// process one sbit
-				xorresult ^= cvrstgfile->getSBitValue (firstsbitpos + k) ;
-			}
-			++perm ;
-		}
-
-		if (xorresult != toembed[i]) {
-			cvrstgfile->replaceSample (sel.getIndex (i_modify), sel.getSample (i_modify)) ;
-			i_modify++ ;
-		}
-	}
-#endif
 
 	cvrstgfile->transform (StegoFileName) ;
 	cvrstgfile->write() ;
@@ -90,25 +68,23 @@ void Embedder::calculate (CvrStgFile *csf, BitString e)
 
 	unsigned long n = e.getLength() ;
 	unsigned int sam_ebit = csf->getSamplesPerEBit() ;
-	unsigned int sbit_sam = csf->getSBitsPerSample() ;
 	for (unsigned long i = 0 ; i < n ; i++) {
 		vector<SamplePos> sampleposs ;
-		vector<CvrStgSample*> samples ;
+		vector<CvrStgSample*> samples ;	// FIXME - the same samples (i.e. with the same values) are kept more than one time in vertices in graph
 		Bit xorresult = 0 ;
 		for (unsigned int j = 0 ; j < sam_ebit ; j++) {
-			// process one sample
 			sampleposs.push_back (*perm) ;
-			samples.push_back (csf->getSample (*perm)) ;
-			SBitPos firstsbitpos = (*perm) * sbit_sam ;	// FIXME - CvrStgFile(?Object) erweitern um getFirstSBitPos (SamplePos) und getSamplePos (SBitPos)
-			for (unsigned int k = 0 ; k < sbit_sam ; k++) {
-				// process one sbit
-				xorresult ^= csf->getSBitValue (firstsbitpos + k) ;
-			}
+			CvrStgSample *sample = csf->getSample (*perm) ;
+			samples.push_back (sample) ;
+			xorresult ^= sample->getBit() ;
 			++perm ;
 		}
 
 		if (xorresult == e[i]) {
 			NeedsChange.push_back (false) ;
+			for (vector<CvrStgSample*>::iterator i = samples.begin() ; i != samples.end() ; i++) {
+				delete *i ;
+			}
 		}
 		else {
 			Vertex *v = new Vertex (sampleposs, samples) ;

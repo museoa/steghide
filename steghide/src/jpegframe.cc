@@ -31,14 +31,16 @@
 JpegFrame::JpegFrame ()
 	: JpegContainer()
 {
+	File = NULL ;
 	framehdr = NULL ;
 	ACTables = vector<JpegHuffmanTable*> (4) ;
 	DCTables = vector<JpegHuffmanTable*> (4) ;
 }
 
-JpegFrame::JpegFrame (BinaryIO *io)
+JpegFrame::JpegFrame (JpegFile *f, BinaryIO *io)
 	: JpegContainer()
 {
+	File = f ;
 	framehdr = NULL ;
 	ACTables = vector<JpegHuffmanTable*> (4) ;
 	DCTables = vector<JpegHuffmanTable*> (4) ;
@@ -68,6 +70,11 @@ JpegHuffmanTable *JpegFrame::getACTable (unsigned char ds)
 	assert (ds < 4) ;
 	assert (ACTables[ds]) ;
 	return ACTables[ds] ;
+}
+
+JpegFile *JpegFrame::getFile()
+{
+	return File ;
 }
 
 void JpegFrame::addHuffmanTable (JpegHuffmanTable *ht)

@@ -53,7 +53,18 @@ class RandomSource {
 	 **/
 	BitString getBits (unsigned int n) ;
 
+	/**
+	 * get one random bit
+	 * \return true of false with equal probability
+	 **/
 	bool getBit (void) ;
+
+	/**
+	 * get a random value
+	 * \param n the range of the random value to be returned
+	 * \return a random number in {0,...,n-1}
+	 **/
+	unsigned long getValue (unsigned long n) ;
 } ;
 
 #endif // ndef SH_RANDOMSOURCE_H

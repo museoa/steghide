@@ -24,7 +24,6 @@
 class Extractor {
 	public:
 	Extractor (void) ;
-	Extractor (string sfn, string xfn) ;
 
 	void extract (void) ;
 

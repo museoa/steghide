@@ -75,15 +75,14 @@ void MCryptpp::close ()
 
 BitString MCryptpp::encrypt (BitString p, string pp)
 {
-	// FIXME - geht getblocksize bei stream-algo ?
-	p.padRandom (mcrypt_enc_get_block_size (MCryptD)) ;
+	p.padRandom (mcrypt_enc_get_block_size (MCryptD)) ; // blocksize is 1 for stream algorithms
 	vector<unsigned char> ciphertext = _encrypt (p.getBytes(), pp) ;
 	return BitString (ciphertext) ;
 }
 
 BitString MCryptpp::decrypt (BitString c, string pp)
 {
-	// FIXME - in c.getBytes wird überprüft, ob c.getLength() % 8 == 0 , hier auch ?
+	assert (c.getLength() % mcrypt_enc_get_block_size (MCryptD) == 0) ;
 	vector<unsigned char> plaintext = _decrypt (c.getBytes(), pp) ;
 	return BitString (plaintext) ;
 }
@@ -312,7 +311,7 @@ unsigned long MCryptpp::getEncryptedSize (Algorithm a, Mode m, unsigned long pln
 	}
 
 	unsigned long blocks = 0 ;
-	const unsigned long blocksize = mcrypt_enc_get_block_size(td) ; // FIXME - must be 1 for stream algorithms
+	const unsigned long blocksize = mcrypt_enc_get_block_size(td) ; // is 1 for stream algorithms
 	if (plnsize % blocksize == 0) {
 		blocks = plnsize / blocksize ;
 	}

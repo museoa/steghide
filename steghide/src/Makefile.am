@@ -14,13 +14,13 @@ terminal.h vertex.h wavfile.h wavsample.h
 steghide_SOURCES = \
 arg.cc arguments.cc aufile.cc ausample.cc \
 binaryio.cc bitstring.cc bmpfile.cc bmpsample.cc \
-cvrstgfile.cc embdata.cc embedder.cc error.cc \
-extractor.cc graph.cc jpegbase.cc jpegentropycoded.cc \
-jpegfile.cc jpegframe.cc jpegframehdr.cc jpeghufftable.cc \
-jpegjfifapp0.cc jpegrestart.cc jpegsample.cc jpegscan.cc \
-jpegscanhdr.cc jpegunusedseg.cc main.cc mcryptpp.cc \
-mhashkeygenpp.cc mhashpp.cc msg.cc permutation.cc \
-randomsource.cc session.cc terminal.cc vertex.cc \
-wavfile.cc wavsample.cc
+cvrstgfile.cc cvrstgsample.cc embdata.cc embedder.cc \
+error.cc extractor.cc graph.cc jpegbase.cc \
+jpegentropycoded.cc jpegfile.cc jpegframe.cc jpegframehdr.cc \
+jpeghufftable.cc jpegjfifapp0.cc jpegrestart.cc jpegsample.cc \
+jpegscan.cc jpegscanhdr.cc jpegunusedseg.cc main.cc \
+mcryptpp.cc mhashkeygenpp.cc mhashpp.cc msg.cc \
+permutation.cc randomsource.cc session.cc terminal.cc \
+vertex.cc wavfile.cc wavsample.cc
 localedir = $(datadir)/locale
 LIBTOOL = $(SHELL) libtool

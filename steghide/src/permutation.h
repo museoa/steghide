@@ -42,6 +42,9 @@ class Permutation {
 	 **/
 	unsigned long operator* (void) ;
 
+	/**
+	 * reset this permutation, so that (*this)* returns first value
+	 **/
 	void reset (void) ;
 
 	void setWidth (unsigned long w) ;

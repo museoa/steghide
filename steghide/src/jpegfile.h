@@ -41,8 +41,6 @@ class JpegFile : public CvrStgFile {
 	void write (void) ;
 
 	unsigned long getNumSamples (void) ;
-	unsigned long getNumSBits (void) ;
-	Bit getSBitValue (SBitPos pos) ;
 	void replaceSample (SamplePos pos, CvrStgSample *s) ;
 	CvrStgSample* getSample (SamplePos pos) ;
 	unsigned int getSamplesPerEBit (void) ;

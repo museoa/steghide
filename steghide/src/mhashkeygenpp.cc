@@ -83,7 +83,6 @@ void MHashKeyGenpp::setKeyGenAlgorithm (keygenid algo)
 
 void MHashKeyGenpp::setHashAlgorithm (hashid hashalgo)
 {
-	// FIXME - wie werden hashid Variablen initialisiert ?
 	AlgorithmData.hash_algorithm[0] = hashalgo ;
 }
 

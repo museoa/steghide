@@ -26,9 +26,10 @@
 
 class JpegSample : public CvrStgSample {
 	public:
-	JpegSample (void) {} ;
-	JpegSample (int c) : DctCoeff (c) {} ;
+	JpegSample (void) : CvrStgSample(NULL) {} ;
+	JpegSample (CvrStgFile *f, int c) : CvrStgSample(f), DctCoeff (c) {} ;
 
+	Bit getBit (void) ;
 	float calcDistance (CvrStgSample *s) ;
 	CvrStgSample* getNearestOppositeNeighbour (void) ;
 

@@ -55,6 +55,10 @@ class Vertex {
 	 **/
 	CvrStgSample *getSample (unsigned int i) const ;
 
+#if 0
+	bool operator< (Vertex v) ;
+#endif
+
 	private:
 	vector<SamplePos> SamplePositions ;
 	vector<CvrStgSample*> Samples ;

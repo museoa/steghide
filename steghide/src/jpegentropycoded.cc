@@ -287,24 +287,6 @@ unsigned long JpegEntropyCoded::getNumSamples()
 	return ((unsigned long) dctcoeffs.size()) ;
 }
 
-unsigned long JpegEntropyCoded::getNumSBits()
-{
-	return ((unsigned long) dctcoeffs.size()) ;
-}
-
-Bit JpegEntropyCoded::getSBitValue (SBitPos pos)
-{
-	assert (pos < dctcoeffs.size()) ;
-	Bit retval = 0 ;
-	if (dctcoeffs[pos] >= 0) {
-		retval = dctcoeffs[pos] % 2 ;
-	}
-	else {
-		retval = (-dctcoeffs[pos] % 2) ;
-	}
-	return retval ;
-}
-
 void JpegEntropyCoded::replaceSample (SamplePos pos, CvrStgSample *s)
 {
 	assert (pos < dctcoeffs.size()) ;
@@ -316,53 +298,11 @@ void JpegEntropyCoded::replaceSample (SamplePos pos, CvrStgSample *s)
 CvrStgSample *JpegEntropyCoded::getSample (SamplePos pos)
 {
 	assert (pos < dctcoeffs.size()) ;
-	return ((CvrStgSample *) new JpegSample (dctcoeffs[pos])) ;
+	JpegScan *p_scan = (JpegScan *) getParent() ;
+	JpegFrame *p_frame = (JpegFrame *) p_scan->getParent() ;
+	JpegFile *p_file = p_frame->getFile() ;
+	return ((CvrStgSample *) new JpegSample ((CvrStgFile *) p_file, dctcoeffs[pos])) ;
 }
-
-#if 0
-unsigned long JpegEntropyCoded::getCapacity () const
-{
-	return ((unsigned long) dctcoeffs.size()) ;
-}
-
-void JpegEntropyCoded::embedBit (unsigned long pos, int bit)
-{
-	assert (pos < dctcoeffs.size()) ;
-	assert (bit == 0 || bit == 1) ;
-
-	if (bit != extractBit (pos)) {
-		if (dctcoeffs[pos] > 0) {
-			dctcoeffs[pos]-- ;
-		}
-		else if (dctcoeffs[pos] < 0)  {
-			dctcoeffs[pos]++ ;
-		}
-		else if (dctcoeffs[pos] == 0) {
-			if ((rand() / (RAND_MAX + 1.0)) >= 0.5) {
-				dctcoeffs[pos] = 1 ;
-			}
-			else {
-				dctcoeffs[pos] = -1 ;
-			}
-		}
-	}
-}
-
-int JpegEntropyCoded::extractBit (unsigned long pos) const
-{
-	assert (pos < dctcoeffs.size()) ;
-	int retval = 0 ;
-
-	if (dctcoeffs[pos] >= 0) {
-		retval = dctcoeffs[pos] % 2 ;
-	}
-	else {
-		retval = (-dctcoeffs[pos] % 2) ;
-	}
-
-	return retval ;
-}
-#endif
 
 unsigned char JpegEntropyCoded::decode (BinaryIO *io, JpegHuffmanTable *ht)
 {

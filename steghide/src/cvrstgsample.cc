@@ -18,25 +18,27 @@
  *
  */
 
-#ifndef SH_AUSAMPLE_H
-#define SH_AUSAMPLE_H
-
-#include "cvrstgsample.h"
 #include "common.h"
+#include "cvrstgsample.h"
+#include "cvrstgfile.h"
 
-class AuSample : public CvrStgSample {
-	public:
-	AuSample (void) : CvrStgSample(NULL) {} ;
-	AuSample (CvrStgFile *f, unsigned char v) : CvrStgSample(f), Value(v) {} ;
+// FIXME - don't use 1.0 for RGB
+bool CvrStgSample::is_Neighbour (CvrStgSample *s)
+{
+	return (calcDistance(s) <= 1.0) ;
+}
 
-	Bit getBit (void) ;
-	float calcDistance (CvrStgSample *s) ;
-	CvrStgSample* getNearestOppositeNeighbour (void) ;
+bool CvrStgSample::is_equal (CvrStgSample *s)
+{
+	return (calcDistance(s) == 0.0) ;
+}
 
-	unsigned char getValue (void) ;
+CvrStgFile *CvrStgSample::getFile()
+{
+	return File ;
+}
 
-	private:
-	unsigned char Value ;
-} ;
-
-#endif // ndef SH_AUSAMPLE_H
+void CvrStgSample::setFile (CvrStgFile *f)
+{
+	File = f ;
+}

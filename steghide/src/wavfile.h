@@ -36,11 +36,11 @@ class WavFile : public CvrStgFile {
 	void write (void) ;
 
 	unsigned long getNumSamples (void) ;
-	unsigned long getNumSBits (void) ;
-	Bit getSBitValue (SBitPos pos) ;
 	void replaceSample (SamplePos pos, CvrStgSample *s) ;
 	CvrStgSample* getSample (SamplePos pos) ;
 	unsigned int getSamplesPerEBit (void) ;
+
+	unsigned short getBitsPerSample (void) ;
 
 	private:
 	static const signed short	FormatPCM = 1 ;
@@ -79,7 +79,7 @@ class WavFile : public CvrStgFile {
 	void readdata (void) ;
 	void writeheaders (void) ;
 	void writedata (void) ;
-	void calcpos (unsigned long n, unsigned long *bytepos, unsigned int *bitpos) const ;
+	void calcpos (SamplePos n, unsigned long *bytepos, unsigned short *firstbitpos) const ;
 	ChunkHeader *getChhdr (void) ;
 	void putChhdr (ChunkHeader *chhdr) ;
 	void *s_realloc (void *ptr, size_t size) ;

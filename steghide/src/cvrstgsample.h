@@ -22,6 +22,8 @@
 #define SH_CVRSTGSAMPLE_H
 
 #include "common.h"
+// declared here to prevent circulating #includes
+class CvrStgFile ;
 
 /**
  * \class CvrStgSample
@@ -31,6 +33,9 @@
  **/
 class CvrStgSample {
 	public:
+	CvrStgSample (void) : File(NULL) {} ;
+	CvrStgSample (CvrStgFile *f) : File(f) {} ;
+
 	/**
 	 * is s a neighbour of this sample ?
 	 * \param s a sample value of the same type as this
@@ -38,8 +43,7 @@ class CvrStgSample {
 	 *
 	 * The derived class should check the condition(s) given above in its Implementation of this function.
 	 **/
-	// FIXME - soll für RGB auch 1.0 verwendet werden ??
-	bool is_Neighbour (CvrStgSample *s) { return (calcDistance(s) <= 1.0) ; } ;
+	bool is_Neighbour (CvrStgSample *s) ;
 
 	/**
 	 * is the value of s equal to the value of this ?
@@ -48,7 +52,13 @@ class CvrStgSample {
 	 *
 	 * The derived class should check the condition(s) given above in its Implementation of this function.
 	 **/
-	bool is_equal (CvrStgSample *s) { return (calcDistance(s) == 0.0) ; } ;
+	bool is_equal (CvrStgSample *s) ;
+
+	/**
+	 * get the bit that is embedded in this sample (usually the xor of the lsbs)
+	 * \return the embedded bit
+	 **/
+	virtual Bit getBit (void) = 0 ;
 
 	/**
 	 * calculate the distance between the value of s and the value of this
@@ -71,7 +81,12 @@ class CvrStgSample {
 	 **/
 	virtual CvrStgSample* getNearestOppositeNeighbour (void) = 0 ;
 
+	CvrStgFile *getFile (void) ;
+	void setFile (CvrStgFile *f) ;
+
 	// FIXME - ev. zur Konstruktion der unique sample value list einen Baum verwenden - dann auch Ordnung auf samles nötig
+	private:
+	CvrStgFile *File ;
 } ;
 
 #endif // ndef SH_CVRSTGSAMPLE_H

@@ -40,6 +40,11 @@ class BitString {
 	 **/
 	BitString (vector<unsigned char> d) ;
 	
+	/**
+	 * construct a BitString containing the characters in d as 8 bit unsigned chars
+	 **/
+	BitString (string d) ;
+	
 	unsigned long getLength (void) ;
 
 	/**

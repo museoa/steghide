@@ -49,3 +49,12 @@ CvrStgSample *Vertex::getSample (unsigned int i) const
 	assert (i < Samples.size()) ;
 	return Samples[i] ;
 }
+
+#if 0
+bool Vertex::operator< (Vertex v)
+{
+	// TODO - compare length of shortest edges
+}
+#endif
+
+

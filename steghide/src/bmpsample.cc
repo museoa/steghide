@@ -22,14 +22,76 @@
 #include <cmath>
 
 #include "common.h"
+#include "bmpfile.h"
 #include "bmpsample.h"
 
 //
-// class BmpSample
+// class BmpPaletteSample
 //
-float BmpSample::calcDistance (CvrStgSample *s)
+BmpPaletteSample::BmpPaletteSample (CvrStgFile *f, unsigned char i)
+	: CvrStgSample(f), Index(i)
 {
-	BmpSample *sample = dynamic_cast<BmpSample*> (s) ;
+	BmpFile *bmpfile = dynamic_cast<BmpFile*> (f) ;
+	assert (f != NULL) ;
+	unsigned short bitcount = bmpfile->getBitCount() ;
+	unsigned char maxindex = 1 ;
+	for (unsigned short i = 0 ; i < bitcount ; i++) {
+		maxindex *= 2 ;
+	}
+	maxindex-- ;
+
+	MaxIndex = maxindex ;
+	MinIndex = 0 ;
+}
+
+Bit BmpPaletteSample::getBit()
+{
+	return ((Bit) (Index & 1)) ;
+}
+
+float BmpPaletteSample::calcDistance (CvrStgSample *s)
+{
+	BmpPaletteSample *sample = dynamic_cast<BmpPaletteSample*> (s) ;
+	assert (sample != NULL) ;
+	return (abs (((float) Index) - ((float) sample->getIndex()))) ;
+}
+
+CvrStgSample *BmpPaletteSample::getNearestOppositeNeighbour()
+{
+	int n_index = 0 ;
+	if (Index == MinIndex) {
+		n_index = MinIndex + 1 ;
+	}
+	else if (Index == MaxIndex) {
+		n_index = MaxIndex - 1 ;
+	}
+	else {
+		if (RndSrc.getBit()) {
+			n_index = Index - 1 ;
+		}
+		else {
+			n_index = Index + 1 ;
+		}
+	}
+	return ((CvrStgSample *) new BmpPaletteSample (getFile(), n_index)) ;
+}
+
+unsigned char BmpPaletteSample::getIndex()
+{
+	return Index ;
+}
+
+//
+// class BmpRGBSample
+//
+Bit BmpRGBSample::getBit()
+{
+	return ((Bit) ((Red & 1) ^ (Green & 1) ^ (Blue & 1))) ;
+}
+
+float BmpRGBSample::calcDistance (CvrStgSample *s)
+{
+	BmpRGBSample *sample = dynamic_cast<BmpRGBSample*> (s) ;
 	assert (sample != NULL) ;
 	float dr = getRed() - sample->getRed() ;
 	float dg = getGreen() - sample->getGreen() ;
@@ -37,32 +99,48 @@ float BmpSample::calcDistance (CvrStgSample *s)
 	return (sqrt (dr*dr + dg*dg + db*db)) ;
 }
 
-//
-// class BmpPaletteSample
-//
-unsigned char BmpPaletteSample::getIndex()
+// FIXME - in 255/128/128 (and similar samples) the neighbours with distance 1
+// are not chosen with equal probability - P(254/128/128) = 1/3 whereas
+// P(255/127/128) = 1/6
+CvrStgSample *BmpRGBSample::getNearestOppositeNeighbour()
 {
-	return Index ;
+	unsigned char n_red = Red, n_green = Green, n_blue = Blue ;
+	unsigned long rnd = RndSrc.getValue(3) ;
+	switch (rnd) {
+		case 0: {
+			n_red = getNearestOppositeComponent (Red) ;
+		break ; }
+
+		case 1: {
+			n_green = getNearestOppositeComponent (Green) ;
+		break ; }
+
+		case 2: {
+			n_blue = getNearestOppositeComponent (Blue) ;
+		break ; }
+	}
+	return ((CvrStgSample*) new BmpRGBSample (getFile(), n_red, n_green, n_blue)) ;
 }
 
-unsigned char BmpPaletteSample::getRed()
+unsigned char BmpRGBSample::getNearestOppositeComponent (unsigned char c)
 {
-	return Red ;
+	if (c == 0x00) {
+		c = 0x01 ;
+	}
+	else if (c == 0xFF) {
+		c = 0xFE ;
+	}
+	else {
+		if (RndSrc.getBit()) {
+			c-- ;
+		}
+		else {
+			c++ ;
+		}
+	}
+	return c ;
 }
 
-unsigned char BmpPaletteSample::getGreen()
-{
-	return Green ;
-}
-
-unsigned char BmpPaletteSample::getBlue()
-{
-	return Blue ;
-}
-
-//
-// class BmpRGBSample
-//
 unsigned char BmpRGBSample::getRed()
 {
 	return Red ;
@@ -77,3 +155,4 @@ unsigned char BmpRGBSample::getBlue()
 {
 	return Blue ;
 }
+

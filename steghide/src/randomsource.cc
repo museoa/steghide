@@ -68,3 +68,9 @@ bool RandomSource::getBit()
 {
 	return (((getByte() & 0x01) == 1) ? true : false) ;
 }
+
+unsigned long RandomSource::getValue (unsigned long n)
+{
+	assert (n < RAND_MAX) ;
+	return (unsigned long) (((double) n) * (((double) rand()) / (((double) RAND_MAX) + 1.0))) ;
+}

@@ -131,7 +131,6 @@ class MCryptpp {
 	static vector<string> getListModes (void) ;
 	static vector<string> getListAlgorithms (void) ;
 
-	// FIXME - entweder hier oder in arguments.cc "-e none" behandeln
 	static bool isValidAlgorithm (string s) ;
 	static bool isValidMode (string s) ;
 

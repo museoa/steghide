@@ -38,15 +38,7 @@ class CvrStgFile : public CvrStgObject {
 	virtual void write (void) ;
 	void transform (string fn) ;
 
-
 	virtual unsigned int getSamplesPerEBit (void) = 0 ;
-
-	/**
-	 * get the number of sbits per sample
-	 **/
-	unsigned int getSBitsPerSample (void) { return getNumSBits() / getNumSamples() ; } ;
-
-	unsigned int getSBitsPerEBit (void) { return getSamplesPerEBit() * getSBitsPerSample() ; } ;
 
 	protected:
 	void setBinIO (BinaryIO *io) ;
@@ -57,8 +49,6 @@ class CvrStgFile : public CvrStgObject {
 
 	BinaryIO *BinIO ;
 } ;
-
-CvrStgFile *cvrstg_readfile (string filename) ;
 
 /* constants that indicate the cover file format */
 #define FF_UNKNOWN	0

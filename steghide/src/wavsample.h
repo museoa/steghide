@@ -24,28 +24,12 @@
 #include "cvrstgsample.h"
 #include "common.h"
 
-class WavSample : public CvrStgSample {
-} ;
-
-class WavPCMsmallSample : public WavSample {
+class WavPCMSample : public CvrStgSample {
 	public:
-	WavPCMsmallSample (void) {} ;
-	WavPCMsmallSample (unsigned char v) : Value(v) {} ;
+	WavPCMSample (void) : CvrStgSample(NULL) {} ;
+	WavPCMSample (CvrStgFile *f, int v) ;
 
-	float calcDistance (CvrStgSample *s) ;
-	CvrStgSample* getNearestOppositeNeighbour (void) ;
-
-	unsigned char getValue (void) ;
-
-	private:
-	unsigned char Value ;
-} ;
-
-class WavPCMbigSample : public WavSample {
-	public:
-	WavPCMbigSample (void) {} ;
-	WavPCMbigSample (int v) : Value (v) {} ;
-
+	Bit getBit (void) ;
 	float calcDistance (CvrStgSample *s) ;
 	CvrStgSample* getNearestOppositeNeighbour (void) ;
 
@@ -53,6 +37,8 @@ class WavPCMbigSample : public WavSample {
 
 	private:
 	int Value ;
+	int MaxValue ;
+	int MinValue ;
 } ;
 
 #endif // ndef SH_WAVSAMPLE_H

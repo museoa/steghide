@@ -48,13 +48,8 @@ class Arguments {
 	bool stdin_isused (void) ;
 
 	private:
-	// FIXME
-#if 0
-	static const char		Default_EncAlgo = "rijndael-128" ;
-	static const char		Default_EncMode = "cbc" ;
-#endif
-#define Default_EncAlgo "rijndael-128"
-#define Default_EncMode "cbc"	
+	static const char*		Default_EncAlgo ;
+	static const char*		Default_EncMode ;
 	static const bool		Default_Checksum = true ;
 	static const bool		Default_EmbedEmbFn = true ;
 	static const bool		Default_Force = false ;

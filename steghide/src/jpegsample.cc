@@ -29,6 +29,12 @@ int JpegSample::getDctCoeff()
 	return DctCoeff ;
 }
 
+Bit JpegSample::getBit()
+{
+	int dctcoeff = ((DctCoeff >= 0) ? DctCoeff : -DctCoeff) ;
+	return ((Bit) (dctcoeff % 2)) ;
+}
+
 // FIXME - for jpeg samples: implement a bias towards zero in calcDistance and getNearestOppositeNeighbour ?
 float JpegSample::calcDistance (CvrStgSample *s)
 {
@@ -37,15 +43,15 @@ float JpegSample::calcDistance (CvrStgSample *s)
 	return (abs (((float) DctCoeff) - ((float) sample->getDctCoeff()))) ;
 }
 
-// FIXME - it is assumed that MAX_INT and MIN_INT are never touched
+// FIXME - it is assumed that the maximum and the minimum values are never touched
 CvrStgSample *JpegSample::getNearestOppositeNeighbour()
 {
-	CvrStgSample *retval = NULL ;
+	int n_coeff = 0 ;
 	if (RndSrc.getBit()) {
-		retval = (CvrStgSample *) new JpegSample (DctCoeff - 1) ;
+		n_coeff = DctCoeff - 1 ;
 	}
 	else {
-		retval = (CvrStgSample *) new JpegSample (DctCoeff + 1) ;
+		n_coeff = DctCoeff + 1 ;
 	}
-	return retval ;
+	return ((CvrStgSample *) new JpegSample (getFile(), n_coeff)) ;
 }

@@ -37,14 +37,22 @@ BitString::BitString (unsigned long l)
 		nbytes = (l / 8) + 1 ;
 	}
 
-	// FIXME - must be initialized to 0
-	data = vector<unsigned char> (nbytes) ;
+	data = vector<unsigned char> (nbytes) ; // is initialized to zeros in vector's constructor
 	length = l ;
 }
 
 BitString::BitString (vector<unsigned char> d)
 {
 	data = d ;
+	length = data.size() ;
+}
+
+BitString::BitString (string d)
+{
+	length = 0 ;
+	for (unsigned int i = 0 ; i < d.size() ; i++) {
+		append ((unsigned char) d[i]) ;
+	}
 }
 
 unsigned long BitString::getLength ()

@@ -30,6 +30,11 @@ unsigned char AuSample::getValue ()
 	return Value ;
 }
 
+Bit AuSample::getBit()
+{
+	return ((Bit) (Value & 1)) ;
+}
+
 float AuSample::calcDistance (CvrStgSample *s)
 {
 	AuSample *sample = dynamic_cast<AuSample*> (s) ;
@@ -39,20 +44,20 @@ float AuSample::calcDistance (CvrStgSample *s)
 
 CvrStgSample *AuSample::getNearestOppositeNeighbour()
 {
-	CvrStgSample *retval = NULL ;
+	unsigned char n_value = 0 ;
 	if (Value == 0) {
-		retval = (CvrStgSample *) new AuSample (1) ;
+		n_value = 1 ;
 	}
 	else if (Value == 255) {
-		retval = (CvrStgSample *) new AuSample (254) ;
+		n_value = 254 ;
 	}
 	else {
 		if (RndSrc.getBit()) {
-			retval = (CvrStgSample *) new AuSample (Value - 1) ;
+			n_value = Value - 1 ;
 		}
 		else {
-			retval = (CvrStgSample *) new AuSample (Value + 1) ;
+			n_value = Value + 1 ;
 		}
 	}
-	return retval ;
+	return ((CvrStgSample *) new AuSample (getFile(), n_value)) ;
 }

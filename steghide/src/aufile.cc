@@ -82,17 +82,6 @@ unsigned long AuFile::getNumSamples()
 	return data.size() ;
 }
 
-unsigned long AuFile::getNumSBits()
-{
-	return data.size() ;
-}
-
-Bit AuFile::getSBitValue (SBitPos pos)
-{
-	assert (pos < getNumSBits()) ;
-	return (data[pos] & 0x01) ;
-}
-
 void AuFile::replaceSample (SamplePos pos, CvrStgSample *s)
 {
 	AuSample *sample = dynamic_cast<AuSample*> (s) ;
@@ -104,7 +93,7 @@ void AuFile::replaceSample (SamplePos pos, CvrStgSample *s)
 CvrStgSample *AuFile::getSample (SamplePos pos)
 {
 	assert (pos < getNumSamples()) ;
-	return ((CvrStgSample *) new AuSample (data[pos])) ;
+	return ((CvrStgSample *) new AuSample (this, data[pos])) ;
 }
 
 void AuFile::readheaders (void)

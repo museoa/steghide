@@ -27,6 +27,7 @@
 #include "error.h"
 #include "msg.h"
 #include "wavfile.h"
+#include "wavsample.h"
 
 WavFile::WavFile ()
 	: CvrStgFile()
@@ -78,23 +79,23 @@ unsigned long WavFile::getNumSamples()
 	return data.size() / bytespersample ;
 }
 
-unsigned long WavFile::getNumSBits()
-{
-	return getNumSamples() ;
-}
-
-Bit WavFile::getSBitValue (SBitPos pos)
-{
-	assert (pos < getNumSBits()) ;
-	unsigned long bytepos = 0 ;
-	unsigned int bitpos = 0 ;
-	calcpos (pos, &bytepos, &bitpos) ;
-	return ((Bit) ((data[bytepos] & (1 << bitpos)) >> bitpos)) ;
-}
-
 void WavFile::replaceSample (SamplePos pos, CvrStgSample *s)
 {
-	// TODO
+	unsigned long bytepos = 0 ;
+	unsigned short firstbitpos = 0 ;
+	calcpos (pos, &bytepos, &firstbitpos) ;
+
+	WavPCMSample *sample = dynamic_cast<WavPCMSample*> (s) ;
+	assert (sample != NULL) ;
+
+	int value = sample->getValue() ;
+	for (unsigned short bitpos = 0 ; bitpos < fmtch.BitsPerSample ; bitpos++) {
+		unsigned short byteincrement = (firstbitpos + bitpos) / 8 ;
+		unsigned short databitpos = (firstbitpos + bitpos) % 8 ;
+		Bit addbit = (value & (1 << bitpos)) >> bitpos ;
+		data[bytepos + byteincrement] = data[bytepos + byteincrement] & (~(1 << databitpos)) ;
+		data[bytepos + byteincrement] |= (addbit << databitpos) ;
+	}
 }
 
 unsigned int WavFile::getSamplesPerEBit()
@@ -104,23 +105,40 @@ unsigned int WavFile::getSamplesPerEBit()
 
 CvrStgSample *WavFile::getSample (SamplePos pos)
 {
-	// TODO - in WavSample muss BitsPerSample berücksichtigt werden - ev. in CvrStgSample einen pointer auf CvrStgFile ?? - Speicherverbrauch
+	unsigned long bytepos = 0 ;
+	unsigned short firstbitpos = 0 ;
+	calcpos (pos, &bytepos, &firstbitpos) ;
+
+	// FIXME - how to deal with negative numbers ?
+	int value = 0 ;
+	for (unsigned short bitpos = 0 ; bitpos < fmtch.BitsPerSample ; bitpos++) {
+		unsigned short byteincrement = (firstbitpos + bitpos) / 8 ;
+		unsigned short databitpos = (firstbitpos + bitpos) % 8 ;
+		value |= (data[bytepos + byteincrement] & (1 << databitpos)) >> bitpos ;
+	}
+	return ((CvrStgSample *) new WavPCMSample (this, value)) ;
 }
 
-/* calculate position in buffer for n-th embedded bit */
-void WavFile::calcpos (unsigned long n, unsigned long *bytepos, unsigned int *bitpos) const
+void WavFile::calcpos (SamplePos n, unsigned long *bytepos, unsigned short *firstbitpos) const
 {
-	unsigned int bytespersample = 0 ;
-
+	unsigned short bytespersample = 0 ;
+	unsigned short emptybitspersample = 0 ;
 	if (fmtch.BitsPerSample % 8 == 0) {
 		bytespersample = fmtch.BitsPerSample / 8 ;
+		emptybitspersample = 0 ;
 	}
 	else {
 		bytespersample = (fmtch.BitsPerSample / 8) + 1 ;
+		emptybitspersample = 8 - (fmtch.BitsPerSample % 8) ;
 	}
 
 	*bytepos = n * bytespersample ;
-	*bitpos = fmtch.BitsPerSample % 8 ;
+	*firstbitpos = emptybitspersample ;
+}
+
+unsigned short WavFile::getBitsPerSample()
+{
+	return fmtch.BitsPerSample ;
 }
 
 /* reads the wav file data from disk */
@@ -240,16 +258,7 @@ void WavFile::readheaders ()
 		fmtch.SamplesPerSec = getBinIO()->read32_le () ;
 		fmtch.AvgBytesPerSec = getBinIO()->read32_le () ;
 		fmtch.BlockAlign = getBinIO()->read16_le () ;
-		/* if a number other than a multiple of 8 is used, we cannot hide data,
-		   because the least significant bits are always set to zero - FIXME */
-		if ((fmtch.BitsPerSample = getBinIO()->read16_le ()) % 8 != 0) {
-			if (getBinIO()->is_std()) {
-				throw SteghideError (_("the bits/sample rate of the wav file from standard input is not a multiple of eight.")) ;
-			}
-			else {
-				throw SteghideError (_("the bits/sample rate of the wav file \"%s\" is not a multiple of eight."), getBinIO()->getName().c_str()) ;
-			}
-		}
+		fmtch.BitsPerSample = getBinIO()->read16_le() ;
 
 		unsupchunks1.data = NULL ;
 		unsupchunks1.len = 0 ;
