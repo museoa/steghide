@@ -179,6 +179,28 @@ void AuFile::write ()
 	Data->write (getBinIO(), AudioData::NoLimit) ;
 }
 
+std::list<CvrStgFile::Property> AuFile::getProperties () const
+{
+	std::list<CvrStgFile::Property> retval ;
+
+	// format
+	std::string formatstring = "au audio" ;
+	switch (Header.encoding) {
+		case MULAW8:
+			formatstring += _(", mu-law encoding") ;
+		break ;
+
+		case PCM8:
+		case PCM16:
+		case PCM32:
+			formatstring += _(", PCM encoding") ;
+		break ;
+	}
+	retval.push_back (CvrStgFile::Property (_("format"), formatstring)) ;
+
+	return retval ;
+}
+
 unsigned short AuFile::AuHeader::getBytesPerSample () const
 {
 	unsigned short retval = 0 ;

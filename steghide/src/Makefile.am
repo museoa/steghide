@@ -1,7 +1,7 @@
 AM_CPPFLAGS = -I../intl -DLOCALEDIR=\"$(localedir)\"
 bin_PROGRAMS = steghide
 noinst_HEADERS = \
-Arg.h Arguments.h AssertionFailed.h AuData.h AuFile.h AuSampleValues.h \
+AUtils.h Arg.h Arguments.h AssertionFailed.h AuData.h AuFile.h AuSampleValues.h \
 AudioData.h AudioSampleValue.h AugmentingPathHeuristic.h BinaryIO.h \
 BitString.h BmpFile.h BmpPaletteSampleValue.h BmpRGBSampleValue.h \
 BmpSampleValue.h ColorPalette.h ConstructionHeuristic.h CvrStgFile.h \

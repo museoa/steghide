@@ -28,7 +28,7 @@
 #include "BinaryIO.h"
 #include "JpegFile.h"
 #include "JpegSampleValue.h"
-#include "Utils.h"
+#include "AUtils.h"
 #include "error.h"
 
 JpegFile::JpegFile (BinaryIO* io)
@@ -49,6 +49,16 @@ JpegFile::~JpegFile ()
 	if (HeightInBlocks) {
 		delete[] HeightInBlocks ;
 	}
+}
+
+std::list<CvrStgFile::Property> JpegFile::getProperties () const
+{
+	std::list<CvrStgFile::Property> retval ;
+
+	// format
+	retval.push_back (CvrStgFile::Property (_("format"), "jpeg")) ;
+
+	return retval ;
 }
 
 void JpegFile::read (BinaryIO* io)
@@ -77,15 +87,15 @@ void JpegFile::read (BinaryIO* io)
 	unsigned short max_v_samp_factor = 0 ;
 	unsigned short max_h_samp_factor = 0 ;
 	for (unsigned short icomp = 0 ; icomp < DeCInfo.num_components ; icomp++) {
-		max_v_samp_factor = Utils<unsigned short>::max(max_v_samp_factor, DeCInfo.comp_info[icomp].v_samp_factor) ;
-		max_h_samp_factor = Utils<unsigned short>::max(max_h_samp_factor, DeCInfo.comp_info[icomp].h_samp_factor) ;
+		max_v_samp_factor = AUtils<unsigned short>::max(max_v_samp_factor, DeCInfo.comp_info[icomp].v_samp_factor) ;
+		max_h_samp_factor = AUtils<unsigned short>::max(max_h_samp_factor, DeCInfo.comp_info[icomp].h_samp_factor) ;
 	}
 	HeightInBlocks = new unsigned int[DeCInfo.num_components] ;
 	WidthInBlocks = new unsigned int[DeCInfo.num_components] ;
 	for (unsigned short icomp = 0 ; icomp < DeCInfo.num_components ; icomp++) {
-		HeightInBlocks[icomp] = Utils<unsigned long>::div_roundup (DeCInfo.image_height * DeCInfo.comp_info[icomp].v_samp_factor,
+		HeightInBlocks[icomp] = AUtils<unsigned long>::div_roundup (DeCInfo.image_height * DeCInfo.comp_info[icomp].v_samp_factor,
 																	8 * max_v_samp_factor) ;
-		WidthInBlocks[icomp] = Utils<unsigned long>::div_roundup (DeCInfo.image_width * DeCInfo.comp_info[icomp].h_samp_factor,
+		WidthInBlocks[icomp] = AUtils<unsigned long>::div_roundup (DeCInfo.image_width * DeCInfo.comp_info[icomp].h_samp_factor,
 																	8 * max_h_samp_factor) ;
 	}
 
@@ -222,7 +232,5 @@ void JpegFile::printFrequencies (const std::map<SampleKey,unsigned long>& freqs)
 	}
 }
 #endif // def DEBUG
-
-#include "Utils.cc"
 
 #endif // def USE_LIBJPEG

@@ -37,6 +37,8 @@ class BmpFile : public CvrStgFile {
 	void read (BinaryIO *io) ;
 	void write (void) ;
 
+	std::list<CvrStgFile::Property> getProperties (void) const ;
+
 	unsigned long getNumSamples (void) const ;
 	void replaceSample (const SamplePos pos, const SampleValue* s) ;
 	SampleValue* getSampleValue (SamplePos pos) const ;

@@ -97,11 +97,6 @@ void Arguments::parse ()
 			Force.setValue (true) ;
 		}
 	}
-	else if (Command.getValue() == CAPACITY) {
-		if (!CvrFn.is_set()) {
-			throw ArgError (_("you have to supply a cover file name to calculate a capacity.")) ;
-		}
-	}
 
 	if (Command.getValue() == EMBED || Command.getValue() == EXTRACT) {
 		if (!Passphrase.is_set()) {
@@ -124,6 +119,8 @@ void Arguments::parse ()
 
 void Arguments::parse_Command (ArgIt& curarg)
 {
+	CommandString = *curarg ;
+
 	if (*curarg == "embed" || *curarg == "--embed") {
 		Command.setValue (EMBED) ;
 		setDefaults () ;
@@ -134,49 +131,56 @@ void Arguments::parse_Command (ArgIt& curarg)
 		setDefaults () ;
 		++curarg ;
 	}
-	else if (*curarg == "capacity" || *curarg == "--capacity") {
-		Command.setValue (CAPACITY) ;
+	else if (*curarg == "info" || *curarg == "--info") {
+		Command.setValue (INFO) ;
 		setDefaults() ;
 
 		++curarg ;
-		if (*curarg == "-") {
-			CvrFn.setValue ("") ;
+
+		if (curarg == TheArguments.end()) {
+			throw ArgError (_("you have to suppy a filename to the \"%s\" command."), CommandString.c_str()) ;
 		}
 		else {
-			CvrFn.setValue (*curarg) ;
-		}
+			parse_Passphrase (curarg) ; // try: maybe -p is first argument
 
-		if (TheArguments.size() > 2) {
-			throw ArgError (_("the only argument for the \"capacity\" command is a filename.")) ;
-		}
+			if (*curarg == "-") {
+				CvrFn.setValue ("") ;
+			}
+			else {
+				CvrFn.setValue (*curarg) ;
+			}
+			++curarg ;
 
-		++curarg ;
+			if (curarg != TheArguments.end()) {
+				parse_Passphrase (curarg) ;
+			}
+		}
 	}
 	else if (*curarg == "encinfo" || *curarg == "--encinfo") {
 		Command.setValue (ENCINFO) ;
 		if (TheArguments.size() > 1) {
-			throw ArgError (_("you cannot use arguments with the \"encinfo\" command.")) ;
+			throw ArgError (_("you cannot use arguments with the \"%s\" command."), CommandString.c_str()) ;
 		}
 		++curarg ;
 	}
 	else if (*curarg == "version" || *curarg == "--version") {
 		Command.setValue (SHOWVERSION) ;
 		if (TheArguments.size() > 1) {
-			throw ArgError (_("you cannot use arguments with the \"version\" command.")) ;
+			throw ArgError (_("you cannot use arguments with the \"%s\" command."), CommandString.c_str()) ;
 		}
 		++curarg ;
 	}
 	else if (*curarg == "license" || *curarg == "--license") {
 		Command.setValue (SHOWLICENSE) ;
 		if (TheArguments.size() > 1) {
-			throw ArgError (_("you cannot use arguments with the \"license\" command.")) ;
+			throw ArgError (_("you cannot use arguments with the \"%s\" command."), CommandString.c_str()) ;
 		}
 		++curarg ;
 	}
 	else if (*curarg == "help" || *curarg == "--help") {
 		Command.setValue (SHOWHELP) ;
 		if (TheArguments.size() > 1) {
-			throw ArgError (_("you cannot use arguments with the \"help\" command.")) ;
+			throw ArgError (_("you cannot use arguments with the \"%s\" command."), CommandString.c_str()) ;
 		}
 		++curarg ;
 	}
@@ -191,7 +195,7 @@ void Arguments::parse_Command (ArgIt& curarg)
 	}
 #endif
 	else {
-		throw ArgError (_("unknown command \"%s\"."), curarg->c_str()) ;
+		throw ArgError (_("unknown command \"%s\"."), CommandString.c_str()) ;
 	}
 }
 
@@ -201,7 +205,7 @@ bool Arguments::parse_EmbFn (ArgIt& curarg)
 
 	if (*curarg == "-ef" || *curarg == "--embedfile") {
 		if (Command.getValue() != EMBED) {
-			throw ArgError (_("the argument \"%s\" can only be used with the \"embed\" command."), curarg->c_str()) ;
+			throw ArgError (_("the argument \"%s\" can only be used with the \"%s\" command."), curarg->c_str(), "embed") ;
 		}
 
 		if (EmbFn.is_set()) {
@@ -232,7 +236,7 @@ bool Arguments::parse_ExtFn (ArgIt& curarg)
 
 	if (*curarg == "-xf" || *curarg == "--extractfile") {
 		if (Command.getValue() != EXTRACT) {
-			throw ArgError (_("argument \"%s\" can only be used with the \"extract\" command."), curarg->c_str()) ;
+			throw ArgError (_("the argument \"%s\" can only be used with the \"%s\" command."), curarg->c_str(), "extract") ;
 		}
 
 		if (ExtFn.is_set()) {
@@ -262,8 +266,8 @@ bool Arguments::parse_CvrFn (ArgIt& curarg)
 	bool found = false ;
 
 	if (*curarg == "-cf" || *curarg == "--coverfile") {
-		if (Command.getValue() == EXTRACT) {
-			throw ArgError (_("the argument \"%s\" can not be used with the \"extract\" command."), curarg->c_str()) ;
+		if (Command.getValue() != EMBED) {
+			throw ArgError (_("the argument \"%s\" can only be used with the \"%s\" command."), curarg->c_str(), "embed") ;
 		}
 
 		if (CvrFn.is_set()) {
@@ -293,8 +297,8 @@ bool Arguments::parse_StgFn (ArgIt& curarg)
 	bool found = false ;
 
 	if (*curarg == "-sf" || *curarg == "--stegofile") {
-		if (Command.getValue() == CAPACITY) {
-			throw ArgError (_("the \"%s\" argument can not be used with the \"capacity\" command."), curarg->c_str()) ;
+		if (Command.getValue() != EMBED && Command.getValue() != EXTRACT) {
+			throw ArgError (_("the argument \"%s\" can only be used with the \"%s\" and \"%s\" commands."), curarg->c_str(), "embed", "extract") ;
 		}
 
 		if (StgFn.is_set()) {
@@ -324,10 +328,6 @@ bool Arguments::parse_Passphrase (ArgIt& curarg)
 	bool found = false ;
 
 	if (*curarg == "-p" || *curarg == "--passphrase") {
-		if (Command.getValue() == CAPACITY) {
-			throw ArgError (_("the \"%s\" argument cannot be used with the \"capacity\" command."), curarg->c_str()) ;
-		}
-
 		if (Passphrase.is_set()) {
 			throw ArgError (_("the passphrase argument can be used only once.")) ;
 		}
@@ -351,7 +351,7 @@ bool Arguments::parse_Checksum (ArgIt& curarg)
 
 	if (*curarg == "-K" || *curarg == "--nochecksum") {
 		if (Command.getValue() != EMBED) {
-			throw ArgError (_("the argument \"%s\" can only be used with the \"embed\" command."), curarg->c_str()) ;
+			throw ArgError (_("the argument \"%s\" can only be used with the \"%s\" command."), curarg->c_str(), "embed") ;
 		}
 
 		if (Checksum.is_set()) {
@@ -393,7 +393,7 @@ bool Arguments::parse_Compression (ArgIt& curarg)
 	}
 	else if (*curarg == "-Z" || *curarg == "--dontcompress") {
 		if (Command.getValue() != EMBED) {
-			throw ArgError (_("the argument \"%s\" can only be used with the \"embed\" command."), curarg->c_str()) ;
+			throw ArgError (_("the argument \"%s\" can only be used with the \"%s\" command."), curarg->c_str(), "embed") ;
 		}
 
 		if (Compression.is_set()) {
@@ -437,7 +437,7 @@ bool Arguments::parse_Encryption (ArgIt& curarg)
 
 	if (*curarg == "-e" || *curarg == "--encryption") {
 		if (Command.getValue() != EMBED) {
-			throw ArgError (_("the argument \"%s\" can only be used with the \"embed\" command."), curarg->c_str()) ;
+			throw ArgError (_("the argument \"%s\" can only be used with the \"%s\" command."), curarg->c_str(), "embed") ;
 		}
 
 		if (EncAlgo.is_set() || EncMode.is_set()) {
@@ -539,7 +539,7 @@ bool Arguments::parse_Radius (ArgIt& curarg)
 
 	if (*curarg == "-r" || *curarg == "--radius") {
 		if (Command.getValue() != EMBED) {
-			throw ArgError (_("the argument \"%s\" can only be used with the \"embed\" command."), curarg->c_str()) ;
+			throw ArgError (_("the argument \"%s\" can only be used with the \"%s\" command."), curarg->c_str(), "embed") ;
 		}
 
 		if (Radius.is_set()) {
@@ -567,7 +567,7 @@ bool Arguments::parse_Algorithm (ArgIt& curarg)
 
 	if (*curarg == "-a" || *curarg == "--algorithm") {
 		if (Command.getValue() != EMBED) {
-			throw ArgError (_("the argument \"%s\" can only be used with the \"embed\" command."), curarg->c_str()) ;
+			throw ArgError (_("the argument \"%s\" can only be used with the \"%s\" command."), curarg->c_str(), "embed") ;
 		}
 
 		if (Goal.is_set()) {
@@ -598,7 +598,7 @@ bool Arguments::parse_Goal (ArgIt& curarg)
 
 	if (*curarg == "-g" || *curarg == "--goal") {
 		if (Command.getValue() != EMBED) {
-			throw ArgError (_("the argument \"%s\" can only be used with the \"embed\" command."), curarg->c_str()) ;
+			throw ArgError (_("the argument \"%s\" can only be used with the \"%s\" command."), curarg->c_str(), "embed") ;
 		}
 
 		if (Goal.is_set()) {
@@ -628,8 +628,8 @@ bool Arguments::parse_Force (ArgIt& curarg)
 	bool found = false ;
 
 	if (*curarg == "-f" || *curarg == "--force") {
-		if (Command.getValue() == CAPACITY) {
-			throw ArgError (_("the \"%s\" argument can not be used with the \"capacity\" command."), curarg->c_str()) ;
+		if (Command.getValue() != EMBED && Command.getValue() != EXTRACT) {
+			throw ArgError (_("the argument \"%s\" can only be used with the \"%s\" and \"%s\" commands."), curarg->c_str(), "embed", "extract") ;
 		}
 
 		if (Force.is_set()) {
@@ -652,8 +652,8 @@ bool Arguments::parse_Verbosity (ArgIt& curarg)
 	if (*curarg == "-q" || *curarg == "--quiet") {
 		found = true ;
 
-		if (Command.getValue() == CAPACITY) {
-			throw ArgError (_("the \"%s\" argument can not be used with the \"capacity\" command."), curarg->c_str()) ;
+		if (Command.getValue() != EMBED && Command.getValue() != EXTRACT) {
+			throw ArgError (_("the argument \"%s\" can only be used with the \"%s\" and \"%s\" commands."), curarg->c_str(), "embed", "extract") ;
 		}
 
 		if (Verbosity.is_set()) {
@@ -666,8 +666,8 @@ bool Arguments::parse_Verbosity (ArgIt& curarg)
 	else if (*curarg == "-v" || *curarg == "--verbose") {
 		found = true ;
 
-		if (Command.getValue() == CAPACITY) {
-			throw ArgError (_("the \"%s\" argument can not be used with the \"capacity\" command."), curarg->c_str()) ;
+		if (Command.getValue() != EMBED && Command.getValue() != EXTRACT) {
+			throw ArgError (_("the argument \"%s\" can only be used with the \"%s\" and \"%s\" commands."), curarg->c_str(), "embed", "extract") ;
 		}
 
 		if (Verbosity.is_set()) {
@@ -756,7 +756,7 @@ bool Arguments::parse_Debug (ArgIt& curarg)
 	}
 	else if (*curarg == "--priorityqueuerange") {
 		if (Command.getValue() != EMBED) {
-			throw ArgError (_("argument \"%s\" can only be used with the \"embed\" command."), curarg->c_str()) ;
+			throw ArgError (_("the argument \"%s\" can only be used with the \"%s\" command."), curarg->c_str(), "embed") ;
 		}
 
 		if (PriorityQueueRange.is_set()) {
@@ -776,7 +776,7 @@ bool Arguments::parse_Debug (ArgIt& curarg)
 	}
 	else if (*curarg == "--nconstrheur") {
 		if (Command.getValue() != EMBED) {
-			throw ArgError (_("argument \"%s\" can only be used with the \"embed\" command."), curarg->c_str()) ;
+			throw ArgError (_("the argument \"%s\" can only be used with the \"%s\" command."), curarg->c_str(), "embed") ;
 		}
 
 		if (NConstrHeur.is_set()) {
@@ -849,7 +849,7 @@ bool Arguments::stdin_isused () const
 	else if (Command.getValue() == EXTRACT && StgFn.getValue() == "") {
 		retval = true ;
 	}
-	else if (Command.getValue() == CAPACITY && CvrFn.getValue() == "") {
+	else if (Command.getValue() == INFO && CvrFn.getValue() == "") {
 		retval = true ;
 	}
 	return retval ;

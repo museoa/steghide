@@ -63,6 +63,26 @@ void BmpFile::write ()
 	writedata() ;
 }
 
+std::list<CvrStgFile::Property> BmpFile::getProperties () const
+{
+	std::list<CvrStgFile::Property> retval ;
+
+	// format
+	std::string formatstring ;
+	switch (getSubformat()) {
+		case WIN:
+			formatstring = _("Windows 3.x bitmap") ;
+		break ;
+
+		case OS2:
+			formatstring = _("OS/2 1.x bitmap") ;
+		break ;
+	}
+	retval.push_back (CvrStgFile::Property (_("format"), formatstring)) ;
+
+	return retval ;
+}
+
 unsigned long BmpFile::getNumSamples() const
 {
 	unsigned long retval = 0 ;

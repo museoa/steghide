@@ -42,6 +42,8 @@ class DummyFile : public CvrStgFile {
 	 **/
 	DummyFile (UWORD16 s, std::vector<std::vector<bool> >* svam) ;
 
+	std::list<CvrStgFile::Property> getProperties (void) const ;
+
 	unsigned long getNumSamples (void) const ;
 
 	void replaceSample (const SamplePos pos, const SampleValue* s) ;

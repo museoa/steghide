@@ -20,20 +20,25 @@
 
 #include "Utils.h"
 
-template<class T>
-T Utils<T>::max (T a, T b)
+std::string Utils::formatHRSize (unsigned long size)
 {
-	if (a > b) {
-		return a ;
-	}
-	else {
-		return b ;
-	}
-}
+	float s = (float) size ;
 
-template<class T>
-T Utils<T>::div_roundup (T a, T b)
-{
-	T c = b-- ;
-	return ((a + b) / c) ;
+	std::string unit = "Byte" ;
+	if (s > 1024.0) {
+		s /= 1024.0 ;
+		unit = "KB" ;
+	}
+	if (s > 1024.0) {
+		s /= 1024.0 ;
+		unit = "MB" ;
+	}
+	if (s > 1024.0) {
+		s /= 1024.0 ;
+		unit = "GB" ;
+	}
+
+	char buf[15] ;
+	sprintf (buf, "%.1f %s", s, unit.c_str()) ;
+	return std::string (buf) ;
 }

@@ -26,7 +26,7 @@
 void WavFormatChunk::read (BinaryIO *io)
 {
 	FormatTag = io->read16_le() ;
-	if (FormatTag != WAVE_FORMAT_PCM) {
+	if (FormatTag != FormatPCM) {
 		if (io->is_std()) {
 			throw NotImplementedError (_("the wav file from standard input has a format that is not supported (FormatTag: 0x%X)."), FormatTag) ;
 		}

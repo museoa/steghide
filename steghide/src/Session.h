@@ -34,7 +34,7 @@ class Session {
 
 	private:
 	std::string stripDir (std::string s) const ;
-	void printCapacity (void) ;
+	void printInfo (void) ;
 	void printEncInfo (void) ;
 	void printVersion (void) ;
 	void printHelp (void) ;

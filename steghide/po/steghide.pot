@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2003-04-27 12:05+0200\n"
+"POT-Creation-Date: 2003-04-28 12:53+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -246,65 +246,65 @@ msgstr ""
 msgid "the force argument can be used only once."
 msgstr ""
 
-#: src/Arguments.cc:660 src/Arguments.cc:674 src/Arguments.cc:738
+#: src/Arguments.cc:660 src/Arguments.cc:674 src/Arguments.cc:733
 #, c-format
 msgid ""
 "the \"%s\" argument cannot be used here because the verbosity has already "
 "been set."
 msgstr ""
 
-#: src/Arguments.cc:691 src/Arguments.cc:701 src/Arguments.cc:716
-#: src/Arguments.cc:734
+#: src/Arguments.cc:691 src/Arguments.cc:701 src/Arguments.cc:711
+#: src/Arguments.cc:729
 msgid "you cannot use more than one debug command at a time."
 msgstr ""
 
-#: src/Arguments.cc:748
+#: src/Arguments.cc:743
 msgid "the debug level argument can be used only once."
 msgstr ""
 
-#: src/Arguments.cc:752
+#: src/Arguments.cc:747
 #, c-format
 msgid "the \"%s\" argument must be followed by the debug level."
 msgstr ""
 
-#: src/Arguments.cc:764 src/Arguments.cc:784
+#: src/Arguments.cc:759 src/Arguments.cc:779
 #, c-format
 msgid "argument \"%s\" can only be used with the \"embed\" command."
 msgstr ""
 
-#: src/Arguments.cc:768
+#: src/Arguments.cc:763
 msgid "the priority queue range argument can be used only once."
 msgstr ""
 
-#: src/Arguments.cc:772
+#: src/Arguments.cc:767
 #, c-format
 msgid "the \"%s\" argument must be followed by the priority queue range."
 msgstr ""
 
-#: src/Arguments.cc:788
+#: src/Arguments.cc:783
 msgid "the number construction heuristic argument can be used only once."
 msgstr ""
 
-#: src/Arguments.cc:792
+#: src/Arguments.cc:787
 #, c-format
 msgid ""
 "the \"%s\" argument must be followed by the number of times the construction "
 "heuristic should be run."
 msgstr ""
 
-#: src/Arguments.cc:812
+#: src/Arguments.cc:807
 msgid "unknown terminal. the passphrase you type now will be visible."
 msgstr ""
 
-#: src/Arguments.cc:816
+#: src/Arguments.cc:811
 msgid "Enter passphrase: "
 msgstr ""
 
-#: src/Arguments.cc:829
+#: src/Arguments.cc:824
 msgid "Re-Enter passphrase: "
 msgstr ""
 
-#: src/Arguments.cc:841
+#: src/Arguments.cc:836
 msgid "the passphrases do not match."
 msgstr ""
 
@@ -573,19 +573,19 @@ msgstr ""
 msgid "the cover file is too short to embed the data."
 msgstr ""
 
-#: src/Embedder.cc:137
+#: src/Embedder.cc:138
 msgid "calculating the matching..."
 msgstr ""
 
-#: src/Embedder.cc:165
+#: src/Embedder.cc:166
 msgid "best matching after construction heuristic:"
 msgstr ""
 
-#: src/Embedder.cc:174
+#: src/Embedder.cc:175
 msgid "best matching after bounded augmenting path heuristic:"
 msgstr ""
 
-#: src/Embedder.cc:184
+#: src/Embedder.cc:185
 msgid "best matching after unbounded augmenting path heuristic:"
 msgstr ""
 

@@ -54,7 +54,11 @@ class Arguments {
 	 **/
 	bool stdin_isused (void) const ;
 
+	/// the command to be executed in this session
 	ArgCommand		Command ;
+	/// the name of the command to be executed in this session (as supplied by the user)
+	std::string		CommandString ;
+
 	/// the embed file name, "" if stdin
 	ArgString		EmbFn ;
 	/// the extract file name, "" if stdout
@@ -88,6 +92,8 @@ class Arguments {
 	static const unsigned int Algorithm_CHOnly = 1 ;
 	static const unsigned int Algorithm_BoundedAPH = 2 ;
 	static const unsigned int Algorithm_UnboundedAPH = 3 ;
+
+	std::string getPassphrase (bool doublecheck = false) ;
 
 	private:
 	typedef std::vector<std::string>::const_iterator ArgIt ;
@@ -145,7 +151,6 @@ class Arguments {
 	bool parse_Debug (ArgIt& curarg) ;
 #endif
 
-	std::string getPassphrase (bool doublecheck = false) ;
 	void setDefaults (void) ;
 
 	std::vector<std::string> TheArguments ;

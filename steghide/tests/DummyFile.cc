@@ -35,6 +35,13 @@ DummyFile::DummyFile (UWORD16 s, std::vector<std::vector<bool> >* svam)
 	setRadius (0) ; // undefined, neighbourhood relatin decided by svam
 }
 
+std::list<CvrStgFile::Property> DummyFile::getProperties () const
+{
+	std::list<CvrStgFile::Property> retval ;
+	retval.push_back (CvrStgFile::Property (_("format"), "dummy")) ;
+	return retval ;
+}
+
 unsigned long DummyFile::getNumSamples () const
 {
 	return Samples.size() ;

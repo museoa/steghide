@@ -18,21 +18,43 @@
  *
  */
 
-#ifndef SH_EXTRACTOR_H
-#define SH_EXTRACTOR_H
+#ifndef SH_AUTILS_H
+#define SH_AUTILS_H
 
-#include <string>
-
-class Extractor {
+/**
+ * \class AUtils
+ * \brief provides some generic functions for non-standard arithmetic operations
+ **/
+template<class T>
+class AUtils {
 	public:
-	Extractor (std::string stgfn, std::string pp)
-		: StegoFileName(stgfn), Passphrase(pp) {} ;
+	/**
+	 * return the maximum of a and b (needs >)
+	 **/
+	static T max (T a, T b) ;
 
-	EmbData* extract (void) ;
-
-	private:
-	std::string StegoFileName ;
-	std::string Passphrase ;
+	/**
+	 * returns a divided through b rounded up to nearest "integer" (needs =, --, +, /)
+	 **/
+	static T div_roundup (T a, T b) ;
 } ;
 
-#endif // ndef SH_EXTRACTOR_H
+template<class T>
+T AUtils<T>::max (T a, T b)
+{
+	if (a > b) {
+		return a ;
+	}
+	else {
+		return b ;
+	}
+}
+
+template<class T>
+T AUtils<T>::div_roundup (T a, T b)
+{
+	T c = b-- ;
+	return ((a + b) / c) ;
+}
+
+#endif // ndef SH_AUTILS_H

@@ -21,6 +21,7 @@
 #ifndef SH_CVRSTGFILE_H
 #define SH_CVRSTGFILE_H
 
+#include <list>
 #include <string>
 #include <map>
 
@@ -47,12 +48,26 @@ class CvrStgFile : public CvrStgObject {
 	 **/
 	static CvrStgFile *readFile (const std::string& fn) ;
 
+	class Property : private std::pair<std::string,std::string> {
+		public:
+		Property (std::string key, std::string value)
+			: std::pair<std::string,std::string> (key, value) {} ;
+
+		std::string getKey (void) const
+			{ return first ; } ;
+
+		std::string getValue (void) const
+			{ return second ; } ;
+	} ;
+
 	CvrStgFile (void) ;
 	virtual ~CvrStgFile (void) ;
 
 	virtual void read (BinaryIO *io) ;
 	virtual void write (void) ;
 	void transform (const std::string& fn) ;
+
+	virtual std::list<Property> getProperties (void) const = 0 ;
 
 	/**
 	 * get the name of this cvrstgfile
@@ -69,6 +84,11 @@ class CvrStgFile : public CvrStgObject {
 	 **/
 	unsigned long getCapacity (void) const
 		{ return (getNumSamples() / getSamplesPerEBit()) / 8 ; } ;
+
+	/**
+	 * get the capacity as a human-readable string
+	 **/
+	std::string getHRCapacity (void) const ;
 
 	/**
 	 * get the number of samples per embedded bit (this is a file-format specific constant)

@@ -65,6 +65,20 @@ void WavFile::write ()
 	writedata () ;
 }
 
+std::list<CvrStgFile::Property> WavFile::getProperties () const
+{
+	std::list<CvrStgFile::Property> retval ;
+
+	// format
+	std::string formatstring = "wave audio" ;
+	if (FormatChunk->getFormatTag() == WavFormatChunk::FormatPCM) {
+		formatstring += ", PCM encoding" ;
+	}
+	retval.push_back (CvrStgFile::Property (_("format"), formatstring)) ;
+
+	return retval ;
+}
+
 unsigned long WavFile::getNumSamples() const
 {
 	unsigned long retval = 0 ;

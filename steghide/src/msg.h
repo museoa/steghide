@@ -93,6 +93,11 @@ class Question : public MessageBase {
 	Question (const char *msgfmt, ...) ;
 
 	void printMessage (void) const ;
+
+	/**
+	 * wait for the user to answer the question (should be printed before)
+	 * \return true iff the user answers with yes, i.e. presses the yeschar-key
+	 **/
 	bool getAnswer (void) ;
 
 	private:

@@ -76,27 +76,14 @@ void AudioDataImpl<Type,ValueType,SampleValueType>::read (BinaryIO* io, UWORD32 
 	try {
 		if (n == NoLimit) {
 			Data.clear() ;
-#if 0
-			unsigned short i = 0 ;
-#endif
 			while (!io->eof()) {
 				Data.push_back (readValue(io)) ;
-#if 0
-				if (i < 5) {
-					std::cerr << "Data[" << i << "]: " << (int) Data[i] << std::endl ;
-				}
-#endif
 			}
 		}
 		else {
 			Data.resize (n) ;
 			for (UWORD32 i = 0 ; i < n ; i++) {
 				Data[i] = readValue(io) ;
-#if 0
-				if (i < 5) {
-					std::cerr << "Data[" << i << "]: " << (int) Data[i] << std::endl ;
-				}
-#endif
 			}
 		}
 	}

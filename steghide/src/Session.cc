@@ -28,7 +28,9 @@
 #include "CvrStgFile.h"
 #include "MCryptPP.h"
 #include "Session.h"
+#include "Utils.h"
 #include "common.h"
+#include "error.h"
 
 void Session::run ()
 {
@@ -39,12 +41,40 @@ void Session::run ()
 		break ; }
 
 		case EXTRACT: {
-			Extractor ext ;
-			ext.extract() ;
+			Extractor ext (Args.StgFn.getValue(), Args.Passphrase.getValue()) ;
+			EmbData* embdata = ext.extract() ;
+
+			// write data
+			std::string fn ;
+			if (Args.ExtFn.is_set()) {
+				if (Args.ExtFn.getValue() == "") {
+					// write extracted data to stdout
+					fn = "" ;
+				}
+				else {
+					// file name given by extracting user overrides embedded file name
+					fn = Args.ExtFn.getValue() ;
+				}
+			}
+			else {
+				// write extracted data to file with embedded file name
+				myassert (Args.ExtFn.getValue() == "") ;
+				fn = embdata->getFileName() ;
+				if (fn.length() == 0) {
+					throw SteghideError (_("please specify a file name for the extracted data (there is no name embedded in the stego file).")) ;
+				}
+			}
+
+			BinaryIO io (fn, BinaryIO::WRITE) ;
+			std::vector<BYTE> data = embdata->getData() ;
+			for (std::vector<BYTE>::iterator i = data.begin() ; i != data.end() ; i++) {
+				io.write8 (*i) ;
+			}
+			io.close() ;
 		break ; }
 
-		case CAPACITY: {
-			printCapacity() ;
+		case INFO: {
+			printInfo() ;
 		break ; }
 
 		case ENCINFO: {
@@ -75,27 +105,68 @@ void Session::run ()
 	}
 }
 
-void Session::printCapacity ()
+void Session::printInfo ()
 {
-	CvrStgFile* TheCvrStgFile = CvrStgFile::readFile (Args.CvrFn.getValue()) ;
-	float capacity = (float) TheCvrStgFile->getCapacity() ;
-	capacity -= EmbData::MinStegoHeaderSize / 8 ;
+	// if file format not supported: exception will be catched in main
+	CvrStgFile* file = CvrStgFile::readFile (Args.CvrFn.getValue()) ;
 
-	std::string unit = "Byte" ;
-	if (capacity > 1024.0) {
-		capacity /= 1024.0 ;
-		unit = "KB" ;
+	if (Args.CvrFn.getValue() == "") {
+		printf (_("data from standard input:\n")) ;
 	}
-	if (capacity > 1024.0) {
-		capacity /= 1024.0 ;
-		unit = "MB" ;
-	}
-	if (capacity > 1024.0) {
-		capacity /= 1024.0 ;
-		unit = "GB" ;
+	else {
+		printf ("\"%s\":\n", stripDir(Args.CvrFn.getValue()).c_str()) ;
 	}
 
-	printf (_("the capacity of \"%s\" is approximately %.1f %s.\n"), stripDir(TheCvrStgFile->getName()).c_str(), capacity, unit.c_str()) ;
+	std::list<CvrStgFile::Property> props = file->getProperties() ;
+	props.push_back (CvrStgFile::Property (_("capacity"), file->getHRCapacity())) ;
+	for (std::list<CvrStgFile::Property>::const_iterator it = props.begin() ; it != props.end() ; it++) {
+		printf ("  %s: %s\n", it->getKey().c_str(), it->getValue().c_str()) ;
+	}
+
+	bool printembinfo = Args.Passphrase.is_set() ;
+	if (!printembinfo) {
+		Question q (_("Try to get information about embedded data ?")) ;
+		q.printMessage() ;
+		printembinfo = q.getAnswer() ;
+	}
+
+	if (printembinfo) {
+		try {
+			std::string pp ;
+			if (Args.Passphrase.is_set()) {
+				pp = Args.Passphrase.getValue() ;
+			}
+			else {
+				pp = Args.getPassphrase() ; // ask user for it
+			}
+
+			Extractor e (Args.CvrFn.getValue(), pp) ;
+			EmbData* embdata = e.extract() ;
+
+			if (embdata->getFileName() == "") {
+				printf (_("  embedded data:\n")) ;
+			}
+			else {
+				printf (_("  embedded file \"%s\":\n"), embdata->getFileName().c_str()) ;
+			}
+
+			printf (_("    size: %s\n"), Utils::formatHRSize(embdata->getData().size()).c_str()) ;
+			std::string encstring ;
+			if (embdata->getEncAlgo() == EncryptionAlgorithm(EncryptionAlgorithm::NONE)) {
+				encstring += _("no") ;
+			}
+			else {
+				encstring += embdata->getEncAlgo().getStringRep() + ", " + embdata->getEncMode().getStringRep() ;
+			}
+			printf (_("    encrypted: %s\n"), encstring.c_str()) ;
+			printf (_("    compressed: %s\n"), ((embdata->getCompression() > 0) ? _("yes") : _("no"))) ;
+
+			delete embdata ;
+		}
+		catch (CorruptDataError e) {
+			printf (_("could not extract any data with that passphrase!\n")) ;
+		}
+	}
 }
 
 std::string Session::stripDir (std::string s) const
@@ -151,52 +222,57 @@ void Session::printHelp ()
 		"the first argument must be one of the following:\n"
 		" embed, --embed          embed data\n"
 		" extract, --extract      extract data\n"
-		" capacity, --capacity    calculate capacity of a cover file\n"
-		"   capacity <filename>   display capacity of <filename>\n"
+		" info, --info            display information about a cover- or stego-file\n"
+		"   info <filename>       display information about <filename>\n"
 		" encinfo, --encinfo      display a list of supported encryption algorithms\n"
 		" version, --version      display version information\n"
 		" license, --license      display steghide's license\n"
 		" help, --help            display this usage information\n"
 
-		"\noptions for embedding only:\n"
-
+		"\nembedding options:\n"
 		" -ef, --embedfile        select file to be embedded\n"
 		"   -ef <filename>        embed the file <filename>\n"
-		" -cf, --coverfile        select cover file\n"
+		" -cf, --coverfile        select cover-file\n"
 		"   -cf <filename>        embed into the file <filename>\n"
+		" -p, --passphrase        specify passphrase\n"
+		"   -p <passphrase>       use <passphrase> as passphrase\n"
+		" -sf, --stegofile        select stego file\n"
+		"   -sf <filename>        write result to <filename> instead of cover-file\n"
 		" -e, --encryption        select encryption parameters\n"
 		"   -e <a>[<m>]|<m>[<a>]  specify an encryption algorithm and/or mode\n"
 		"   -e none               do not encrypt data before embedding\n"
-		" -r, --radius            specify the neighbourhood-radius\n"
-		"   -r <r>                use the real number <r> as radius\n"
+		" -z, --compress          compress data before embedding (default)\n"
+		"  -z <l>                 using level <l> (1 best speed...9 best compression)\n"
+		" -Z, --dontcompress      do not compress data before embedding\n"
 		" -a, --algorithm         choose matching algorithm\n"
 		"   -a <n>                where <n> is in 0 fastest...3 most secure\n"
 		" -g, --goal              specify a goal for the matching algorithms\n"
 		"   -g <p>                stop search when <p> percent are reached\n"
+		" -r, --radius            specify the neighbourhood-radius\n"
+		"   -r <r>                use the real number <r> as radius\n"
 		" -K, --nochecksum        do not embed crc32 checksum of embedded data\n"
 		" -N, --dontembedname     do not embed the name of the original file\n"
-		" -z, --compress          compress data before embedding (default)\n"
-		"  -z <l>                 using level <l> (1 best speed...9 best compression)\n"
-		" -Z, --dontcompress      do not compress data before embedding\n"
-
-		"\noptions for extracting only:\n"
-		" -xf, --extractfile      select file for extracted data\n"
-		"   -xf <filename>        write the extracted data to <filename>\n"
-
-		"\noptions for embedding and extracting:\n"
-
-		" -p, --passphrase        specify passphrase\n"
-		"   -p <passphrase>       use <passphrase> as passphrase\n"
-		" -sf, --stegofile        select stego file\n"
-		"   -sf <filename>        when embedding: write result to <filename>\n"
-		"   -sf <filename>        when extracting: extract data from <filename>\n"
 		" -f, --force             overwrite existing files\n"
 		" -q, --quiet             suppress information messages\n"
 		" -v, --verbose           display detailed information\n"
 
+		"\nextraction options:\n"
+		" -sf, --stegofile        select stego file\n"
+		"   -sf <filename>        extract data from <filename>\n"
+		" -p, --passphrase        specify passphrase\n"
+		"   -p <passphrase>       use <passphrase> as passphrase\n"
+		" -xf, --extractfile      select file for extracted data\n"
+		"   -xf <filename>        write the extracted data to <filename>\n"
+		" -f, --force             overwrite existing files\n"
+		" -q, --quiet             suppress information messages\n"
+		" -v, --verbose           display detailed information\n"
+
+		"\noptions for the info command:\n"
+		" -p, --passphrase        specify passphrase\n"
+		"   -p <passphrase>       use <passphrase> to get info about embedded data\n"
+
 		"\nTo embed emb.txt in cvr.jpg: steghide embed -cf cvr.jpg -ef emb.txt\n"
-		"To extract embedded data from stg.jpg: steghide extract -sf stg.jpg\n"
-		"To calculate the capacity of cvr.jpg: steghide capacity -cf cvr.jpg\n")) ;
+		"To extract embedded data from stg.jpg: steghide extract -sf stg.jpg\n")) ;
 }
 
 void Session::printLicense ()

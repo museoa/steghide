@@ -21,21 +21,14 @@
 #ifndef SH_UTILS_H
 #define SH_UTILS_H
 
-/**
- * \class Utils
- * \brief provides some (static) utility functions
- **/
-template<class T>
+#include <string>
+
 class Utils {
 	public:
 	/**
-	 * return the maximum of a and b (needs >)
+	 * gets a number of bytes and returns a human-readable string like e.g. "3,5 KB"
 	 **/
-	static T max (T a, T b) ;
-	/**
-	 * returns a divided through b rounded up to nearest "integer" (needs =, --, +, /)
-	 **/
-	static T div_roundup (T a, T b) ;
+	static std::string formatHRSize (unsigned long size) ;
 } ;
 
 #endif // ndef SH_UTILS_H

@@ -124,28 +124,6 @@ UnSupFileFormat::UnSupFileFormat (BinaryIO *io)
 }
 
 //
-// class CorruptJpegError
-//
-CorruptJpegError::CorruptJpegError (BinaryIO *io, const char *msgfmt, ...)
-	: SteghideError()
-{
-	va_list ap ;
-	va_start (ap, msgfmt) ;
-	std::string auxmsg = vcompose (msgfmt, ap) ;
-	va_end (ap) ;
-
-	std::string mainmsg ;
-	if (io->is_std()) {
-		mainmsg = std::string (_("corrupt jpeg file on standard input:")) ;
-	}
-	else {
-		mainmsg = compose (_("corrupt jpeg file \"%s\":"), io->getName().c_str()) ;
-	}
-
-	setMessage(mainmsg + " " + auxmsg) ;
-}
-
-//
 // class NotImplementedError
 //
 NotImplementedError::NotImplementedError (const char *msgfmt, ...)
@@ -163,4 +141,23 @@ void NotImplementedError::printMessage () const
 	printf (_("This feature is not implemented (yet). Please let me (shetzl@chello.at) know\n"
 		"that you want to use this functionality to increase the chance that this will\n"
 		"be implemented in the near future. Steghide has to exit now. Sorry.\n")) ;
+}
+
+//
+// class CorruptDataError
+//
+CorruptDataError::CorruptDataError (const char* msgfmt, ...)
+	: SteghideError()
+{
+	va_list ap ;
+	va_start (ap, msgfmt) ;
+	setMessage (vcompose (msgfmt, ap)) ;
+	va_end (ap) ;
+}
+
+void CorruptDataError::printMessage () const
+{
+	SteghideError::printMessage() ;
+	printf (_("Other possible reasons for this error are that the passphrase is wrong\n"
+		"or that there is no embedded data.\n")) ;
 }

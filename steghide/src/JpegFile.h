@@ -50,6 +50,8 @@ class JpegFile : public CvrStgFile {
 	void read (BinaryIO* io) ;
 	void write (void) ;
 
+	std::list<CvrStgFile::Property> getProperties (void) const ;
+	
 	unsigned long getNumSamples (void) const ;
 	void replaceSample (const SamplePos pos, const SampleValue* s) ;
 	SampleValue* getSampleValue (const SamplePos pos) const ;

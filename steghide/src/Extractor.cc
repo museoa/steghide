@@ -27,30 +27,25 @@
 #include "SampleValue.h"
 #include "Selector.h"
 #include "common.h"
+#include "error.h"
 
-Extractor::Extractor ()
-{
-	StegoFileName = Args.StgFn.getValue() ;
-	ExtractFileName = Args.ExtFn.getValue() ;
-}
-
-void Extractor::extract ()
+EmbData* Extractor::extract ()
 {
 	Globs.TheCvrStgFile = CvrStgFile::readFile (StegoFileName) ;
-	EmbData embdata (EmbData::EXTRACT, Args.Passphrase.getValue()) ;
+	EmbData* embdata = new EmbData (EmbData::EXTRACT, Passphrase) ;
 
-	Selector sel (Globs.TheCvrStgFile->getNumSamples(), Args.Passphrase.getValue()) ;
+	Selector sel (Globs.TheCvrStgFile->getNumSamples(), Passphrase) ;
 
 	unsigned int sam_ebit = Globs.TheCvrStgFile->getSamplesPerEBit() ;
 	unsigned long ebit_idx = 0 ;
-	while (!embdata.finished()) {
-		unsigned long bitsneeded = embdata.getNumBitsNeeded() ;
+	while (!embdata->finished()) {
+		unsigned long bitsneeded = embdata->getNumBitsNeeded() ;
 		if (ebit_idx + bitsneeded > Globs.TheCvrStgFile->getNumSamples()) {
 			if (Globs.TheCvrStgFile->is_std()) {
-				throw SteghideError (_("the stego data from standard input is too short to contain the embedded data (file corruption ?).")) ;
+				throw CorruptDataError (_("the stego data from standard input is too short to contain the embedded data.")) ;
 			}
 			else {
-				throw SteghideError (_("the stego file \"%s\" is too short to contain the embedded data (file corruption ?)."), Globs.TheCvrStgFile->getName().c_str()) ;
+				throw CorruptDataError (_("the stego file \"%s\" is too short to contain the embedded data."), Globs.TheCvrStgFile->getName().c_str()) ;
 			}
 		}
 		BitString bits ;
@@ -61,34 +56,8 @@ void Extractor::extract ()
 			}
 			bits.append (xorresult) ;
 		}
-		embdata.addBits (bits) ;
+		embdata->addBits (bits) ;
 	}
 
-	// write data
-	std::string fn ;
-	if (Args.ExtFn.is_set()) {
-		if (Args.ExtFn.getValue() == "") {
-			// write extracted data to stdout
-			fn = "" ;
-		}
-		else {
-			// file name given by extracting user overrides embedded file name
-			fn = Args.ExtFn.getValue() ;
-		}
-	}
-	else {
-		// write extracted data to file with embedded file name
-		myassert (Args.ExtFn.getValue() == "") ;
-		fn = embdata.getFileName() ;
-		if (fn.length() == 0) {
-			throw SteghideError (_("please specify a file name for the extracted data (there is no name embedded in the stego file).")) ;
-		}
-	}
-
-	BinaryIO io (fn, BinaryIO::WRITE) ;
-	std::vector<BYTE> data = embdata.getData() ;
-	for (std::vector<BYTE>::iterator i = data.begin() ; i != data.end() ; i++) {
-		io.write8 (*i) ;
-	}
-	io.close() ;
+	return embdata ;
 }

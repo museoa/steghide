@@ -70,14 +70,22 @@ class UnSupFileFormat : public SteghideError {
 	UnSupFileFormat (BinaryIO *io) ;
 } ;
 
-class CorruptJpegError : public SteghideError {
-	public:
-	CorruptJpegError (BinaryIO *io, const char *msgfmt, ...) ;	
-} ;
-
 class NotImplementedError : public SteghideError {
 	public:
 	NotImplementedError (const char* msgfmt, ...) ;
+
+	void printMessage (void) const ;
+} ;
+
+/**
+ * \class CorruptDataError
+ * \brief is thrown as exception when corrupt data is encountered during extraction
+ *
+ * A possible cause of this exception being thrown is a wrong password.
+ **/
+class CorruptDataError : public SteghideError {
+	public:
+	CorruptDataError (const char* msgfmt, ...) ;
 
 	void printMessage (void) const ;
 } ;

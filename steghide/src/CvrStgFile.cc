@@ -27,6 +27,7 @@
 #include "BmpFile.h"
 #include "JpegFile.h"
 #include "SampleValue.h"
+#include "Utils.h"
 #include "WavFile.h"
 #include "common.h"
 #include "error.h"
@@ -106,6 +107,11 @@ BIT CvrStgFile::getSampleBit (const SamplePos pos) const
 	BIT retval = sv->getBit() ;
 	delete sv ;
 	return retval ;
+}
+
+std::string CvrStgFile::getHRCapacity () const
+{
+	return Utils::formatHRSize (getCapacity()) ;
 }
 
 #ifdef DEBUG

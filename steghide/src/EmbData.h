@@ -47,6 +47,7 @@ class EmbData {
 	BitString getBitString (void) ;
 
 	bool finished (void) ;
+
 	unsigned long getNumBitsNeeded (void) ;
 	void addBits (BitString bits) ;
 

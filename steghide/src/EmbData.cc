@@ -71,7 +71,7 @@ void EmbData::addBits (BitString bits)
 			}
 			else {
 				if (Version > CodeVersion) {
-					throw SteghideError (_("attempting to read an embedding of version %d but steghide %s only supports embeddings of version %d."), Version, VERSION, CodeVersion) ;
+					throw CorruptDataError (_("attempting to read an embedding of version %d but steghide %s only supports embeddings of version %d."), Version, VERSION, CodeVersion) ;
 				}
 				NumBitsNeeded = EncryptionAlgorithm::IRep_size + EncryptionMode::IRep_size ;
 				State = READ_ENCINFO ;
@@ -172,7 +172,9 @@ void EmbData::addBits (BitString bits)
 			} while (curchar != '\0') ;
 
 			// extract data
-			myassert ((plain.getLength() - pos) % 8 == 0) ;
+			if ((plain.getLength() - pos) % 8 != 0) {
+				throw CorruptDataError (_("the embedded data has an invalid length.")) ;
+			}
 			const unsigned long extdatalen = (plain.getLength() - pos) / 8 ;
 			Data.resize (extdatalen) ;
 			for (unsigned int i = 0 ; i < extdatalen ; i++) {
