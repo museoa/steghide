@@ -60,11 +60,56 @@ class JpegHuffmanTable : public JpegSegment {
 	 **/
 	unsigned int getDestId (void) ;
 
-	// FIXME - ??Datentypen
-	int getMinCode (unsigned char l) ;
-	int getMaxCode (unsigned char l) ;
-	unsigned int getValPtr (unsigned char l) ;
-	unsigned char getHuffVal (unsigned int i) ;
+	/**
+	 * get the number of codes with length l
+	 * \param l the code length (1 <= l <= 16)
+	 **/
+	unsigned int getBits (unsigned int l) ;
+
+	/**
+	 * get the i-th symbol value
+	 * \param i (0 <= i)
+	 **/
+	unsigned int getHuffVal (unsigned int i) ;
+
+	/**
+	 * get the length of the i-th code
+	 * \param i (0 <= i)
+	 **/
+	unsigned int getHuffSize (unsigned int i) ;
+
+	/**
+	 * get the i-th huffman code (corresponding to the length getHuffSize(i))
+	 * \param i (0 <= i)
+	 **/
+	unsigned int getHuffCode (unsigned int i) ;
+
+	/**
+	 * get the smallest code value of length l
+	 * \param l the code length (1 <= l <= 16)
+	 **/
+	int getMinCode (unsigned int l) ;
+
+	/**
+	 * get the largest code value of length l
+	 * \param l the code length (1 <= l <= 16)
+	 **/
+	int getMaxCode (unsigned int l) ;
+
+	/**
+	 * get the index of the start of the values in huffval which are decoded by words of length l
+	 * \param l the code length (1 <= l <= 16)
+	 **/
+	int getValPtr (unsigned int l) ;
+
+	// FIXME DELME
+	void printBits (void) ;
+	void printHuffVal (void) ;
+	void printHuffSize (void) ;
+	void printHuffCode (void) ;
+	void printMinCode (void) ;
+	void printMaxCode (void) ;
+	void printValPtr (void) ;
 
 	private:
 	static const unsigned char Len_bits = 16 ;
@@ -73,11 +118,11 @@ class JpegHuffmanTable : public JpegSegment {
 
 	unsigned char tableclass ;
 	unsigned char tabledestid ;
-	vector<unsigned char> bits ;
-	vector<unsigned char> huffval ;
-
-	// FIXME - ??Datentypen
-	vector<unsigned char> huffsize ;
+	vector<unsigned int> bits ;
+	vector<unsigned int> huffval ;
+	/// contains a list of code lengths
+	vector<unsigned int> huffsize ;
+	/// contains the codes corresponding to the code lengths in huffsize 
 	vector<unsigned int> huffcode ;
 	/// mincode[l] contains the smallest code value for the length l
 	vector<int> mincode ;

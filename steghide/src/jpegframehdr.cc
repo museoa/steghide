@@ -18,18 +18,22 @@
  *
  */
 
+#include <assert.h>
+
 #include "jpegbase.h"
 #include "jpegframehdr.h"
 
 JpegFrameHeader::JpegFrameHeader (void)
 	: JpegSegment()
 {
+	isread = false ;
 	components = NULL ;
 }
 
 JpegFrameHeader::JpegFrameHeader (JpegMarker m, BinaryIO *io)
 	: JpegSegment (m)
 {
+	isread = false ;
 	components = NULL ;
 	read (io) ;
 }
@@ -55,6 +59,8 @@ void JpegFrameHeader::read (BinaryIO *io)
 		splitByte (io->read8(), &components[i].horizsampling, &components[i].vertsampling) ;
 		components[i].quanttable = io->read8() ;
 	}
+
+	isread = true ;
 }
 
 void JpegFrameHeader::write (BinaryIO *io)
@@ -70,4 +76,24 @@ void JpegFrameHeader::write (BinaryIO *io)
 		io->write8 (mergeByte (components[i].horizsampling, components[i].vertsampling)) ;
 		io->write8 (components[i].quanttable) ;
 	}
+}
+
+unsigned char JpegFrameHeader::getNumComponents (void)
+{
+	assert (isread) ;
+	return numcomponents ;
+}
+
+unsigned char JpegFrameHeader::getHorizSampling (unsigned char c)
+{
+	assert (isread) ;
+	assert (c < getNumComponents()) ;
+	return components[c].horizsampling ;
+}
+
+unsigned char JpegFrameHeader::getVertSampling (unsigned char c)
+{
+	assert (isread) ;
+	assert (c < getNumComponents()) ;
+	return components[c].vertsampling ;
 }

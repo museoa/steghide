@@ -49,6 +49,17 @@ JpegScan::JpegScan (BinaryIO *io)
 	read (io) ;
 }
 
+JpegScan::JpegScan (JpegObject *p, BinaryIO *io)
+	: JpegContainer (p)
+{
+	scanhdr = NULL ;
+	ecs = NULL ;
+	ACTables = vector<JpegHuffmanTable*> (4) ;
+	DCTables = vector<JpegHuffmanTable*> (4) ;
+
+	read (io) ;
+}
+
 JpegScan::~JpegScan ()
 {
 }
@@ -56,6 +67,26 @@ JpegScan::~JpegScan ()
 JpegMarker JpegScan::getTerminatingMarker ()
 {
 	return termmarker ;
+}
+
+JpegScanHeader *JpegScan::getScanHeader ()
+{
+	assert (scanhdr) ;
+	return scanhdr ;
+}
+
+JpegHuffmanTable *JpegScan::getDCTable (unsigned char ds)
+{
+	assert (ds < 4) ;
+	assert (DCTables[ds]) ;
+	return DCTables[ds] ;
+}
+
+JpegHuffmanTable *JpegScan::getACTable (unsigned char ds)
+{
+	assert (ds < 4) ;
+	assert (ACTables[ds]) ;
+	return ACTables[ds] ;
 }
 
 //DEBUG
@@ -115,7 +146,7 @@ void JpegScan::read (BinaryIO *io)
 			scanhdr = new JpegScanHeader (io) ;
 			appendObj (scanhdr) ;
 
-			ecs = new JpegEntropyCoded (io) ;
+			ecs = new JpegEntropyCoded (this, io) ;
 			appendObj (ecs) ;
 
 			marker[0] = 0xFF ;
@@ -125,6 +156,7 @@ void JpegScan::read (BinaryIO *io)
 
 			case JpegElement::MarkerEOI:
 			cerr << "found EOI" << endl ;
+			termmarker = JpegElement::MarkerEOI ;
 			scanread = true ;
 			break ;
 

@@ -23,6 +23,7 @@
 
 #include "binaryio.h"
 #include "jpegbase.h"
+#include "jpegframehdr.h"
 
 /**
  * \class JpegFrame
@@ -36,11 +37,10 @@ class JpegFrame : public JpegContainer {
 
 	void read (BinaryIO *io) ;
 
+	JpegFrameHeader *getFrameHeader (void) ;
+
 	private:
-	// ? tables ?
-	// ? dnl ?
-	// JpegFrameHeader *hdr ;
-	// vector<JpegScan*> scans ;
+	JpegFrameHeader *framehdr ;
 } ;
 
 #endif // ndef SH_JEPGFRAME_H

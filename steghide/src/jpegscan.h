@@ -37,20 +37,35 @@ class JpegScan : public JpegContainer {
 	public:
 	JpegScan (void) ;
 	JpegScan (BinaryIO *io) ;
+	JpegScan (JpegObject *p, BinaryIO *io) ;
 	~JpegScan (void) ;
 
 	void read (BinaryIO *io) ;
 
 	JpegMarker getTerminatingMarker (void) ;
+	JpegScanHeader *getScanHeader (void) ;
+
+	/**
+	 * get the DC huffman table for a given DC table destination specifier
+	 * \param ds DC table destination specifier
+	 * \return the DC huffman table corresponding to ds
+	 **/
+	JpegHuffmanTable *getDCTable (unsigned char ds) ;
+
+	/**
+	 * get the AC huffman table for a given AC table destination specifier
+	 * \param ds AC table destination specifier
+	 * \return the AC huffman table corresponding to ds
+	 **/
+	JpegHuffmanTable *getACTable (unsigned char ds) ;
 
 	private:
 	JpegScanHeader *scanhdr ;
 	// TODO support more than one ecs
 	JpegEntropyCoded *ecs ;
 
-	// FIXME? - gibt es DCTables[0..4] UND ACTables[0..4] oder Tables[0..4] von denen jeder DC oder AC sein kann ?? - siehe JPEGSTANDARD S. 104 u. S.111
-	vector<JpegHuffmanTable*> ACTables ;
 	vector<JpegHuffmanTable*> DCTables ;
+	vector<JpegHuffmanTable*> ACTables ;
 
 	JpegMarker termmarker ;
 } ;

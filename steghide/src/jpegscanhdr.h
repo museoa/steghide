@@ -45,6 +45,22 @@ class JpegScanHeader : public JpegSegment {
 	 **/
 	void write (BinaryIO *io) ;
 
+	/**
+	 * return the DC table destination specifier for Component c
+	 * \param c the id of the component
+	 * \return the DC table destination specifier
+	 **/
+	unsigned char getDCDestSpec (unsigned char c) ;
+
+	/**
+	 * return the AC table destination specifier for Component c
+	 * \param c the id of the component
+	 * \return the AC table destination specifier
+	 **/
+	unsigned char getACDestSpec (unsigned char c) ;
+
+	unsigned char getNumComponents (void) ;
+
 	private:
 	struct Component {
 		unsigned char id ;
@@ -62,6 +78,8 @@ class JpegScanHeader : public JpegSegment {
 	/// sucessive approximation bit position low or point transform
 	unsigned char al ;
 	Component *components ;
+
+	bool isread ;
 } ;
 
 #endif // ndef SH_JPEGSCANHDR_H

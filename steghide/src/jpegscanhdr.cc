@@ -24,19 +24,21 @@
 JpegScanHeader::JpegScanHeader (void)
 	: JpegSegment()
 {
+	isread = false ;
 	components = NULL ;
 }
 
 JpegScanHeader::JpegScanHeader (BinaryIO *io)
 	: JpegSegment (JpegElement::MarkerSOS)
 {
+	isread = false ;
 	components = NULL ;
 	read (io) ;
 }
 
 JpegScanHeader::~JpegScanHeader ()
 {
-	if (components != NULL) {
+	if (isread) {
 		delete components ;
 	}
 }
@@ -54,6 +56,8 @@ void JpegScanHeader::read (BinaryIO *io)
 	sospectral = io->read8() ;
 	eospectral = io->read8() ;
 	splitByte (io->read8(), &ah, &al) ;
+
+	isread = true ;
 }
 
 void JpegScanHeader::write (BinaryIO *io)
@@ -68,4 +72,24 @@ void JpegScanHeader::write (BinaryIO *io)
 	io->write8 (sospectral) ;
 	io->write8 (eospectral) ;
 	io->write8 (mergeByte (ah, al)) ;
+}
+
+unsigned char JpegScanHeader::getNumComponents ()
+{
+	assert (isread) ;
+	return numcomponents ;
+}
+
+unsigned char JpegScanHeader::getDCDestSpec (unsigned char c)
+{
+	assert (isread) ;
+	assert (c < getNumComponents()) ;
+	return components[c].DCTable ;
+}
+
+unsigned char JpegScanHeader::getACDestSpec (unsigned char c)
+{
+	assert (isread) ;
+	assert (c < getNumComponents()) ;
+	return components[c].ACTable ;
 }

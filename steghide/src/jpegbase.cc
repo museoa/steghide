@@ -26,6 +26,32 @@
 //
 // class JpegObject
 //
+JpegObject::JpegObject ()
+{
+	setParent (NULL) ;
+}
+
+JpegObject::JpegObject (JpegObject *p)
+{
+	setParent (p) ;
+}
+
+JpegObject *JpegObject::getParent ()
+{
+	assert (parent) ;
+	return parent ;
+}
+
+bool JpegObject::issetParent ()
+{
+	return (parent != NULL) ;
+}
+
+void JpegObject::setParent (JpegObject *p)
+{
+	parent = p ;
+}
+
 void JpegObject::splitByte (unsigned char byte, unsigned char *high, unsigned char *low)
 {
 	*high = (0xF0 & byte) >> 4 ;
@@ -44,11 +70,19 @@ unsigned char JpegObject::mergeByte (unsigned char high, unsigned char low)
 // class JpegElement
 //
 JpegElement::JpegElement ()
+	: JpegObject()
 {
 	marker_isset = false ;
 }
 
 JpegElement::JpegElement (JpegMarker m)
+	: JpegObject()
+{
+	setMarker (m) ;
+}
+
+JpegElement::JpegElement (JpegObject *p, JpegMarker m)
+	: JpegObject (p)
 {
 	setMarker (m) ;
 }
@@ -89,7 +123,13 @@ JpegSegment::JpegSegment ()
 }
 
 JpegSegment::JpegSegment (JpegMarker m)
-	: JpegElement(m)
+	: JpegElement (m)
+{
+	length_isset = false ;
+}
+
+JpegSegment::JpegSegment (JpegObject *p, JpegMarker m)
+	: JpegElement (p, m)
 {
 	length_isset = false ;
 }
@@ -126,6 +166,11 @@ void JpegSegment::setLength (unsigned int l)
 //
 JpegContainer::JpegContainer ()
 	: JpegObject(), CvrStgObject()
+{
+}
+
+JpegContainer::JpegContainer (JpegObject *p)
+	: JpegObject (p), CvrStgObject()
 {
 }
 

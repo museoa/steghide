@@ -44,6 +44,12 @@ JpegFrame::~JpegFrame ()
 {
 }
 
+JpegFrameHeader *JpegFrame::getFrameHeader ()
+{
+	assert (framehdr) ;
+	return framehdr ;
+}
+
 //DEBUG
 void JpegFrame::read (BinaryIO *io)
 {
@@ -81,10 +87,10 @@ void JpegFrame::read (BinaryIO *io)
 
 			case JpegElement::MarkerSOF0:
 			cerr << "found SOF0" << endl ;
-			next = new JpegFrameHeader (marker[1], io) ;
+			framehdr = new JpegFrameHeader (marker[1], io) ;
 			appendObj (next) ;
 			// TODO - support more than one scan
-			next = new JpegScan (io) ;
+			next = new JpegScan (this, io) ;
 			if (((JpegScan*) next)->getTerminatingMarker() == JpegElement::MarkerEOI) {
 				eoifound = true ;
 			}

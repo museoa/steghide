@@ -34,6 +34,9 @@
  **/
 class JpegObject {
 	public:
+	JpegObject (void) ;	
+	JpegObject (JpegObject *p) ;
+
 	/**
 	 * read this object from a jpeg stream
 	 * \param io the jpeg stream
@@ -45,6 +48,10 @@ class JpegObject {
 	 * \param io the jpeg stream
 	 **/
 	virtual void write (BinaryIO *io) = 0 ;
+
+	JpegObject *getParent (void) ;
+	void setParent (JpegObject *p) ;
+	bool issetParent (void) ;
 
 	protected:
 	/**
@@ -67,6 +74,8 @@ class JpegObject {
 	 **/
 	unsigned char mergeByte (unsigned char high, unsigned char low) ;
 
+	private:
+	JpegObject *parent ;
 } ;
 
 typedef unsigned char JpegMarker ;
@@ -100,6 +109,7 @@ class JpegElement : public JpegObject {
 
 	JpegElement (void) ;
 	JpegElement (JpegMarker m) ;
+	JpegElement (JpegObject *p, JpegMarker m) ;
 	virtual ~JpegElement (void) ;
 
 	void read (BinaryIO *io) ;
@@ -141,6 +151,7 @@ class JpegSegment : public JpegElement {
 	public:
 	JpegSegment (void) ;
 	JpegSegment (JpegMarker m) ;
+	JpegSegment (JpegObject *p, JpegMarker m) ;
 	virtual ~JpegSegment (void) ;
 
 	/**
@@ -183,6 +194,7 @@ class JpegSegment : public JpegElement {
 class JpegContainer : public JpegObject, public CvrStgObject {
 	public:
 	JpegContainer (void) ;
+	JpegContainer (JpegObject *p) ;
 	virtual ~JpegContainer (void) ;
 
 	/**

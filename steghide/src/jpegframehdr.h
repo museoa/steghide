@@ -45,6 +45,10 @@ class JpegFrameHeader : public JpegSegment {
 	 **/
 	void write (BinaryIO *io) ;
 
+	unsigned char getNumComponents (void) ;
+	unsigned char getHorizSampling (unsigned char c) ;
+	unsigned char getVertSampling (unsigned char c) ;
+
 	private:
 	struct Component {
 		unsigned char id ;
@@ -61,6 +65,8 @@ class JpegFrameHeader : public JpegSegment {
 	/// number of components in frame
 	unsigned char numcomponents ;
 	Component *components ;
+
+	bool isread ;
 } ;
 
 #endif // ndef SH_JPEGFRAMEHDR_H
