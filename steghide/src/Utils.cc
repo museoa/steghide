@@ -18,6 +18,8 @@
  *
  */
 
+#include <cstdio>
+
 #include "Utils.h"
 
 std::string Utils::formatHRSize (unsigned long size)

@@ -123,7 +123,7 @@ void EmbData::addBits (BitString addbits)
 #ifdef USE_LIBMCRYPT
 			NumBitsNeeded = AUtils::bminus ((UWORD32) MCryptPP::getEncryptedSize (EncAlgo, EncMode, NPlainBits), Reservoir.getLength()) ;
 #else
-			NumBitsNeeded = AUtils::bminus (NPlainBits, Reservoir.getLength()) ;
+			NumBitsNeeded = AUtils::bminus<unsigned long> (NPlainBits, Reservoir.getLength()) ;
 #endif
 
 			State = READ_ENCRYPTED ;
