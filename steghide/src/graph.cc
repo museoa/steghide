@@ -107,7 +107,7 @@ void Graph::finishAdding()
 	}
 
 	// create the SampleOppositeNeighbourhood data structure
-	SampleOppositeNeighbourhood = vector<list<SampleLabel> > (nsamples) ;
+	SampleOppositeNeighbourhood = vector<vector<SampleLabel> > (nsamples) ;
 	unsigned long nsamples0 = Samples0.size() ;
 	unsigned long nsamples1 = Samples1.size() ;
 	for (unsigned long i0 = 0 ; i0 < nsamples0 ; i0++) {
@@ -150,8 +150,8 @@ void Graph::updateShortestEdge (Vertex *v1)
 		unsigned long min_weight = ULONG_MAX ;
 
 		for (unsigned short i = 0 ; i < SamplesPerEBit ; i++) {
-			const list<SampleLabel> &oppneighbours = SampleOppositeNeighbourhood[v1->getSample(i)->getLabel()] ;
-			for (list<SampleLabel>::const_iterator j = oppneighbours.begin() ; j != oppneighbours.end() ; j++) {
+			const vector<SampleLabel> &oppneighbours = SampleOppositeNeighbourhood[v1->getSample(i)->getLabel()] ;
+			for (vector<SampleLabel>::const_iterator j = oppneighbours.begin() ; j != oppneighbours.end() ; j++) {
 				// search the nearest samples to v1->getSamplePos(i)
 				map<SamplePos,pair<Vertex*,unsigned short> >::iterator upbound = SampleOccurences[(*j)].upper_bound (v1->getSamplePos(i)) ;
 				map<SamplePos,pair<Vertex*,unsigned short> >::iterator lowbound = upbound ;
@@ -254,17 +254,17 @@ void Graph::insertInMatching (vector<Edge*> *m, Edge *e)
 	}
 
 	// get all opposite neighbour samples of these two vertices
-	list<SampleLabel> oppneighbours ;	// duplicates are valid
+	vector<SampleLabel> oppneighbours ;	// duplicates are valid(!)
 	for (unsigned short i = 0 ; i < SamplesPerEBit ; i++) {
-		// FIXME - move vs. copy <-> splice vs. ?
-		list<SampleLabel> tmp = SampleOppositeNeighbourhood[v1->getSample(i)->getLabel()] ; // copy for Vertex1
-		oppneighbours.splice (oppneighbours.begin(), tmp) ;
+		// FIXME - rewrite this! - don't use copy - use references
+		vector<SampleLabel> tmp = SampleOppositeNeighbourhood[v1->getSample(i)->getLabel()] ; // copy for Vertex1
+		copy (tmp.begin(), tmp.end(), back_inserter(tmp)) ;
 		tmp = SampleOppositeNeighbourhood[v2->getSample(i)->getLabel()] ;	// copy for Vertex2
-		oppneighbours.splice (oppneighbours.begin(), tmp) ;
+		copy (tmp.begin(), tmp.end(), back_inserter(tmp)) ;
 	}
 
 	// for all neighbour samples decrement the degree of all vertex contents
-	for (list<SampleLabel>::iterator i = oppneighbours.begin() ; i != oppneighbours.end() ; i++) {
+	for (vector<SampleLabel>::iterator i = oppneighbours.begin() ; i != oppneighbours.end() ; i++) {
 		for (list<VertexContent*>::iterator j = VertexContents[(*i)].begin() ; j != VertexContents[(*i)].end() ; j++) {
 			(*j)->decDegree() ;
 			if ((*j)->getDegree() == 1) {
@@ -477,8 +477,8 @@ void Graph::setupConstrHeuristic()
 	for (hash_set<VertexContent*,hash<VertexContent*>,VertexContentsEqual>::iterator i = vc_set.begin() ; i != vc_set.end() ; i++) {
 		unsigned long degree = 0 ;
 		for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
-			const list<SampleLabel> &oppneighbours = SampleOppositeNeighbourhood[(*i)->getSampleLabel(j)] ;
-			for (list<SampleLabel>::const_iterator k = oppneighbours.begin() ; k != oppneighbours.end() ; k++) {
+			const vector<SampleLabel> &oppneighbours = SampleOppositeNeighbourhood[(*i)->getSampleLabel(j)] ;
+			for (vector<SampleLabel>::const_iterator k = oppneighbours.begin() ; k != oppneighbours.end() ; k++) {
 				degree += SampleOccurences[*k].size() ;
 
 				// no loops
@@ -863,8 +863,8 @@ bool Graph::check_sampleoppositeneighbourhood (void) const
 
 	cerr << "checking SampleOppositeNeighbourhood: samples are opposite" << endl ;
 	for (unsigned long srclbl = 0 ; srclbl < Samples.size() ; srclbl++) {
-		const list<SampleLabel> &oppneighs = SampleOppositeNeighbourhood[srclbl] ;
-		for (list<SampleLabel>::const_iterator destlbl = oppneighs.begin() ; destlbl != oppneighs.end() ; destlbl++) {
+		const vector<SampleLabel> &oppneighs = SampleOppositeNeighbourhood[srclbl] ;
+		for (vector<SampleLabel>::const_iterator destlbl = oppneighs.begin() ; destlbl != oppneighs.end() ; destlbl++) {
 			Bit srcbit = Samples[srclbl]->getBit() ;
 			Bit destbit = Samples[*destlbl]->getBit() ;
 			if (srcbit == destbit) {
@@ -883,9 +883,9 @@ bool Graph::check_sampleoppositeneighbourhood (void) const
 				if (Samples[i]->isNeighbour (Samples[j])) {
 					// ...and they are neighbours => there must be an entry in SampleOppositeNeighbourhood
 					assert (Samples[j]->isNeighbour (Samples[i])) ;
-					const list<SampleLabel> &oppneighs = SampleOppositeNeighbourhood[i] ;
+					const vector<SampleLabel> &oppneighs = SampleOppositeNeighbourhood[i] ;
 					bool found = false ;
-					for (list<SampleLabel>::const_iterator k = oppneighs.begin() ; k != oppneighs.end() ; k++) {
+					for (vector<SampleLabel>::const_iterator k = oppneighs.begin() ; k != oppneighs.end() ; k++) {
 						if (*k == j) {
 							found = true ;
 						}

@@ -94,7 +94,7 @@ class Graph {
 	 * SampleOppositeNeighbourhood[sample_label] contains a list of those SampleLabels that describe samples that
 	 * are in the set Samples[sample_label]->getOppositeNeighbours().
 	 **/
-	vector<list<SampleLabel> > SampleOppositeNeighbourhood ;
+	vector<vector<SampleLabel> > SampleOppositeNeighbourhood ;
 
 	/**
 	 * contains the unique vertex contents - the size of the vector is the number of unique samples (indexed by sample labels)
