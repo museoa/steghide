@@ -92,6 +92,7 @@ char *get_passphrase (int doublecheck)
 		}
 		p1[i++] = c ;
 	}
+	p1[i] = '\0' ;
 	termios_reset (oldattr) ;
 	printf ("\n") ;
 
@@ -105,6 +106,7 @@ char *get_passphrase (int doublecheck)
 			}
 			p2[i++] = c ;
 		}
+		p2[i] = '\0' ;
 		termios_reset (oldattr) ;
 		printf ("\n") ;
 
