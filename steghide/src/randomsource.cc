@@ -29,11 +29,16 @@ RandomSource RndSrc ;
 RandomSource::RandomSource ()
 {
 	srand ((unsigned int) time (NULL)) ;
+	RandomBytePos = 8 ;
 }
 
 unsigned char RandomSource::getByte ()
 {
+#ifdef NORANDOMNESS
+	return 0 ;
+#else
 	return (unsigned char) (256.0 * (rand() / (RAND_MAX + 1.0))) ;
+#endif
 }
 
 vector<unsigned char> RandomSource::getBytes (unsigned int n)
@@ -63,14 +68,24 @@ BitString RandomSource::getBits (unsigned int n)
 	return retval ;
 }
 
-// FIXME - implement this more efficiently - keep a class-wide rndbyte for supplying random bits
-bool RandomSource::getBit()
+bool RandomSource::getBool()
 {
-	return (((getByte() & 0x01) == 1) ? true : false) ;
+	if (RandomBytePos == 8) {
+		RandomByte = getByte() ;
+		RandomBytePos = 0 ;
+	}
+	bool retval = (RandomByte & (1 << RandomBytePos)) ;
+	RandomBytePos++ ;
+	return retval ;
 }
 
 unsigned long RandomSource::getValue (unsigned long n)
 {
-	assert (n < RAND_MAX) ;
-	return (unsigned long) (((double) n) * (((double) rand()) / (((double) RAND_MAX) + 1.0))) ;
+	const unsigned long ceilvalue = 0x1000000UL ;
+	assert (n < ceilvalue) ;
+	unsigned long value = ((unsigned long) (getByte() << 16)) |
+						  ((unsigned long) (getByte() << 8)) |
+						  ((unsigned long) getByte()) ;
+
+	return (unsigned long) ((((double) value) / ((double) ceilvalue)) * ((double) n)) ;
 }

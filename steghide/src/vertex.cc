@@ -150,8 +150,9 @@ void Vertex::print() const
 {
 	cerr << "vertex with label " << Label << endl ;
 	for (unsigned short i = 0 ; i < NumSamples ; i++) {
+		cerr << "  SampleLabel[" << i << "] is " << Samples[i]->getLabel() << endl ;
 		cerr << "  SamplePositon[" << i << "] is " << SamplePositions[i] << endl ;
-		cerr << "  SampleKey[" << i << "] is " << Samples[i]->getKey() << endl ;
+		cerr << "  SampleKey[" << i << "] is " << hex << Samples[i]->getKey() << endl ;
 	}
 }
 #endif

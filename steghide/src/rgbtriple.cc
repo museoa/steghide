@@ -18,30 +18,24 @@
  *
  */
 
-#ifndef SH_JPEGSAMPLE_H
-#define SH_JPEGSAMPLE_H
+#include <cmath>
 
-#include "cvrstgsample.h"
-#include "common.h"
+#include "rgbtriple.h"
 
-class JpegSample : public CvrStgSample {
-	public:
-	JpegSample (void)
-		: CvrStgSample(NULL) {} ;
-	JpegSample (CvrStgFile *f, int c) ;
+float RGBTriple::calcDistance (const RGBTriple& t) const
+{
+	float dr = (float) Red - (float) t.Red ;
+	float dg = (float) Green - (float) t.Green ;
+	float db = (float) Blue - (float) t.Blue ;
+	return (sqrt (dr*dr + dg*dg + db*db)) ;
+}
 
-	bool isNeighbour (CvrStgSample *s) const ;
-	list<CvrStgSample*> *getOppositeNeighbours (void) const ;
-	CvrStgSample* getNearestOppositeSample (void) const ;
-	float calcDistance (CvrStgSample *s) const ;
+bool RGBTriple::operator== (const RGBTriple& t) const
+{
+	return ((Red == t.Red) && (Green == t.Green) && (Blue == t.Blue)) ;
+}
 
-	int getDctCoeff (void) const ;
-
-	private:
-	//FIXME static const float DefaultRadius = 1.0 ;
-	static float Radius ;
-
-	int DctCoeff ;
-} ;
-
-#endif // ndef SH_JPEGSAMPLE_H
+bool RGBTriple::operator!= (const RGBTriple& t) const
+{
+	return ((Red != t.Red) || (Green != t.Green) || (Blue != t.Blue)) ;
+}

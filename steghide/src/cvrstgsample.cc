@@ -22,7 +22,27 @@
 #include "cvrstgsample.h"
 #include "cvrstgfile.h"
 
-CvrStgFile *CvrStgSample::getFile() const
+CvrStgSample::CvrStgSample (void)
+	: File(NULL), Label(0)
+{
+}
+
+CvrStgSample::CvrStgSample (CvrStgFile *f)
+	: File(f), Label(0)
+{
+}
+
+Bit CvrStgSample::getBit (void) const
+{
+	return SBit ;
+}
+
+unsigned long CvrStgSample::getKey (void) const
+{
+	return Key ;
+}
+
+CvrStgFile *CvrStgSample::getFile (void) const
 {
 	return File ;
 }
@@ -32,7 +52,7 @@ void CvrStgSample::setFile (CvrStgFile *f)
 	File = f ;
 }
 
-unsigned long CvrStgSample::getLabel() const
+unsigned long CvrStgSample::getLabel (void) const
 {
 	return Label ;
 }
@@ -41,3 +61,21 @@ void CvrStgSample::setLabel (unsigned long l)
 {
 	Label = l ;
 }
+
+#if 0
+void CvrStgSample::setRadius (void)
+{
+#ifdef DEBUG
+	if (Args.Radius.is_set()) {
+		Radius = Args.Radius.getValue() ;
+	}
+	else {
+		Radius = getDefaultRadius() ;
+	}
+#else
+	Radius = getDefaultRadius() ;
+#endif
+}
+
+float CvrStgSample::Radius = 0.0 ;
+#endif

@@ -34,17 +34,31 @@ class CvrStgFile ;
  * \brief a sample in a CvrStgFile
  *
  * This is the abstract base class for all AuSample, BmpSample, etc. classes
+ *
+ * For two samples s1 and s2:
+ *
+ * s1->calcDistance(s2) == s2->calcDistance(s1) is always true.
+ *
+ * s1->isNeighbour(s2) == s2->isNeighbour(s1) is always true.
+ *
+ * s1 and s2 are called opposite if s1->getBit() != s2->getBit()
+ *
+ * s1 and s2 are called neighbours if s1->isNeighbour(s2) is true
+ *
+ * s1->getKey() == s2->getKey() iff SamplesEqual (s1, s2) 
+ *
+ * SamplesEqual (s1, s2) implies s1->getDistance(s2) == 0
+ * BUT: s1->getDistance(s2) == 0 does not imply SamplesEqual (s1, s2)
+ *      example: 8-bit bmp palette image - same color value for two different indices
+ *
+ * SamplesEqual (s1, s2) implies s1->getBit() == s2->getBit()
+ *
+ * s1->getDistance(s2) == 0 implies s1->getBit() == s2->getBit()
  **/
 class CvrStgSample {
 	public:
-	CvrStgSample (void) : File(NULL), Label(0) {} ;
-	CvrStgSample (CvrStgFile *f) : File(f), Label(0) {} ;
-
-	/**
-	 * get the bit that is embedded in this sample (usually the xor of the lsbs)
-	 * \return the embedded bit
-	 **/
-	virtual Bit getBit (void) const = 0 ;
+	CvrStgSample (void) ;
+	CvrStgSample (CvrStgFile *f) ;
 
 	/**
 	 * is the sample s a neighbour of this sample ?
@@ -54,43 +68,43 @@ class CvrStgSample {
 
 	/**
 	 * get the neighbour-samples that are opposite to this one
-	 * \return the (complete) list of CvrStgSamples which are opposite neighbours of this CvrStgSample.
+	 * \return the list of CvrStgSamples which are opposite neighbours of this CvrStgSample.
 	 *
-	 * Two samples s1 and s2 are called opposite here if s1->getBit() != s2->getBit()
-	 *
-	 * This function does not care if the returned samples really occure in the
-	 * CvrStgFile (it returns the _potential_ opposite neighbours).
+	 * getOppositeNeighbours returns those samples that are: 1. neighbours, 2. opposite and 3. can
+	 * be used in this file. It does not matter if these samples really occure in this file.
+	 * A superset of the opposite neighbours which occur in the file is returned.
 	 **/
 	virtual list<CvrStgSample*> *getOppositeNeighbours (void) const = 0 ;
 
 	/**
-	 * get the nearest (with the least distance) opposite neighbour
-	 * \return the nearest opposite neighbour
+	 * get the nearest (with the least distance) opposite sample that can be used in this file
+	 * \return the nearest opposite sample
 	 *
-	 * Two samples s1 and s2 are called opposite here if s1->getBit() != s2->getBit()
-	 *
-	 * If two or more opposite Neigbours have equal distance each of them should
+	 * If two or more opposite samples have equal distance each of them should
 	 * be returned with equal probability.
+	 *
+	 * If an opposite neighbour exists then getNearestOppositeSample() will return a neighbour.
 	 **/
-	virtual CvrStgSample* getNearestOppositeNeighbour (void) const = 0 ;
+	virtual CvrStgSample* getNearestOppositeSample (void) const = 0 ;
 
 	/**
 	 * calculate the distance between the value of s and the value of this
 	 * \param s a sample value of the same type as this
 	 * \return the distance
-	 *
-	 * The distance of two samples is 0 iff the samples are equal.
-	 * The derived class should check the condition(s) given above in its Implementation of this function.
 	 **/
 	virtual float calcDistance (CvrStgSample *s) const = 0 ;
 
 	/**
-	 * get the key for this sample
-	 * \return a key which must(!) be different for two different samples.
-	 *
-	 * There must not be two samples s1, s2 with !(SamplesEqual(s1,s2)) && (s1->getKey() == s2->getKey()).
+	 * get the bit that is embedded in this sample (usually the xor of the lsbs)
+	 * \return the embedded bit
 	 **/
-	virtual unsigned long getKey (void) const = 0 ;
+	Bit getBit (void) const ;
+
+	/**
+	 * get the key for this sample
+	 * \return a key which must be different for two different samples.
+	 **/
+	unsigned long getKey (void) const ; 
 
 	CvrStgFile *getFile (void) const ;
 	void setFile (CvrStgFile *f) ;
@@ -98,16 +112,35 @@ class CvrStgSample {
 	unsigned long getLabel (void) const ;
 	void setLabel (unsigned long l) ;
 
+	protected:
+	// the bit that is embedded in this sample - must be set in constructor of derived class
+	Bit SBit ;
+	// the key of this sample - must be different for two different samples - must be set in constructor of derived class
+	unsigned long Key ;
+#if 0
+	/**
+	 * get the default value for the neighbourhood radius
+	 **/
+	virtual float getDefaultRadius (void) const = 0 ;
+
+	/**
+	 * every pair of samples whose distance (as calculated by calcDistance)
+	 * is smaller or equal than this value are neighbours
+	 **/
+	static float Radius ;
+
+	private:
+	void setRadius (void) ;
+#endif
 	private:
 	CvrStgFile *File ;
 	unsigned long Label ;
 } ;
 
-// FIXME - 8bit palette - if two distinct palette entries contain the same color, these two samples are equal - !?
 struct SamplesEqual : binary_function<CvrStgSample*, CvrStgSample*, bool> {
 	bool operator() (CvrStgSample* s1, CvrStgSample *s2) const
 	{
-		return (s1->calcDistance(s2) == 0.0) ;
+		return (s1->getKey() == s2->getKey()) ;
 	}
 } ;
 

@@ -107,5 +107,4 @@ static void gettext_init (void)
 	}
 #endif // ndef WIN32
 #endif // ndef DEBUG
-	return ;
 }

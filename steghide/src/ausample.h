@@ -26,19 +26,26 @@
 
 class AuSample : public CvrStgSample {
 	public:
-	AuSample (void) : CvrStgSample(NULL) {} ;
-	AuSample (CvrStgFile *f, unsigned char v) : CvrStgSample(f), Value(v) {} ;
+	AuSample (void)
+		: CvrStgSample(NULL) {} ;
+	AuSample (CvrStgFile *f, unsigned char v)
+		: CvrStgSample(f), Value(v)
+		{ SBit = (Bit) (Value & 1) ; Key = (unsigned long) Value ; } ;
 
-	Bit getBit (void) const ;
 	bool isNeighbour (CvrStgSample *s) const ;
 	list<CvrStgSample*> *getOppositeNeighbours (void) const ;
-	CvrStgSample* getNearestOppositeNeighbour (void) const ;
+	CvrStgSample* getNearestOppositeSample (void) const ;
 	float calcDistance (CvrStgSample *s) const ;
-	unsigned long getKey (void) const ;
 
 	unsigned char getValue (void) const ;
 
 	private:
+	/**
+	 * every pair of au samples whose distance is smaller than this constant are neighbours
+	 **/
+	// FIXME static const float DefaultRadius = 1.0 ;
+	static float Radius ;
+
 	unsigned char Value ;
 } ;
 

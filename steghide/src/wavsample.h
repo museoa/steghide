@@ -29,16 +29,20 @@ class WavPCMSample : public CvrStgSample {
 	WavPCMSample (void) : CvrStgSample(NULL) {} ;
 	WavPCMSample (CvrStgFile *f, int v) ;
 
-	Bit getBit (void) const ;
 	bool isNeighbour (CvrStgSample *s) const ;
 	list<CvrStgSample*> *getOppositeNeighbours (void) const ;
-	CvrStgSample* getNearestOppositeNeighbour (void) const ;
+	CvrStgSample* getNearestOppositeSample (void) const ;
 	float calcDistance (CvrStgSample *s) const ;
-	unsigned long getKey (void) const ;
 
 	int getValue (void) const ;
 
 	private:
+	/**
+	 * every pair of wav samples whose distance is smaller than this constant are neighbours
+	 **/
+	//FIXME static const float DefaultRadius = 1.0 ;
+	static float Radius ;
+
 	int Value ;
 	int MaxValue ;
 	int MinValue ;

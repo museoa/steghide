@@ -58,23 +58,21 @@ WavPCMSample::WavPCMSample (CvrStgFile *f, int v)
 
 	MaxValue = maxvalue ;
 	MinValue = minvalue ;
-
 	assert (MinValue <= Value) ;
 	assert (Value <= MaxValue) ;
-}
 
-Bit WavPCMSample::getBit() const
-{
-	return ((Bit) (Value & 1)) ;
+	SBit = (Bit) (Value & 1) ;
+	Key = (unsigned long) Value ;
 }
 
 bool WavPCMSample::isNeighbour (CvrStgSample *s) const
 {
-	return (calcDistance (s) <= 1.0) ;
+	return (calcDistance (s) <= Radius) ;
 }
 
 list<CvrStgSample*> *WavPCMSample::getOppositeNeighbours() const
 {
+	// FIXME - in this function it is assumed that Radius is 1.0
 	list<CvrStgSample*> *retval = new list<CvrStgSample*> ;
 	if (Value != MinValue) {
 		retval->push_back ((CvrStgSample *) new WavPCMSample (getFile(), Value - 1)) ;
@@ -85,7 +83,7 @@ list<CvrStgSample*> *WavPCMSample::getOppositeNeighbours() const
 	return retval ;
 }
 	
-CvrStgSample *WavPCMSample::getNearestOppositeNeighbour() const
+CvrStgSample *WavPCMSample::getNearestOppositeSample() const
 {
 	int n_value = 0 ;
 	if (Value == MinValue) {
@@ -95,7 +93,7 @@ CvrStgSample *WavPCMSample::getNearestOppositeNeighbour() const
 		n_value = MaxValue - 1 ;
 	}
 	else {
-		if (RndSrc.getBit()) {
+		if (RndSrc.getBool()) {
 			n_value = Value - 1 ;
 		}
 		else {
@@ -112,12 +110,9 @@ float WavPCMSample::calcDistance (CvrStgSample *s) const
 	return (abs ((float) Value - (float) sample->getValue())) ;
 }
 
-unsigned long WavPCMSample::getKey() const
-{
-	return ((unsigned long) Value) ;
-}
-
 int WavPCMSample::getValue() const
 {
 	return Value ;
 }
+
+float WavPCMSample::Radius = 1.0 ;

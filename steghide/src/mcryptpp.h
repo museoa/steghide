@@ -138,7 +138,8 @@ class MCryptpp {
 
 	// keymode ist mcrypt_keymode
 
-	// TODO wenn einmal so funktioniert: salt verwenden, um Schlüssel außer von passphrase auch von cvrstg-Datei abhängig zu machen - dazu:
+	// TODO wenn einmal so funktioniert: salt (unverändert durch verstecken !!) verwenden,
+	// um Schlüssel außer von passphrase auch von cvrstg-Datei abhängig zu machen - dazu:
 	// in CvrStgObject neue Funktion vector<unsigned char> getCleanSample (unsigned int n) - retourniert daten eines samples bis auf
 	// den Bereich, in dem versteckt wird (also z.B. Daten, wo LSB = 0 gesetzt wurden)
 	// auch für permutation!

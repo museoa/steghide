@@ -416,3 +416,11 @@ void JpegEntropyCoded::writebit (BinaryIO *io, int bit)
 		writebyte = 0 ;
 	}
 }
+
+//
+// JpegMarkerFound
+//
+JpegMarker JpegMarkerFound::getMarkerCode (void) const
+{
+	return mcode ;
+}

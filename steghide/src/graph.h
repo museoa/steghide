@@ -117,6 +117,13 @@ class Graph {
 	unsigned short SamplesPerEBit ;
 
 #ifdef DEBUG
+	/**
+	 * prints graph in a format suitable as input to the C implementation
+	 * of Gabow's non-weighted matching algorithm by E. Rothberg to stdout
+	 * (available at: ftp://ftp.zib.de/pub/Packages/mathprog/matching/index.html
+	 **/
+	void print (void) const ;
+
 	void printUnmatchedVertices (void) const ;
 
 	unsigned long check_degree (Vertex *v) const ;

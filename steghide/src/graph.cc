@@ -24,6 +24,7 @@
 #include <queue>
 #include <vector>
 
+#include "common.h"
 #include "cvrstgfile.h"
 #include "graph.h"
 #include "msg.h"
@@ -174,8 +175,15 @@ void Graph::finishAdding()
 	}
 
 #ifdef DEBUG
-	//cerr << "checking data structures:" << endl ;
-	//assert (check_ds()) ;
+	if (Args.DebugCommand.getValue() == PRINTGRAPH) {
+		print() ;
+		exit (EXIT_SUCCESS) ;
+	}
+#endif
+
+#if 0
+	cerr << "checking data structures:" << endl ;
+	assert (check_ds()) ;
 	// FIXME - wenn alle bugs draußen - einmal bbtest damit durchlaufen lassen
 #endif
 }
@@ -333,8 +341,9 @@ void Graph::calcMatching()
 				maxdeg = deg ;
 			}
 		}
+		float avgdeg = ((float) sumdeg / (float) nvertices) ;
 
-		VerboseMessage vmsg3 (_("average vertex degree: %.1f"), ((float) sumdeg / (float) nvertices)) ;
+		VerboseMessage vmsg3 (_("average vertex degree: %.1f"), avgdeg) ;
 		vmsg3.printMessage() ;
 		VerboseMessage vmsg4 (_("minimum vertex degree: %lu"), mindeg) ;
 		vmsg4.printMessage() ;
@@ -347,6 +356,24 @@ void Graph::calcMatching()
 		vmsg6.printMessage() ;
 		VerboseMessage vmsg7 (_("calculating the matching...")) ;
 		vmsg7.printMessage() ;
+#ifdef STAT
+		unsigned long nvertexcontents = 0 ;
+		for (vector<list<VertexContent*> >::iterator i = VertexContents.begin() ; i != VertexContents.end() ; i++) {
+			nvertexcontents += i->size() ; // is linear
+		}
+		assert (nvertexcontents % SamplesPerEBit == 0) ;
+		nvertexcontents /= SamplesPerEBit ;
+
+		printf ("%lu:%lu:%lu:%lu:%lu:%.1f:%lu:",
+				(unsigned long) Samples.size(),	// number of distinct samples
+				nvertices, // number of vertices
+				sumdeg / 2, // number of edges
+				mindeg, // minimum vertex degree
+				maxdeg, // maximum vertex degree
+				avgdeg, // average vertex degree
+				nvertexcontents // number of distinct vertex contents
+			   ) ;
+#endif
 	}
 
 	setupConstrHeuristic() ;
@@ -370,6 +397,13 @@ void Graph::calcMatching()
 
 		VerboseMessage vmsg10 (_("average edge weight: %.1f"), ((float) sumweights / (float) Matching.size())) ;
 		vmsg10.printMessage() ;
+
+#ifdef STAT
+		printf ("%.3f:%.1f:",
+				((float) numvertices / (float) nvertices), // ratio of unmatched vertices
+				((float) sumweights / (float) Matching.size()) // average edge weight
+			   ) ;
+#endif
 	}
 }
 
@@ -443,6 +477,35 @@ void Graph::doConstrHeuristic()
 }
 
 #ifdef DEBUG
+void Graph::print (void) const
+{
+	unsigned long sumdeg = 0 ;
+	for (vector<Vertex*>::const_iterator i = Vertices.begin() ; i != Vertices.end() ; i++) {
+		sumdeg += (*i)->getDegree() ;
+	}
+	assert (sumdeg % 2 == 0) ;
+	cout << Vertices.size() << " " << (sumdeg / 2) << " U" << endl ;
+
+	for (unsigned long i = 0 ; i < Vertices.size() ; i++) {
+		cout << Vertices[i]->getDegree() << " " << (i + 1) << " 0 0" << endl ;
+
+		for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
+			CvrStgSample *srcsample = Vertices[i]->getSample(j) ;
+			for (unsigned long k = 0 ; k != Vertices.size() ; k++) {
+				if (i != k) { // no loops
+					for (unsigned short l = 0 ; l < SamplesPerEBit ; l++) {
+						CvrStgSample *destsample = Vertices[k]->getSample(l) ;
+						if ((srcsample->isNeighbour(destsample)) && (srcsample->getBit() != destsample->getBit())) { // is opposite neighbour
+							cout << (k + 1) << " 0" << endl ;
+						}
+					}
+				}
+			}
+
+		}
+	}
+}
+
 void Graph::printUnmatchedVertices (void) const
 {
 	unsigned long num = 0 ;
@@ -602,6 +665,7 @@ bool Graph::check_degrees (void) const
 			(*i)->print() ;
 			cerr << "getDegree: " << deg_stored << endl ;
 			cerr << "check_degree: " << deg_real << endl ;
+
 			retval = false ;
 			break ;
 		}

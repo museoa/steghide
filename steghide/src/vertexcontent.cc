@@ -79,7 +79,7 @@ void VertexContent::deleteFromOccurences (list<Vertex*>::iterator it)
 //
 bool VertexContentsEqual::operator() (const VertexContent *vc1, const VertexContent* vc2) const
 {
-	// it is assumed that the SampleLabels returned from vc1,vc2 are sorted
+	// it is assumed that the SampleLabels returned from vc1,vc2 are sorted - FIXME - is this ok ?
 	vector<SampleLabel> samplelabels1 = vc1->getSampleLabels() ;
 	vector<SampleLabel> samplelabels2 = vc2->getSampleLabels() ;
 	bool retval = true ;

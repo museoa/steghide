@@ -132,7 +132,7 @@ class JpegMarkerFound {
 	JpegMarkerFound (void) { mcode = 0x00 ; } ;
 	JpegMarkerFound (unsigned char m) { mcode = m ; } ;
 
-	JpegMarker getMarkerCode (void) { return mcode ; } ;
+	JpegMarker getMarkerCode (void) const ;
 
 	private:
 	JpegMarker mcode ;

@@ -39,6 +39,10 @@ class Arguments {
 	ArgString		StgFn ;
 	ArgBool			Force ;
 	ArgVerbosity	Verbosity ;
+#ifdef DEBUG
+	ArgDebugCommand	DebugCommand ;
+	ArgFloat		Radius ;
+#endif
 
 	Arguments (void) ;
 	Arguments (int argc, char *argv[]) ;
@@ -54,6 +58,10 @@ class Arguments {
 	static const bool		Default_EmbedEmbFn = true ;
 	static const bool		Default_Force = false ;
 	static const VERBOSITY	Default_Verbosity = NORMAL ;
+#ifdef DEBUG
+	static const DEBUGCOMMAND	Default_DebugCommand = NONE ;
+	static const float		Default_Radius = 0.0 ; // there is no default radius for all file formats
+#endif
 
 	static const unsigned int	PassphraseMaxLen = 255 ;
 

@@ -170,7 +170,7 @@ unsigned long BitString::getValue (unsigned long s, unsigned int l) const
 vector<unsigned char> BitString::getBytes() const
 {
 	assert (length % 8 == 0) ;
-	return data ;
+	return data ; // FIXME - ? vector as reference
 }
 
 BitString& BitString::pad (unsigned long mult, Bit v)
@@ -185,7 +185,7 @@ BitString& BitString::pad (unsigned long mult, Bit v)
 BitString& BitString::padRandom (unsigned long mult)
 {
 	while (length % mult != 0) {
-		append (RndSrc.getBit()) ;
+		append (RndSrc.getBool()) ;
 	}
 	return *this ;
 }

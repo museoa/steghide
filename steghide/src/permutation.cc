@@ -18,6 +18,7 @@
  *
  */
 
+#include "common.h"
 #include "mhashpp.h"
 #include "permutation.h"
 

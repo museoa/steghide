@@ -42,8 +42,6 @@ template<class T> void Arg<T>::setValue (T v, bool setbyuser)
 	if (setbyuser) {
 		set = true ;
 	}
-
-	return ;
 }
 
 template<class T> bool Arg<T>::is_set (void)

@@ -47,20 +47,33 @@ Arguments::Arguments (int argc, char *argv[])
 
 void Arguments::parse (int argc, char *argv[])
 {
-	// check for first argument -> command
+	// if there are no arguments -> show help
 	if (argc == 1) {
 		Command.setValue (SHOWHELP) ;
 		return ;
 	}
-	else if (string (argv[1]) == "embed" || string (argv[1]) == "--embed") {
+
+	int i = 1 ;	// the i-th argument is evaluated
+
+#ifdef DEBUG
+	bool debugmode = false ;
+	if (string (argv[i]) == "debug") {
+		debugmode = true ;
+		i++ ;
+	}
+#endif
+
+	if (string (argv[i]) == "embed" || string (argv[i]) == "--embed") {
 		Command.setValue (EMBED) ;
 		setDefaults () ;
+		i++ ;
 	}
-	else if (string (argv[1]) == "extract" || string (argv[1]) == "--extract") {
+	else if (string (argv[i]) == "extract" || string (argv[i]) == "--extract") {
 		Command.setValue (EXTRACT) ;
 		setDefaults () ;
+		i++ ;
 	}
-	else if (string (argv[1]) == "encinfo" || string (argv[1]) == "--encinfo") {
+	else if (string (argv[i]) == "encinfo" || string (argv[i]) == "--encinfo") {
 		Command.setValue (ENCINFO) ;
 		if (argc > 2) {
 			Warning w (_("you cannot use arguments with the \"encinfo\" command.")) ;
@@ -68,7 +81,7 @@ void Arguments::parse (int argc, char *argv[])
 		}
 		return ;
 	}
-	else if (string (argv[1]) == "version" || string (argv[1]) == "--version") {
+	else if (string (argv[i]) == "version" || string (argv[i]) == "--version") {
 		Command.setValue (SHOWVERSION) ;
 		if (argc > 2) {
 			Warning w (_("you cannot use arguments with the \"version\" command.")) ;
@@ -76,7 +89,7 @@ void Arguments::parse (int argc, char *argv[])
 		}
 		return ;
 	}
-	else if (string (argv[1]) == "license" || string (argv[1]) == "--license") {
+	else if (string (argv[i]) == "license" || string (argv[i]) == "--license") {
 		Command.setValue (SHOWLICENSE) ;
 		if (argc > 2) {
 			Warning w (_("you cannot use arguments with the \"license\" command.")) ;
@@ -84,7 +97,7 @@ void Arguments::parse (int argc, char *argv[])
 		}
 		return ;
 	}
-	else if (string (argv[1]) == "help" || string (argv[1]) == "--help") {
+	else if (string (argv[i]) == "help" || string (argv[i]) == "--help") {
 		Command.setValue (SHOWHELP) ;
 		if (argc > 2) {
 			Warning w (_("you cannot use arguments with the \"help\" command.")) ;
@@ -93,7 +106,7 @@ void Arguments::parse (int argc, char *argv[])
 		return ;
 	}
 #ifdef DEBUG
-	else if (string (argv[1]) == "test") {
+	else if (debugmode && (string (argv[i]) == "test")) {
 		steghide_test_all () ;
 		exit (EXIT_SUCCESS) ;
 	}
@@ -103,7 +116,7 @@ void Arguments::parse (int argc, char *argv[])
 	}
 
 	// parse rest of arguments
-	for (int i = 2; i < argc; i++) {
+	for ( ; i < argc; i++) {
 		if (string (argv[i]) == "-e" || string (argv[i]) == "--encryption") {
 			if (Command.getValue() != EMBED) {
 				throw SteghideError (_("the argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
@@ -357,7 +370,43 @@ void Arguments::parse (int argc, char *argv[])
 
 			Verbosity.setValue (VERBOSE) ;
 		}
+		
+#ifdef DEBUG
+		else if (debugmode) {
+			if (string (argv[i]) == "--printgraph") {
+				if (DebugCommand.is_set()) {
+					throw SteghideError (_("you cannot use more than one debug command at a time.")) ;
+				}
 
+				DebugCommand.setValue (PRINTGRAPH) ;
+			}
+
+			else if (string (argv[i]) == "-r" || string (argv[i]) == "--radius") {
+				if (Command.getValue() != EMBED) {
+					throw SteghideError (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
+				}
+
+				if (Radius.is_set()) {
+					throw SteghideError (_("the radius argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
+				}
+
+				if (++i == argc) {
+					throw SteghideError (_("the \"%s\" argument must be followed by the neighbourhood radius. type \"%s --help\" for help."), argv[i - 1], PROGNAME) ;
+				}
+
+				float tmp = 0.0 ;
+				sscanf (argv[i], "%f", &tmp) ;
+				Radius.setValue (tmp) ;
+			}
+
+			/*
+			else if (string (argv[i]) == "--printstats")  {
+				// TODO
+			}
+			*/
+		}
+#endif
+		
 		else {
 			throw SteghideError (_("unknown argument \"%s\". type \"%s --help\" for help."), argv[i], PROGNAME) ;
 		}
@@ -453,6 +502,9 @@ void Arguments::setDefaults (void)
 	StgFn.setValue ("", false) ;
 	Force.setValue (Default_Force, false) ;
 	Verbosity.setValue (Default_Verbosity, false) ;
+#ifdef DEBUG
+	DebugCommand.setValue (Default_DebugCommand, false) ;
+#endif
 }
 
 const char* Arguments::Default_EncAlgo = "rijndael-128" ;

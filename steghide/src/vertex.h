@@ -60,7 +60,7 @@ class Vertex {
 	SamplePos getSamplePos (unsigned int i) const ;
 
 	/**
-	 * get the i-th samle value
+	 * get the i-th sample value
 	 * \param i an index of a sample in this vertex
 	 * \return the value of the sample in the associated cvrstgfile
 	 **/

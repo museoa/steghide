@@ -18,30 +18,39 @@
  *
  */
 
-#ifndef SH_JPEGSAMPLE_H
-#define SH_JPEGSAMPLE_H
+#ifndef SH_COLORPALETTE_H
+#define SH_COLORPALETTE_H
 
-#include "cvrstgsample.h"
-#include "common.h"
+#include <vector>
 
-class JpegSample : public CvrStgSample {
+#include "rgbtriple.h"
+
+/**
+ * \class ColorPalette
+ * \brief a color palette
+ **/
+class ColorPalette {
 	public:
-	JpegSample (void)
-		: CvrStgSample(NULL) {} ;
-	JpegSample (CvrStgFile *f, int c) ;
+	ColorPalette (void) ;
 
-	bool isNeighbour (CvrStgSample *s) const ;
-	list<CvrStgSample*> *getOppositeNeighbours (void) const ;
-	CvrStgSample* getNearestOppositeSample (void) const ;
-	float calcDistance (CvrStgSample *s) const ;
+	void addEntry (const RGBTriple& rgb) ;
+	void addEntry (unsigned char r, unsigned char g, unsigned char b) ;
 
-	int getDctCoeff (void) const ;
+	unsigned int getSize (void) const ;
 
+	const RGBTriple& getEntry (unsigned int i) const ;
+	void setEntry (unsigned int i, const RGBTriple& rgb) ;
+
+	unsigned char getRed (unsigned int i) const ;
+	unsigned char getGreen (unsigned int i) const ;
+	unsigned char getBlue (unsigned int i) const ;
+
+	void setRed (unsigned int i, unsigned char r) ;
+	void setGreen (unsigned int i, unsigned char g) ;
+	void setBlue (unsigned int i, unsigned char b) ;
+	
 	private:
-	//FIXME static const float DefaultRadius = 1.0 ;
-	static float Radius ;
-
-	int DctCoeff ;
+	vector<RGBTriple> RGBTriples ;
 } ;
 
-#endif // ndef SH_JPEGSAMPLE_H
+#endif // ndef SH_COLORPALETTE_H

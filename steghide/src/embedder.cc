@@ -110,13 +110,13 @@ void Embedder::embedVertex (CvrStgFile *csf, Vertex *v)
 	if (v->isMatched()) {
 		Edge *e = v->getMatchingEdge() ;
 		samplepos = e->getSamplePos (v) ;
-		newsample = e->getSample (v) ;
+		newsample = e->getReplacingSample (v) ;
 	}
 	else {
 		// choose a random sample (of those that are in the vertex) to embed data
 		unsigned short rnd = RndSrc.getValue (csf->getSamplesPerEBit()) ;
 		samplepos = v->getSamplePos (rnd) ;
-		newsample = v->getSample(rnd)->getNearestOppositeNeighbour() ;
+		newsample = v->getSample(rnd)->getNearestOppositeSample() ;
 	}
 
 	Bit oldbit = csf->getSampleBit (samplepos) ;

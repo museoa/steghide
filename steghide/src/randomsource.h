@@ -54,10 +54,10 @@ class RandomSource {
 	BitString getBits (unsigned int n) ;
 
 	/**
-	 * get one random bit
+	 * get a boolean value
 	 * \return true of false with equal probability
 	 **/
-	bool getBit (void) ;
+	bool getBool (void) ;
 
 	/**
 	 * get a random value
@@ -65,6 +65,10 @@ class RandomSource {
 	 * \return a random number in {0,...,n-1}
 	 **/
 	unsigned long getValue (unsigned long n) ;
+
+	private:
+	unsigned int RandomBytePos ;
+	unsigned char RandomByte ;
 } ;
 
 #endif // ndef SH_RANDOMSOURCE_H

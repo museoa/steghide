@@ -35,7 +35,7 @@ AC_CHECK_FUNCS(tcgetattr)
 AC_CHECK_FUNCS(tcsetattr)
 AC_CHECK_FUNCS(strtoul)
 
-dnl system-specific internationalization settings
+dnl system-specific settings
 case "${target}" in
 	*-cygwin*)
 	AC_DEFINE(WIN32,1,target system is win32)

@@ -102,8 +102,9 @@ void Message::printMessage ()
 {
 	if (Args.Verbosity.getValue() == NORMAL ||
 		Args.Verbosity.getValue() == VERBOSE) {
-
+#ifndef STAT
 		cerr << getMessage() << endl ;
+#endif
 	}
 }
 
@@ -122,7 +123,9 @@ VerboseMessage::VerboseMessage (const char *msgfmt, ...)
 void VerboseMessage::printMessage ()
 {
 	if (Args.Verbosity.getValue() == VERBOSE) {
+#ifndef STAT
 		cerr << getMessage() << endl ;
+#endif
 	}
 }
 
@@ -142,8 +145,9 @@ void Warning::printMessage ()
 {
 	if (Args.Verbosity.getValue() == NORMAL ||
 		Args.Verbosity.getValue() == VERBOSE) {
-
+#ifndef STAT
 		cerr << PROGNAME << _(": warning: ") << getMessage() << endl ;
+#endif
 	}
 }
 
@@ -161,7 +165,9 @@ CriticalWarning::CriticalWarning (const char *msgfmt, ...)
 
 void CriticalWarning::printMessage ()
 {
+#ifndef STAT
 	cerr << PROGNAME << _(": warning: ") << getMessage() << endl ;
+#endif
 }
 
 //

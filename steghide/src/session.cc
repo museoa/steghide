@@ -88,7 +88,6 @@ void Session::printVersion ()
 
 // TODO - Lang- u. Kurzformen von Argumenten testen
 // FIXME - in übersetzungen nachsehen - alle fehlermeldungen mit punkt beenden
-// FIXME ? soll "steghide embed -cf cvr.jpg -ef emb.txt" cvr.jpg als stego file verwenden ?
 void Session::printHelp ()
 {
 	printVersion() ;

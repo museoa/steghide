@@ -46,11 +46,13 @@ AuFile::~AuFile (void)
 {
 }
 
+// FIXME - use reference to vector not vector
 vector<unsigned char> AuFile::getData (void)
 {
 	return data ;
 }
 
+// FIXME - use reference to vector not vector
 void AuFile::setData (vector<unsigned char> d)
 {
 	data = d ;

@@ -39,10 +39,17 @@ template<class T> class Arg {
 
 enum COMMAND { EMBED, EXTRACT, ENCINFO, SHOWVERSION, SHOWLICENSE, SHOWHELP } ;
 enum VERBOSITY { QUIET, NORMAL, VERBOSE } ;
+#ifdef DEBUG
+enum DEBUGCOMMAND { NONE, PRINTSTATS, PRINTGRAPH } ;
+#endif
 
 typedef Arg<COMMAND> ArgCommand ;
 typedef Arg<VERBOSITY> ArgVerbosity ;
 typedef Arg<bool> ArgBool ;
 typedef Arg<string> ArgString ;
+#ifdef DEBUG
+typedef Arg<float> ArgFloat ;
+typedef Arg<DEBUGCOMMAND> ArgDebugCommand ;
+#endif
 
 #endif // ndef SH_ARG_H

@@ -24,6 +24,7 @@
 #include <vector>
 
 #include "binaryio.h"
+#include "colorpalette.h"
 #include "common.h"
 #include "cvrstgfile.h"
 
@@ -44,6 +45,7 @@ class BmpFile : public CvrStgFile {
 	unsigned short getBitCount (void) const ;
 	unsigned long getWidth (void) const ;
 	unsigned long getHeight (void) const ;
+	ColorPalette *getPalette (void) const ;
 
 	protected:
 #ifdef WIN32
@@ -72,12 +74,14 @@ class BmpFile : public CvrStgFile {
 		unsigned long	biClrImportant ;
 	} BITMAPINFOHEADER ;
 
+#if 0
 	typedef struct struct_RGBQUAD {
 		unsigned char	rgbBlue ;
 		unsigned char	rgbGreen ;
 		unsigned char	rgbRed ;
 		unsigned char	rgbReserved ;
 	} RGBQUAD ;
+#endif
 
 	/* os/2 bmp file format */
 	typedef struct struct_BITMAPCOREHEADER {
@@ -88,13 +92,16 @@ class BmpFile : public CvrStgFile {
 		unsigned short	bcBitCount;
 	} BITMAPCOREHEADER ;
 
+#if 0
 	typedef struct struct_RGBTRIPLE {
 		unsigned char	rgbtBlue ;
 		unsigned char	rgbtGreen ;
 		unsigned char	rgbtRed ;
 	} RGBTRIPLE ;
+#endif
 #endif /* def WIN32 */
 
+#if 0
 	typedef struct struct_BMPINFO_WIN {
 		BITMAPINFOHEADER	bmih ;
 		unsigned int		ncolors ;
@@ -106,6 +113,7 @@ class BmpFile : public CvrStgFile {
 		unsigned int		ncolors ;
 		vector<RGBTRIPLE>	colors ;
 	} BMPINFO_OS2 ;
+#endif
 
 	private:
 	static const unsigned int IdBm = 19778 ;
@@ -118,8 +126,13 @@ class BmpFile : public CvrStgFile {
 
 	SUBFORMAT subformat ;
 	BITMAPFILEHEADER bmfh ;
+#if 0
 	BMPINFO_WIN	bmi_win ;
 	BMPINFO_OS2	bmi_os2 ;
+#endif
+	BITMAPINFOHEADER bmih ;
+	BITMAPCOREHEADER bmch ;
+	ColorPalette *Palette ;
 	vector<vector <unsigned char> > bitmap ;
 	/// contains bytes that are appended at the end of the bitmap data (some image editors apparently do this)
 	vector<unsigned char> atend ;

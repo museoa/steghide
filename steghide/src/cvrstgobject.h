@@ -44,7 +44,7 @@ class CvrStgObject {
 	virtual unsigned long getNumSamples (void) = 0 ;
 
 	/**
-	 * replace a sample thus altering the value of one or more sbits
+	 * replace a sample thus (possibly) altering the value of the bit returned by CvrStgSample->getBit()
 	 * \param pos the position of the sample (must be in 0...getNumSamples()-1)
 	 * \param s the sample value that should replace the current sample value (must be of correct type for this CvrStgObject)
 	 *

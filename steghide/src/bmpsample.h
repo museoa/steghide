@@ -24,50 +24,121 @@
 #include "cvrstgsample.h"
 #include "common.h"
 
-class BmpPaletteSample : public CvrStgSample {
+/**
+ * \class BmpSample
+ * \brief an (abstract) sample in a bmp file
+ **/
+class BmpSample : public CvrStgSample {
 	public:
-	BmpPaletteSample (void) : CvrStgSample(NULL) {} ;
-	BmpPaletteSample (CvrStgFile *f, unsigned char i) ;
+	BmpSample (void) ;
+	BmpSample (CvrStgFile *f) ;
 
-	Bit getBit (void) const ;
 	bool isNeighbour (CvrStgSample *s) const ;
-	list<CvrStgSample*> *getOppositeNeighbours (void) const ;
-	CvrStgSample* getNearestOppositeNeighbour (void) const ;
 	float calcDistance (CvrStgSample *s) const ;
-	unsigned long getKey (void) const ;
 
-	unsigned char getIndex (void) const ;
+	/**
+	 * get the red color component
+	 **/
+	virtual unsigned char getRed (void) const = 0 ;
+	
+	/**
+	 * get the green color component
+	 **/
+	virtual unsigned char getGreen (void) const = 0 ;
+	
+	/**
+	 * get the blue color component
+	 **/
+	virtual unsigned char getBlue (void) const = 0 ;
+
+	protected:
+	static const float DefaultRadius = 10.0 ;
+	static float Radius ;
 
 	private:
-	unsigned char Index ;
-	unsigned char MaxIndex ;
-	unsigned char MinIndex ;
+	void setRadius (void) ;
 } ;
 
-class BmpRGBSample : public CvrStgSample {
+/**
+ * \class BmpPaletteSample
+ * \brief a sample in a bmp palette (i.e. 1-,4- or 8-bit) file
+ **/
+class BmpPaletteSample : public BmpSample {
 	public:
-	BmpRGBSample (void) : CvrStgSample(NULL) {} ;
-	BmpRGBSample (CvrStgFile *f, unsigned char r, unsigned char g, unsigned char b) : CvrStgSample (f), Red(r), Green(g), Blue(b) {} ;
+	BmpPaletteSample (void)
+		: BmpSample() {} ;
+	BmpPaletteSample (CvrStgFile *f, unsigned char i) ;
 
-	Bit getBit (void) const ;
-	bool isNeighbour (CvrStgSample *s) const ;
 	list<CvrStgSample*> *getOppositeNeighbours (void) const ;
-	CvrStgSample* getNearestOppositeNeighbour (void) const ;
-	float calcDistance (CvrStgSample *s) const ;
-	unsigned long getKey (void) const ;
+	CvrStgSample* getNearestOppositeSample (void) const ;
+
+	unsigned char getIndex (void) const ;
+	unsigned char getRed (void) const ;
+	unsigned char getGreen (void) const ;
+	unsigned char getBlue (void) const ;
+
+	private:
+	ColorPalette *Palette ;
+	unsigned char Index ;
+} ;
+
+/**
+ * \class BmpRGBSample
+ * \brief a sample in a bmp rgb (i.e. 24-bit) file
+ **/
+class BmpRGBSample : public BmpSample {
+	public:
+	BmpRGBSample (void)
+		: BmpSample() {} ;
+	BmpRGBSample (CvrStgFile *f, unsigned char r, unsigned char g, unsigned char b) ;
+	BmpRGBSample (CvrStgFile *f, RGBTriple t) ;
+
+	list<CvrStgSample*> *getOppositeNeighbours (void) const ;
+	CvrStgSample* getNearestOppositeSample (void) const ;
 
 	unsigned char getRed (void) const ;
 	unsigned char getGreen (void) const ;
 	unsigned char getBlue (void) const ;
 
 	private:
-	unsigned char Red ;
-	unsigned char Green ;
-	unsigned char Blue ;
+	RGBTriple Color ;
 
-	unsigned char getNearestOppositeComponent (unsigned char c) const ;
+	struct RGBVector {
+		RGBVector (int r, int g, int b)
+			: Red(r),Green(g),Blue(b) {} ;
+
+		int Red ;
+		int Green ;
+		int Blue ;
+	} ;
+
+	/**
+	 * contains all RGBVectors v where Color + v is the RGBTriple of an opposite neighbour
+	 * (provided Color + v still is in the RGB Cube)
+	 **/
+	static vector<RGBVector> OppNeighDeltas ;
+
+	/** 
+	 * fill the OppNeighDeltas vector
+	 **/
+	void calcOppNeighDeltas (void) ;
+
+	/**
+	 * add the unsigned chars a and b
+	 * \return min(255, a + b)
+	 **/
 	unsigned char plus (unsigned char a, unsigned char b) const ;
+
+	/**
+	 * substract the unsigned char b from the unsigned char a
+	 * \return max(0, a - b)
+	 **/
 	unsigned char minus (unsigned char a, unsigned char b) const ;
+
+	/**
+	 * add a candidate for the nearest opposite sample to cands
+	 **/
+	void BmpRGBSample::addNOSCandidate (vector<RGBTriple>& cands, unsigned char r, unsigned char g, unsigned char b) const ;
 } ;
 
 #endif // ndef SH_BMPSAMPLE_H

@@ -58,7 +58,22 @@ SamplePos Edge::getSamplePos (Vertex *v) const
 	return retval ;
 }
 
-CvrStgSample *Edge::getSample (Vertex *v) const
+CvrStgSample *Edge::getOriginalSample (Vertex *v) const
+{
+	unsigned short index = 0 ;
+	if (v->getLabel() == Vertex1->getLabel()) {
+		index = Index1 ;
+	}
+	else if (v->getLabel() == Vertex2->getLabel()) {
+		index = Index2 ;
+	}
+	else {
+		assert (0) ;
+	}
+	return v->getSample (index) ;
+}
+
+CvrStgSample *Edge::getReplacingSample (Vertex *v) const
 {
 	CvrStgSample *retval = NULL ;
 	if (v->getLabel() == Vertex1->getLabel()) {

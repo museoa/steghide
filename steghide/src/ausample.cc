@@ -30,19 +30,14 @@ unsigned char AuSample::getValue () const
 	return Value ;
 }
 
-Bit AuSample::getBit() const
-{
-	return ((Bit) (Value & 1)) ;
-}
-
 bool AuSample::isNeighbour (CvrStgSample *s) const
 {
-	return (calcDistance (s) <= 1.0) ;
+	return (calcDistance (s) <= Radius) ;
 }
 
 list<CvrStgSample*> *AuSample::getOppositeNeighbours() const
 {
-	// FIXME - it is assumed that the neighbourhood radius is 1 - other file formats too
+	// FIXME - in this function it is assumed that the neighbourhood radius is 1
 	list<CvrStgSample*> *retval = new list<CvrStgSample*> ;
 	if (Value != 0) {
 		retval->push_back ((CvrStgSample *) new AuSample (getFile(), Value - 1)) ;
@@ -53,7 +48,7 @@ list<CvrStgSample*> *AuSample::getOppositeNeighbours() const
 	return retval ;
 }
 
-CvrStgSample *AuSample::getNearestOppositeNeighbour() const
+CvrStgSample *AuSample::getNearestOppositeSample() const
 {
 	unsigned char n_value = 0 ;
 	if (Value == 0) {
@@ -63,7 +58,7 @@ CvrStgSample *AuSample::getNearestOppositeNeighbour() const
 		n_value = 254 ;
 	}
 	else {
-		if (RndSrc.getBit()) {
+		if (RndSrc.getBool()) {
 			n_value = Value - 1 ;
 		}
 		else {
@@ -80,7 +75,4 @@ float AuSample::calcDistance (CvrStgSample *s) const
 	return (abs (((float) Value) - ((float) sample->getValue()))) ;
 }
 
-unsigned long AuSample::getKey() const
-{
-	return ((unsigned long) Value) ;
-}
+float AuSample::Radius = 1.0 ;

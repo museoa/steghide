@@ -18,30 +18,36 @@
  *
  */
 
-#ifndef SH_JPEGSAMPLE_H
-#define SH_JPEGSAMPLE_H
+#ifndef SH_RGBTRIPLE_H
+#define SH_RGBTRIPLE_H
 
-#include "cvrstgsample.h"
-#include "common.h"
-
-class JpegSample : public CvrStgSample {
+class RGBTriple {
 	public:
-	JpegSample (void)
-		: CvrStgSample(NULL) {} ;
-	JpegSample (CvrStgFile *f, int c) ;
+	RGBTriple (void)
+		: Red(0), Green(0), Blue(0) {} ;
+	RGBTriple (unsigned char r, unsigned char g, unsigned char b)
+		: Red(r), Green(g), Blue(b) {} ;
 
-	bool isNeighbour (CvrStgSample *s) const ;
-	list<CvrStgSample*> *getOppositeNeighbours (void) const ;
-	CvrStgSample* getNearestOppositeSample (void) const ;
-	float calcDistance (CvrStgSample *s) const ;
+	/**
+	 * get the distance in the RGB cube between this triple and the triple t
+	 * \param t another RGB triple
+	 * \return the distance between this and t
+	 **/
+	float calcDistance (const RGBTriple& t) const ;
 
-	int getDctCoeff (void) const ;
+	/**
+	 * returns true iff this triple and t are equal (i.e. have the same rgb values)
+	 **/
+	bool operator== (const RGBTriple& t) const ;
 
-	private:
-	//FIXME static const float DefaultRadius = 1.0 ;
-	static float Radius ;
+	/**
+	 * return true iff this triple and t are not equal (i.e. have different rgb values)
+	 **/
+	bool operator!= (const RGBTriple& t) const ;
 
-	int DctCoeff ;
+	unsigned char Red ;
+	unsigned char Green ;
+	unsigned char Blue ;
 } ;
 
-#endif // ndef SH_JPEGSAMPLE_H
+#endif // ndef SH_RGBTRIPLE_H

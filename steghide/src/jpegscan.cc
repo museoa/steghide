@@ -154,5 +154,3 @@ vector<vector <unsigned long> > JpegScan::getFreqs ()
 
 	return freqs ;
 }
-
-
