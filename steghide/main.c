@@ -209,29 +209,6 @@ static void parsearguments (int argc, char* argv[])
 			args_sthdrenc = ENC_NONE ;
 		}
 
-		else if ((strncmp (argv[i], "-m\0", 3) == 0) || (strncmp (argv[i], "--mask\0", 7) == 0)) {
-			unsigned int tmp = 0 ;
-
-			if (++i == argc) {
-				perr (ERR_NOMASK) ;
-			}
-
-			if (args_action != ACTN_EMBED) {
-				perr (ERR_ARGUNKNOWN) ;
-			}
-
-			tmp = readnum (argv[i]) ;
-			if (tmp > MAXMASK) {
-				perr (ERR_NUMTOOBIG) ;
-			}
-			else if (tmp == 0) {
-				perr (ERR_MASKZERO) ;
-			}
-			else {
-				sthdr.mask = (unsigned char) tmp ;
-			}
-		}
-
 		else if ((strncmp (argv[i], "-p\0", 3) == 0) || (strncmp (argv[i], "--passphrase\0", 12) == 0)) {
 			int j = 0 ;
 
@@ -388,8 +365,6 @@ static void usage (void)
 	printf ("   -cf <filename>        use <filename> as cover file\n") ;
 	printf (" -e, --encryption        encrypt plain data before embedding (default)\n") ;
 	printf (" -E, --noencryption      do not encrypt plain data before embedding\n") ;
-	printf (" -m, --mask              specify mask used to embed secret bits in cover bits\n") ;
-	printf ("   -m <n>                use <n> as mask\n") ;
 
 	printf ("\noptions for embedding and extracting:\n") ;
 

@@ -154,26 +154,6 @@ header (i.e. has used the -H argument) then the receiver of the message must
 also use the -H argument with the extract command. Otherwise steghide will
 assume that the stego header is encrypted and will fail.
 
-.TP
-.B "-m, --mask"
-This argument is followed by a number which specifies an 8 bit mask that is used
-to hide data in the cover bytes. For every one in the mask a bit will be hidden
-at the position of this one, for zeros no bits are hidden. If the mask is for
-example 3 then data is embedded in the least significant and second least
-significant bit of the cover byte.
-
-The number can be specified as decimal ("17") as octal with a leading zero
-("021"), as hexadecimal with the 0x prefix ("0x11") or as binary with b or B as
-prefix ("b10001" or "B10001"). This notation for numbers can also be used for
-the -d argument.
-
-The default value is 1 which is pretty secure, you should not change it. Note
-that it can be very insecure to embed data in bits other than the least
-significant. You should only use this argument if you know exactly what you are
-doing.
-
-The -m argument can only be used with the embed command.
-
 .SH EXAMPLES
 To embed the file mysecret.txt in the wav file cover.wav and save the resulting
 stego file as stego.wav type:
