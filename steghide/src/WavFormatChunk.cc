@@ -46,10 +46,10 @@ void WavFormatChunk::read (BinaryIO *io)
 		AdditionalSize = io->read16_le() ;
 		if (AdditionalSize != 0) {
 			if (io->is_std()) {
-				throw NotImplementedError (_("the wav file from standard input does not have pcm format (header too long).")) ;
+				throw SteghideError (_("the wav file from standard input does not have pcm format (header too long).")) ;
 			}
 			else {
-				throw NotImplementedError (_("the wav file \"%s\" does not have pcm format (header too long)."), io->getName().c_str()) ;
+				throw SteghideError (_("the wav file \"%s\" does not have pcm format (header too long)."), io->getName().c_str()) ;
 			}
 		}
 		if (ChunkHeader->getChunkLength() != 18) {

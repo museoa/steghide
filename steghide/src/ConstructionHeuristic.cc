@@ -24,8 +24,8 @@
 #include "Matching.h"
 #include "common.h"
 
-ConstructionHeuristic::ConstructionHeuristic (Graph* g, ProgressOutput* po)
-	: TheGraph(g)
+ConstructionHeuristic::ConstructionHeuristic (Graph* g, Matching* m, float goal)
+	: MatchingAlgorithm (g, m, goal)
 {
 	unsigned long nvertices = g->getNumVertices() ;
 
@@ -47,8 +47,11 @@ ConstructionHeuristic::ConstructionHeuristic (Graph* g, ProgressOutput* po)
 			}
 		}
 	}
+}
 
-	TheMatching = new Matching (g, po) ;
+ConstructionHeuristic::~ConstructionHeuristic ()
+{
+	TheGraph->unmarkDeletedAllVertices() ;
 }
 
 void ConstructionHeuristic::run ()
@@ -60,7 +63,7 @@ void ConstructionHeuristic::run ()
 	}
 #endif
 
-	while (!(VerticesDegG.empty() && VerticesDeg1.empty())) {
+	while ((TheMatching->getCardinality() < CardinalityGoal) && (!VerticesDegG.empty() || !VerticesDeg1.empty())) {
 		Vertex *v = NULL ;
 		unsigned int k = 1 ;
 		if (pqr > 1) {

@@ -25,11 +25,11 @@
 #include "Matching.h"
 #include "common.h"
 
-AugmentingPathHeuristic::AugmentingPathHeuristic (Graph* g, Matching* m, UWORD32 mne)
-	: TheGraph(g), TheMatching(m)
+AugmentingPathHeuristic::AugmentingPathHeuristic (Graph* g, Matching* m, float goal, UWORD32 mne)
+	: MatchingAlgorithm (g, m, goal)
 {
 	unsigned long numvertices = g->getNumVertices() ;
-	VertexOnPath = std::vector<bool> (numvertices, false) ;
+VertexOnPath = std::vector<bool> (numvertices, false) ;
 
 	TimeCounter = 0 ;
 	TimeCounters = std::vector<UWORD32> (numvertices, 0) ;
@@ -57,7 +57,8 @@ void AugmentingPathHeuristic::run ()
 {
 	// FIXME - ? as reference
 	const std::list<Vertex*> ExposedVertices = TheMatching->getExposedVertices() ;
-	for (std::list<Vertex*>::const_iterator expv = ExposedVertices.begin() ; expv != ExposedVertices.end() ; expv++) {
+	for (std::list<Vertex*>::const_iterator expv = ExposedVertices.begin() ;
+		(expv != ExposedVertices.end()) && (TheMatching->getCardinality() < CardinalityGoal) ; expv++) {
 		if (TheMatching->isExposed (*expv)) {
 			std::vector<Edge*>* path = searchAugmentingPath (*expv) ;
 			if (!path->empty()) {

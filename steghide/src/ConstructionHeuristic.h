@@ -18,8 +18,8 @@
  *
  */
 
-#ifndef SH_CONSTRHEUR_H
-#define SH_CONSTRHEUR_H
+#ifndef SH_CONSTRUCTIONHEURISTIC_H
+#define SH_CONSTRUCTIONHEURISTIC_H
 
 #include <functional>
 #include <queue>
@@ -28,6 +28,7 @@
 class Edge ;
 class Graph ;
 class Matching ;
+#include "MatchingAlgorithm.h"
 class ProgressOutput ;
 class Vertex ;
 
@@ -42,14 +43,13 @@ class Vertex ;
  * the fact that the vertices in the priority queues are ordered by the length of their
  * shortest edge. This biases the heuristic to choosing shorter edges on average.
  **/
-class ConstructionHeuristic {
+class ConstructionHeuristic : public MatchingAlgorithm {
 	public:
-	ConstructionHeuristic (Graph* g, ProgressOutput* po = NULL) ;
+	ConstructionHeuristic (Graph* g, Matching* m, float goal) ;
+
+	~ConstructionHeuristic (void) ;
 
 	void run (void) ;
-
-	Matching *getMatching (void)
-		{ return TheMatching ; } ;
 
 	private:
 	/**
@@ -68,9 +68,6 @@ class ConstructionHeuristic {
 	} ;
 
 	static const unsigned int PriorityQueueRange = 1 ;
-
-	Graph* TheGraph ;
-	Matching* TheMatching ;
 
 	/**
 	 * get the Vertex from VerticesDeg1 that is k-nearest to top (with updated degrees and shortest edges)
@@ -98,4 +95,4 @@ class ConstructionHeuristic {
 	std::priority_queue<Vertex*, std::vector<Vertex*>, LongerShortestEdge> VerticesDegG ;
 } ;
 
-#endif // ndef SH_CONSTRHEUR_H
+#endif // ndef SH_CONSTRUCTIONHEURISTIC_H

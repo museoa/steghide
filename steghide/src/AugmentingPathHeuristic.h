@@ -18,9 +18,10 @@
  *
  */
 
-#ifndef SH_AUGHEUR_H
-#define SH_AUGHEUR_H
+#ifndef SH_AUGMENTINGPATHHEURISTIC
+#define SH_AUGMENTINGPATHHEURISTIC
 
+#include "MatchingAlgorithm.h"
 #include "Vertex.h"
 
 class Edge ;
@@ -31,15 +32,16 @@ class Matching ;
 /**
  * \class AugmentingPathHeuristic
  **/
-class AugmentingPathHeuristic {
+class AugmentingPathHeuristic : public MatchingAlgorithm {
 	public:
 	/**
 	 * construct an AugmentingPathHeuristic object
 	 * \param g the graph on which this heuristic should run
 	 * \param m the matching to start with
+	 * \param goal the percentage of matched vertices that should be reached
 	 * \param mne the maximum number of edges that should be considered for every vertex
 	 **/
-	AugmentingPathHeuristic (Graph* g, Matching* m, UWORD32 mne = UWORD32_MAX) ;
+	AugmentingPathHeuristic (Graph* g, Matching* m, float goal, UWORD32 mne = UWORD32_MAX) ;
 
 	/**
 	 * reset the state of this AugmentingPathHeuristic, esp. the EdgeIterators
@@ -48,9 +50,6 @@ class AugmentingPathHeuristic {
 	void reset (UWORD32 mne = UWORD32_MAX) ;
 
 	void run (void) ;
-
-	Matching* getMatching (void) const
-		{ return TheMatching ; } ;
 
 	private:
 	/**
@@ -75,13 +74,10 @@ class AugmentingPathHeuristic {
 	bool isVisited (VertexLabel vlbl) const
 		{ return (TimeCounters[vlbl] == TimeCounter) ; } ;
 
-	Graph* TheGraph ;
-	Matching* TheMatching ;
-
 	UWORD32 TimeCounter ;
 	std::vector<UWORD32> TimeCounters ;
 	std::vector<bool> VertexOnPath ;
 	std::vector<EdgeIterator> EdgeIterators ;
 } ;
 
-#endif // ndef SH_AUGHEUR_H
+#endif // ndef SH_AUGMENTINGPATHHEURISTIC

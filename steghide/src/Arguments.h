@@ -69,6 +69,7 @@ class Arguments {
 	ArgEncAlgo		EncAlgo ;
 	ArgEncMode		EncMode ;
 	ArgULong		Radius ;
+	ArgFloat		Goal ;
 	ArgBool			Force ;
 	ArgVerbosity	Verbosity ;
 #ifdef DEBUG
@@ -88,6 +89,7 @@ class Arguments {
 	static const bool		Default_Force = false ;
 	static const VERBOSITY	Default_Verbosity = NORMAL ;
 	static const unsigned long	Default_Radius = 0 ; // there is no default radius for all file formats
+	static const float		Default_Goal = 100.0 ;
 #ifdef DEBUG
 	static const DEBUGCOMMAND	Default_DebugCommand = NONE ;
 	static const unsigned int	Default_DebugLevel = 0 ;
@@ -117,6 +119,7 @@ class Arguments {
 	bool parse_EmbedEmbFn (ArgIt& curarg) ;
 	bool parse_Encryption (ArgIt& curarg) ;
 	bool parse_Radius (ArgIt& curarg) ;
+	bool parse_Goal (ArgIt& curarg) ;
 	bool parse_Force (ArgIt& curarg) ;
 	bool parse_Verbosity (ArgIt& curarg) ;
 #ifdef DEBUG

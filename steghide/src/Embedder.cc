@@ -116,17 +116,21 @@ const Matching* Embedder::calculateMatching ()
 #endif
 	Matching* bestmatching = NULL ;
 	for (unsigned int i = 0 ; i < nconstrheur ; i++) {
-		ConstructionHeuristic ch (Globs.TheGraph, prout) ;
+		// create an empty matching for the construction heuristic to start with
+		Matching* thismatching = new Matching (Globs.TheGraph, prout) ;
+
+		ConstructionHeuristic ch (Globs.TheGraph, thismatching, Args.Goal.getValue()) ;
 		ch.run() ;
 
-		if ((bestmatching == NULL) || (ch.getMatching()->getCardinality() > bestmatching->getCardinality())) {
+		if ((bestmatching == NULL) || (thismatching->getCardinality() > bestmatching->getCardinality())) {
 			if (bestmatching != NULL) {
 				delete bestmatching ;
 			}
-			bestmatching = ch.getMatching() ;
+			bestmatching = thismatching ;
 		}
-
-		Globs.TheGraph->unmarkDeletedAllVertices() ;
+		else {
+			delete thismatching ;
+		}
 	}
 
 	VerboseMessage vmsg2 (_("best matching after construction heuristic:")) ;
@@ -138,7 +142,7 @@ const Matching* Embedder::calculateMatching ()
 		prout->setUpdateFrequency (1) ;
 	}
 	if (true) {
-		AugmentingPathHeuristic aph (Globs.TheGraph, bestmatching, (UWORD32) (Globs.TheGraph->getAvgVertexDegree() / 20)) ;
+		AugmentingPathHeuristic aph (Globs.TheGraph, bestmatching, Args.Goal.getValue(), (UWORD32) (Globs.TheGraph->getAvgVertexDegree() / 20)) ;
 		aph.run() ;
 		bestmatching = aph.getMatching() ;
 

@@ -23,7 +23,7 @@ unittests_LDADD = \
 ../src/Extractor.o ../src/Graph.o ../src/JpegFile.o ../src/JpegSampleValue.o \
 ../src/MCryptPP.o ../src/MHashKeyGen.o ../src/MHashPP.o ../src/Matching.o \
 ../src/ProgressOutput.o ../src/PseudoRandomSource.o ../src/RGBTriple.o \
-../src/RandomSource.o ../src/SampleValue.o \
+../src/MatchingAlgorithm.o ../src/RandomSource.o ../src/SampleValue.o \
 ../src/SampleValueOppositeNeighbourhood.o ../src/Selector.o ../src/Session.o \
 ../src/SteghideError.o ../src/Terminal.o ../src/Vertex.o \
 ../src/VertexContent.o ../src/WavChunk.o ../src/WavChunkHeader.o \

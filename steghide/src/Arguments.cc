@@ -75,6 +75,7 @@ void Arguments::parse ()
 		if (parse_EmbedEmbFn(curarg)) continue ;
 		if (parse_Encryption(curarg)) continue ;
 		if (parse_Radius(curarg)) continue ;
+		if (parse_Goal(curarg)) continue ;
 		if (parse_Force(curarg)) continue ;
 		if (parse_Verbosity(curarg)) continue ;
 #ifdef DEBUG
@@ -524,6 +525,34 @@ bool Arguments::parse_Radius (ArgIt& curarg)
 	return found ;
 }
 
+bool Arguments::parse_Goal (ArgIt& curarg)
+{
+	bool found = false ;
+
+	if (*curarg == "-g" || *curarg == "--goal") {
+		if (Command.getValue() != EMBED) {
+			throw ArgError (_("the argument \"%s\" can only be used with the \"embed\" command."), curarg->c_str()) ;
+		}
+
+		if (Goal.is_set()) {
+			throw ArgError (_("the goal argument can be used only once.")) ;
+		}
+
+		if (++curarg == TheArguments.end()) {
+			throw ArgError (_("the \"%s\" argument must be followed by a number between 0 and 100."), (curarg - 1)->c_str()) ;
+		}
+
+		float tmp = 0 ;
+		sscanf (curarg->c_str(), "%f", &tmp) ;
+		Goal.setValue (tmp) ;
+
+		found = true ;
+		curarg++ ;
+	}
+
+	return found ;
+}
+
 bool Arguments::parse_Force (ArgIt& curarg)
 {
 	bool found = false ;
@@ -742,6 +771,7 @@ void Arguments::setDefaults (void)
 	Force.setValue (Default_Force, false) ;
 	Verbosity.setValue (Default_Verbosity, false) ;
 	Radius.setValue (Default_Radius, false) ;
+	Goal.setValue (Default_Goal, false) ;
 #ifdef DEBUG
 	DebugCommand.setValue (Default_DebugCommand, false) ;
 	DebugLevel.setValue (Default_DebugLevel, false) ;
