@@ -84,7 +84,7 @@ function pseclinktr ($active, $css_td, $css_a, $imgsrc, $imgalt, $linkhref, $lin
 	echo ">$linkname</a></td>\n";
 	echo "$spc  </tr>\n";
 	echo "$spc </table>\n";
-	echo "$spc</tr></tr>\n";
+	echo "$spc</td></tr>\n";
 }
 
 /**
@@ -272,7 +272,7 @@ function pBodyPrologue ()
 
 	echo " <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\"> <!-- table: main -->\n"; // main table to get 3(left)+2(right)=5 areas
   	echo "  <tr>\n"; // upper areas (logo, title)
-	echo "   <td id=\"topleft\"><img src=\"" . $ToRoot . "images/logo.png" . "\"></td>\n"; // top left area (logo)
+	echo "   <td id=\"topleft\"><img src=\"" . $ToRoot . "images/logo.png" . "\" alt=\"steghide logo\"></td>\n"; // top left area (logo)
 	echo "   <td id=\"topright\">" . $sectioninfo["title"] . "</td>\n"; // top right area (title)
 	echo "  </tr>\n";
 	echo "  <tr>\n"; // lower areas (hierachy, text)
