@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2003-02-25 10:37+0100\n"
+"POT-Creation-Date: 2003-02-26 18:03+0100\n"
 "PO-Revision-Date: 2002-05-12 18:34+0100\n"
 "Last-Translator: Julien Catanese <julien_catanese@yahoo.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,216 +42,216 @@ msgstr ""
 "si l'entrée  standard est utilisée, la passphrase doit être donnée en ligne "
 "de commande."
 
-#: src/Arguments.cc:150
+#: src/Arguments.cc:147
 #, fuzzy
 msgid "you cannot use arguments with the \"encinfo\" command."
 msgstr "vous ne pouvez pas utilisez d'arguments avec la commande \"version\"."
 
-#: src/Arguments.cc:156
+#: src/Arguments.cc:153
 #, fuzzy
 msgid "you cannot use arguments with the \"version\" command."
 msgstr "vous ne pouvez pas utilisez d'arguments avec la commande \"version\"."
 
-#: src/Arguments.cc:162
+#: src/Arguments.cc:159
 #, fuzzy
 msgid "you cannot use arguments with the \"license\" command."
 msgstr "vous ne pouvez pas utiliser d'arguments avec la commande \"license\"."
 
-#: src/Arguments.cc:168
+#: src/Arguments.cc:165
 #, fuzzy
 msgid "you cannot use arguments with the \"help\" command."
 msgstr "vous ne pouvez pas utiliser d'arguments avec la commande \"help\"."
 
-#: src/Arguments.cc:172
+#: src/Arguments.cc:169
 #, fuzzy, c-format
 msgid "unknown command \"%s\"."
 msgstr "commande \"%s\" inconnue. tapez \"%s --help\" pour l'aide."
 
-#: src/Arguments.cc:182 src/Arguments.cc:332 src/Arguments.cc:346
-#: src/Arguments.cc:368 src/Arguments.cc:382 src/Arguments.cc:404
-#: src/Arguments.cc:506
+#: src/Arguments.cc:181 src/Arguments.cc:331 src/Arguments.cc:345
+#: src/Arguments.cc:367 src/Arguments.cc:381 src/Arguments.cc:403
+#: src/Arguments.cc:505
 #, fuzzy, c-format
 msgid "the argument \"%s\" can only be used with the \"embed\" command."
 msgstr ""
 "l'argument \"%s\" peut seulement être utilisé avec la commande \"embed\". "
 "tapez \"%s --help\" pour l'aide."
 
-#: src/Arguments.cc:186
+#: src/Arguments.cc:185
 #, fuzzy
 msgid "the embed file name argument can be used only once."
 msgstr ""
 "le nom du fichier stégo peut être utilisé en argument seulement une fois. "
 "tapez \"%s --help\"pour l'aide."
 
-#: src/Arguments.cc:190
+#: src/Arguments.cc:189
 #, fuzzy, c-format
 msgid "the \"%s\" argument must be followed by the embed file name."
 msgstr ""
 "l'argument \"%s\" doit être suivi du nom du fichier stégo. tapez \"%s --help"
 "\" pour l'aide."
 
-#: src/Arguments.cc:213
+#: src/Arguments.cc:212
 #, fuzzy, c-format
 msgid "argument \"%s\" can only be used with the \"extract\" command."
 msgstr ""
 "l'argument \"%s\" peut seulement être utilisé avec la commande \"embed\". "
 "tapez \"%s --help\" pour l'aide."
 
-#: src/Arguments.cc:217
+#: src/Arguments.cc:216
 #, fuzzy
 msgid "the extract file name argument can be used only once."
 msgstr ""
 "le nom du fichier-couverture peut seulement être utilisé une fois en "
 "argument. tapez pour l'aide."
 
-#: src/Arguments.cc:221
+#: src/Arguments.cc:220
 #, fuzzy, c-format
 msgid "the \"%s\" argument must be followed by the plain file name."
 msgstr ""
 "l'argument \"%s\" doit être suivi du nom du fichier de données. tapez \"%s --"
 "help\" pour l'aide."
 
-#: src/Arguments.cc:244
+#: src/Arguments.cc:243
 #, fuzzy, c-format
 msgid "the argument \"%s\" can not be used with the \"extract\" command."
 msgstr ""
 "l'argument \"%s\" peut seulement être utilisé avec la commande \"embed\". "
 "tapez \"%s --help\" pour l'aide."
 
-#: src/Arguments.cc:248
+#: src/Arguments.cc:247
 #, fuzzy
 msgid "the cover file name argument can be used only once."
 msgstr ""
 "le nom du fichier-couverture peut seulement être utilisé une fois en "
 "argument. tapez pour l'aide."
 
-#: src/Arguments.cc:252
+#: src/Arguments.cc:251
 #, fuzzy, c-format
 msgid "the \"%s\" argument must be followed by the cover file name."
 msgstr ""
 "l'argument \"%s\" doit être suivi du nom du fichier-couverture. tapez \"%s --"
 "help\" pour l'aide."
 
-#: src/Arguments.cc:275 src/Arguments.cc:534 src/Arguments.cc:558
-#: src/Arguments.cc:572
+#: src/Arguments.cc:274 src/Arguments.cc:533 src/Arguments.cc:557
+#: src/Arguments.cc:571
 #, fuzzy, c-format
 msgid "the \"%s\" argument can not be used with the \"capacity\" command."
 msgstr ""
 "l'argument \"%s\" ne peut pas être utilisé ici car le mode verbeux a déjà "
 "été choisi."
 
-#: src/Arguments.cc:279
+#: src/Arguments.cc:278
 #, fuzzy
 msgid "the stego file name argument can be used only once."
 msgstr ""
 "le nom du fichier stégo peut être utilisé en argument seulement une fois. "
 "tapez \"%s --help\"pour l'aide."
 
-#: src/Arguments.cc:283
+#: src/Arguments.cc:282
 #, fuzzy, c-format
 msgid "the \"%s\" argument must be followed by the stego file name."
 msgstr ""
 "l'argument \"%s\" doit être suivi du nom du fichier stégo. tapez \"%s --help"
 "\" pour l'aide."
 
-#: src/Arguments.cc:306
+#: src/Arguments.cc:305
 #, fuzzy, c-format
 msgid "the \"%s\" argument cannot be used with the \"capacity\" command."
 msgstr ""
 "l'argument \"%s\" ne peut pas être utilisé ici car le mode verbeux a déjà "
 "été choisi."
 
-#: src/Arguments.cc:310
+#: src/Arguments.cc:309
 #, fuzzy
 msgid "the passphrase argument can be used only once."
 msgstr ""
 "l'argument passphrase peut être utilisé seulement une fois. tapez \"%s --help"
 "\" pour l'aide."
 
-#: src/Arguments.cc:314
+#: src/Arguments.cc:313
 #, fuzzy, c-format
 msgid "the \"%s\" argument must be followed by the passphrase."
 msgstr ""
 "l'argument \"%s\" doit être suivi de la passphrase. tapez \"%s --help\" pour "
 "l'aide."
 
-#: src/Arguments.cc:336 src/Arguments.cc:350
+#: src/Arguments.cc:335 src/Arguments.cc:349
 #, fuzzy
 msgid "the checksum argument can be used only once."
 msgstr ""
 "l'argument checksum peut seulement être utilisé une fois. tapez \"%s --help"
 "\" pour l'aide."
 
-#: src/Arguments.cc:372 src/Arguments.cc:386
+#: src/Arguments.cc:371 src/Arguments.cc:385
 #, fuzzy
 msgid "the file name embedding argument can be used only once."
 msgstr ""
 "l'argument pour l'encapsulation du fichier de données ne peut être utilisé "
 "qu'une seule fois. taper \"%s --help\" pour l'aide."
 
-#: src/Arguments.cc:408
+#: src/Arguments.cc:407
 #, fuzzy
 msgid "the encryption argument can be used only once."
 msgstr ""
 "l'argument encryption peut être utilisé une fois seulement. tapez \"%s --help"
 "\" pour l'aide."
 
-#: src/Arguments.cc:412 src/Arguments.cc:417
+#: src/Arguments.cc:411 src/Arguments.cc:416
 #, fuzzy, c-format
 msgid "the \"%s\" argument must be followed by encryption information."
 msgstr ""
 "l'argument \"%s\" doit être suivi du nom du fichier de données. tapez \"%s --"
 "help\" pour l'aide."
 
-#: src/Arguments.cc:449 src/Arguments.cc:458
+#: src/Arguments.cc:448 src/Arguments.cc:457
 #, c-format
 msgid "\"%s\" is neither an algorithm nor a mode supported by libmcrypt."
 msgstr ""
 
-#: src/Arguments.cc:463
+#: src/Arguments.cc:462
 #, c-format
 msgid ""
 "\"%s\" and \"%s\" are both libmcrypt algorithms. please specify only one."
 msgstr ""
 
-#: src/Arguments.cc:466
+#: src/Arguments.cc:465
 #, c-format
 msgid "\"%s\" and \"%s\" are both libmcrypt modes. please specify only one."
 msgstr ""
 
-#: src/Arguments.cc:483
+#: src/Arguments.cc:482
 #, fuzzy, c-format
 msgid "the encryption algorithm \"%s\" can not be used with the mode \"%s\"."
 msgstr ""
 "l'argument \"%s\" peut seulement être utilisé avec la commande \"embed\". "
 "tapez \"%s --help\" pour l'aide."
 
-#: src/Arguments.cc:489
+#: src/Arguments.cc:488
 msgid "steghide has been compiled without support for encryption."
 msgstr ""
 
-#: src/Arguments.cc:510
+#: src/Arguments.cc:509
 #, fuzzy
 msgid "the radius argument can be used only once."
 msgstr ""
 "l'argument passphrase peut être utilisé seulement une fois. tapez \"%s --help"
 "\" pour l'aide."
 
-#: src/Arguments.cc:514
+#: src/Arguments.cc:513
 #, fuzzy, c-format
 msgid "the \"%s\" argument must be followed by the neighbourhood radius."
 msgstr ""
 "l'argument \"%s\" doit être suivi de la passphrase. tapez \"%s --help\" pour "
 "l'aide."
 
-#: src/Arguments.cc:538
+#: src/Arguments.cc:537
 #, fuzzy
 msgid "the force argument can be used only once."
 msgstr ""
 "l'argument force peut seulement être utilisé une fois. tapez \"%s --help\" "
 "pour l'aide."
 
-#: src/Arguments.cc:562 src/Arguments.cc:576
+#: src/Arguments.cc:561 src/Arguments.cc:575
 #, c-format
 msgid ""
 "the \"%s\" argument cannot be used here because the verbosity has already "
@@ -260,54 +260,54 @@ msgstr ""
 "l'argument \"%s\" ne peut pas être utilisé ici car le mode verbeux a déjà "
 "été choisi."
 
-#: src/Arguments.cc:594 src/Arguments.cc:604
+#: src/Arguments.cc:593 src/Arguments.cc:603
 #, fuzzy
 msgid "you cannot use more than one debug command at a time."
 msgstr "vous ne pouvez pas utiliser d'arguments avec la commande \"help\"."
 
-#: src/Arguments.cc:614
+#: src/Arguments.cc:613
 #, fuzzy
 msgid "the debug level argument can be used only once."
 msgstr ""
 "le nom du fichier stégo peut être utilisé en argument seulement une fois. "
 "tapez \"%s --help\"pour l'aide."
 
-#: src/Arguments.cc:618
+#: src/Arguments.cc:617
 #, fuzzy, c-format
 msgid "the \"%s\" argument must be followed by the debug level."
 msgstr ""
 "l'argument \"%s\" doit être suivi du nom du fichier stégo. tapez \"%s --help"
 "\" pour l'aide."
 
-#: src/Arguments.cc:630 src/Arguments.cc:650
+#: src/Arguments.cc:629 src/Arguments.cc:649
 #, fuzzy, c-format
 msgid "argument \"%s\" can only be used with the \"embed\" command."
 msgstr ""
 "l'argument \"%s\" peut seulement être utilisé avec la commande \"embed\". "
 "tapez \"%s --help\" pour l'aide."
 
-#: src/Arguments.cc:634
+#: src/Arguments.cc:633
 #, fuzzy
 msgid "the priority queue range argument can be used only once."
 msgstr ""
 "le nom du fichier de données peut seulement être utilisé une fois en "
 "argument. tapez \"%s --help pour l'aide."
 
-#: src/Arguments.cc:638
+#: src/Arguments.cc:637
 #, fuzzy, c-format
 msgid "the \"%s\" argument must be followed by the priority queue range."
 msgstr ""
 "l'argument \"%s\" doit être suivi de la passphrase. tapez \"%s --help\" pour "
 "l'aide."
 
-#: src/Arguments.cc:654
+#: src/Arguments.cc:653
 #, fuzzy
 msgid "the number construction heuristic argument can be used only once."
 msgstr ""
 "l'argument distribution peut être utilisé seulement une fois. tapez \"%s --"
 "help\" pour l'aide."
 
-#: src/Arguments.cc:658
+#: src/Arguments.cc:657
 #, fuzzy, c-format
 msgid ""
 "the \"%s\" argument must be followed by the number of times the construction "
@@ -316,19 +316,19 @@ msgstr ""
 "l'argument \"%s\" doit être suivi du nom du fichier-couverture. tapez \"%s --"
 "help\" pour l'aide."
 
-#: src/Arguments.cc:679
+#: src/Arguments.cc:678
 msgid "unknown terminal. the passphrase you type now will be visible."
 msgstr ""
 
-#: src/Arguments.cc:683
+#: src/Arguments.cc:682
 msgid "Enter passphrase: "
 msgstr "Entrez la passphrase: "
 
-#: src/Arguments.cc:696
+#: src/Arguments.cc:695
 msgid "Re-Enter passphrase: "
 msgstr "Entrez à nouveau la passphrase: "
 
-#: src/Arguments.cc:708
+#: src/Arguments.cc:707
 msgid "the passphrases do not match."
 msgstr "les passphrases ne correspondent pas."
 
@@ -680,32 +680,32 @@ msgstr ""
 msgid "creating the graph..."
 msgstr ""
 
-#: src/Graph.cc:246
+#: src/Graph.cc:248
 #, c-format
 msgid "number of distinct sample values: %lu"
 msgstr ""
 
-#: src/Graph.cc:249
+#: src/Graph.cc:251
 #, c-format
 msgid "number of vertices: %lu"
 msgstr ""
 
-#: src/Graph.cc:252
+#: src/Graph.cc:254
 #, c-format
 msgid "average vertex degree: %.1f"
 msgstr ""
 
-#: src/Graph.cc:254
+#: src/Graph.cc:256
 #, c-format
 msgid "minimum vertex degree: %lu"
 msgstr ""
 
-#: src/Graph.cc:256
+#: src/Graph.cc:258
 #, c-format
 msgid "maximum vertex degree: %lu"
 msgstr ""
 
-#: src/Graph.cc:259
+#: src/Graph.cc:261
 #, c-format
 msgid "number of edges: %lu"
 msgstr ""
@@ -763,17 +763,17 @@ msgstr "n'a pas pu initialiser l'algorithme libmhash MD5."
 msgid "could not generate key using libmhash."
 msgstr "n'a pas pu trouver les propriétés du terminal."
 
-#: src/Matching.cc:136
+#: src/Matching.cc:155
 #, c-format
 msgid "size of the matching: %lu"
 msgstr ""
 
-#: src/Matching.cc:139
+#: src/Matching.cc:158
 #, c-format
 msgid "number of unmatched vertices: %lu (%.1f%%)"
 msgstr ""
 
-#: src/Matching.cc:147
+#: src/Matching.cc:166
 #, c-format
 msgid "average edge weight: %.1f"
 msgstr ""

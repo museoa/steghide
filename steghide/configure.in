@@ -28,7 +28,11 @@ AC_CHECK_LIB(mhash, mhash_init)
 AC_CHECK_HEADER(mhash.h)
 if test "$ac_cv_header_mhash_h" = no || test "$ac_cv_lib_mhash_mhash_init" = no ;
 then
-	AC_MSG_ERROR([[libmhash is probably not installed but needed to compile]])
+	echo "**********";
+	echo "libmhash could not be found on your system but is needed to compile steghide.";
+	echo "libmhash can be downloaded from http://mhash.sourceforge.net/.";
+	echo "**********";
+	AC_MSG_ERROR([[libmhash not found]])
 fi
 
 dnl Check for libmcrypt
@@ -41,6 +45,7 @@ then
 	echo "**********";
 	echo "libmcrypt could not be found on your system. Steghide will be compiled without";
 	echo "support for encryption. You will not be able to extract encrypted data!";
+	echo "libmcrypt can be downloaded from http://mcrypt.hellug.gr/";
 	echo "**********";
 else
 	AC_DEFINE(USE_LIBMCRYPT,1,[use the libmcrypt library (header and lib are present)])

@@ -283,7 +283,6 @@ BitString EmbData::getBitString ()
 	
 	main.append (Checksum) ;
 	if (Checksum) {
-		// FIXME - verify that a checksum is embedded per default !!
 		MHash hash (MHASH_CRC32) ;
 		for (std::vector<unsigned char>::iterator i = Data.begin() ; i != Data.end() ; i++) {
 			hash << *i ;

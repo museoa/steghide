@@ -52,9 +52,6 @@ WavFile::~WavFile ()
 	for (std::vector<WavChunkUnused*>::iterator i = UnusedBeforeData.begin() ; i != UnusedBeforeData.end() ; i++) {
 		delete (*i) ;
 	}
-	for (std::vector<WavChunkUnused*>::iterator i = UnusedAfterData.begin() ; i != UnusedAfterData.end() ; i++) {
-		delete (*i) ;
-	}
 }
 
 void WavFile::read (BinaryIO *io)
@@ -187,8 +184,7 @@ void WavFile::readdata (void)
 
 		UnusedAfterData.clear() ;
 		while (!getBinIO()->eof()) {
-			WavChunkHeader *chhdr = new WavChunkHeader (getBinIO()) ;
-			UnusedAfterData.push_back (new WavChunkUnused (chhdr, getBinIO())) ;
+			UnusedAfterData.push_back (getBinIO()->read8()) ;
 		}			
 	}
 	catch (BinaryInputError e) {
@@ -240,8 +236,8 @@ void WavFile::writedata (void)
 			writepos += bytespersample ;
 		}
 
-		for (std::vector<WavChunkUnused*>::const_iterator i = UnusedAfterData.begin() ; i != UnusedAfterData.end() ; i++) {
-			(*i)->write (getBinIO()) ;
+		for (std::vector<BYTE>::const_iterator it = UnusedAfterData.begin() ; it != UnusedAfterData.end() ; it++) {
+			getBinIO()->write8(*it) ;
 		}
 	}
 	catch (BinaryOutputError e) {

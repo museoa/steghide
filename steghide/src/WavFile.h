@@ -61,7 +61,7 @@ class WavFile : public CvrStgFile {
 	std::vector<int> data_large ;	// it is assumed that an int can hold 32 bits
 	
 	std::vector<WavChunkUnused*> UnusedBeforeData ;
-	std::vector<WavChunkUnused*> UnusedAfterData ;
+	std::vector<BYTE> UnusedAfterData ;
 
 	void readheaders (void) ;
 	void readdata (void) ;

@@ -184,6 +184,7 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_wav (const std::vector<Samp
 		while ((start1 < n1) && (svalues1[start1]->getValue() < svalues0[i0]->getValue() - r_ub)) {
 			start1++ ;
 		}
+		// start1 is the index of the first sample in svalues1 that is >= (svalues0[i0]->getValue - r_ub)
 		unsigned long i1 = start1 ;
 		while ((i1 < n1) && (svalues1[i1]->getValue() <= svalues0[i0]->getValue() + r_ub)) {
 			OppNeighs[svalues0[i0]->getLabel()].push_back (svalues1[i1]) ;
@@ -191,9 +192,6 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_wav (const std::vector<Samp
 			i1++ ;
 		}
 	}
-
-	// FIXME - don't use generic sort (!)
-	sortOppNeighs() ;
 }
 
 void SampleValueOppositeNeighbourhood::sortOppNeighs (void)
@@ -273,6 +271,8 @@ bool SampleValueOppositeNeighbourhood::check (bool verbose) const
 	retval = check_size (verbose) && retval ;
 	retval = check_soundness (verbose) && retval ;
 	retval = check_completeness (verbose) && retval ;
+	retval = check_sorted (verbose) && retval ;
+	retval = check_uniqueness (verbose) && retval ;
 	return retval ;
 }
 
@@ -308,9 +308,14 @@ bool SampleValueOppositeNeighbourhood::check_soundness (bool verbose) const
 		}
 	}
 
+	return !(err_nonopp || err_nonneigh) ;
+}
+
+bool SampleValueOppositeNeighbourhood::check_sorted (bool verbose) const
+{
 	// check if OppNeighs[l][1...n] have increasing distance
 	bool err_unsorted = false ;
-	for (SampleValueLabel srclbl = 0 ; srclbl < numsvs ; srclbl++) {
+	for (SampleValueLabel srclbl = 0 ; srclbl < OppNeighs.size() ; srclbl++) {
 		SampleValue* srcsv = TheGraph->SampleValues[srclbl] ;
 		const std::vector<SampleValue*> &oppneighs = OppNeighs[srclbl] ;
 		if (oppneighs.size() > 1) {
@@ -329,14 +334,30 @@ bool SampleValueOppositeNeighbourhood::check_soundness (bool verbose) const
 						oppneighs[i + 1]->print(1) ;
 						std::cerr << "-------------------------------------" << std::endl ;
 					}
-					srclbl = numsvs ;
+					srclbl = OppNeighs.size() ;
 					break ;
 				}
 			}
 		}
 	}
 
-	return !(err_nonopp || err_nonneigh || err_unsorted) ;
+	return !err_unsorted ;
+}
+
+bool SampleValueOppositeNeighbourhood::check_uniqueness (bool verbose) const
+{
+	// check if there is no sample value that has two entries in an OppNeighs[i]
+	bool err_nonunique = false ;
+	for (SampleValueLabel srclbl = 0 ; srclbl < OppNeighs.size() ; srclbl++) {
+		for (unsigned int i = 0 ; i < OppNeighs[srclbl].size() ; i++) {
+			for (unsigned int j = i + 1 ; j < OppNeighs[srclbl].size() ; j++) {
+				if (*(OppNeighs[srclbl][i]) == *(OppNeighs[srclbl][j])) {
+					err_nonunique = true ;
+				}
+			}
+		}
+	}
+	return !err_nonunique ;
 }
 
 bool SampleValueOppositeNeighbourhood::check_completeness (bool verbose) const

@@ -82,6 +82,8 @@ class SampleValueOppositeNeighbourhood : private GraphAccess {
 
 	bool check_size (bool verbose = false) const ;
 	bool check_soundness (bool verbose = false) const ;
+	bool check_sorted (bool verbose = false) const ;
+	bool check_uniqueness (bool verbose = false) const ;
 	bool check_completeness (bool verbose = false) const ;
 } ;
 
