@@ -97,11 +97,6 @@ EdgeIterator& EdgeIterator::operator++ ()
 	if (++EdgeIndex >= MaxNumEdges) {
 		Finished = true ;
 	}
-	else { // FIXME - temporarily
-		if (!Finished) { // might have been set in findNextEdge()
-			myassert (check_EdgeValidity()) ;
-		}
-	}
 
 	return *this ;
 }
@@ -115,10 +110,6 @@ void EdgeIterator::reset (ITERATIONMODE m)
 	}
 	findNextEdge() ;
 	EdgeIndex = 0 ;
-
-	if (!Finished) {// FIXME - temporarily
-		myassert (check_EdgeValidity()) ;
-	}
 }
 
 void EdgeIterator::findNextEdge ()
@@ -170,29 +161,6 @@ void EdgeIterator::findNextEdge ()
 		// no edge has been found
 		Finished = true ;
 	}
-}
-
-bool EdgeIterator::check_EdgeValidity () const
-{
-	bool retval = true ;
-	Edge* e = **this ;
-
-	unsigned short idx1 = e->getIndex1() ;
-	unsigned short idx2 = e->getIndex2() ;
-	Vertex* v1 = e->getVertex1() ;
-	Vertex* v2 = e->getVertex2() ;
-	SampleValue* sv1 = v1->getSampleValue(idx1) ;
-	SampleValue* sv2 = v2->getSampleValue(idx2) ;
-	EmbValue t1 = v1->getTargetValue(idx1) ;
-	EmbValue t2 = v2->getTargetValue(idx2) ;
-
-	retval = (v1->getLabel() != v2->getLabel()) ; // is already asserted in edge constructor
-	retval = sv1->isNeighbour(sv2) && retval ;
-	retval = (sv1->getEmbeddedValue() == t2) && retval ;
-	retval = (sv2->getEmbeddedValue() == t1) && retval ;
-	delete e ;
-
-	return retval ;
 }
 
 UWORD32 EdgeIterator::MaxNumEdges = UWORD32_MAX ;

@@ -96,8 +96,8 @@ Embedder::Embedder ()
 
 Embedder::~Embedder ()
 {
-	delete Globs.TheCvrStgFile ;
 	delete Globs.TheGraph ;
+	delete Globs.TheCvrStgFile ;
 }
 	
 void Embedder::embed ()

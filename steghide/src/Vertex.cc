@@ -58,8 +58,11 @@ Vertex::~Vertex ()
 {
 	delete[] TargetValues ;
 	delete[] SampleOccurenceIts ;
-	delete[] SampleValues ;
 	delete[] SamplePositions ;
+	delete[] SampleValues ;
+	if (ShortestEdge != NULL) {
+		delete ShortestEdge ;
+	}
 }
 
 void Vertex::markDeleted ()

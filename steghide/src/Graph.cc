@@ -159,6 +159,14 @@ Graph::~Graph()
 	for (std::vector<Vertex*>::iterator i = Vertices.begin() ; i != Vertices.end() ; i++) {
 		delete *i ;
 	}
+
+	for (std::vector<SampleValue*>::iterator svit = SampleValues.begin() ; svit != SampleValues.end() ; svit++) {
+		delete *svit ;
+	}
+
+	for (EmbValue t = 0 ; t < File->getEmbValueModulus() ; t++) {
+		delete SVALists[t] ;
+	}
 }
 
 void Graph::unmarkDeletedAllVertices ()
