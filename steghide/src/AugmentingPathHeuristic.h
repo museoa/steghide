@@ -58,8 +58,11 @@ class AugmentingPathHeuristic : private GraphAccess {
 	 * returns true iff v has already been visited in this
 	 * iteration, i.e. in the current call of searchAugmentingPath
 	 **/
-	bool isVisited (Vertex *v)
-		{ return (TimeCounters[v->getLabel()] == TimeCounter) ; } ;
+	bool isVisited (Vertex *v) const
+		{ return isVisited(v->getLabel()) ; } ;
+
+	bool isVisited (VertexLabel vlbl) const
+		{ return (TimeCounters[vlbl] == TimeCounter) ; } ;
 
 	Matching* TheMatching ;
 

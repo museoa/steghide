@@ -100,6 +100,8 @@ void Vertex::unmarkDeleted ()
 
 void Vertex::updateShortestEdge ()
 {
+	printDebug (3, "updating shorted edge for vertex with label %lu", getLabel()) ;
+
 	if (ShortestEdge != NULL) {
 		delete ShortestEdge ;
 	}

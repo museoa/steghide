@@ -28,13 +28,13 @@
 Edge::Edge (Vertex *v1, unsigned short idx1, Vertex *v2, unsigned short idx2)
 	: Vertex1(v1), Index1(idx1), Vertex2(v2), Index2(idx2), Weight(FLT_MAX)
 {
-	myassert (*v1 != *v2) ;
+	myassert (v1->getLabel() != v2->getLabel()) ;
 }
 
 Edge::Edge (Vertex *v1, unsigned short idx1, Vertex *v2, unsigned short idx2, float w)
 	: Vertex1(v1), Index1(idx1), Vertex2(v2), Index2(idx2), Weight(w)
 {
-	myassert (*v1 != *v2) ;
+	myassert (v1->getLabel() != v2->getLabel()) ;
 }
 
 float Edge::getWeight (void)
@@ -49,16 +49,15 @@ float Edge::getWeight (void)
 
 bool Edge::operator== (const Edge& e) const
 {
-	bool eq1 = false, eq2 = false ;
-	if ((*getVertex1() == *(e.getVertex1())) && (*getVertex2() == *(e.getVertex2())) &&
-		(getIndex1() == e.getIndex1()) && (getIndex2() == e.getIndex2())) {
-		eq1 = true ;
+	if ((Vertex1->getLabel() == e.Vertex1->getLabel()) && (Vertex2->getLabel() == e.Vertex2->getLabel()) &&
+		(Index1 == e.Index1) && (Index2 == e.Index2)) {
+		return true ;
 	}
-	if ((*getVertex1() == *(e.getVertex2())) && (*getVertex2() == *(e.getVertex1())) &&
-		(getIndex1() == e.getIndex2()) && (getIndex2() == e.getIndex1())) {
-		eq2 = true ;
+	if ((Vertex1->getLabel() == e.Vertex2->getLabel()) && (Vertex2->getLabel() == e.Vertex1->getLabel()) &&
+		(Index1 == e.Index2) && (Index2 == e.Index1)) {
+		return true ;
 	}
-	return (eq1 || eq2) ;
+	return false ;
 }
 
 void Edge::swap (void)
@@ -74,17 +73,17 @@ void Edge::swap (void)
 
 bool Edge::contains (const Vertex* v) const
 {
-	return (v == getVertex1() || v == getVertex2()) ;
+	return ((v->getLabel() == Vertex1->getLabel()) || (v->getLabel() == Vertex2->getLabel())) ;
 }
 
 Vertex *Edge::getOtherVertex (const Vertex *v) const
 {
 	Vertex *retval = NULL ;
-	if (*v == *getVertex1()) {
-		retval = getVertex2() ;
+	if (v->getLabel() == Vertex1->getLabel()) {
+		retval = Vertex2 ;
 	}
-	else if (*v == *getVertex2()) {
-		retval = getVertex1() ;
+	else if (v->getLabel() == Vertex2->getLabel()) {
+		retval = Vertex1 ;
 	}
 	else {
 		myassert (0) ;

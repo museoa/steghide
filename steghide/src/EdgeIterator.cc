@@ -110,8 +110,9 @@ void EdgeIterator::findNextEdge ()
 		if (SVOppNeighsIndices[i] < TheGraph->SampleValueOppNeighs[srcsv].size()) {
 			// there are edges from the i-th sample
 			SampleValue* destsv = TheGraph->SampleValueOppNeighs[srcsv][SVOppNeighsIndices[i]] ;
-			if (srcsv->calcDistance(destsv) < mindist) {
-				mindist = srcsv->calcDistance(destsv) ;
+			float thisdist = srcsv->calcDistance(destsv) ;
+			if (thisdist < mindist) {
+				mindist = thisdist ;
 				idx_mindist = i ;
 			}
 		}

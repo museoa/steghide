@@ -192,6 +192,8 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_wav (const std::vector<Samp
 			i1++ ;
 		}
 	}
+
+	sortOppNeighs() ;
 }
 
 void SampleValueOppositeNeighbourhood::sortOppNeighs (void)
@@ -325,7 +327,7 @@ bool SampleValueOppositeNeighbourhood::check_sorted (bool verbose) const
 				if (!(d1 <= d2)) {
 					err_unsorted = true ;
 					if (verbose) {
-						std::cerr << std::endl << "---- FAILED: check_soundness ----" << std::endl ;
+						std::cerr << std::endl << "---- FAILED: check_sorted ----" << std::endl ;
 						std::cerr << "source sample:" << std::endl ;
 						srcsv->print(1) ;
 						std::cerr << "dest sample at position " << i << ":" << std::endl ;
@@ -334,8 +336,6 @@ bool SampleValueOppositeNeighbourhood::check_sorted (bool verbose) const
 						oppneighs[i + 1]->print(1) ;
 						std::cerr << "-------------------------------------" << std::endl ;
 					}
-					srclbl = OppNeighs.size() ;
-					break ;
 				}
 			}
 		}

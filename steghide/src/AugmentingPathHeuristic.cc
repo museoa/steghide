@@ -159,17 +159,15 @@ Edge *AugmentingPathHeuristic::getNextEdge (Vertex *v)
 	Edge *e = NULL ;
 	bool found = false ;
 	do {
-		e = *EdgeIterators[v->getLabel()] ;
-		if (e == NULL) {
+		if (EdgeIterators[v->getLabel()].isFinished()) {
 			// no more unexamined edges for this vertex
 			found = true ;
 		}
 		else {
-			if (isVisited (e->getOtherVertex (v)) && VertexOnPath[e->getOtherVertex(v)->getLabel()]) {
-				delete e ;
-			}
-			else {
+			VertexLabel pvlbl = EdgeIterators[v->getLabel()].getPartnerVertexLabel() ;
+			if (!(isVisited (pvlbl) && VertexOnPath[pvlbl])) {
 				// edge is admissible
+				e = *EdgeIterators[v->getLabel()] ;
 				found = true ;
 			}
 			++(EdgeIterators[v->getLabel()]) ;

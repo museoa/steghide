@@ -77,6 +77,19 @@ class EdgeIterator : private GraphAccess {
 	 **/
 	void reset (void) ;
 
+	/**
+	 * \return true iff this EdgeIterator points to the end of the list of edges of SrcVertex
+	 **/
+	bool isFinished (void) const
+		{ return Finished ; } ;
+
+	/**
+	 * get the label of the partner vertex
+	 * \return the label of the vertex that builds the edge returned by operator* together with SrcVertex
+	 **/
+	VertexLabel getPartnerVertexLabel (void) const
+		{ return SampleOccurenceIt->getVertex()->getLabel() ; } ;
+
 	private:
 	/// the vertex that is common to all edges this edge iterator will iterate trough
 	Vertex* SrcVertex ;
