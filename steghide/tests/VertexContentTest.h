@@ -18,23 +18,30 @@
  *
  */
 
-#ifndef SH_BMPRGBSAMPLEVALUETEST_H
-#define SH_BMPRGBSAMPLEVALUETEST_H
+#ifndef SH_VERTEXCONTENTTEST_H
+#define SH_VERTEXCONTENTTEST_H
 
-#include "SampleValueTest.h"
-
+#include "common.h"
+class BitString ;
 class CvrStgFile ;
+class Graph ;
+class Selector ;
 
-class BmpRGBSampleValueTest : public SampleValueTest {
+#include "UnitTest.h"
+
+class VertexContentTest : public UnitTest {
 	public:
-	BmpRGBSampleValueTest (TestSuite* s) ;
-	~BmpRGBSampleValueTest (void) ;
+	VertexContentTest (TestSuite* s) ;
 
-	void testDistance (void) ;
+	void testConstruction (void) ;
 
 	private:
-	CvrStgFile *f_win, *f_os2 ;
-	SampleValue *sv_0_0_0, *sv_1_1_1, *sv_0_3_4, *sv_12_13_14, *sv_128_128_128, *sv_210_0_120, *sv_255_255_255 ;
+	CvrStgFile *f1 ;
+	BitString *bs1 ;
+	Selector *s1 ;
+	Graph *g1 ;
+
+	bool genericTestConstruction (CvrStgFile* f, Graph* g, SamplePos* sposs, SamplePos* dest_sposs) ;
 } ;
 
-#endif // ndef SH_BMPRGBSAMPLEVALUETEST_H
+#endif // ndef SH_VERTEXCONTENTTEST_H

@@ -27,9 +27,8 @@
 BmpRGBSampleValueTest::BmpRGBSampleValueTest (TestSuite* s)
 	: SampleValueTest ("BmpRGBSampleValue", s)
 {
-	datadir = new std::string (DATADIR) ;
-	f_win = CvrStgFile::readFile (*datadir + "win3x24_std.bmp") ;
-	f_os2 = CvrStgFile::readFile (*datadir + "os21x24_std.bmp") ;
+	f_win = CvrStgFile::readFile (std::string(DATADIR) + "win3x24_std.bmp") ;
+	f_os2 = CvrStgFile::readFile (std::string(DATADIR) + "os21x24_std.bmp") ;
 
 	sv_0_0_0 = new BmpRGBSampleValue (f_win, 0, 0, 0) ;
 	sv_1_1_1 = new BmpRGBSampleValue (f_win, 1, 1, 1) ;
@@ -44,7 +43,6 @@ BmpRGBSampleValueTest::BmpRGBSampleValueTest (TestSuite* s)
 
 BmpRGBSampleValueTest::~BmpRGBSampleValueTest()
 {
-	delete datadir ;
 	delete f_win ; delete f_os2 ;
 	delete sv_0_0_0 ;
 	delete sv_1_1_1 ;

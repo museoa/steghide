@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2003-03-08 10:59+0100\n"
+"POT-Creation-Date: 2003-03-13 12:16+0100\n"
 "PO-Revision-Date: 2002-05-12 18:34+0100\n"
 "Last-Translator: Julien Catanese <julien_catanese@yahoo.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -639,26 +639,26 @@ msgstr ""
 msgid "the maximum length for the embedded file's name is %d characters."
 msgstr "la longueur maximale du fichier de données est de %d caractères."
 
-#: src/Embedder.cc:52
+#: src/Embedder.cc:54
 #, fuzzy
 msgid "the cover file is too short to embed the data."
 msgstr ""
 "le fichier-couverture est trop petit pour cacher les données. utilisez un "
 "autre fichier-couverture."
 
-#: src/Embedder.cc:98
+#: src/Embedder.cc:100
 msgid "calculating the matching..."
 msgstr ""
 
-#: src/Embedder.cc:123
+#: src/Embedder.cc:130
 msgid "best matching after construction heuristic:"
 msgstr ""
 
-#: src/Embedder.cc:133
+#: src/Embedder.cc:143
 msgid "best matching after bounded augmenting path heuristic:"
 msgstr ""
 
-#: src/Embedder.cc:143
+#: src/Embedder.cc:153
 msgid "best matching after unbounded augmenting path heuristic:"
 msgstr ""
 
@@ -767,17 +767,17 @@ msgstr "n'a pas pu trouver les propriétés du terminal."
 msgid "could not initialize libmhash %s algorithm."
 msgstr "n'a pas pu initialiser l'algorithme libmhash MD5."
 
-#: src/Matching.cc:155
+#: src/Matching.cc:156
 #, c-format
 msgid "size of the matching: %lu"
 msgstr ""
 
-#: src/Matching.cc:158
+#: src/Matching.cc:159
 #, c-format
 msgid "number of unmatched vertices: %lu (%.1f%%)"
 msgstr ""
 
-#: src/Matching.cc:166
+#: src/Matching.cc:167
 #, c-format
 msgid "average edge weight: %.1f"
 msgstr ""

@@ -63,6 +63,8 @@ class VertexContent : private GraphAccess {
 	 * Both, the svs and the sposs arrays will be sorted according to the
 	 * keys of the sample values. Only the sample values will be kept, but the
 	 * sample positions will be sorted too (by corresponding sample value keys).
+	 * The svs array (but not the SampleValues it contains!) may be deleted by
+	 * the caller afterwards.
 	 **/
 	VertexContent (Graph* g, SampleValue**& svs, SamplePos*& sposs) ;
 
