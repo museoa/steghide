@@ -143,8 +143,8 @@ void Matching::printVerboseInfo (void) const
 
 #ifdef DEBUG
 		if (Args.DebugCommand.getValue() == PRINTSTATS) {
-			printf ("%.3f:%.1f:",
-				((float) expvertices / (float) TheGraph->getNumVertices()), // ratio of unmatched vertices
+			printf ("%lu:%.1f:",
+				getCardinality(), // number of matched edges
 				((float) sumweights / (float) getCardinality()) // average edge weight
 	   			) ;
 		}

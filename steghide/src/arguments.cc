@@ -113,7 +113,7 @@ void Arguments::parse (int argc, char *argv[])
 	}
 #endif
 	else {
-		throw SteghideError (_("unknown command \"%s\". type \"%s --help\" for help."), argv[1], PROGNAME) ;
+		throw SteghideError (_("unknown command \"%s\". type \"%s --help\" for help."), argv[i], PROGNAME) ;
 	}
 
 	// parse rest of arguments
