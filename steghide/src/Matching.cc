@@ -101,6 +101,9 @@ Matching& Matching::removeEdge (Edge* e)
 	VertexInformation[vlbl1].setExposed (expvit1) ;
 	std::list<Vertex*>::iterator expvit2 = ExposedVertices.insert (ExposedVertices.end(), v2) ;
 	VertexInformation[vlbl2].setExposed (expvit2) ;
+
+	setCardinality (Cardinality - 1) ;
+	return *this ;
 }
 
 Matching& Matching::augment (const std::vector<Edge*> &path)

@@ -35,11 +35,14 @@
 CvrStgFile::CvrStgFile ()
 {
 	Globs.TheCvrStgFile = this ;
+	setBinIO(NULL) ;
 }
 
 CvrStgFile::~CvrStgFile (void)
 {
-	delete getBinIO() ;
+	if (getBinIO() != NULL) {
+		delete getBinIO() ;
+	}
 }
 
 void CvrStgFile::read (BinaryIO *io)
