@@ -4,7 +4,7 @@ AC_CANONICAL_SYSTEM
 AM_INIT_AUTOMAKE(steghide, 0.5.1)
 AM_CONFIG_HEADER(config.h)
 
-dnl Checks for programs.
+dnl checks for programs.
 AC_PROG_CXX
 AC_PROG_INSTALL
 AC_PROG_AWK
@@ -16,6 +16,7 @@ AM_GNU_GETTEXT
 
 dnl Check for libmhash
 AC_CHECK_LIB(mhash, mhash_init)
+AC_CHECK_HEADER(mhash.h)
 if test "$ac_cv_header_mhash_h" = no || test "$ac_cv_lib_mhash_mhash_init" = no ;
 then
 	AC_MSG_ERROR([[libmhash is probably not installed but needed to compile]])
@@ -25,6 +26,7 @@ dnl Check for libmcrypt
 AC_CHECK_LIB(dld, dld_init)
 AC_CHECK_LIB(ltdl, lt_dlinit)
 AC_CHECK_LIB(mcrypt, mcrypt_module_open, , , -lltdl)
+AC_CHECK_HEADER(mcrypt.h)
 if test "$ac_cv_header_mcrypt_h" = no || test "$ac_cv_lib_mcrypt_mcrypt_module_open" = no ;
 then
 	echo "**********";
@@ -35,10 +37,14 @@ else
 	AC_DEFINE(USE_LIBMCRYPT,1,[use the libmcrypt library (header and lib are present)])
 fi	
 
+dnl check for cppunit unit testing library
+AM_PATH_CPPUNIT(1.6.1)
+AM_CONDITIONAL(HAVE_CPPUNIT, test "$CPPUNIT_LIBS")
+
 dnl Checks for header files.
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
-AC_CHECK_HEADERS(mcrypt.h mhash.h limits.h termios.h)
+AC_CHECK_HEADERS(limits.h termios.h)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
@@ -81,6 +87,10 @@ else
 	AC_MSG_ERROR([[There is no unsigned character type with a size of 8 bits on your system. Cannot compile.]])
 fi	
 
+dnl check for doxygen
+AC_CHECK_PROG(ac_cv_prog_doxygen, "doxygen", yes, no)
+AM_CONDITIONAL(HAVE_DOXYGEN, test "$ac_cv_prog_doxygen" = yes)
+
 dnl Check for random sources	
 AC_CHECK_FILE(/dev/urandom, [AC_DEFINE(HAVE_DEV_URANDOM,1,/dev/urandom is available)])
 AC_CHECK_FILE(/dev/random, [AC_DEFINE(HAVE_DEV_RANDOM,1,/dev/random is available)])
@@ -101,3 +111,7 @@ esac
 
 dnl check if needed/recommended libraries are present
 AC_OUTPUT([Makefile cppunit/Makefile doc/Makefile intl/Makefile po/Makefile.in src/Makefile])
+
+
+
+

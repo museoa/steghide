@@ -1,3 +1,4 @@
+if HAVE_CPPUNIT
 AM_CPPFLAGS = -I../src
 TESTS = testall
 check_PROGRAMS = testall
@@ -36,3 +37,5 @@ testall_LDADD = \
 ../src/jpegscan.o ../src/jpegscanhdr.o \
 ../src/jpegunusedseg.o ../src/msg.o \
 -lcppunit
+endif
+MAINTAINERCLEANFILES = Makefile.in

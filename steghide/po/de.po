@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: steghide 0.4.6b\n"
-"POT-Creation-Date: 2003-01-16 23:37+0100\n"
+"POT-Creation-Date: 2003-01-20 11:38+0100\n"
 "PO-Revision-Date: 2002-05-09 00:40+0200\n"
 "Last-Translator: Stefan Hetzl <shetzl@chello.at>\n"
 "Language-Team: Deutsch\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.9.6\n"
 
-#: session.cc:143
+#: Session.cc:141
 #, fuzzy
 msgid ""
 "\n"
@@ -110,27 +110,27 @@ msgstr ""
 "steghide extract -sf stg.bmp\n"
 "\n"
 
-#: arguments.cc:472
+#: Arguments.cc:474
 #, c-format
 msgid ""
 "\"%s\" and \"%s\" are both libmcrypt algorithms. please specify only one."
 msgstr ""
 
-#: arguments.cc:475
+#: Arguments.cc:477
 #, c-format
 msgid "\"%s\" and \"%s\" are both libmcrypt modes. please specify only one."
 msgstr ""
 
-#: arguments.cc:458 arguments.cc:467
+#: Arguments.cc:460 Arguments.cc:469
 #, c-format
 msgid "\"%s\" is neither an algorithm nor a mode supported by libmcrypt."
 msgstr ""
 
-#: arguments.cc:687
+#: Arguments.cc:689
 msgid "Enter passphrase: "
 msgstr "Passphrase eingeben: "
 
-#: arguments.cc:700
+#: Arguments.cc:702
 msgid "Re-Enter passphrase: "
 msgstr "Passphrase wiederholen: "
 
@@ -163,56 +163,56 @@ msgstr "Beim Lesen von der Standardeingabe ist ein Fehler aufgetreten."
 msgid "an error occured while reading data from the file \"%s\"."
 msgstr "Beim Lesen aus der Datei \"%s\" ist ein Fehler aufgetreten."
 
-#: aufile.cc:126
+#: AuFile.cc:126
 msgid "an error occured while reading the au headers from standard input."
 msgstr ""
 "Beim Lesen der au-Header von der Standardeingabe ist ein Fehler aufgetreten."
 
-#: aufile.cc:114
+#: AuFile.cc:114
 #, c-format
 msgid "an error occured while reading the au headers from the file \"%s\"."
 msgstr ""
 "Beim Lesen der au-Header aus der Datei \"%s\" ist ein Fehler aufgetreten."
 
-#: aufile.cc:208 wavfile.cc:202
+#: AuFile.cc:208 WavFile.cc:202
 msgid "an error occured while reading the audio data from standard input."
 msgstr ""
 "Beim Lesen der Audiodaten von der Standardeingabe ist ein Fehler aufgetreten."
 
-#: aufile.cc:196 wavfile.cc:194
+#: AuFile.cc:196 WavFile.cc:194
 #, c-format
 msgid "an error occured while reading the audio data from the file \"%s\"."
 msgstr ""
 "Beim Lesen der Audiodaten aus der Datei \"%s\" ist ein Fehler aufgetreten."
 
-#: bmpfile.cc:582
+#: BmpFile.cc:584
 msgid "an error occured while reading the bmp data from standard input."
 msgstr ""
 "Beim Lesen der Bilddaten von der Standardeingabe ist ein Fehler aufgetreten."
 
-#: bmpfile.cc:574
+#: BmpFile.cc:576
 #, c-format
 msgid "an error occured while reading the bmp data from the file \"%s\"."
 msgstr ""
 "Beim Lesen der Bilddaten aus der Datei \"%s\" ist ein Fehler aufgetreten."
 
-#: bmpfile.cc:288
+#: BmpFile.cc:290
 msgid "an error occured while reading the bmp headers from standard input."
 msgstr ""
 "Beim Lesen der bmp-Header von der Standardeingabe ist ein Fehler aufgetreten."
 
-#: bmpfile.cc:280
+#: BmpFile.cc:282
 #, c-format
 msgid "an error occured while reading the bmp headers from the file \"%s\"."
 msgstr ""
 "Beim Lesen der bmp-Header aus der Datei \"%s\" ist ein Fehler aufgetreten."
 
-#: wavfile.cc:297
+#: WavFile.cc:297
 msgid "an error occured while reading the wav headers from standard input."
 msgstr ""
 "Beim Lesen der wav-Header von der Standardeingabe ist ein Fehler aufgetreten."
 
-#: wavfile.cc:285
+#: WavFile.cc:285
 #, c-format
 msgid "an error occured while reading the wav headers from the file \"%s\"."
 msgstr ""
@@ -227,74 +227,74 @@ msgstr "Beim Schreiben auf die Standardausgabe ist ein Fehler aufgetreten."
 msgid "an error occured while writing data to the file \"%s\"."
 msgstr "Beim Schreiben in die Datei \"%s\" ist ein Fehler aufgetreten."
 
-#: aufile.cc:170
+#: AuFile.cc:170
 msgid "an error occured while writing the au headers to standard output."
 msgstr ""
 "Beim Schreiben der au-Header auf die Standardausgabe ist ein Fehler "
 "aufgetreten."
 
-#: aufile.cc:164
+#: AuFile.cc:164
 #, c-format
 msgid "an error occured while writing the au headers to the file \"%s\"."
 msgstr ""
 "Beim Schreiben der au-Header in die Datei \"%s\" ist ein Fehler aufgetreten."
 
-#: aufile.cc:240 wavfile.cc:251
+#: AuFile.cc:240 WavFile.cc:251
 msgid "an error occured while writing the audio data to standard output."
 msgstr ""
 "Beim Schreiben der Audiodaten auf die Standardausgabe ist ein Fehler "
 "aufgetreten."
 
-#: aufile.cc:234 wavfile.cc:247
+#: AuFile.cc:234 WavFile.cc:247
 #, c-format
 msgid "an error occured while writing the audio data to the file \"%s\"."
 msgstr ""
 "Beim Schreiben der Audiodaten in die Datei \"%s\" ist ein Fehler aufgetreten."
 
-#: bmpfile.cc:628
+#: BmpFile.cc:630
 msgid "an error occured while writing the bitmap data to standard output."
 msgstr ""
 "Beim Schreiben der Bilddaten auf die Standardausgabe ist ein Fehler "
 "aufgetreten."
 
-#: bmpfile.cc:624
+#: BmpFile.cc:626
 #, c-format
 msgid "an error occured while writing the bitmap data to the file \"%s\"."
 msgstr ""
 "Beim Schreiben der Bilddaten in die Datei \"%s\" ist ein Fehler aufgetreten."
 
-#: bmpfile.cc:458
+#: BmpFile.cc:460
 msgid "an error occured while writing the bmp headers to standard output."
 msgstr ""
 "Beim Schreiben der bmp-Header auf die Standardausgabe ist ein Fehler "
 "aufgetreten."
 
-#: bmpfile.cc:454
+#: BmpFile.cc:456
 #, c-format
 msgid "an error occured while writing the bmp headers to the file \"%s\"."
 msgstr ""
 "Beim Schreiben der bmp-Header in die Datei \"%s\" ist ein Fehler aufgetreten."
 
-#: wavfile.cc:339
+#: WavFile.cc:339
 msgid "an error occured while writing the wav headers to standard output."
 msgstr ""
 "Beim Schreiben der wav-Header auf die Standardausgabe ist ein Fehler "
 "aufgetreten."
 
-#: wavfile.cc:333
+#: WavFile.cc:333
 #, c-format
 msgid "an error occured while writing the wav headers to the file \"%s\"."
 msgstr ""
 "Beim Schreiben der wav-Header in die Datei \"%s\" ist ein Fehler aufgetreten."
 
-#: arguments.cc:639 arguments.cc:659
+#: Arguments.cc:641 Arguments.cc:661
 #, fuzzy, c-format
 msgid "argument \"%s\" can only be used with the \"embed\" command."
 msgstr ""
 "Das Argument \"%s\" kann nur zusammen mit dem \"embed\"-Kommando verwendet "
 "werden. Tippen Sie \"%s --help\", um Hilfe zu erhalten."
 
-#: arguments.cc:222
+#: Arguments.cc:224
 #, fuzzy, c-format
 msgid "argument \"%s\" can only be used with the \"extract\" command."
 msgstr ""
@@ -306,25 +306,25 @@ msgstr ""
 msgid "assertion failed in %s at line number %d."
 msgstr ""
 
-#: matching.cc:144
+#: Matching.cc:144
 #, c-format
 msgid "average edge weight: %.1f"
 msgstr ""
 
-#: graph.cc:258
+#: Graph.cc:257
 #, c-format
 msgid "average vertex degree: %.1f"
 msgstr ""
 
-#: embedder.cc:134
+#: Embedder.cc:132
 msgid "best matching after augmenting path heuristic:"
 msgstr ""
 
-#: embedder.cc:123
+#: Embedder.cc:121
 msgid "best matching after construction heuristic:"
 msgstr ""
 
-#: embedder.cc:98
+#: Embedder.cc:96
 msgid "calculating the matching..."
 msgstr ""
 
@@ -337,26 +337,26 @@ msgstr "Die jpeg Datei \"%s\" ist nicht korrekt."
 msgid "corrupt jpeg file on standard input:"
 msgstr "Inkorrekte jpeg Datei auf der Standardeingabe:"
 
-#: mcryptpp.cc:316 mhashkeygenpp.cc:117
+#: MCrypt.cc:316 MHashKeyGen.cc:117
 msgid "could not allocate memory."
 msgstr "Es konnte nicht genügend Speicher alloziiert werden."
 
-#: randomsource.cc:52
+#: RandomSource.cc:53
 #, fuzzy
 msgid "could not close random input file."
 msgstr "Die Datei \"%s\" konnte nicht geschlossen werden."
 
-#: binaryio.cc:143
+#: BinaryIO.cc:142
 #, c-format
 msgid "could not close the file \"%s\"."
 msgstr "Die Datei \"%s\" konnte nicht geschlossen werden."
 
-#: mcryptpp.cc:199
+#: MCrypt.cc:199
 #, fuzzy
 msgid "could not decrypt data."
 msgstr "Der Stego-Header konnte nicht entschlüsselt werden."
 
-#: mcryptpp.cc:133
+#: MCrypt.cc:133
 #, fuzzy
 msgid "could not encrypt data."
 msgstr "Der Stego-Header konnte nicht verschlüsselt werden."
@@ -365,78 +365,78 @@ msgstr "Der Stego-Header konnte nicht verschlüsselt werden."
 msgid "could not find start of marker (0xff)."
 msgstr "Der Start (0xff) des nächsten Markers konnte nicht gefunden werden."
 
-#: mcryptpp.cc:210
+#: MCrypt.cc:210
 #, fuzzy
 msgid "could not finish libmcrypt decryption."
 msgstr "Die Entschlüsselung der Klartextdaten konnte nicht beendet werden."
 
-#: mcryptpp.cc:155
+#: MCrypt.cc:155
 #, fuzzy
 msgid "could not finish libmcrypt encryption."
 msgstr "Die Verschlüsselung der Klartextdaten konnte nicht beendet werden."
 
-#: mhashkeygenpp.cc:63
+#: MHashKeyGen.cc:63
 #, fuzzy
 msgid "could not generate key using libmhash."
 msgstr "Die Attribute des Terminals konnten nicht gelesen werden."
 
-#: terminal.cc:30 terminal.cc:38 terminal.cc:52
+#: Terminal.cc:30 Terminal.cc:38 Terminal.cc:52
 msgid "could not get terminal attributes."
 msgstr "Die Attribute des Terminals konnten nicht gelesen werden."
 
-#: mcryptpp.cc:186
+#: MCrypt.cc:186
 msgid ""
 "could not initialize libmcrypt decryption. see above error messages if any."
 msgstr ""
 "Die Entschlüsselung aus libmcrypt konnte nicht initialisiert werden. Siehe "
 "obige Meldungen (falls vorhanden)."
 
-#: mcryptpp.cc:120
+#: MCrypt.cc:120
 msgid ""
 "could not initialize libmcrypt encryption. see above error messages if any."
 msgstr ""
 "Die Verschlüsselung aus libmcrypt konnte nicht initialisiert werden. Siehe "
 "obige Meldungen (falls vorhanden)."
 
-#: mhashpp.cc:45
+#: MHash.cc:45
 #, fuzzy, c-format
 msgid "could not initialize libmhash %s algorithm."
 msgstr "Der MD5 Algorithmus aus libmhash konnte nicht initialisiert werden."
 
-#: randomsource.cc:37
+#: RandomSource.cc:38
 msgid ""
 "could not open /dev/urandom, using standard library random numbers instead."
 msgstr ""
 
-#: mcryptpp.cc:64 mcryptpp.cc:250
+#: MCrypt.cc:64 MCrypt.cc:250
 #, c-format
 msgid "could not open libmcrypt module \"%s\",\"%s\"."
 msgstr "Das libmcrypt Modul \"%s\",\"%s\" konnte nicht geöffnet werden."
 
-#: binaryio.cc:118
+#: BinaryIO.cc:118
 #, c-format
 msgid "could not open the file \"%s\"."
 msgstr "Die Datei \"%s\" konnte nicht geöffnet werden."
 
-#: terminal.cc:44 terminal.cc:60 terminal.cc:67
+#: Terminal.cc:44 Terminal.cc:60 Terminal.cc:67
 msgid "could not set terminal attributes."
 msgstr "Die Attribute des Terminals konnten nicht gesetzt werden."
 
-#: embdata.cc:188
+#: EmbData.cc:188
 msgid "crc32 checksum failed! extracted data is probably corrupted."
 msgstr ""
 "CRC32 Prüfsummentest fehlgeschlagen! Die extrahierten Daten sind "
 "wahrscheinlich fehlerhaft."
 
-#: embdata.cc:184
+#: EmbData.cc:184
 msgid "crc32 checksum test ok."
 msgstr "CRC32 Prüfsummentest in Ordnung."
 
-#: graph.cc:37
+#: Graph.cc:36
 msgid "creating the graph..."
 msgstr ""
 
-#: binaryio.cc:74
+#: BinaryIO.cc:74
 #, c-format
 msgid "did not write to file \"%s\"."
 msgstr "Datei \"%s\" wurde nicht geschrieben."
@@ -475,7 +475,7 @@ msgstr ""
 "Unbekannter Marker Code 0x%x in der jpegDatei auf der Standardeingabe beim "
 "Lesen eines Scans entdeckt."
 
-#: session.cc:110
+#: Session.cc:110
 msgid ""
 "encryption algorithms:\n"
 "<algorithm>: <supported modes>...\n"
@@ -486,8 +486,9 @@ msgstr ""
 msgid "entropy coded data interrupted by marker 0x%x."
 msgstr "Entropiecodierte Daten durch Marker 0x%x unterbrochen."
 
-#: SteghideError.cc:25
-msgid "error, exiting. (no error message defined)"
+#: SteghideError.cc:27
+#, fuzzy
+msgid "error, exiting. (no error message defined)."
 msgstr "fehler, programmende. (keine Fehlermeldung definiert)"
 
 #: jpegframe.cc:120 jpegscan.cc:91
@@ -495,7 +496,7 @@ msgstr "fehler, programmende. (keine Fehlermeldung definiert)"
 msgid "huffman table has destination specifier %u (0-3 is allowed)."
 msgstr "Eine Huffman-Tabelle hat die Nummer %u (0-3 ist erlaubt)."
 
-#: arguments.cc:111 arguments.cc:117
+#: Arguments.cc:113 Arguments.cc:119
 msgid ""
 "if standard input is used, the passphrase must be specified on the command "
 "line."
@@ -503,23 +504,23 @@ msgstr ""
 "Wenn die Standardeingabe verwendet wird, muss die Passphrase in der "
 "Kommandozeile angegeben werden."
 
-#: graph.cc:262
+#: Graph.cc:261
 #, c-format
 msgid "maximum vertex degree: %lu"
 msgstr ""
 
-#: bmpfile.cc:561
+#: BmpFile.cc:563
 #, fuzzy, c-format
 msgid "maybe corrupted bmp data (padding byte at 0x%lx set to non-zero)."
 msgstr "möglicherweise beschädigte bmp Daten (ein Paddingbyte ist nicht null)."
 
-#: bmpfile.cc:367
+#: BmpFile.cc:369
 msgid "maybe corrupted windows bmp data (Reserved in RGBQUAD is non-zero)."
 msgstr ""
 "möglicherweise beschädigte Windows-bmp Daten (Reserved in RGBQUAD ist nicht "
 "null)."
 
-#: graph.cc:260
+#: Graph.cc:259
 #, c-format
 msgid "minimum vertex degree: %lu"
 msgstr ""
@@ -529,27 +530,27 @@ msgstr ""
 msgid "n"
 msgstr "n"
 
-#: graph.cc:252
+#: Graph.cc:251
 #, c-format
 msgid "number of distinct sample values: %lu"
 msgstr ""
 
-#: graph.cc:265
+#: Graph.cc:264
 #, c-format
 msgid "number of edges: %lu"
 msgstr ""
 
-#: matching.cc:136
+#: Matching.cc:136
 #, c-format
 msgid "number of unmatched vertices: %lu (%.1f%%)"
 msgstr ""
 
-#: graph.cc:255
+#: Graph.cc:254
 #, c-format
 msgid "number of vertices: %lu"
 msgstr ""
 
-#: embdata.cc:158
+#: EmbData.cc:158
 #, fuzzy
 msgid ""
 "please specify a file name for the extracted data (there is no name embedded "
@@ -558,23 +559,23 @@ msgstr ""
 "Bitte geben Sie einen Namen für die Klartextdatei an (es ist keiner in der "
 "Stegodatei eingebettet)"
 
-#: bmpfile.cc:586
+#: BmpFile.cc:588
 msgid "premature end of bmp data from standard input."
 msgstr "Die bmp-Daten von der Standardeingabe sind unvollständig."
 
-#: aufile.cc:132
+#: AuFile.cc:132
 msgid "premature end of data from standard input while reading au headers."
 msgstr "Die au-Header von der Standardeingabe sind unvollständig."
 
-#: aufile.cc:214 wavfile.cc:206
+#: AuFile.cc:214 WavFile.cc:206
 msgid "premature end of data from standard input while reading audio data."
 msgstr "Die Audiodaten von der Standardeingabe sind unvollständig."
 
-#: bmpfile.cc:292
+#: BmpFile.cc:294
 msgid "premature end of data from standard input while reading bmp headers."
 msgstr "Die bmp-Header von der Standardeingabe sind unvollständig."
 
-#: wavfile.cc:303
+#: WavFile.cc:303
 msgid "premature end of data from standard input while reading wav headers."
 msgstr "Die wav-Header von der Standardeingabe sind unvollständig."
 
@@ -582,27 +583,27 @@ msgstr "Die wav-Header von der Standardeingabe sind unvollständig."
 msgid "premature end of data from standard input."
 msgstr "Die Daten von der Standardeingabe sind unvollständig."
 
-#: aufile.cc:120
+#: AuFile.cc:120
 #, c-format
 msgid "premature end of file \"%s\" while reading au headers."
 msgstr "Die au-Header aus der Datei \"%s\" sind unvollständig."
 
-#: aufile.cc:202 wavfile.cc:198
+#: AuFile.cc:202 WavFile.cc:198
 #, c-format
 msgid "premature end of file \"%s\" while reading audio data."
 msgstr "Die Audiodaten aus der Datei \"%s\" sind unvollständig."
 
-#: bmpfile.cc:578
+#: BmpFile.cc:580
 #, c-format
 msgid "premature end of file \"%s\" while reading bmp data."
 msgstr "Die Bilddaten aus der Datei \"%s\" sind unvollständig."
 
-#: bmpfile.cc:284
+#: BmpFile.cc:286
 #, c-format
 msgid "premature end of file \"%s\" while reading bmp headers."
 msgstr "Die bmp-Header aus der Datei \"%s\" sind unvollständig."
 
-#: wavfile.cc:291
+#: WavFile.cc:291
 #, c-format
 msgid "premature end of file \"%s\" while reading wav headers."
 msgstr "Die wav-Header aus der Datei \"%s\" sind unvollständig."
@@ -612,41 +613,41 @@ msgstr "Die wav-Header aus der Datei \"%s\" sind unvollständig."
 msgid "premature end of file \"%s\"."
 msgstr "Die Datei \"%s\" ist unvollständig."
 
-#: cvrstgfile.cc:59
+#: CvrStgFile.cc:59
 #, c-format
 msgid "reading cover file \"%s\"."
 msgstr "Lese Trägerdatei \"%s\"."
 
-#: cvrstgfile.cc:55
+#: CvrStgFile.cc:55
 msgid "reading cover file from standard input."
 msgstr "Lese Trägerdatei von der Standardeingabe."
 
-#: cvrstgfile.cc:69
+#: CvrStgFile.cc:69
 #, c-format
 msgid "reading stego file \"%s\"."
 msgstr "Lese Stegodatei \"%s\"."
 
-#: cvrstgfile.cc:65
+#: CvrStgFile.cc:65
 msgid "reading stego file from standard input."
 msgstr "Lese Stegodatei von der Standardeingabe."
 
-#: matching.cc:133
+#: Matching.cc:133
 #, c-format
 msgid "size of the matching: %lu"
 msgstr ""
 
-#: arguments.cc:93
+#: Arguments.cc:95
 #, fuzzy
 msgid "standard input cannot be used for cover data AND data to be embedded."
 msgstr ""
 "Die Standardeingabe kann nicht für Trägerdaten UND Klartextdaten verwendet "
 "werden. Tippen Sie \"%s --help\", um Hilfe zu erhalten."
 
-#: arguments.cc:498
+#: Arguments.cc:500
 msgid "steghide has been compiled without support for encryption."
 msgstr ""
 
-#: session.cc:127
+#: Session.cc:127
 msgid ""
 "steghide has been compiled without support for encryption.\n"
 "If you want to encrypt your data before embedding it, use an external "
@@ -655,14 +656,14 @@ msgid ""
 "steghide.\n"
 msgstr ""
 
-#: arguments.cc:284 arguments.cc:543 arguments.cc:567 arguments.cc:581
+#: Arguments.cc:286 Arguments.cc:545 Arguments.cc:569 Arguments.cc:583
 #, fuzzy, c-format
 msgid "the \"%s\" argument can not be used with the \"capacity\" command."
 msgstr ""
 "Das Argument \"%s\" kann hier nicht verwendet werden, da die Genauigkeit der "
 "Ausgabe bereits festgelegt wurde."
 
-#: arguments.cc:571 arguments.cc:585
+#: Arguments.cc:573 Arguments.cc:587
 #, c-format
 msgid ""
 "the \"%s\" argument cannot be used here because the verbosity has already "
@@ -671,49 +672,49 @@ msgstr ""
 "Das Argument \"%s\" kann hier nicht verwendet werden, da die Genauigkeit der "
 "Ausgabe bereits festgelegt wurde."
 
-#: arguments.cc:315
+#: Arguments.cc:317
 #, fuzzy, c-format
 msgid "the \"%s\" argument cannot be used with the \"capacity\" command."
 msgstr ""
 "Das Argument \"%s\" kann hier nicht verwendet werden, da die Genauigkeit der "
 "Ausgabe bereits festgelegt wurde."
 
-#: arguments.cc:421 arguments.cc:426
+#: Arguments.cc:423 Arguments.cc:428
 #, fuzzy, c-format
 msgid "the \"%s\" argument must be followed by encryption information."
 msgstr ""
 "Nach dem Argument \"%s\" muss sich der Name der Klartextdatei befinden. "
 "Tippen Sie \"%s --help\", um Hilfe zu erhalten."
 
-#: arguments.cc:261
+#: Arguments.cc:263
 #, fuzzy, c-format
 msgid "the \"%s\" argument must be followed by the cover file name."
 msgstr ""
 "Nach dem Argument \"%s\" muss sich der Name der Trägerdatei befinden. Tippen "
 "Sie \"%s --help\", um Hilfe zu erhalten."
 
-#: arguments.cc:627
+#: Arguments.cc:629
 #, fuzzy, c-format
 msgid "the \"%s\" argument must be followed by the debug level."
 msgstr ""
 "Nach dem Argument \"%s\" muss sich der Name der Stegodatei befinden. Tippen "
 "Sie \"%s --help\", um Hilfe zu erhalten."
 
-#: arguments.cc:199
+#: Arguments.cc:201
 #, fuzzy, c-format
 msgid "the \"%s\" argument must be followed by the embed file name."
 msgstr ""
 "Nach dem Argument \"%s\" muss sich der Name der Stegodatei befinden. Tippen "
 "Sie \"%s --help\", um Hilfe zu erhalten."
 
-#: arguments.cc:523
+#: Arguments.cc:525
 #, fuzzy, c-format
 msgid "the \"%s\" argument must be followed by the neighbourhood radius."
 msgstr ""
 "Nach dem Argument \"%s\" muss sich die Passphrase befinden. Tippen Sie \"%s "
 "--help\", um Hilfe zu erhalten."
 
-#: arguments.cc:667
+#: Arguments.cc:669
 #, fuzzy, c-format
 msgid ""
 "the \"%s\" argument must be followed by the number of times the construction "
@@ -722,62 +723,62 @@ msgstr ""
 "Nach dem Argument \"%s\" muss sich der Name der Trägerdatei befinden. Tippen "
 "Sie \"%s --help\", um Hilfe zu erhalten."
 
-#: arguments.cc:323
+#: Arguments.cc:325
 #, fuzzy, c-format
 msgid "the \"%s\" argument must be followed by the passphrase."
 msgstr ""
 "Nach dem Argument \"%s\" muss sich die Passphrase befinden. Tippen Sie \"%s "
 "--help\", um Hilfe zu erhalten."
 
-#: arguments.cc:230
+#: Arguments.cc:232
 #, fuzzy, c-format
 msgid "the \"%s\" argument must be followed by the plain file name."
 msgstr ""
 "Nach dem Argument \"%s\" muss sich der Name der Klartextdatei befinden. "
 "Tippen Sie \"%s --help\", um Hilfe zu erhalten."
 
-#: arguments.cc:647
+#: Arguments.cc:649
 #, fuzzy, c-format
 msgid "the \"%s\" argument must be followed by the priority queue range."
 msgstr ""
 "Nach dem Argument \"%s\" muss sich die Passphrase befinden. Tippen Sie \"%s "
 "--help\", um Hilfe zu erhalten."
 
-#: arguments.cc:292
+#: Arguments.cc:294
 #, fuzzy, c-format
 msgid "the \"%s\" argument must be followed by the stego file name."
 msgstr ""
 "Nach dem Argument \"%s\" muss sich der Name der Stegodatei befinden. Tippen "
 "Sie \"%s --help\", um Hilfe zu erhalten."
 
-#: arguments.cc:253
+#: Arguments.cc:255
 #, fuzzy, c-format
 msgid "the argument \"%s\" can not be used with the \"extract\" command."
 msgstr ""
 "Das Argument \"%s\" kann nur mit dem \"embed\"-Kommando verwendet werden. "
 "Tippen Sie \"%s --help\", um Hilfe zu erhalten."
 
-#: arguments.cc:191 arguments.cc:341 arguments.cc:355 arguments.cc:377
-#: arguments.cc:391 arguments.cc:413 arguments.cc:515
+#: Arguments.cc:193 Arguments.cc:343 Arguments.cc:357 Arguments.cc:379
+#: Arguments.cc:393 Arguments.cc:415 Arguments.cc:517
 #, fuzzy, c-format
 msgid "the argument \"%s\" can only be used with the \"embed\" command."
 msgstr ""
 "Das Argument \"%s\" kann nur mit dem \"embed\"-Kommando verwendet werden. "
 "Tippen Sie \"%s --help\", um Hilfe zu erhalten."
 
-#: bmpfile.cc:317
+#: BmpFile.cc:319
 msgid ""
 "the bitmap data from standard input is compressed which is not supported."
 msgstr ""
 "Die Bilddaten von der Standardeingabe sind komprimiert, was nicht "
 "unterstützt wird."
 
-#: bmpfile.cc:320
+#: BmpFile.cc:322
 #, c-format
 msgid "the bitmap data in \"%s\" is compressed which is not supported."
 msgstr "Die Bilddaten in \"%s\" sind komprimiert, was nicht unterstützt wird."
 
-#: bmpfile.cc:308
+#: BmpFile.cc:310
 #, fuzzy, c-format
 msgid ""
 "the bmp data from standard input has a format that is not supported "
@@ -785,7 +786,7 @@ msgid ""
 msgstr ""
 "Die Bilddaten von der Standardeingabe haben ein nicht unterstütztes Format."
 
-#: bmpfile.cc:269
+#: BmpFile.cc:271
 #, fuzzy, c-format
 msgid ""
 "the bmp data from standard input has a format that is not supported (biSize: "
@@ -793,58 +794,58 @@ msgid ""
 msgstr ""
 "Die Bilddaten von der Standardeingabe haben ein nicht unterstütztes Format."
 
-#: bmpfile.cc:311
+#: BmpFile.cc:313
 #, fuzzy, c-format
 msgid ""
 "the bmp file \"%s\" has a format that is not supported (biBitCount: %d)."
 msgstr "Die bmp-Datei \"%s\" hat ein nicht unterstütztes Format."
 
-#: bmpfile.cc:272
+#: BmpFile.cc:274
 #, fuzzy, c-format
 msgid "the bmp file \"%s\" has a format that is not supported (biSize: %lu)."
 msgstr "Die bmp-Datei \"%s\" hat ein nicht unterstütztes Format."
 
-#: session.cc:89
+#: Session.cc:89
 #, c-format
 msgid "the capacity of \"%s\" is approximately %.1f %s.\n"
 msgstr ""
 
-#: arguments.cc:345 arguments.cc:359
+#: Arguments.cc:347 Arguments.cc:361
 #, fuzzy
 msgid "the checksum argument can be used only once."
 msgstr ""
 "Das Argument \"Prüfsumme\" kann nur einmal verwendet werden. Tippen Sie \"%s "
 "--help\", um Hilfe zu erhalten."
 
-#: embedder.cc:73
+#: Embedder.cc:51
 #, fuzzy
 msgid "the cover file is too short to embed the data."
 msgstr ""
 "Die Trägerdatei ist zu kurz, um die Daten einzubetten. Verwenden Sie eine "
 "andere Trägerdatei."
 
-#: arguments.cc:257
+#: Arguments.cc:259
 #, fuzzy
 msgid "the cover file name argument can be used only once."
 msgstr ""
 "Die Argument \"Trägerdatei\" kann nur einmal verwendet werden. Tippen Sie \"%"
 "s --help\", um Hilfe zu erhalten."
 
-#: arguments.cc:623
+#: Arguments.cc:625
 #, fuzzy
 msgid "the debug level argument can be used only once."
 msgstr ""
 "Das Argument \"Stegodatei\" kann nur einmal verwendet werden. Tippen Sie \"%"
 "s --help\", um Hilfe zu erhalten."
 
-#: arguments.cc:195
+#: Arguments.cc:197
 #, fuzzy
 msgid "the embed file name argument can be used only once."
 msgstr ""
 "Das Argument \"Stegodatei\" kann nur einmal verwendet werden. Tippen Sie \"%"
 "s --help\", um Hilfe zu erhalten."
 
-#: embdata.cc:126
+#: EmbData.cc:126
 #, fuzzy
 msgid ""
 "the embedded data is compressed. this is not implemented in this version "
@@ -853,39 +854,39 @@ msgstr ""
 "Die Klartextdaten sind komprimiert. Das ist in dieser Version nicht "
 "implementiert (Dateikorruption ?)."
 
-#: embdata.cc:85
+#: EmbData.cc:85
 msgid ""
 "the embedded data is encrypted but steghide has been compiled without "
 "encryption support."
 msgstr ""
 
-#: arguments.cc:492
+#: Arguments.cc:494
 #, fuzzy, c-format
 msgid "the encryption algorithm \"%s\" can not be used with the mode \"%s\"."
 msgstr ""
 "Das Argument \"%s\" kann nur mit dem \"embed\"-Kommando verwendet werden. "
 "Tippen Sie \"%s --help\", um Hilfe zu erhalten."
 
-#: arguments.cc:417
+#: Arguments.cc:419
 #, fuzzy
 msgid "the encryption argument can be used only once."
 msgstr ""
 "Das Argument \"Verschlüsselung\" kann nur einmal verwendet werden. Tippen "
 "Sie \"%s --help\", um Hilfe zu erhalten."
 
-#: arguments.cc:226
+#: Arguments.cc:228
 #, fuzzy
 msgid "the extract file name argument can be used only once."
 msgstr ""
 "Die Argument \"Trägerdatei\" kann nur einmal verwendet werden. Tippen Sie \"%"
 "s --help\", um Hilfe zu erhalten."
 
-#: binaryio.cc:68
+#: BinaryIO.cc:68
 #, c-format
 msgid "the file \"%s\" does already exist."
 msgstr "Die Datei \"%s\" existiert bereits."
 
-#: binaryio.cc:71
+#: BinaryIO.cc:71
 #, c-format
 msgid "the file \"%s\" does already exist. overwrite ?"
 msgstr "Die Datei \"%s\" existiert bereits. Überschreiben ?"
@@ -900,14 +901,14 @@ msgstr ""
 msgid "the file format of the file \"%s\" is not supported."
 msgstr "Das Dateiformat der Datei \"%s\" wird nicht unterstützt."
 
-#: arguments.cc:381 arguments.cc:395
+#: Arguments.cc:383 Arguments.cc:397
 #, fuzzy
 msgid "the file name embedding argument can be used only once."
 msgstr ""
 "Das Argument \"Einbettung des Klartextdateinamens\" kann nur einmal "
 "verwendet werden. Tippen Sie \"%s --help\", um Hilfe zu erhalten."
 
-#: arguments.cc:547
+#: Arguments.cc:549
 #, fuzzy
 msgid "the force argument can be used only once."
 msgstr ""
@@ -931,44 +932,44 @@ msgstr ""
 "Die jpeg Datei auf der Standardeingabe verwendet den \"progressive DCT\"-"
 "Modus, was in dieser Version nicht unterstützt wird."
 
-#: embdata.cc:291
+#: EmbData.cc:291
 #, fuzzy, c-format
 msgid "the maximum length for the embedded file's name is %d characters."
 msgstr "Die maximale Länge für den Namen der Klartextdatei ist %d Zeichen."
 
-#: arguments.cc:663
+#: Arguments.cc:665
 #, fuzzy
 msgid "the number construction heuristic argument can be used only once."
 msgstr ""
 "Das Argument \"Verteilung\" kann nur einmal verwendet werden. Tippen Sie \"%"
 "s --help\", um Hilfe zu erhalten."
 
-#: arguments.cc:319
+#: Arguments.cc:321
 #, fuzzy
 msgid "the passphrase argument can be used only once."
 msgstr ""
 "Das Argument \"Passphrase\" kann nur einmal verwendet werden. Tippen Sie \"%"
 "s --help\", um Hilfe zu erhalten."
 
-#: arguments.cc:712
+#: Arguments.cc:714
 msgid "the passphrases do not match."
 msgstr "Die Passphrasen stimmen nicht überein."
 
-#: arguments.cc:643
+#: Arguments.cc:645
 #, fuzzy
 msgid "the priority queue range argument can be used only once."
 msgstr ""
 "Das Argument \"Klartextdatei\" kann nur einmal verwendet werden. Tippen Sie "
 "\"%s --help\", um Hilfe zu erhalten."
 
-#: arguments.cc:519
+#: Arguments.cc:521
 #, fuzzy
 msgid "the radius argument can be used only once."
 msgstr ""
 "Das Argument \"Passphrase\" kann nur einmal verwendet werden. Tippen Sie \"%"
 "s --help\", um Hilfe zu erhalten."
 
-#: arguments.cc:288
+#: Arguments.cc:290
 #, fuzzy
 msgid "the stego file name argument can be used only once."
 msgstr ""
@@ -985,23 +986,23 @@ msgid "the version of the jpeg file on standard input is not supported."
 msgstr ""
 "Die Version der jpeg Datei auf der Standardeingabe wird nicht unterstützt."
 
-#: wavformatchunk.cc:50
+#: WavFormatChunk.cc:50
 #, fuzzy, c-format
 msgid "the wav file \"%s\" does not have pcm format (header too long)."
 msgstr "Die wav-Datei \"%s\" hat ein Format, das nicht unterstützt wird."
 
-#: wavformatchunk.cc:32
+#: WavFormatChunk.cc:32
 #, fuzzy, c-format
 msgid ""
 "the wav file \"%s\" has a format that is not supported (FormatTag: 0x%X)."
 msgstr "Die wav-Datei \"%s\" hat ein Format, das nicht unterstützt wird."
 
-#: wavformatchunk.cc:58
+#: WavFormatChunk.cc:58
 #, fuzzy, c-format
 msgid "the wav file \"%s\" is corrupted."
 msgstr "Die wav-Datei \"%s\" hat ein Format, das nicht unterstützt wird."
 
-#: wavformatchunk.cc:47
+#: WavFormatChunk.cc:47
 #, fuzzy
 msgid ""
 "the wav file from standard input does not have pcm format (header too long)."
@@ -1009,7 +1010,7 @@ msgstr ""
 "Die wav-Datei von der Standardeingabe hat ein Format, das nicht unterstützt "
 "wird."
 
-#: wavformatchunk.cc:29
+#: WavFormatChunk.cc:29
 #, fuzzy, c-format
 msgid ""
 "the wav file from standard input has a format that is not supported "
@@ -1018,7 +1019,7 @@ msgstr ""
 "Die wav-Datei von der Standardeingabe hat ein Format, das nicht unterstützt "
 "wird."
 
-#: wavformatchunk.cc:55
+#: WavFormatChunk.cc:55
 #, fuzzy
 msgid "the wav file from standard input is corrupted."
 msgstr ""
@@ -1031,24 +1032,24 @@ msgid "type \"steghide --help\" for help."
 msgstr ""
 "unbekanntes Kommando \"%s\". Tippen Sie \"%s --help\", um Hilfe zu erhalten."
 
-#: arguments.cc:87
+#: Arguments.cc:89
 #, fuzzy, c-format
 msgid "unknown argument \"%s\"."
 msgstr ""
 "unbekanntes Argument \"%s\". Tippen Sie \"%s --help\", um Hilfe zu erhalten."
 
-#: arguments.cc:181
+#: Arguments.cc:183
 #, fuzzy, c-format
 msgid "unknown command \"%s\"."
 msgstr ""
 "unbekanntes Kommando \"%s\". Tippen Sie \"%s --help\", um Hilfe zu erhalten."
 
-#: bmpfile.cc:344 bmpfile.cc:403
+#: BmpFile.cc:346 BmpFile.cc:405
 msgid "using a 16-color bitmap as cover is very insecure!"
 msgstr ""
 "eine bmp-Datei mit 16 Farben als Trägerdatei zu verwenden ist sehr unsicher!"
 
-#: bmpfile.cc:336 bmpfile.cc:395
+#: BmpFile.cc:338 BmpFile.cc:397
 msgid "using a black/white bitmap as cover is very insecure!"
 msgstr ""
 "eine schwarz/weiß bmp-Datei als Trägerdatei zu verwenden ist sehr unsicher!"
@@ -1058,12 +1059,12 @@ msgstr ""
 msgid "warning:"
 msgstr ": Warnung: "
 
-#: cvrstgfile.cc:82
+#: CvrStgFile.cc:82
 #, c-format
 msgid "writing stego file \"%s\"."
 msgstr "Schreibe Stegodatei \"%s\"."
 
-#: cvrstgfile.cc:78
+#: CvrStgFile.cc:78
 msgid "writing stego file to standard output."
 msgstr "Schreibe Stegodatei auf die Standardausgabe."
 
@@ -1072,32 +1073,32 @@ msgstr "Schreibe Stegodatei auf die Standardausgabe."
 msgid "y"
 msgstr "j"
 
-#: arguments.cc:153
+#: Arguments.cc:155
 #, fuzzy
 msgid "you cannot use arguments with the \"encinfo\" command."
 msgstr "Mit dem \"version\" Kommando können keine Argumente verwendet werden."
 
-#: arguments.cc:171
+#: Arguments.cc:173
 #, fuzzy
 msgid "you cannot use arguments with the \"help\" command."
 msgstr "Mit dem \"help\" Kommando können keine Argumente verwendet werden."
 
-#: arguments.cc:165
+#: Arguments.cc:167
 #, fuzzy
 msgid "you cannot use arguments with the \"license\" command."
 msgstr "Mit dem \"license\" Kommando können keine Argumente verwendet werden."
 
-#: arguments.cc:159
+#: Arguments.cc:161
 #, fuzzy
 msgid "you cannot use arguments with the \"version\" command."
 msgstr "Mit dem \"version\" Kommando können keine Argumente verwendet werden."
 
-#: arguments.cc:603 arguments.cc:613
+#: Arguments.cc:605 Arguments.cc:615
 #, fuzzy
 msgid "you cannot use more than one debug command at a time."
 msgstr "Mit dem \"help\" Kommando können keine Argumente verwendet werden."
 
-#: arguments.cc:102
+#: Arguments.cc:104
 msgid "you have to supply a cover file name to calculate a capacity."
 msgstr ""
 

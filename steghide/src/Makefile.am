@@ -65,3 +65,4 @@ jpegunusedseg.cc main.cc \
 msg.cc
 localedir = $(datadir)/locale
 LIBTOOL = $(SHELL) libtool
+MAINTAINERCLEANFILES = Makefile.in
