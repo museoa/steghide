@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
-"POT-Creation-Date: 2003-09-25 18:24+0200\n"
+"POT-Creation-Date: 2003-09-25 21:03+0200\n"
 "PO-Revision-Date: 2003-09-24 22:52+0200\n"
 "Last-Translator: Stefan Hetzl <shetzl@chello.at>\n"
 "Language-Team: Deutsch\n"
@@ -145,7 +145,7 @@ msgstr "  eingebettete Daten:\n"
 msgid "  embedded file \"%s\":\n"
 msgstr "  Eingebettete Datei \"%s\":\n"
 
-#: Graph.cc:256
+#: Graph.cc:253
 #, c-format
 msgid " %lu sample values, %lu vertices, %lu edges"
 msgstr " %lu Samplewerte, %lu Knoten, %lu Kanten"
@@ -444,7 +444,7 @@ msgstr "Kapazität"
 msgid "checking crc32 checksum..."
 msgstr "CRC32 Prüfsummentest..."
 
-#: BitString.cc:299 BitString.cc:347 MCryptPP.cc:315 MHashKeyGen.cc:117
+#: BitString.cc:299 BitString.cc:347 MCryptPP.cc:315 MHashKeyGen.cc:115
 msgid "could not allocate memory."
 msgstr "Es konnte nicht genügend Speicher alloziiert werden."
 
@@ -477,7 +477,7 @@ msgstr "Die libmcrypt-Entschlüsselung konnte nicht beendet werden."
 msgid "could not finish libmcrypt encryption."
 msgstr "Die libmcrypt-Verschlüsselung konnte nicht beendet werden."
 
-#: MHashKeyGen.cc:63
+#: MHashKeyGen.cc:61
 msgid "could not generate key using libmhash."
 msgstr "Schlüssel konnte unter Verwendung von libmhash nicht erzeugt werden."
 
@@ -544,7 +544,7 @@ msgstr "Daten von der Standardeingabe:\n"
 msgid "did not write to file \"%s\"."
 msgstr "Datei \"%s\" wurde nicht geschrieben."
 
-#: Embedder.cc:193
+#: Embedder.cc:198
 msgid "done"
 msgstr "fertig"
 
@@ -577,7 +577,7 @@ msgstr ""
 msgid "error, exiting. (no error message defined)."
 msgstr "Fehler, Programmende. (keine Fehlermeldung definiert)."
 
-#: Embedder.cc:205
+#: Embedder.cc:211
 #, c-format
 msgid "executing %s..."
 msgstr "Führe %s aus..."
@@ -1069,7 +1069,7 @@ msgstr "Schreibe extrahierte Daten nach \"%s\"..."
 msgid "writing extracted data to standard output..."
 msgstr "Schreibe extrahierte Daten auf die Standardausgabe..."
 
-#: Embedder.cc:186
+#: Embedder.cc:188
 #, c-format
 msgid "writing stego file \"%s\"... "
 msgstr "Schreibe Stegodatei \"%s\"... "

@@ -5,9 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2003-09-25 18:24+0200\n"
+"POT-Creation-Date: 2003-09-25 21:03+0200\n"
 "PO-Revision-Date: 2002-05-12 18:34+0100\n"
-"Last-Translator: Julien Catanese <julien_catanese@yahoo.fr>\n"
+"Last-Translator: cedric gross <cgross@wanadoo.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
@@ -71,7 +71,7 @@ msgstr ""
 " embed, --embed          cacher des données\n"
 " extract, --extract      extrait les données cachées à partir de données "
 "stégo.\n"
-" info, --info\t\t  affiche les informations sur un fichier de couverture\n"
+" info, --info            affiche les informations sur un fichier de couverture\n"
 "   info <fichier>        affiche les informations sur le fichier <fichier>\n"
 " encinfo, --encinfo      affiche une liste des algorithmes de cryptage "
 "gerés\n"
@@ -97,8 +97,8 @@ msgstr ""
 "   -z <l>                 en utilisant le niveau <l> (1 Meilleur vitesse...9 "
 "Meilleur compression)\n"
 " -Z, --dontcompress      Ne pas compresser les données avant inclusion\n"
-" -K, --nochecksum        n'encapsule pas le checksum crc32 des données  -N, "
-"--notembedplainname n'encapsule pas le nom du fichier de données.\n"
+" -K, --nochecksum        n'encapsule pas le checksum crc32 des données\n"
+" -N, --notembedplainname n'encapsule pas le nom du fichier de données.\n"
 " -f, --force             écrase les fichiers existants\n"
 " -q, --quiet             supprime les messages d'information\n"
 " -v, --verbose           affiche des informations détaillées\n"
@@ -146,7 +146,7 @@ msgstr "  données attachées:\n"
 msgid "  embedded file \"%s\":\n"
 msgstr "  fichier à inclure \"%s\":\n"
 
-#: Graph.cc:256
+#: Graph.cc:253
 #, c-format
 msgid " %lu sample values, %lu vertices, %lu edges"
 msgstr " %lu echantillons, %lu sommets, %lu bords"
@@ -424,7 +424,7 @@ msgstr ""
 #: AssertionFailed.h:30
 #, c-format
 msgid "assertion failed in %s at line number %d."
-msgstr "Une fausse verité a été trouvée dans %s à la ligne %d."
+msgstr "Une assertion erronée a été trouvée dans %s à la ligne numero %d."
 
 #: EmbData.cc:92
 #, c-format
@@ -461,7 +461,7 @@ msgstr "capacité"
 msgid "checking crc32 checksum..."
 msgstr "verification de la somme de contrôle crc32..."
 
-#: BitString.cc:299 BitString.cc:347 MCryptPP.cc:315 MHashKeyGen.cc:117
+#: BitString.cc:299 BitString.cc:347 MCryptPP.cc:315 MHashKeyGen.cc:115
 msgid "could not allocate memory."
 msgstr "Allocation de mémoire impossible"
 
@@ -494,7 +494,7 @@ msgstr "Impossible de terminer le decryptage libmcrypt."
 msgid "could not finish libmcrypt encryption."
 msgstr "Impossible de terminer le cryptage libmcrypt."
 
-#: MHashKeyGen.cc:63
+#: MHashKeyGen.cc:61
 msgid "could not generate key using libmhash."
 msgstr "Impossible de générer une clé en utilisant libmhash."
 
@@ -553,16 +553,15 @@ msgid "creating the graph..."
 msgstr "creation du graphique..."
 
 #: Session.cc:132
-#, fuzzy
 msgid "data from standard input:\n"
-msgstr "fin prématurée des données à partir de l'entrée standard."
+msgstr "Données obtenues à partir de l'entrée standard:\n"
 
 #: BinaryIO.cc:70
 #, c-format
 msgid "did not write to file \"%s\"."
 msgstr "n'a pas écrit vers le fichier \"%s\"."
 
-#: Embedder.cc:193
+#: Embedder.cc:198
 msgid "done"
 msgstr "terminé."
 
@@ -593,7 +592,7 @@ msgstr "erreur %d lors de l'appel zlib uncompress"
 msgid "error, exiting. (no error message defined)."
 msgstr "erreur, fin du programme. (pas de message d'erreur spécifié)"
 
-#: Embedder.cc:205
+#: Embedder.cc:211
 #, c-format
 msgid "executing %s..."
 msgstr "execution %s..."
@@ -812,9 +811,9 @@ msgstr ""
 "le paramètre \"%s\" doit être suivi par le nom de fichier d'extraction."
 
 #: Arguments.cc:550
-#, fuzzy, c-format
+#, c-format
 msgid "the \"%s\" argument must be followed by the neighbourhood radius."
-msgstr "le paramètre \"%s\" doit être suivi par....?"
+msgstr "le paramètre \"%s\" doit être suivi par le perimètre de voisinage."
 
 #: Arguments.cc:333
 #, c-format
@@ -986,9 +985,8 @@ msgid "the passphrases do not match."
 msgstr "les passphrases ne correspondent pas."
 
 #: Arguments.cc:546
-#, fuzzy
 msgid "the radius argument can be used only once."
-msgstr "le paramètre de ... ne peut être utilisé qu'une seule fois."
+msgstr "le paramètre de perimètre ne peut être utilisé qu'une seule fois."
 
 #: Extractor.cc:62
 msgid ""
@@ -1056,12 +1054,12 @@ msgstr "commande \"%s\" inconnue."
 #: Arguments.cc:734
 msgid "unknown terminal. the passphrase you type now will be visible."
 msgstr ""
-"terminal inconnue. La passphrase que vous saisisser va maintenant être "
+"terminal inconnue. La passphrase que vous saisissez va maintenant être "
 "visible."
 
 #: msg.cc:188
 msgid "unknown terminal. you might need to press <Enter> after answering."
-msgstr "terminal inconnue. Vous devez appuyer sur <Entrée> après la réponse."
+msgstr "terminal inconnu. Vous devez appuyer sur <Entrée> après la réponse."
 
 #: BmpFile.cc:529 BmpFile.cc:618
 msgid "using a 16-color bitmap as cover is very insecure!"
@@ -1071,7 +1069,9 @@ msgstr ""
 
 #: BmpFile.cc:521 BmpFile.cc:610
 msgid "using a black/white bitmap as cover is very insecure!"
-msgstr "l'utilisation d'un bitmap en noir comme couverture est très peu sûr !"
+msgstr ""
+"l'utilisation d'un bitmap en noir et blanc comme couverture est très peu "
+"sûr !"
 
 #: msg.cc:135 msg.cc:153
 msgid "warning:"
@@ -1086,7 +1086,7 @@ msgstr "écriture des données extraites dans \"%s\"..."
 msgid "writing extracted data to standard output..."
 msgstr "écriture des données extraites sur la sortie standard."
 
-#: Embedder.cc:186
+#: Embedder.cc:188
 #, c-format
 msgid "writing stego file \"%s\"... "
 msgstr "écriture du fichier stégo \"%s\"... "

@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2003-09-25 18:24+0200\n"
+"POT-Creation-Date: 2003-09-25 21:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -93,7 +93,7 @@ msgstr ""
 msgid "  embedded file \"%s\":\n"
 msgstr ""
 
-#: Graph.cc:256
+#: Graph.cc:253
 #, c-format
 msgid " %lu sample values, %lu vertices, %lu edges"
 msgstr ""
@@ -338,7 +338,7 @@ msgstr ""
 msgid "checking crc32 checksum..."
 msgstr ""
 
-#: BitString.cc:299 BitString.cc:347 MCryptPP.cc:315 MHashKeyGen.cc:117
+#: BitString.cc:299 BitString.cc:347 MCryptPP.cc:315 MHashKeyGen.cc:115
 msgid "could not allocate memory."
 msgstr ""
 
@@ -371,7 +371,7 @@ msgstr ""
 msgid "could not finish libmcrypt encryption."
 msgstr ""
 
-#: MHashKeyGen.cc:63
+#: MHashKeyGen.cc:61
 msgid "could not generate key using libmhash."
 msgstr ""
 
@@ -430,7 +430,7 @@ msgstr ""
 msgid "did not write to file \"%s\"."
 msgstr ""
 
-#: Embedder.cc:193
+#: Embedder.cc:198
 msgid "done"
 msgstr ""
 
@@ -459,7 +459,7 @@ msgstr ""
 msgid "error, exiting. (no error message defined)."
 msgstr ""
 
-#: Embedder.cc:205
+#: Embedder.cc:211
 #, c-format
 msgid "executing %s..."
 msgstr ""
@@ -894,7 +894,7 @@ msgstr ""
 msgid "writing extracted data to standard output..."
 msgstr ""
 
-#: Embedder.cc:186
+#: Embedder.cc:188
 #, c-format
 msgid "writing stego file \"%s\"... "
 msgstr ""
