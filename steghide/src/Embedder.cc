@@ -117,7 +117,7 @@ const Matching* Embedder::calculateMatching ()
 
 	ProgressOutput* prout = NULL ;
 	if (Args.Verbosity.getValue() == NORMAL) {
-		prout = new ProgressOutput (10) ; // FIXME - it is assumed that nconstrheur is 1
+		prout = new ProgressOutput () ;
 	}
 
 	// do construction heuristic (maybe more than once)
@@ -150,11 +150,8 @@ const Matching* Embedder::calculateMatching ()
 	vmsg2.printMessage() ;
 	bestmatching->printVerboseInfo() ;
 
-	// do bounded augmenting path heuristic
-	if (prout) {
-		prout->setUpdateFrequency (1) ;
-	}
-	if (false) {
+	if (true) {
+#if 0
 		AugmentingPathHeuristic aph (Globs.TheGraph, bestmatching, Args.Goal.getValue(), (UWORD32) (Globs.TheGraph->getAvgVertexDegree() / 20)) ;
 		aph.run() ;
 		bestmatching = aph.getMatching() ;
@@ -162,6 +159,8 @@ const Matching* Embedder::calculateMatching ()
 		VerboseMessage vmsg3 (_("best matching after bounded augmenting path heuristic:")) ;
 		vmsg3.printMessage() ;
 		bestmatching->printVerboseInfo() ;
+#endif
+		AugmentingPathHeuristic aph (Globs.TheGraph, bestmatching, Args.Goal.getValue()) ;
 
 		// do unbounded augmenting path heuristic
 		if (true) {
@@ -176,7 +175,7 @@ const Matching* Embedder::calculateMatching ()
 	}
 
 	if (prout) {
-		prout->done() ;
+		prout->update (((float) (2 * bestmatching->getCardinality())) / ((float) Globs.TheGraph->getNumVertices()), true) ;
 		delete prout ;
 	}
 

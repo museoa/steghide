@@ -194,11 +194,11 @@ class Matching {
 	/// the number of edges in the matching
 	unsigned long Cardinality ;
 
-	/// the ProgressOutput object that will print the number of matched vertices (as percentage)
-	ProgressOutput* PrOut ;
-
 	/// the graph underlying this Matching
 	Graph* TheGraph ;
+
+	/// the ProgressOutput object that will print the number of matched vertices (as percentage)
+	ProgressOutput* PrOut ;
 
 	/**
 	 * set the cardinality (thereby updating PrOut)

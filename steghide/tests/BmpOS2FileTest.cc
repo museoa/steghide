@@ -107,4 +107,11 @@ void BmpOS2FileTest::testPosition()
 	addTestResult (genericTestPosition (f2, 10, new BmpPaletteSampleValue (5))) ;
 	addTestResult (genericTestPosition (f2, 95, new BmpPaletteSampleValue (1))) ;
 	addTestResult (genericTestPosition (f2, 96, new BmpPaletteSampleValue (8))) ;
+
+	// TODO
+}
+
+void BmpOS2FileTest::testReadExtractCompare ()
+{
+	// TODO
 }

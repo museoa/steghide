@@ -53,9 +53,8 @@ typedef char			SBYTE ;
 #define UWORD32_MAX		0xFFFFFFFFUL
 #define UWORD16_MAX		0xFFFF
 #define BYTE_MAX		0xFF
-// FIXME - SWORD32_MIN - is this correct ?
-#define SWORD32_MIN		-2147483648L
-#define SWORD32_MAX		2147483647L
+#define SWORD32_MIN		-2147483647 - 1 // to avoid a gcc warning (caused by an overflow)
+#define SWORD32_MAX		2147483647
 #define SWORD16_MIN		-32768
 #define SWORD16_MAX		32767
 #define SBYTE_MIN		-128

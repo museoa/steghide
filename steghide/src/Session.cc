@@ -22,6 +22,7 @@
 #include <iostream>
 #include <vector>
 
+#include "EmbData.h"
 #include "Embedder.h"
 #include "Extractor.h"
 #include "CvrStgFile.h"
@@ -78,6 +79,7 @@ void Session::printCapacity ()
 {
 	CvrStgFile* TheCvrStgFile = CvrStgFile::readFile (Args.CvrFn.getValue()) ;
 	float capacity = (float) TheCvrStgFile->getCapacity() ;
+	capacity -= EmbData::MinStegoHeaderSize / 8 ;
 
 	std::string unit = "Byte" ;
 	if (capacity > 1024.0) {
@@ -150,6 +152,7 @@ void Session::printHelp ()
 		" embed, --embed          embed data\n"
 		" extract, --extract      extract data\n"
 		" capacity, --capacity    calculate capacity of a cover file\n"
+		"   capacity <filename>   display capacity of <filename>\n"
 		" encinfo, --encinfo      display a list of supported encryption algorithms\n"
 		" version, --version      display version information\n"
 		" license, --license      display steghide's license\n"
@@ -183,8 +186,8 @@ void Session::printHelp ()
 		" -p, --passphrase        specify passphrase\n"
 		"   -p <passphrase>       use <passphrase> as passphrase\n"
 		" -sf, --stegofile        select stego file\n"
-		"   -sf <filename>        write result to <filename> (when embedding)\n"
-		"   -sf <filename>        extract data from <filename> (when extracting)\n"
+		"   -sf <filename>        when embedding: write result to <filename>\n"
+		"   -sf <filename>        when extracting: extract data from <filename>\n"
 		" -f, --force             overwrite existing files\n"
 		" -q, --quiet             suppress information messages\n"
 		" -v, --verbose           display detailed information\n"

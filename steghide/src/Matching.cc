@@ -334,9 +334,19 @@ bool Matching::check_ValidAugPath (const std::vector<Edge*>& path) const
 	}
 
 	// check that path is augmenting w.r.t. the matching
-	// TODO
+	bool isaugmenting = true ;
+	bool shouldinclude = false ;
+	for (std::vector<Edge*>::const_iterator it = path.begin() ; it != path.end() ; it++) {
+		if (shouldinclude) {
+			isaugmenting = includesEdge(*it) && isaugmenting ;
+		}
+		else {
+			isaugmenting = !includesEdge(*it) && isaugmenting ;
+		}
+		shouldinclude = !shouldinclude ;
+	}
 
-	return cohesion && !hasloop ;
+	return cohesion && !hasloop && isaugmenting ;
 }
 
 #endif

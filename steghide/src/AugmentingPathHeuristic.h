@@ -48,6 +48,8 @@ class AugmentingPathHeuristic : public MatchingAlgorithm {
 	 **/
 	AugmentingPathHeuristic (Graph* g, Matching* m, float goal, UWORD32 mne = UWORD32_MAX) ;
 
+	virtual ~AugmentingPathHeuristic (void) {} ;
+
 	/**
 	 * reset the state of this AugmentingPathHeuristic, esp. the EdgeIterators
 	 * \param mne the maximum number of edges that should be considered for every vertex for now on

@@ -94,10 +94,14 @@ void JpegFileTest::testPosition()
 {
 #if 0
 	Globs = gl1 ;
-	// TODO
 
 	Globs = gl2 ;
 
 	Globs = gl3 ;
 #endif
+}
+
+void JpegFileTest::testReadExtractCompare ()
+{
+	// TODO
 }

@@ -169,8 +169,6 @@ void GraphTest::testVertexContents()
 	Globs = gl6 ; addTestResult (g6->check_VertexContents(ArgVerbose)) ;
 	Globs = gl7 ; addTestResult (g7->check_VertexContents(ArgVerbose)) ;
 	Globs = gl8 ; addTestResult (g8->check_VertexContents(ArgVerbose)) ;
-
-	// TODO - violate pointer equivalence
 }
 
 void GraphTest::testSampleOccurences()
@@ -195,6 +193,4 @@ void GraphTest::testSampleValueOppNeighs()
 	Globs = gl6 ; addTestResult (g6->SampleValueOppNeighs.check(ArgVerbose)) ;
 	Globs = gl7 ; addTestResult (g7->SampleValueOppNeighs.check(ArgVerbose)) ;
 	Globs = gl8 ; addTestResult (g8->SampleValueOppNeighs.check(ArgVerbose)) ;
-
-	// TODO - violate sorting
 }

@@ -140,6 +140,11 @@ void WavFile::readdata (void)
 		unsigned short bytespersample = getBytesPerSample() ;
 		unsigned short firstbitpos = getFirstBitPosinSample() ;
 			
+		UWORD32 mask = 0 ;
+		for (unsigned short i = 0 ; i < bitspersample ; i++) {
+			mask <<= 1 ;
+			mask |= 1 ;
+		}
 		unsigned long readpos = 0 ;
 		while (readpos < datachhdr->getChunkLength()) {
 			if (bitspersample <= 8) {
@@ -147,7 +152,7 @@ void WavFile::readdata (void)
 			}
 			else {
 				// decode two's complement
-				unsigned int value = (unsigned int) getBinIO()->read_le (bytespersample) ;
+				UWORD32 value = (UWORD32) getBinIO()->read_le (bytespersample) ;
 				value = value >> firstbitpos ;
 					
 				int sign = 0 ;
@@ -158,14 +163,8 @@ void WavFile::readdata (void)
 					sign = -1 ;
 					value = ~value ;
 					value++ ;
+					value &= mask ;
 				}
-
-				unsigned int mask = 0 ;
-				for (unsigned short i = 0 ; i < bitspersample ; i++) {
-					mask <<= 1 ;
-					mask |= 1 ;
-				}
-				value &= mask ;
 
 				data_large.push_back (sign * ((int) value)) ;
 			}

@@ -18,6 +18,7 @@
  *
  */
 
+#include "AuSampleValues.h"
 
 #include "utcommon.h"
 #include "AuFileTest.h"
@@ -29,6 +30,7 @@ AuFileTest::AuFileTest (TestSuite* s)
 	ADDTESTCATEGORY (AuFileTest, testReadEmbedExtract) ;
 	ADDTESTCATEGORY (AuFileTest, testReadEmbedWriteReadExtract) ;
 	ADDTESTCATEGORY (AuFileTest, testPosition) ;
+	ADDTESTCATEGORY (AuFileTest, testReadExtractCompare) ;
 }
 
 void AuFileTest::setup ()
@@ -84,9 +86,38 @@ void AuFileTest::testReadEmbedWriteReadExtract()
 void AuFileTest::testPosition()
 {
 	Globs = gl1 ;
-	// TODO
+	addTestResult (genericTestPosition (f1, 0, new AuMuLawSampleValue (224))) ;
+	addTestResult (genericTestPosition (f1, 10, new AuMuLawSampleValue (148))) ;
 
 	Globs = gl2 ;
+	addTestResult (genericTestPosition (f2, 0, new AuPCM8SampleValue (-7))) ;
+	addTestResult (genericTestPosition (f2, 1, new AuPCM8SampleValue (-8))) ;
+	addTestResult (genericTestPosition (f2, 17, new AuPCM8SampleValue (4))) ;
+	addTestResult (genericTestPosition (f2, 81, new AuPCM8SampleValue (-2))) ;
 
 	Globs = gl3 ;
+	addTestResult (genericTestPosition (f3, 0, new AuPCM16SampleValue (80))) ;
+	addTestResult (genericTestPosition (f3, 2, new AuPCM16SampleValue (-76))) ;
+	addTestResult (genericTestPosition (f3, 9, new AuPCM16SampleValue (4403))) ;
+	addTestResult (genericTestPosition (f3, 15, new AuPCM16SampleValue (4191))) ;
+}
+
+void AuFileTest::testReadExtractCompare ()
+{
+	{
+		Globs = gl1 ;
+		BitString shouldbe ;
+		shouldbe.append(false).append(true).append(true).append(false).append(false).append(false).append(false).append(true) ;
+		addTestResult (genericTestReadExtractCompare (std::string(DATADIR) + "mulaw_std.au", shouldbe)) ;
+	}
+
+	{
+		Globs = gl2 ;
+		// TODO
+	}
+
+	{
+		Globs = gl3 ;
+		// TODO
+	}
 }

@@ -71,6 +71,9 @@ class EmbData {
 	std::string getFileName (void) const
 		{ return FileName ; } ;
 
+	/// the minimum size of the part of the generatred BitString that is not the data
+	static const unsigned int MinStegoHeaderSize = 50 ;
+
 	protected:
 	std::string stripDir (std::string s) ;
 

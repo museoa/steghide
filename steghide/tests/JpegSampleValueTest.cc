@@ -31,12 +31,13 @@ JpegSampleValueTest::JpegSampleValueTest (TestSuite* s)
 	ADDTESTCATEGORY (JpegSampleValueTest, testIsNeighbour) ;
 }
 
+// FIXME - write these tests
+
 void JpegSampleValueTest::setup ()
 {
 	UnitTest::setup() ;
 
 #if 0
-	// TODO - write these tests
 	Globs.reset() ;
 	f1 = CvrStgFile::readFile (std::string(DATADIR) + "???.jpg") ;
 	gl1 = Globs ;

@@ -90,9 +90,6 @@ void JpegFile::read (BinaryIO* io)
 	LinDctCoeffs.resize (totalnumcoeffs) ;
 
 	UWORD32 linindex = 0 ;
-	JBLOCKARRAY array ;
-	JBLOCKROW row ;
-	JBLOCK block ;
 	for (unsigned short icomp = 0 ; icomp < DeCInfo.num_components ; icomp++) {
 		unsigned int currow = 0 ;
 		while (currow < height_in_blocks[icomp]) {

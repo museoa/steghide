@@ -51,6 +51,7 @@ template<AUDIOSAMPLETYPE Type, class ValueType, class SampleValueType = AudioSam
 class AudioDataImpl : public AudioData {
 	public:
 	AudioDataImpl (CvrStgFile* f) : TheCvrStgFile(f) {} ;
+	virtual ~AudioDataImpl (void) {} ;
 
 	void read (BinaryIO* io, UWORD32 n = AudioData::NoLimit) ;
 	void write (BinaryIO* io, UWORD32 n = AudioData::NoLimit) ;
@@ -75,14 +76,27 @@ void AudioDataImpl<Type,ValueType,SampleValueType>::read (BinaryIO* io, UWORD32 
 	try {
 		if (n == NoLimit) {
 			Data.clear() ;
+#if 0
+			unsigned short i = 0 ;
+#endif
 			while (!io->eof()) {
 				Data.push_back (readValue(io)) ;
+#if 0
+				if (i < 5) {
+					std::cerr << "Data[" << i << "]: " << (int) Data[i] << std::endl ;
+				}
+#endif
 			}
 		}
 		else {
 			Data.resize (n) ;
 			for (UWORD32 i = 0 ; i < n ; i++) {
 				Data[i] = readValue(io) ;
+#if 0
+				if (i < 5) {
+					std::cerr << "Data[" << i << "]: " << (int) Data[i] << std::endl ;
+				}
+#endif
 			}
 		}
 	}

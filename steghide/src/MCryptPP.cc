@@ -86,7 +86,6 @@ BitString MCryptPP::decrypt (BitString c, std::string pp)
 	return BitString (plaintext) ;
 }
 
-// TODO - ? compatibility of keygen_mcrypt in different versions of mhash
 void* MCryptPP::createKey (std::string pp)
 {
 	unsigned int keysize = mcrypt_enc_get_key_size (MCryptD) ;

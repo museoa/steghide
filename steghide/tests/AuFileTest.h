@@ -36,6 +36,7 @@ class AuFileTest : public CvrStgFileTest {
 	void testReadEmbedExtract (void) ;
 	void testReadEmbedWriteReadExtract (void) ;
 	void testPosition (void) ;
+	void testReadExtractCompare (void) ;
 
 	private:
 	BitString *bs1, *bs2, *bs3 ;

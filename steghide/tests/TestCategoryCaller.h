@@ -36,8 +36,8 @@ template<class UTType> class TestCategoryCaller : public TestCategory {
 	}
 
 	private:
-	TCMType TestMethod ;
 	UTType* UTObject ;
+	TCMType TestMethod ;
 } ;
 
 #endif // ndef SH_TESTCALLER_H

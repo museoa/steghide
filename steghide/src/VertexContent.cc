@@ -109,8 +109,7 @@ std::list<Vertex*>::iterator VertexContent::unmarkDeletedFromOccurences (std::li
 	return Occurences.insert (Occurences.end(), *it) ;
 }
 
-// FIXME - ? pre-compute hash in constructor (to gain speed) - similar to Key of SampleValue->...
-// TODO - this should be tested
+// FIXME - time/memory - ? pre-compute hash in constructor (to gain speed) - similar to Key of SampleValue->...
 size_t VertexContent::getHash (void) const
 {
 	size_t retval = 0 ;

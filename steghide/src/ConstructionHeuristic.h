@@ -52,7 +52,7 @@ class ConstructionHeuristic : public MatchingAlgorithm {
 	 **/
 	ConstructionHeuristic (Graph* g, Matching* m, float goal) ;
 
-	~ConstructionHeuristic (void) ;
+	virtual ~ConstructionHeuristic (void) ;
 
 	void run (void) ;
 

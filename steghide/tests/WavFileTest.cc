@@ -20,6 +20,8 @@
 
 #include <iostream>
 
+#include "WavPCMSampleValue.h"
+
 #include "WavFileTest.h"
 #include "utcommon.h"
 
@@ -29,7 +31,7 @@ WavFileTest::WavFileTest (TestSuite* s)
 	ADDTESTCATEGORY (WavFileTest, testReadWrite) ;
 	ADDTESTCATEGORY (WavFileTest, testReadEmbedExtract) ;
 	ADDTESTCATEGORY (WavFileTest, testReadEmbedWriteReadExtract) ;
-	// TODO ADDTESTCATEGORY (WavFileTest, testPosition) ;
+	ADDTESTCATEGORY (WavFileTest, testPosition) ;
 }
 
 void WavFileTest::setup ()
@@ -74,6 +76,17 @@ void WavFileTest::testReadEmbedWriteReadExtract()
 }
 
 void WavFileTest::testPosition()
+{
+	Globs = gl1 ;
+	addTestResult (genericTestPosition (f1, 0, new WavPCMSampleValue (122))) ;
+	addTestResult (genericTestPosition (f1, 22, new WavPCMSampleValue (127))) ;
+
+	Globs = gl2 ;
+	addTestResult (genericTestPosition (f2, 0, new WavPCMSampleValue (-425))) ;
+	addTestResult (genericTestPosition (f2, 15, new WavPCMSampleValue (136))) ;
+}
+
+void WavFileTest::testReadExtractCompare ()
 {
 	// TODO
 }

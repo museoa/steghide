@@ -31,6 +31,8 @@ class Test {
 	Test (const std::string& n) : Name(n), Suite(NULL) {} ;
 	Test (const std::string& n, TestSuite* s) : Name(n), Suite(s) {} ;
 
+	virtual ~Test (void) {} ;
+
 	const std::string& getName (void)
 		{ return Name ; } ;
 

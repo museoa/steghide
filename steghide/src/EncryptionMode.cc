@@ -83,7 +83,7 @@ std::string EncryptionMode::translate (EncryptionMode::IRep irep)
 
 EncryptionMode::IRep EncryptionMode::translate (std::string srep)
 {
-	IRep retval ;
+	IRep retval = ECB ;
 	bool found = false ;
 	for (unsigned int i = 0 ; i < NumValues ; i++) {
 		if (Translations[i].srep == srep) {

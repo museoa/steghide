@@ -556,7 +556,7 @@ void BmpFile::readdata ()
 
 		BitmapData.resize (height * linelength) ;
 		for (unsigned long line = 0 ; line < height ; line++) {
-			for (long posinline = 0 ; posinline < linelength ; posinline++) {
+			for (unsigned long posinline = 0 ; posinline < linelength ; posinline++) {
 				BitmapData[line * linelength + posinline] = getBinIO()->read8() ;
 			}
 
@@ -609,7 +609,7 @@ void BmpFile::writedata ()
 		}
 
 		for (unsigned long line = 0 ; line < height ; line++) {
-			for (long posinline = 0 ; posinline < linelength ; posinline++) {
+			for (unsigned long posinline = 0 ; posinline < linelength ; posinline++) {
 				getBinIO()->write8 (BitmapData[line * linelength + posinline]) ;
 			}
 

@@ -31,36 +31,19 @@ class ProgressOutput {
 	public:
 	/**
 	 * create a ProgressOutput object
-	 * \param uf the UpdateFrequency
 	 **/
-	ProgressOutput (unsigned short uf) ;
+	ProgressOutput () ;
 
 	/**
-	 * update the output (taking UpdateFrequency into account) with rate as percentage
+	 * update the output (taking update frequency into account) with rate as percentage
 	 **/
-	void update (float rate) ;
-
-	/**
-	 * print "done" instead of the percentage and do a carriage return
-	 **/
-	void done (void) ;
-
-	/**
-	 * set the UpdateFrequency
-	 **/
-	void setUpdateFrequency (unsigned short uf)
-		{ UpdateFrequency = uf ; } ;
-
-	void setPrecision (unsigned short p) ;
+	void update (float rate, bool done = false) ;
 
 	private:
-	/// if UpdateFrequency is k, then the output will be done with every k-th call of update
-	unsigned short UpdateFrequency ;
-	unsigned short Counter ;
 	std::string EmbString ;
 	std::string CvrString ;
 
-	unsigned short makePercent (float r) ;
+	time_t LastUpdate ;
 } ;
 
 #endif // ndef SH_PROGRESSOUTPUT_H

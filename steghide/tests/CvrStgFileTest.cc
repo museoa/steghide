@@ -47,13 +47,12 @@ bool CvrStgFileTest::genericTestReadWrite (const std::string& rfn, bool new_wfn)
 
 		retval = areEqual (rfn, "test_rw.bak") ;
 
-		// TODO - finish this
+		// FIXME - finish this
 	}
 
 	return retval ;
 }
 
-// TODO - use this in *FileTests !
 bool CvrStgFileTest::genericTestReadExtractCompare (const std::string& fn, const BitString& emb) const
 {
 	CvrStgFile *file = CvrStgFile::readFile (fn) ;

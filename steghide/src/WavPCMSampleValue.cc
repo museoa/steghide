@@ -58,6 +58,9 @@ WavPCMSampleValue::WavPCMSampleValue (int v)
 
 	MaxValue = maxvalue ;
 	MinValue = minvalue ;
+	if (MinValue > Value) {
+		std::cerr << "MinValue: " << MinValue << ", Value: " << Value << std::endl ;
+	}
 	myassert (MinValue <= Value) ;
 	myassert (Value <= MaxValue) ;
 

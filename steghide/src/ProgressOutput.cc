@@ -23,43 +23,38 @@
 #include "ProgressOutput.h"
 #include "common.h"
 
-ProgressOutput::ProgressOutput (unsigned short uf)
-	: UpdateFrequency(uf), Counter(uf - 1) // init Counter to uf - 1 to make first update call write
+ProgressOutput::ProgressOutput ()
 {
 	if (Args.EmbFn.getValue() == "") {
 		EmbString = _("standard input") ;
 	}
 	else {
-		EmbString = "\"" + Args.EmbFn.getValue() + "\"" ;
+		EmbString = Args.EmbFn.getValue() ;
 	}
 
 	if (Args.CvrFn.getValue() == "") {
 		CvrString = _("standard input") ;
 	}
 	else {
-		CvrString = "\"" + Args.CvrFn.getValue() + "\"" ;
+		CvrString = Args.CvrFn.getValue() ;
 	}
+
+	LastUpdate = time(NULL) - 1 ; // -1 to ensure that message is written first time
 }
  
-void ProgressOutput::update (float rate)
+void ProgressOutput::update (float rate, bool done)
 {
-	if (++Counter >= UpdateFrequency) {
-		Counter = 0 ;
-		printf (_("\rembedding %s in %s...%d%%"), EmbString.c_str(), CvrString.c_str(), makePercent(rate)) ;
+	if (done) {
+		printf (_("embedding %s in %s...%.1f%% done\n"), EmbString.c_str(), CvrString.c_str(), rate * 100.0) ;
+		fflush (stdout) ;
 	}
-}
-
-void ProgressOutput::done ()
-{
-	printf (_("\rembedding %s in %s...done\n"), EmbString.c_str(), CvrString.c_str()) ;
-}
-
-unsigned short ProgressOutput::makePercent (float x)
-{
-	x *= 100 ;
-	unsigned short retval = (unsigned short) x ;
-	if (x > (floor(x) + 0.5)) {
-		retval++ ;
+	else {
+		time_t now = time(NULL) ;
+		std::cerr << "update with " << rate << " at " << now << std::endl ;
+		if (LastUpdate < now) {
+			LastUpdate = now ;
+			printf (_("embedding %s in %s...%.1f%%"), EmbString.c_str(), CvrString.c_str(), rate * 100.0) ;
+			fflush (stdout) ;
+		}
 	}
-	return retval ;
 }
