@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-05-05 23:30+0200\n"
+"POT-Creation-Date: 2002-05-09 00:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -73,20 +73,6 @@ msgstr ""
 
 #: support.cc:105
 msgid "Re-Enter passphrase: "
-msgstr ""
-
-#: jpegquanttable.cc:54
-#, c-format
-msgid ""
-"The precision of a quantization table in the jpeg file \"%s\" is set to the "
-"invalid value %d."
-msgstr ""
-
-#: jpegquanttable.cc:51
-#, c-format
-msgid ""
-"The precision of a quantization table in the jpeg file on standard input is "
-"set to the invalid value %d."
 msgstr ""
 
 #: msg.cc:41
@@ -227,19 +213,9 @@ msgid ""
 "\" for help."
 msgstr ""
 
-#: jpegentropycoded.cc:216
-#, c-format
-msgid "corrupt jpeg file \"%s\". Entropy coded data interrupted by marker."
-msgstr ""
-
 #: error.cc:153
 #, c-format
 msgid "corrupt jpeg file \"%s\":"
-msgstr ""
-
-#: jpegentropycoded.cc:213
-msgid ""
-"corrupt jpeg file on standard input. Entropy coded data interrupted by marker."
 msgstr ""
 
 #: error.cc:150
@@ -278,7 +254,7 @@ msgstr ""
 msgid "could not encrypt stego header."
 msgstr ""
 
-#: jpegframe.cc:64 jpegscan.cc:104
+#: jpegframe.cc:95 jpegscan.cc:80
 msgid "could not find start of marker (0xff)."
 msgstr ""
 
@@ -381,26 +357,26 @@ msgstr ""
 msgid "embedding stego header."
 msgstr ""
 
-#: jpegframe.cc:104
+#: jpegframe.cc:149
 #, c-format
 msgid ""
 "encountered unknown marker code 0x%x in jpeg file \"%s\" while reading frame."
 msgstr ""
 
-#: jpegscan.cc:159
+#: jpegscan.cc:138
 #, c-format
 msgid ""
 "encountered unknown marker code 0x%x in jpeg file \"%s\" while reading scan."
 msgstr ""
 
-#: jpegframe.cc:101
+#: jpegframe.cc:146
 #, c-format
 msgid ""
 "encountered unknown marker code 0x%x in jpeg file on standard input while "
 "reading frame."
 msgstr ""
 
-#: jpegscan.cc:156
+#: jpegscan.cc:135
 #, c-format
 msgid ""
 "encountered unknown marker code 0x%x in jpeg file on standard input while "
@@ -409,6 +385,11 @@ msgstr ""
 
 #: crypto.cc:125
 msgid "encrypting plain data."
+msgstr ""
+
+#: jpegentropycoded.cc:215
+#, c-format
+msgid "entropy coded data interrupted by marker 0x%x."
 msgstr ""
 
 #: error.cc:36
@@ -423,7 +404,7 @@ msgstr ""
 msgid "extracting stego header."
 msgstr ""
 
-#: jpegscan.cc:118
+#: jpegframe.cc:110 jpegscan.cc:93
 #, c-format
 msgid "huffman table has destination specifier %u (0-3 is allowed)."
 msgstr ""
@@ -709,6 +690,19 @@ msgstr ""
 msgid "the interval length for the cnsti method must be smaller than %d."
 msgstr ""
 
+#: jpegframe.cc:141
+#, c-format
+msgid ""
+"the jpeg file \"%s\" uses progressive DCT mode which is not supported in this "
+"version."
+msgstr ""
+
+#: jpegframe.cc:138
+msgid ""
+"the jpeg file on standard input uses progressive DCT mode which is not "
+"supported in this version."
+msgstr ""
+
 #: stegano.cc:285
 msgid ""
 "the mask saved in the stego header is not the default (1). This is no longer "
@@ -747,7 +741,8 @@ msgstr ""
 
 #: stegano.cc:298
 msgid ""
-"the plain data is compressed. this is not implemented yet (file corruption ?)."
+"the plain data is compressed. this is not implemented in this version (file "
+"corruption ?)."
 msgstr ""
 
 #: arguments.cc:306

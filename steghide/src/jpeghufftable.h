@@ -21,6 +21,7 @@
 #ifndef SH_JPEGHUFFTABLE_H
 #define SH_JPEGHUFFTABLE_H
 
+#include <limits.h>
 #include <vector>
 
 #include "binaryio.h"
@@ -39,10 +40,16 @@ class JpegHuffmanTable : public JpegSegment {
 	public:
 	enum Class { DCTABLE, ACTABLE } ;
 
-	JpegHuffmanTable (void) ;
-	JpegHuffmanTable (BinaryIO *io) ;
+	JpegHuffmanTable (unsigned int lr = UINT_MAX) ;
+	JpegHuffmanTable (BinaryIO *io, unsigned int lr = UINT_MAX) ;
 
 	virtual ~JpegHuffmanTable (void) ;
+
+	/**
+	 * get the remaining length of the DHT segment
+	 * \return the remaining number of bytes defining huffman tables to be read from the jpeg stream
+	 **/
+	unsigned int getLengthRemaining (void) ;
 
 	/**
 	 * read a huffman table specification marker segment
@@ -168,6 +175,8 @@ class JpegHuffmanTable : public JpegSegment {
 	unsigned int csize (int v) ;
 
 	private:
+	unsigned int lengthremaining ;
+
 	unsigned char tableclass ;
 	unsigned char tabledestid ;
 	vector<unsigned int> bits ;

@@ -164,8 +164,8 @@ void JpegEntropyCoded::read (BinaryIO *io)
 
 			for (unsigned int comp = 0 ; comp < p_framehdr->getNumComponents() ; comp++)  {
 				unsigned char compdataunits = p_framehdr->getHorizSampling (comp) * p_framehdr->getVertSampling (comp) ;
-				JpegHuffmanTable *DCTable = p_scan->getDCTable (p_scanhdr->getDCDestSpec (comp)) ;
-				JpegHuffmanTable *ACTable = p_scan->getACTable (p_scanhdr->getACDestSpec (comp)) ;
+				JpegHuffmanTable *DCTable = p_frame->getDCTable (p_scanhdr->getDCDestSpec (comp)) ;
+				JpegHuffmanTable *ACTable = p_frame->getACTable (p_scanhdr->getACDestSpec (comp)) ;
 
 				for (unsigned char du = 0 ; du < compdataunits ; du++) {
 					// decode DC
@@ -208,22 +208,16 @@ void JpegEntropyCoded::read (BinaryIO *io)
 			}
 		}
 		catch (JpegMarkerFound e) {
-			if (!termclean) {
-				if (io->is_std()) {
-					throw SteghideError (_("corrupt jpeg file on standard input. Entropy coded data interrupted by marker.")) ;
-				}
-				else {
-					throw SteghideError (_("corrupt jpeg file \"%s\". Entropy coded data interrupted by marker."), io->getName().c_str()) ;
-				}
+			if (termclean || (e.getMarkerCode() == JpegElement::MarkerEOI)) {
+				termmarker = e.getMarkerCode() ;
 			}
 			else {
-				termmarker = e.getMarkerCode() ;
+				throw CorruptJpegError (io, _("entropy coded data interrupted by marker 0x%x."), e.getMarkerCode()) ;
 			}
 		}
 	}
 }
 
-//DEBUG
 void JpegEntropyCoded::write (BinaryIO *io)
 {
 	assert (writebyte == 0) ;
@@ -241,13 +235,9 @@ void JpegEntropyCoded::write (BinaryIO *io)
 	vector<unsigned int> dataunits ;
 	for (unsigned int comp = 0 ; comp < p_framehdr->getNumComponents() ; comp++) {
 		prediction.push_back (0) ;
-		DCTables.push_back (p_scan->getDCTable (p_scanhdr->getDCDestSpec (comp))) ;
-		ACTables.push_back (p_scan->getACTable (p_scanhdr->getACDestSpec (comp))) ;
+		DCTables.push_back (p_frame->getDCTable (p_scanhdr->getDCDestSpec (comp))) ;
+		ACTables.push_back (p_frame->getACTable (p_scanhdr->getACDestSpec (comp))) ;
 		dataunits.push_back (p_framehdr->getHorizSampling (comp) * p_framehdr->getVertSampling (comp)) ;
-		//cerr << "component data for component: " << comp << endl ;
-		//cerr << " DCTable destination specifier: " << (unsigned int) p_scanhdr->getDCDestSpec (comp) << endl ;
-		//cerr << " ACTable destination specifier: " << (unsigned int) p_scanhdr->getACDestSpec (comp) << endl ;
-		//cerr << " dataunits: " << dataunits[comp] << endl ;
 	}
 
 	// write
@@ -255,11 +245,7 @@ void JpegEntropyCoded::write (BinaryIO *io)
 	assert (dctcoeffs.size() % 64 == 0) ;
 	while (unitstart < dctcoeffs.size()) {
 		for (unsigned int comp = 0 ; comp < p_framehdr->getNumComponents() ; comp++) {
-			//cerr << "write: unitstart: " << unitstart << endl ;
-			//cerr << "write: comp: " << comp << endl ;
-			//cerr << "write: dataunits[comp]: " << dataunits[comp] << endl ;
 			for (unsigned int du = 0 ; du < dataunits[comp] ; du++) {
-				//cerr << "write: du: " << du << endl ;
 				// encode DC
 				int diff = dctcoeffs[unitstart] - prediction[comp] ;
 				writebits (io, DCTables[comp]->getXHuffCode (diff), DCTables[comp]->getXHuffSize (diff)) ;
@@ -362,13 +348,10 @@ unsigned char JpegEntropyCoded::decode (BinaryIO *io, JpegHuffmanTable *ht)
 	return ht->getHuffVal(j) ;
 }
 
-//DEBUG
 void JpegEntropyCoded::encode (BinaryIO *io, JpegHuffmanTable *ht, unsigned int r, int coeff)
 {
 	unsigned char ssss = csize (coeff) ;
 	unsigned char rs = (r << 4) | ssss ;
-	//cerr << "encode: ht->getDestId(): " << ht->getDestId() << endl ;
-	//cerr << "encode: rs: " << (int) rs << endl ;
 	writebits (io, ht->getEHuffCode (rs), ht->getEHuffSize (rs)) ;
 	if (coeff < 0) {
 		coeff-- ;

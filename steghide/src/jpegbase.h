@@ -130,6 +130,8 @@ class JpegElement : public JpegObject {
 	static const JpegMarker MarkerDQT = 0xDB ;
 	/// start of frame 0 (baseline DCT) marker
 	static const JpegMarker MarkerSOF0 = 0xC0 ;
+	/// start of frame 2 (progressive DCT) marker
+	static const JpegMarker MarkerSOF2 = 0xC2 ;
 	/// start of hierachical sequence of frames marker
 	static const JpegMarker MarkerDHP = 0xDE ;
 	/// define huffman table marker

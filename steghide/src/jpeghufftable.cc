@@ -19,25 +19,29 @@
  */
 
 #include <assert.h>
+#include <limits.h>
 
 #include <iostream>
 
+#include "error.h"
 #include "binaryio.h"
 #include "jpegbase.h"
 #include "jpeghufftable.h"
 
-JpegHuffmanTable::JpegHuffmanTable ()
+JpegHuffmanTable::JpegHuffmanTable (unsigned int lr = UINT_MAX)
 	: JpegSegment (JpegElement::MarkerDHT)
 {
 	tableclass = 0xFF ;
 	tabledestid = 0xFF ;
+	lengthremaining = lr ;
 }
 
-JpegHuffmanTable::JpegHuffmanTable (BinaryIO *io)
+JpegHuffmanTable::JpegHuffmanTable (BinaryIO *io, unsigned int lr = UINT_MAX)
 	: JpegSegment (JpegElement::MarkerDHT)
 {
 	tableclass = 0xFF ;
 	tabledestid = 0xFF ;
+	lengthremaining = lr ;
 	read (io) ;
 }
 
@@ -173,19 +177,46 @@ unsigned int JpegHuffmanTable::csize (int v)
 	return rv ;
 }
 
+unsigned int JpegHuffmanTable::getLengthRemaining ()
+{
+	return lengthremaining ;
+}
+
 void JpegHuffmanTable::read (BinaryIO *io)
 {
-	JpegSegment::read (io) ;
+	if (lengthremaining == UINT_MAX) {
+		// this table is the first in the DHT segment
+		JpegSegment::read (io) ;
+	}
+
+	// count the number of bytes read for this huffman table
+	unsigned int bytecounter = 0 ;
 
 	splitByte (io->read8(), &tableclass, &tabledestid) ;
+	bytecounter++ ;
 	for (unsigned int i = 0 ; i < Len_bits ; i++) {
 		bits.push_back (io->read8()) ;
+		bytecounter++ ;
 	}
 
 	for (unsigned int l = 1 ; l <= Len_bits ; l++) {
 		for (unsigned int j = 0 ; j < getBits (l) ; j++) {
 			huffval.push_back (io->read8()) ;
+			bytecounter++ ;
 		}
+	}
+
+	if (lengthremaining == UINT_MAX) {
+		// this table is the first in the DHT segment
+		lengthremaining = getLength() - 2 /* length field */ - bytecounter ;
+		setLength (bytecounter + 2) ;
+	}
+	else {
+		setLength (bytecounter + 2) ;
+		if (bytecounter > lengthremaining) {
+			throw CorruptJpegError (io, "DHT segment is too short") ;
+		}
+		lengthremaining -= bytecounter ;
 	}
 
 	calcTables() ;

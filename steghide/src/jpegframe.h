@@ -24,6 +24,8 @@
 #include "binaryio.h"
 #include "jpegbase.h"
 #include "jpegframehdr.h"
+#include "jpeghufftable.h"
+#include "jpegscan.h"
 
 /**
  * \class JpegFrame
@@ -36,11 +38,42 @@ class JpegFrame : public JpegContainer {
 	~JpegFrame (void) ;
 
 	void read (BinaryIO *io) ;
+	void write (BinaryIO *io) ;
 
+	/**
+	 * get the frame header of this frame
+	 **/
 	JpegFrameHeader *getFrameHeader (void) ;
 
+	/**
+	 * get the DC huffman table for a given DC table destination specifier
+	 * \param ds DC table destination specifier
+	 * \return the DC huffman table corresponding to ds
+	 **/
+	JpegHuffmanTable *getDCTable (unsigned char ds) ;
+
+	/**
+	 * get the AC huffman table for a given AC table destination specifier
+	 * \param ds AC table destination specifier
+	 * \return the AC huffman table corresponding to ds
+	 **/
+	JpegHuffmanTable *getACTable (unsigned char ds) ;
+
+	/**
+	 * add a huffman table to this frame
+	 **/
+	void addHuffmanTable (JpegHuffmanTable *ht) ;
+
 	private:
+	void recalcACTables (vector<vector <unsigned long> > freqs) ;
+	vector<unsigned int> calcCodeSize (vector<unsigned long> freq) ;
+	vector<unsigned int> calcBits (vector<unsigned int> codesize) ;
+	vector<unsigned int> calcHuffVal (vector<unsigned int> codesize) ;
+
 	JpegFrameHeader *framehdr ;
+	JpegScan *scan ;
+	vector<JpegHuffmanTable*> DCTables ;
+	vector<JpegHuffmanTable*> ACTables ;
 } ;
 
 #endif // ndef SH_JEPGFRAME_H

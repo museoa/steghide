@@ -1,14 +1,13 @@
 INCLUDES = -I../intl -DLOCALEDIR=\"$(localedir)\"
 bin_PROGRAMS = steghide
 EXTRA_DIST = \
-arg.h        bmpfile.h     cvrstgobject.h  jpegcomment.h       jpegframehdr.h   jpegscan.h      msg.h      wavfile.h \
-arguments.h  bufmanag.h    error.h         jpegentropycoded.h  jpeghufftable.h  jpegscanhdr.h   plnfile.h \
-aufile.h     crypto.h      hash.h          jpegfile.h          jpegjfifapp0.h   jpegunsupseg.h  stegano.h \
-binaryio.h   cvrstgfile.h  jpegbase.h      jpegframe.h         jpegrestart.h    main.h          support.h
+arg.h        bmpfile.h     cvrstgobject.h  jpegentropycoded.h  jpeghufftable.h  jpegscanhdr.h    plnfile.h \
+arguments.h  bufmanag.h    error.h         jpegfile.h          jpegjfifapp0.h   jpegunusedseg.h  stegano.h \
+aufile.h     crypto.h      hash.h          jpegframe.h         jpegrestart.h    main.h           support.h \
+binaryio.h   cvrstgfile.h  jpegbase.h      jpegframehdr.h      jpegscan.h       msg.h            wavfile.h
 steghide_SOURCES = \
-arg.cc        bmpfile.cc     error.cc        jpegentropycoded.cc  jpeghufftable.cc  jpegscanhdr.cc   plnfile.cc \
-arguments.cc  bufmanag.cc    hash.cc         jpegfile.cc          jpegjfifapp0.cc   jpegunsupseg.cc  stegano.cc \
-aufile.cc     crypto.cc      jpegbase.cc     jpegframe.cc         jpegrestart.cc    main.cc          support.cc \
-binaryio.cc   cvrstgfile.cc  jpegcomment.cc  jpegframehdr.cc      jpegscan.cc       msg.cc           wavfile.cc
+arg.cc        binaryio.cc  crypto.cc      hash.cc              jpegfile.cc      jpeghufftable.cc  jpegscan.cc       main.cc     stegano.cc \
+arguments.cc  bmpfile.cc   cvrstgfile.cc  jpegbase.cc          jpegframe.cc     jpegjfifapp0.cc   jpegscanhdr.cc    msg.cc      support.cc \
+aufile.cc     bufmanag.cc  error.cc       jpegentropycoded.cc  jpegframehdr.cc  jpegrestart.cc    jpegunusedseg.cc  plnfile.cc  wavfile.cc
 localedir = $(datadir)/locale
 LIBTOOL = $(SHELL) libtool

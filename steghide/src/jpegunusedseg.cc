@@ -22,29 +22,29 @@
 
 #include "binaryio.h"
 #include "jpegbase.h"
-#include "jpegunsupseg.h"
+#include "jpegunusedseg.h"
 
-JpegUnsupportedSegment::JpegUnsupportedSegment()
+JpegUnusedSegment::JpegUnusedSegment()
 	: JpegSegment()
 {
 }
 
-JpegUnsupportedSegment::JpegUnsupportedSegment(JpegMarker m)
+JpegUnusedSegment::JpegUnusedSegment(JpegMarker m)
 	: JpegSegment(m)
 {
 }
 
-JpegUnsupportedSegment::JpegUnsupportedSegment(JpegMarker m, BinaryIO *io)
+JpegUnusedSegment::JpegUnusedSegment(JpegMarker m, BinaryIO *io)
 	: JpegSegment(m)
 {
 	read(io) ;
 }
 
-JpegUnsupportedSegment::~JpegUnsupportedSegment()
+JpegUnusedSegment::~JpegUnusedSegment()
 {
 }
 
-void JpegUnsupportedSegment::read(BinaryIO *io)
+void JpegUnusedSegment::read(BinaryIO *io)
 {
 	JpegSegment::read(io) ;
 	data.clear() ;
@@ -53,7 +53,7 @@ void JpegUnsupportedSegment::read(BinaryIO *io)
 	}
 }
 
-void JpegUnsupportedSegment::write (BinaryIO *io)
+void JpegUnusedSegment::write (BinaryIO *io)
 {
 	JpegSegment::write (io) ;
 	for (vector<unsigned char>::iterator i = data.begin() ; i != data.end() ; i++) {

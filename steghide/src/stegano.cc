@@ -295,7 +295,7 @@ void extractsthdr (CvrStgFile *cvrstgfile, int dmtd, DMTDINFO dmtdinfo, int enc,
 	bit = cp_bits_from_buf_le (hdrbuf, bit, &tmp, SIZE_COMPRESSION) ;
 	sthdr.compression = (unsigned int) tmp ;
 	if (sthdr.compression != COMPR_NONE) {
-		throw SteghideError (_("the plain data is compressed. this is not implemented yet (file corruption ?).")) ;
+		throw SteghideError (_("the plain data is compressed. this is not implemented in this version (file corruption ?).")) ;
 	}
 
 	bit = cp_bits_from_buf_le (hdrbuf, bit, &tmp, SIZE_CHECKSUM) ;

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-05-05 23:30+0200\n"
+"POT-Creation-Date: 2002-05-09 00:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Julien Catanese <julien_catanese@yahoo.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -120,20 +120,6 @@ msgstr "Entrez la passphrase: "
 #: support.cc:105
 msgid "Re-Enter passphrase: "
 msgstr "Entrez à nouveau la passphrase: "
-
-#: jpegquanttable.cc:54
-#, c-format
-msgid ""
-"The precision of a quantization table in the jpeg file \"%s\" is set to the "
-"invalid value %d."
-msgstr ""
-
-#: jpegquanttable.cc:51
-#, c-format
-msgid ""
-"The precision of a quantization table in the jpeg file on standard input is "
-"set to the invalid value %d."
-msgstr ""
 
 #: msg.cc:41
 msgid "__no_message_defined__"
@@ -277,21 +263,10 @@ msgid ""
 "\" for help."
 msgstr "l'argument \"%s\" peut seulement être utilisé avec la commande \"embed\". tapez \"%s --help\" pour l'aide."
 
-#: jpegentropycoded.cc:216
-#, c-format
-msgid "corrupt jpeg file \"%s\". Entropy coded data interrupted by marker."
-msgstr ""
-
 #: error.cc:153
 #, fuzzy, c-format
 msgid "corrupt jpeg file \"%s\":"
 msgstr "n'a pas pu ouvrir le fichier \"%s\"."
-
-#: jpegentropycoded.cc:213
-msgid ""
-"corrupt jpeg file on standard input. Entropy coded data interrupted by "
-"marker."
-msgstr ""
 
 #: error.cc:150
 #, fuzzy
@@ -330,7 +305,7 @@ msgstr "n'a pas pu chiffrer les données à cacher. a échoué au bloc numéro %lu"
 msgid "could not encrypt stego header."
 msgstr "n'a pas pu chiffrer l'entête stégo."
 
-#: jpegframe.cc:64 jpegscan.cc:104
+#: jpegframe.cc:95 jpegscan.cc:80
 msgid "could not find start of marker (0xff)."
 msgstr ""
 
@@ -436,26 +411,26 @@ msgstr "camouflage des données à cacher."
 msgid "embedding stego header."
 msgstr "camouflage de l'entête stégo."
 
-#: jpegframe.cc:104
+#: jpegframe.cc:149
 #, c-format
 msgid ""
 "encountered unknown marker code 0x%x in jpeg file \"%s\" while reading frame."
 msgstr ""
 
-#: jpegscan.cc:159
+#: jpegscan.cc:138
 #, c-format
 msgid ""
 "encountered unknown marker code 0x%x in jpeg file \"%s\" while reading scan."
 msgstr ""
 
-#: jpegframe.cc:101
+#: jpegframe.cc:146
 #, c-format
 msgid ""
 "encountered unknown marker code 0x%x in jpeg file on standard input while "
 "reading frame."
 msgstr ""
 
-#: jpegscan.cc:156
+#: jpegscan.cc:135
 #, c-format
 msgid ""
 "encountered unknown marker code 0x%x in jpeg file on standard input while "
@@ -465,6 +440,11 @@ msgstr ""
 #: crypto.cc:125
 msgid "encrypting plain data."
 msgstr "chiffrement des données à cacher."
+
+#: jpegentropycoded.cc:215
+#, c-format
+msgid "entropy coded data interrupted by marker 0x%x."
+msgstr ""
 
 #: error.cc:36
 msgid "error, exiting. (no error message defined)"
@@ -478,7 +458,7 @@ msgstr "extraction des données cachées."
 msgid "extracting stego header."
 msgstr "extraction de l'entête stégo."
 
-#: jpegscan.cc:118
+#: jpegframe.cc:110 jpegscan.cc:93
 #, c-format
 msgid "huffman table has destination specifier %u (0-3 is allowed)."
 msgstr ""
@@ -772,6 +752,20 @@ msgstr "l'argument force peut seulement être utilisé une fois. tapez \"%s --help
 msgid "the interval length for the cnsti method must be smaller than %d."
 msgstr "la longueur d'intervalle pour la méthode cnsti doit être plus petite que %d."
 
+#: jpegframe.cc:141
+#, fuzzy, c-format
+msgid ""
+"the jpeg file \"%s\" uses progressive DCT mode which is not supported in "
+"this version."
+msgstr "les données bitmap dans \"%s\" sont compréssées de manière non supportée."
+
+#: jpegframe.cc:138
+#, fuzzy
+msgid ""
+"the jpeg file on standard input uses progressive DCT mode which is not "
+"supported in this version."
+msgstr "le fichier wav à partir de l'entrée standard a un format non supporté."
+
 #: stegano.cc:285
 #, fuzzy
 msgid ""
@@ -810,8 +804,9 @@ msgid "the passphrases do not match."
 msgstr "les passphrases ne correspondent pas."
 
 #: stegano.cc:298
+#, fuzzy
 msgid ""
-"the plain data is compressed. this is not implemented yet (file "
+"the plain data is compressed. this is not implemented in this version (file "
 "corruption ?)."
 msgstr "les données cachées sont compréssées. ceci n'est pas encore implémenté (fichier corrompu ?)."
 

@@ -27,17 +27,15 @@
 #include "jpegbase.h"
 
 /**
- * \class JpegUnsupportedSegment
- * \brief an unsupported jpeg segment
- *
- * A jpeg segment that is not supported (not needed), for example some APPn segments.
+ * \class JpegUnusedSegment
+ * \brief a jpeg segment that is not used by steghide
  **/
-class JpegUnsupportedSegment : public JpegSegment {
+class JpegUnusedSegment : public JpegSegment {
 	public:
-	JpegUnsupportedSegment(void) ;
-	JpegUnsupportedSegment(JpegMarker m) ;
-	JpegUnsupportedSegment(JpegMarker m, BinaryIO *io) ;
-	virtual ~JpegUnsupportedSegment(void) ;
+	JpegUnusedSegment(void) ;
+	JpegUnusedSegment(JpegMarker m) ;
+	JpegUnusedSegment(JpegMarker m, BinaryIO *io) ;
+	virtual ~JpegUnusedSegment(void) ;
 
 	void read (BinaryIO *io) ;
 	void write (BinaryIO *io) ;
