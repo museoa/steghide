@@ -27,6 +27,7 @@
 
 #include "arguments.h"
 #include "bufmanag.h"
+#include "error.h"
 #include "hash.h"
 #include "main.h"
 #include "msg.h"
@@ -41,10 +42,12 @@ PLNFILE *pln_readfile (char *filename)
 	unsigned long bufpos = 0 ;
 
 	if (filename == NULL) {
-		pverbose (_("reading plain file from standard input.")) ;
+		VerboseMessage v (_("reading plain file from standard input.")) ;
+		v.printMessage() ;
 	}
 	else {
-		pverbose (_("reading plain file \"%s\"."), filename) ;
+		VerboseMessage v (_("reading plain file \"%s\"."), filename) ;
+		v.printMessage() ;
 	}
 
 	plnfile = (PLNFILE *) s_malloc (sizeof *plnfile) ;
@@ -55,7 +58,7 @@ PLNFILE *pln_readfile (char *filename)
 	}
 	else {
 		if ((plnfile->stream = fopen (filename, "rb")) == NULL) {
-			exit_err (_("could not open file \"%s\"."), filename) ;
+			throw SteghideError (_("could not open file \"%s\"."), filename) ;
 		}
 		plnfile->filename = filename ;
 	}
@@ -69,10 +72,10 @@ PLNFILE *pln_readfile (char *filename)
 
 	if (ferror (plnfile->stream)) {
 		if (plnfile->filename == NULL) {
-			exit_err (_("an error occured while reading the plain data from standard input.")) ;
+			throw SteghideError (_("an error occured while reading the plain data from standard input.")) ;
 		}
 		else {
-			exit_err (_("an error occured while reading the file \"%s\"."), filename) ;
+			throw SteghideError (_("an error occured while reading the file \"%s\"."), filename) ;
 		}
 	}
 
@@ -86,10 +89,12 @@ void pln_writefile (PLNFILE *plnfile)
 	unsigned long bufpos = 0 ;
 
 	if (plnfile->filename == NULL) {
-		pverbose (_("writing plain file to standard output.")) ;
+		VerboseMessage v (_("writing plain file to standard output.")) ;
+		v.printMessage() ;
 	}
 	else {
-		pmsg (_("writing plain file to \"%s\"."), plnfile->filename) ;
+		Message m (_("writing plain file to \"%s\"."), plnfile->filename) ;
+		m.printMessage() ;
 	}
 
 	if (plnfile->filename == NULL) {
@@ -98,7 +103,7 @@ void pln_writefile (PLNFILE *plnfile)
 	else {
 		checkforce (plnfile->filename) ;
 		if ((plnfile->stream = fopen (plnfile->filename, "wb")) == NULL) {
-			exit_err (_("could not create plain file \"%s\"."), plnfile->filename) ;
+			throw SteghideError (_("could not create plain file \"%s\"."), plnfile->filename) ;
 		}
 	}
 
@@ -109,10 +114,10 @@ void pln_writefile (PLNFILE *plnfile)
 
 	if (ferror (plnfile->stream)) {
 		if (plnfile->filename == NULL) {
-			exit_err (_("an error occured while writing the plain data to standard output.")) ;
+			throw SteghideError (_("an error occured while writing the plain data to standard output.")) ;
 		}
 		else {
-			exit_err (_("an error occured while writing to the file \"%s\"."), plnfile->filename) ;
+			throw SteghideError (_("an error occured while writing to the file \"%s\"."), plnfile->filename) ;
 		}
 	}
 
@@ -140,7 +145,7 @@ void assemble_plndata (PLNFILE *plnfile)
 		tmp = stripdir ((char *) args->plnfn.getValue().c_str()) ;
 
 		if ((nbytes_plnfilename = strlen (tmp)) > PLNFILENAME_MAXLEN) {
-			exit_err (_("the maximum length for the plain file name is %d characters."), PLNFILENAME_MAXLEN) ;
+			throw SteghideError (_("the maximum length for the plain file name is %d characters."), PLNFILENAME_MAXLEN) ;
 		}
 		bufsetbyte (buf, pos++, nbytes_plnfilename) ;
 		
@@ -197,7 +202,7 @@ void deassemble_plndata (PLNFILE *plnfile)
 		assert (args->plnfn.getValue() == "") ;
 
 		if (nbytes_plnfilename == 0) {
-			exit_err (_("please specify a name for the plain file (there is none embedded in the stego file).")) ;
+			throw SteghideError (_("please specify a name for the plain file (there is none embedded in the stego file).")) ;
 		}
 
 		plnfile->filename = (char *) s_malloc (strlen (plnfilename) + 1) ;
@@ -218,10 +223,12 @@ void deassemble_plndata (PLNFILE *plnfile)
 
 	if (sthdr.checksum == CHECKSUM_CRC32) {
 		if (checkcrc32 (plnfile, uc_crc32)) {
-			pverbose (_("crc32 checksum test ok.")) ;
+			VerboseMessage v (_("crc32 checksum test ok.")) ;
+			v.printMessage() ;
 		}
 		else {
-			pwarn (_("crc32 checksum failed! extracted data is probably corrupted.")) ;
+			CriticalWarning w (_("crc32 checksum failed! extracted data is probably corrupted.")) ;
+			w.printMessage() ;
 		}
 	}
 

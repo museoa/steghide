@@ -93,7 +93,7 @@ char *get_passphrase (bool doublecheck)
 	oldattr = termios_echo_off () ;
 	while ((c = getchar ()) != '\n') {
 		if (i == PASSPHRASE_MAXLEN) {
-			exit_err (_("the maximum length of the passphrase is %d characters."), PASSPHRASE_MAXLEN) ;
+			throw SteghideError (_("the maximum length of the passphrase is %d characters."), PASSPHRASE_MAXLEN) ;
 		}
 		p1[i++] = c ;
 	}
@@ -107,7 +107,7 @@ char *get_passphrase (bool doublecheck)
 		i = 0 ;
 		while ((c = getchar ()) != '\n') {
 			if (i == PASSPHRASE_MAXLEN) {
-				exit_err (_("the maximum length of the passphrase is %d characters."), PASSPHRASE_MAXLEN) ;
+				throw SteghideError (_("the maximum length of the passphrase is %d characters."), PASSPHRASE_MAXLEN) ;
 			}
 			p2[i++] = c ;
 		}
@@ -116,7 +116,7 @@ char *get_passphrase (bool doublecheck)
 		printf ("\n") ;
 
 		if (strcmp (p1, p2) != 0) {
-			exit_err (_("the passphrases do not match.")) ;
+			throw SteghideError (_("the passphrases do not match.")) ;
 		}
 	}
 
@@ -128,14 +128,14 @@ struct termios termios_echo_off (void)
 	struct termios attr, retval ;
 
 	if ((tcgetattr (STDIN_FILENO, &attr)) != 0) {
-		exit_err (_("could not get terminal attributes.")) ;
+		throw SteghideError (_("could not get terminal attributes.")) ;
 	}
 	retval = attr ;
 
 	attr.c_lflag &= ~ECHO ;
 
 	if ((tcsetattr (STDIN_FILENO, TCSAFLUSH, &attr)) != 0) {
-		exit_err (_("could not set terminal attributes.")) ;
+		throw SteghideError (_("could not set terminal attributes.")) ;
 	}
 
 	return retval ;
@@ -146,7 +146,7 @@ struct termios termios_singlekey_on (void)
 	struct termios attr, retval ;
 
 	if ((tcgetattr (STDIN_FILENO, &attr)) != 0) {
-		exit_err (_("could not get terminal attributes.")) ;
+		throw SteghideError (_("could not get terminal attributes.")) ;
 	}
 	retval = attr ;
 
@@ -155,7 +155,7 @@ struct termios termios_singlekey_on (void)
 	attr.c_cc[VMIN] = 1 ;
 
 	if ((tcsetattr (STDIN_FILENO, TCSAFLUSH, &attr)) != 0) {
-		exit_err (_("could not set terminal attributes.")) ;
+		throw SteghideError (_("could not set terminal attributes.")) ;
 	}
 
 	return retval ;
@@ -164,7 +164,7 @@ struct termios termios_singlekey_on (void)
 void termios_reset (struct termios attr)
 {
 	if ((tcsetattr (STDIN_FILENO, TCSANOW, &attr)) != 0) {
-		exit_err (_("could not set terminal attributes.")) ;
+		throw SteghideError (_("could not set terminal attributes.")) ;
 	}
 }
 
@@ -219,7 +219,7 @@ void *s_malloc (size_t size)
 	void *retval = NULL ;
 
 	if ((retval = malloc (size)) == NULL) {
-		exit_err (_("could not allocate memory.")) ;
+		throw SteghideError (_("could not allocate memory.")) ;
 	}
 
 	return retval ;
@@ -230,7 +230,7 @@ void *s_calloc (size_t nmemb, size_t size)
 	void *retval = NULL ;
 
 	if ((retval = calloc (nmemb, size)) == NULL) {
-		exit_err (_("could not allocate memory.")) ;
+		throw SteghideError (_("could not allocate memory.")) ;
 	}
 
 	return retval ;
@@ -241,7 +241,7 @@ void *s_realloc (void *ptr, size_t size)
 	void *retval = NULL ;
 
 	if ((retval = realloc (ptr, size)) == NULL) {
-		exit_err (_("could not reallocate memory.")) ;
+		throw SteghideError (_("could not reallocate memory.")) ;
 	}
 
 	return retval ;
@@ -328,26 +328,34 @@ unsigned int nbits (unsigned long x)
 	return n ;
 }
 
+bool stdin_isused (void)
+{
+	bool retval = false ;
+
+	if (args->command.getValue() == EMBED &&
+		(args->plnfn.getValue() == "" ||
+		args->cvrfn.getValue() == "")) {
+		retval = true ;
+	}
+	if (args->command.getValue() == EXTRACT &&
+		args->stgfn.getValue() == "") {
+		retval = true ;
+	}
+
+	return retval ;
+}
+
 void checkforce (const char *filename)
 {
 	if (!args->force.getValue()) {
 		if (fileexists ((char *) filename)) {
-			bool stdin_isused = false ;
-			if (args->command.getValue() == EMBED &&
-				(args->plnfn.getValue() == "" ||
-				args->cvrfn.getValue() == "")) {
-				stdin_isused = true ;
-			}
-			if (args->command.getValue() == EXTRACT &&
-				args->stgfn.getValue() == "") {
-				stdin_isused = true ;
-			}
-
-			if (stdin_isused) {
+			if (stdin_isused()) {
 				throw SteghideError (_("the file \"%s\" does already exist."), filename) ;
 			}
 			else {
-				if (!pquestion (_("the file \"%s\" does already exist. overwrite ?"), filename)) {
+				Question q (_("the file \"%s\" does already exist. overwrite ?"), filename) ;
+				q.printMessage() ;
+				if (!q.getAnswer()) {
 					throw SteghideError (_("did not write to file \"%s\"."), filename) ;
 				}
 			}

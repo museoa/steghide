@@ -350,9 +350,8 @@ static void embedfile (string cvrfilename, string stgfilename, string plnfilenam
 	delete cvrstgfile ;
 	pln_cleanup (plnfile) ;
 
-	pverbose (_("done.")) ;
-
-	return ;
+	VerboseMessage v (_("done.")) ;
+	v.printMessage() ;
 }
 
 /* calls functions to extract (and save) plain data from stego data */
@@ -381,9 +380,8 @@ static void extractfile (string stgfilename, string plnfilename)
 	delete stgfile ;
 	pln_cleanup (plnfile) ;
 
-	pverbose (_("done.")) ;
-
-	return ;
+	VerboseMessage v (_("done.")) ;
+	v.printMessage() ;
 }
 
 static void cleanup (void)

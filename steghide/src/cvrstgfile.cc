@@ -39,18 +39,22 @@ void CvrStgFile::read (BinaryIO *io)
 
 	if (args->command.getValue() == EMBED) {
 		if (BinIO->is_std()) {
-			pverbose (_("reading cover file from standard input.")) ;
+			VerboseMessage v (_("reading cover file from standard input.")) ;
+			v.printMessage() ;
 		}
 		else {
-			pverbose (_("reading cover file \"%s\"."), BinIO->getName().c_str()) ;
+			VerboseMessage v (_("reading cover file \"%s\"."), BinIO->getName().c_str()) ;
+			v.printMessage() ;
 		}
 	}
 	else if (args->command.getValue() == EXTRACT) {
 		if (BinIO->is_std()) {
-			pverbose (_("reading stego file from standard input.")) ;
+			VerboseMessage v (_("reading stego file from standard input.")) ;
+			v.printMessage() ;
 		}
 		else {
-			pverbose (_("reading stego file \"%s\"."), BinIO->getName().c_str()) ;
+			VerboseMessage v (_("reading stego file \"%s\"."), BinIO->getName().c_str()) ;
+			v.printMessage() ;
 		}
 	}
 	else {
@@ -61,10 +65,12 @@ void CvrStgFile::read (BinaryIO *io)
 void CvrStgFile::write (void)
 {
 	if (BinIO->is_std()) {
-		pverbose (_("writing stego file to standard output.")) ;
+		VerboseMessage v (_("writing stego file to standard output.")) ;
+		v.printMessage() ;
 	}
 	else {
-		pverbose (_("writing stego file \"%s\"."), BinIO->getName().c_str()) ;
+		VerboseMessage v (_("writing stego file \"%s\"."), BinIO->getName().c_str()) ;
+		v.printMessage() ;
 	}
 }
 

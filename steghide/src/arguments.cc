@@ -4,6 +4,7 @@
 #define _(S) gettext (S)
 
 #include "arguments.h"
+#include "error.h"
 #include "main.h"
 #include "msg.h"
 #include "support.h"
@@ -43,21 +44,24 @@ void Arguments::parse (int argc, char *argv[])
 	else if (string (argv[1]) == "version" || string (argv[1]) == "--version") {
 		command.setValue (SHOWVERSION) ;
 		if (argc > 2) {
-			pwarn (_("you cannot use arguments with the \"version\" command")) ;
+			Warning w (_("you cannot use arguments with the \"version\" command")) ;
+			w.printMessage() ;
 		}
 		return ;
 	}
 	else if (string (argv[1]) == "license" || string (argv[1]) == "--license") {
 		command.setValue (SHOWLICENSE) ;
 		if (argc > 2) {
-			pwarn (_("you cannot use arguments with the \"license\" command")) ;
+			Warning w (_("you cannot use arguments with the \"license\" command")) ;
+			w.printMessage() ;
 		}
 		return ;
 	}
 	else if (string (argv[1]) == "help" || string (argv[1]) == "--help") {
 		command.setValue (SHOWHELP) ;
 		if (argc > 2) {
-			pwarn (_("you cannot use arguments with the \"help\" command")) ;
+			Warning w (_("you cannot use arguments with the \"help\" command")) ;
+			w.printMessage() ;
 		}
 		return ;
 	}
@@ -68,7 +72,7 @@ void Arguments::parse (int argc, char *argv[])
 	}
 #endif
 	else {
-		exit_err (_("unknown command \"%s\". type \"%s --help\" for help."), argv[1], PROGNAME) ;
+		throw SteghideError (_("unknown command \"%s\". type \"%s --help\" for help."), argv[1], PROGNAME) ;
 	}
 
 	// parse rest of arguments
@@ -77,15 +81,15 @@ void Arguments::parse (int argc, char *argv[])
 			unsigned int tmp = 0 ;
 
 			if (command.getValue() != EMBED) {
-				exit_err (_("the argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
+				throw SteghideError (_("the argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
 
 			if (dmtd.is_set()) {
-				exit_err (_("the distribution argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
+				throw SteghideError (_("the distribution argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
 
 			if (++i == argc) {
-				exit_err (_("the argument \"%s\" is incomplete. type \"%s --help\" for help."), argv[i - 1], PROGNAME) ;
+				throw SteghideError (_("the argument \"%s\" is incomplete. type \"%s --help\" for help."), argv[i - 1], PROGNAME) ;
 			}
 
 			if (string (argv[i]) == "cnsti") {
@@ -96,7 +100,7 @@ void Arguments::parse (int argc, char *argv[])
 
 					i++ ;
 					if ((tmp = readnum (argv[i])) > DMTD_CNSTI_MAX_ILEN) {
-						exit_err (_("the interval length for the cnsti method must be smaller than %d."), DMTD_CNSTI_MAX_ILEN + 1) ;
+						throw SteghideError (_("the interval length for the cnsti method must be smaller than %d."), DMTD_CNSTI_MAX_ILEN + 1) ;
 					}
 
 					di.cnsti.interval_len = tmp ;
@@ -111,7 +115,7 @@ void Arguments::parse (int argc, char *argv[])
 
 					i++ ;
 					if ((tmp = readnum (argv[i])) > DMTD_PRNDI_MAX_IMLEN) {
-						exit_err (_("the maximum interval length for the prndi method must be smaller than %d."), DMTD_PRNDI_MAX_IMLEN + 1) ;
+						throw SteghideError (_("the maximum interval length for the prndi method must be smaller than %d."), DMTD_PRNDI_MAX_IMLEN + 1) ;
 					}
 
 					di.prndi.interval_maxlen = tmp ;
@@ -119,17 +123,17 @@ void Arguments::parse (int argc, char *argv[])
 				}
 			}
 			else {
-				exit_err (_("unknown distribution method \"%s\". type \"%s --help\" for help."), argv[i], PROGNAME) ;
+				throw SteghideError (_("unknown distribution method \"%s\". type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
 		}
 
 		else if (string (argv[i]) == "-e" || string (argv[i]) == "--encryption") {
 			if (command.getValue() != EMBED) {
-				exit_err (_("the argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
+				throw SteghideError (_("the argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
 
 			if (encryption.is_set()) {
-				exit_err (_("the encryption argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
+				throw SteghideError (_("the encryption argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
 
 			encryption.setValue (true) ;
@@ -137,11 +141,11 @@ void Arguments::parse (int argc, char *argv[])
 
 		else if (string (argv[i]) == "-E" || string (argv[i]) == "--noencryption") {
 			if (command.getValue () != EMBED) {
-				exit_err (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
+				throw SteghideError (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
 
 			if (encryption.is_set()) {
-				exit_err (_("the encryption argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
+				throw SteghideError (_("the encryption argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
 
 			encryption.setValue (false) ;
@@ -149,7 +153,7 @@ void Arguments::parse (int argc, char *argv[])
 
 		else if (string (argv[i]) == "-h" || string (argv[i]) == "--sthdrencryption") {
 			if (sthdrencryption.is_set()) {
-				exit_err (_("the stego header encryption argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
+				throw SteghideError (_("the stego header encryption argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
 
 			sthdrencryption.setValue (true) ;
@@ -157,7 +161,7 @@ void Arguments::parse (int argc, char *argv[])
 
 		else if (string (argv[i]) == "-H" || string (argv[i]) == "--nosthdrencryption") {
 			if (sthdrencryption.is_set()) {
-				exit_err (_("the stego header encryption argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
+				throw SteghideError (_("the stego header encryption argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
 
 			sthdrencryption.setValue (false) ;
@@ -165,11 +169,11 @@ void Arguments::parse (int argc, char *argv[])
 
 		else if (string (argv[i]) == "-k" || string (argv[i]) == "--checksum") {
 			if (command.getValue() != EMBED) {
-				exit_err (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
+				throw SteghideError (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
 
 			if (checksum.is_set()) {
-				exit_err (_("the checksum argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
+				throw SteghideError (_("the checksum argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
 
 			checksum.setValue (true) ;
@@ -177,11 +181,11 @@ void Arguments::parse (int argc, char *argv[])
 
 		else if (string (argv[i]) == "-K" || string (argv[i]) == "--nochecksum") {
 			if (command.getValue() != EMBED) {
-				exit_err (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
+				throw SteghideError (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
 
 			if (checksum.is_set()) {
-				exit_err (_("the checksum argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
+				throw SteghideError (_("the checksum argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
 
 			checksum.setValue (false) ;
@@ -189,11 +193,11 @@ void Arguments::parse (int argc, char *argv[])
 
 		else if (string (argv[i]) == "-n" || string (argv[i]) == "--embedplainname") {
 			if (command.getValue() != EMBED) {
-				exit_err (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
+				throw SteghideError (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
 
 			if (embedplnfn.is_set()) {
-				exit_err (_("the plain file name embedding argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
+				throw SteghideError (_("the plain file name embedding argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
 
 			embedplnfn.setValue (true) ;
@@ -201,11 +205,11 @@ void Arguments::parse (int argc, char *argv[])
 
 		else if (string (argv[i]) == "-N" || string (argv[i]) == "--notembedplainname") {
 			if (command.getValue() != EMBED) {
-				exit_err (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
+				throw SteghideError (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
 
 			if (embedplnfn.is_set()) {
-				exit_err (_("the plain file name embedding argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
+				throw SteghideError (_("the plain file name embedding argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
 
 			embedplnfn.setValue (false) ;
@@ -213,7 +217,7 @@ void Arguments::parse (int argc, char *argv[])
 
 		else if (string (argv[i]) == "-c" || string (argv[i]) == "--compatibility") {
 			if (compatibility.is_set()) {
-				exit_err (_("the compatibility argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
+				throw SteghideError (_("the compatibility argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
 
 			compatibility.setValue (true) ;
@@ -221,15 +225,15 @@ void Arguments::parse (int argc, char *argv[])
 
 		else if (string (argv[i]) == "-p" || string (argv[i]) == "--passphrase") {
 			if (passphrase.is_set()) {
-				exit_err (_("the passphrase argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
+				throw SteghideError (_("the passphrase argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
 
 			if (++i == argc) {
-				exit_err (_("the \"%s\" argument must be followed by the passphrase. type \"%s --help\" for help."), argv[i], PROGNAME) ;
+				throw SteghideError (_("the \"%s\" argument must be followed by the passphrase. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
 
 			if (strlen (argv[i]) > PASSPHRASE_MAXLEN) {
-				exit_err (_("the maximum length of the passphrase is %d characters."), PASSPHRASE_MAXLEN) ;
+				throw SteghideError (_("the maximum length of the passphrase is %d characters."), PASSPHRASE_MAXLEN) ;
 			}
 			passphrase.setValue (argv[i]) ;
 
@@ -241,15 +245,15 @@ void Arguments::parse (int argc, char *argv[])
 
 		else if (string (argv[i]) == "-cf" || string (argv[i]) == "--coverfile") {
 			if (command.getValue() != EMBED) {
-				exit_err (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
+				throw SteghideError (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
 
 			if (cvrfn.is_set()) {
-				exit_err (_("the cover file name argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
+				throw SteghideError (_("the cover file name argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
 
 			if (++i == argc) {
-				exit_err (_("the \"%s\" argument must be followed by the cover file name. type \"%s --help\" for help."), argv[i - 1], PROGNAME) ;
+				throw SteghideError (_("the \"%s\" argument must be followed by the cover file name. type \"%s --help\" for help."), argv[i - 1], PROGNAME) ;
 			}
 
 			if (string (argv[i]) == "-") {
@@ -262,11 +266,11 @@ void Arguments::parse (int argc, char *argv[])
 
 		else if (string (argv[i]) == "-sf" || string (argv[i]) == "--stegofile") {
 			if (stgfn.is_set()) {
-				exit_err (_("the stego file name argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
+				throw SteghideError (_("the stego file name argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
 
 			if (++i == argc) {
-				exit_err (_("the \"%s\" argument must be followed by the stego file name. type \"%s --help\" for help."), argv[i - 1], PROGNAME) ;
+				throw SteghideError (_("the \"%s\" argument must be followed by the stego file name. type \"%s --help\" for help."), argv[i - 1], PROGNAME) ;
 			}
 
 			if (string (argv[i]) == "-") {
@@ -279,11 +283,11 @@ void Arguments::parse (int argc, char *argv[])
 
 		else if (string (argv[i]) == "-pf" || string (argv[i]) == "--plainfile") {
 			if (plnfn.is_set()) {
-				exit_err (_("the plain file name argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
+				throw SteghideError (_("the plain file name argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
 
 			if (++i == argc) {
-				exit_err (_("the \"%s\" argument must be followed by the plain file name. type \"%s --help\" for help."), argv[i - 1], PROGNAME) ;
+				throw SteghideError (_("the \"%s\" argument must be followed by the plain file name. type \"%s --help\" for help."), argv[i - 1], PROGNAME) ;
 			}
 
 			if (string (argv[i]) == "-") {
@@ -296,7 +300,7 @@ void Arguments::parse (int argc, char *argv[])
 
 		else if (string (argv[i]) == "-f" || string (argv[i]) == "--force") {
 			if (force.is_set()) {
-				exit_err (_("the force argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
+				throw SteghideError (_("the force argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
 
 			force.setValue (true);
@@ -304,7 +308,7 @@ void Arguments::parse (int argc, char *argv[])
 
 		else if (string (argv[i]) == "-q" || string (argv[i]) == "--quiet") {
 			if (verbosity.is_set()) {
-				exit_err (_("the \"%s\" argument cannot be used here because the verbosity has already been set."), argv[i]) ;
+				throw SteghideError (_("the \"%s\" argument cannot be used here because the verbosity has already been set."), argv[i]) ;
 			}
 
 			verbosity.setValue (QUIET) ;
@@ -312,21 +316,21 @@ void Arguments::parse (int argc, char *argv[])
 
 		else if (string (argv[i]) == "-v" || string (argv[i]) == "--verbose") {
 			if (verbosity.is_set()) {
-				exit_err (_("the \"%s\" argument cannot be used here because the verbosity has already been set."), argv[i]) ;
+				throw SteghideError (_("the \"%s\" argument cannot be used here because the verbosity has already been set."), argv[i]) ;
 			}
 
 			verbosity.setValue (VERBOSE) ;
 		}
 
 		else {
-			exit_err (_("unknown argument \"%s\". type \"%s --help\" for help."), argv[i], PROGNAME) ;
+			throw SteghideError (_("unknown argument \"%s\". type \"%s --help\" for help."), argv[i], PROGNAME) ;
 		}
 	}
 
 	// argument post-processing 
 	if (command.getValue() == EMBED) {
 		if ((cvrfn.getValue() == "") && (plnfn.getValue() == "")) {
-			exit_err (_("standard input cannot be used for cover AND plain data. type \"%s --help\" for help."), PROGNAME) ;
+			throw SteghideError (_("standard input cannot be used for cover AND plain data. type \"%s --help\" for help."), PROGNAME) ;
 		}
 	}
 
@@ -334,13 +338,13 @@ void Arguments::parse (int argc, char *argv[])
 		// prompt for passphrase
 		if (command.getValue() == EMBED) {
 			if ((cvrfn.getValue() == "") || (plnfn.getValue() == "")) {
-				exit_err (_("if standard input is used, the passphrase must be specified on the command line.")) ;
+				throw SteghideError (_("if standard input is used, the passphrase must be specified on the command line.")) ;
 			}
 			passphrase.setValue (get_passphrase (true)) ;
 		}
 		else if (command.getValue() == EXTRACT) {
 			if (stgfn.getValue() == "") {
-				exit_err (_("if standard input is used, the passphrase must be specified on the command line.")) ;
+				throw SteghideError (_("if standard input is used, the passphrase must be specified on the command line.")) ;
 			}
 			passphrase.setValue (get_passphrase (false)) ;
 		}

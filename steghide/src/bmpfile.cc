@@ -306,14 +306,16 @@ void BmpFile::bmpwin_readheaders ()
 		switch (bmi.win.bmih.biBitCount) {
 			case 1:
 			if (args->command.getValue() == EMBED) {
-				pwarn (_("using a black/white bitmap as cover is very insecure!")) ;
+				Warning w (_("using a black/white bitmap as cover is very insecure!")) ;
+				w.printMessage() ;
 			}
 			bmi.win.ncolors = 2 ;
 			break ;
 
 			case 4:
 			if (args->command.getValue() == EMBED) {
-				pwarn (_("using a 16-color bitmap as cover is very insecure!")) ;
+				Warning w (_("using a 16-color bitmap as cover is very insecure!")) ;
+				w.printMessage() ;
 			}
 			bmi.win.ncolors = 16 ;
 			break ;
@@ -336,7 +338,8 @@ void BmpFile::bmpwin_readheaders ()
 			bmi.win.colors[i].rgbGreen = BinIO->read8() ;
 			bmi.win.colors[i].rgbRed = BinIO->read8() ;
 			if ((bmi.win.colors[i].rgbReserved = BinIO->read8()) != 0) {
-				pwarn (_("maybe corrupted windows bmp data (Reserved in RGBQUAD is non-zero).")) ;
+				Warning w (_("maybe corrupted windows bmp data (Reserved in RGBQUAD is non-zero).")) ;
+				w.printMessage() ;
 			}
 		}
 	}
@@ -366,14 +369,16 @@ void BmpFile::bmpos2_readheaders ()
 		switch (bmi.os2.bmch.bcBitCount) {
 			case 1:
 			if (args->command.getValue() == EMBED) {
-				pwarn (_("using a black/white bitmap as cover is very insecure!")) ;
+				Warning w (_("using a black/white bitmap as cover is very insecure!")) ;
+				w.printMessage() ;
 			}
 			bmi.os2.ncolors = 2 ;
 			break ;
 
 			case 4:
 			if (args->command.getValue() == EMBED) {
-				pwarn (_("using a 16-color bitmap as cover is very insecure!")) ;
+				Warning w (_("using a 16-color bitmap as cover is very insecure!")) ;
+				w.printMessage() ;
 			}
 			bmi.os2.ncolors = 16 ;
 			break ;
@@ -554,7 +559,8 @@ void BmpFile::readdata ()
 
 			for (int i = 0 ; i < paddinglength ; i++) {
 				if (BinIO->read8() != 0) {
-					pwarn (_("maybe corrupted bmp data (padding byte set to non-zero).")) ;
+					Warning w (_("maybe corrupted bmp data (padding byte set to non-zero).")) ;
+					w.printMessage() ;
 				}
 			}
 		}

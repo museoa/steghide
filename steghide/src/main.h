@@ -27,7 +27,7 @@
 
 #include "stegano.h"
 
-#define PROGNAME	"steghide"
+#define PROGNAME "steghide"
 
 #ifdef WIN32
 #include <windows.h>

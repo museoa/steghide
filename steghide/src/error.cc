@@ -5,37 +5,19 @@
 #include <libintl.h>
 #define _(S) gettext (S)
 
-#include "main.h"
 #include "error.h"
+#include "main.h"
 
-SteghideError::SteghideError (void)
-{
-	setMessage (_("no error message defined")) ;
-}
-
-SteghideError::SteghideError (string msg)
-{
-	SteghideError() ;
-	setMessage (msg) ;
-}
-
+//
+// class SteghideError
+//
 SteghideError::SteghideError (const char *msgfmt, ...)
+	: MessageBase()
 {
 	va_list ap ;
-	
 	va_start (ap, msgfmt) ;
 	setMessage (vcompose (msgfmt, ap)) ;
 	va_end (ap) ;
-}
-
-string SteghideError::getMessage (void)
-{
-	return message ;
-}
-
-void SteghideError::setMessage (string msg)
-{
-	message = msg ;
 }
 
 void SteghideError::printMessage (void)
@@ -43,28 +25,9 @@ void SteghideError::printMessage (void)
 	cerr << PROGNAME << ": " << getMessage() << endl ;
 }
 
-string SteghideError::compose (const char *msgfmt, ...)
-{
-    va_list ap ;
-	string retval ;
-
-    va_start (ap, msgfmt) ;
-	retval = vcompose (msgfmt, ap) ;
-    va_end (ap) ;
-
-    return retval ;
-}
-
-string SteghideError::vcompose (const char *msgfmt, va_list ap)
-{
-	char *str = (char *) malloc (errmsg_maxsize) ;
-
-	vsnprintf (str, errmsg_maxsize, msgfmt, ap) ;
-
-	return string (str) ;
-}
-
-
+//
+// class BinaryInputError
+//
 BinaryInputError::BinaryInputError (string fn, FILE* s)
 {
 	if (feof (s)) {
@@ -99,7 +62,9 @@ void BinaryInputError::setType (BinaryInputError::TYPE t)
 	type = t ;
 }
 
-
+//
+// class BinaryOutputError
+//
 BinaryOutputError::BinaryOutputError (string fn)
 {
 	if (fn == "") {

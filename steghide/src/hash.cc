@@ -25,6 +25,7 @@
 #define _(S) gettext (S)
 
 #include "bufmanag.h"
+#include "error.h"
 #include "support.h"
 #include "plnfile.h"
 #include "msg.h"
@@ -38,7 +39,7 @@ unsigned long getseed (char *passphrase)
 	int i = 0 ;
 
 	if ((hashd = mhash_init (MHASH_MD5)) == MHASH_FAILED) {
-		exit_err (_("could not initialize libmhash MD5 algorithm.")) ;
+		throw SteghideError (_("could not initialize libmhash MD5 algorithm.")) ;
 	}
 	mhash (hashd, passphrase, strlen (passphrase)) ;
 	hash = (unsigned char *) mhash_end (hashd) ;
@@ -59,7 +60,7 @@ void *getcrc32 (PLNFILE *plnfile)
 	unsigned char c ;
 
 	if ((hashd = mhash_init (MHASH_CRC32)) == MHASH_FAILED) {
-		exit_err (_("could not initialize libmhash CRC32 algorithm.")) ;
+		throw SteghideError (_("could not initialize libmhash CRC32 algorithm.")) ;
 	}
 
 	n = plnfile->plndata->length ;
@@ -91,7 +92,7 @@ void *getblowfishkey (char *passphrase)
 	MHASH hashd ;
 
 	if ((hashd = mhash_init (MHASH_MD5)) == MHASH_FAILED) {
-		exit_err (_("could not initialize libmhash MD5 algorithm.")) ;
+		throw SteghideError (_("could not initialize libmhash MD5 algorithm.")) ;
 	}
 
 	mhash (hashd, passphrase, strlen (passphrase)) ;

@@ -1,61 +1,18 @@
 #ifndef SH_ERROR_H
 #define SH_ERROR_H
 
+#include <cstdio>
 #include <string>
 
-#if 0
-class MessageBase {
+#include "msg.h"
+
+class SteghideError : MessageBase {
 	public:
-	MessageBase (void) ;
-	MessageBase (string msg) ;
-	MessageBase (const char *msgfmt, ...) ;
-	MessageBase (const char *msgfmt, va_list ap) ;
-
-	string getMessage (void) ;
-	void setMessage (string msg) ;
-	void setMessage (const char *msgfmt, ...) ;
-	void setMessage (const char *msgfmt, va_list ap) ;
-	virtual void printMessage (void) = 0 ;
-
-	protected:
-	static const unsigned int MsgMaxSize = 512 ;
-
-	string compose (const char *msgfmt, ...) ;
-	string vcompose (const char *msgfmt, va_list ap) ;
-
-	private:
-	string message ;
-} ;
-/* Hierarchie:
-MessageBase
-	SteghideError
-		BinaryInputError
-		BinaryOutputError
-		...
-	Message (print für NORMAL, VERBOSE)
-	VerboseMessage (print für VERBOSE)
-	Warning (bool critical - print für NORMAL, VERBOSE (if critical auch QUIET))
-*/
-#endif
-
-class SteghideError {
-	public:
-	SteghideError (void) ;
-	SteghideError (string msg) ;
+	SteghideError (void) : MessageBase() {} ;
+	SteghideError (string msg) : MessageBase (msg) {} ;
 	SteghideError (const char *msgfmt, ...) ;
 
-	string getMessage (void) ;
-	void setMessage (string msg) ;
 	void printMessage (void) ;	
-
-	protected:
-	static const unsigned int errmsg_maxsize = 512 ;
-
-	string compose (const char *msgfmt, ...) ;
-	string vcompose (const char *msgfmt, va_list ap) ;
-
-	private:
-	string message ;
 } ;
 
 class BinaryInputError : public SteghideError {

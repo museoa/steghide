@@ -18,9 +18,10 @@
  *
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
+#include <cassert>
+#include <cstdarg>
+#include <cstdio>
+#include <iostream>
 
 #include <termios.h>
 
@@ -28,95 +29,194 @@
 #define _(S) gettext (S)
 
 #include "arguments.h"
+#include "main.h"
 #include "msg.h"
 #include "support.h"
-#include "main.h"
 
-void pverbose (char *fmt, ...)
+//
+// class MessageBase
+//
+MessageBase::MessageBase ()
 {
-	if (args->verbosity.getValue() == VERBOSE) {
-		va_list ap ;
-
-		va_start (ap, fmt) ;
-		vfprintf (stderr, fmt, ap) ;
-		va_end (ap) ;
-
-		putc ('\n', stderr) ;
-	}
-
-	return ;
+	setMessage (_("no message defined")) ;
 }
 
-void pmsg (char *fmt, ...)
+MessageBase::MessageBase (string msg)
 {
-	if (args->verbosity.getValue() != QUIET) {
-		va_list ap ;
-
-		va_start (ap, fmt) ;
-		vfprintf (stderr, fmt, ap) ;
-		va_end (ap) ;
-
-		putc ('\n', stderr) ;
-	}
-
-	return ;
+	setMessage (msg) ;
 }
 
-int pquestion (char *fmt, ...)
+MessageBase::MessageBase (const char *msgfmt, ...)
 {
 	va_list ap ;
-	struct termios oldattr ;
-	int retval = 0 ;
-	char *yeschar = _("y"), *nochar = _("n") ;
-	char input[2] ;
-	
-	va_start (ap, fmt) ;
-	vfprintf (stderr, fmt, ap) ;
+	va_start (ap, msgfmt) ;
+	setMessage (msgfmt, ap) ;
 	va_end (ap) ;
+}
 
-	fprintf (stderr, " (%s/%s) ", yeschar, nochar) ;
+MessageBase::~MessageBase ()
+{
+}
 
-	oldattr = termios_singlekey_on () ;
-	input[0] = getchar () ;
-	input[1] = '\0' ;
-	if (strcmp (input, yeschar) == 0) {
-		retval = 1 ;
-	}
-	termios_reset (oldattr) ;
+string MessageBase::getMessage ()
+{
+	return message ;
+}
 
-	putc ('\n', stderr) ;
+void MessageBase::setMessage (string msg)
+{
+	message = msg ;
+}
 
+void MessageBase::setMessage (const char *msgfmt, ...)
+{
+	va_list ap ;
+	va_start (ap, msgfmt) ;
+	setMessage (vcompose (msgfmt, ap)) ;
+	va_end (ap) ;
+}
+
+string MessageBase::compose (const char *msgfmt, ...)
+{
+	va_list ap ;
+	va_start (ap, msgfmt) ;
+	string retval = vcompose (msgfmt, ap) ;
+	va_end (ap) ;
 	return retval ;
 }
 
-void pwarn (char *fmt, ...)
+string MessageBase::vcompose (const char *msgfmt, va_list ap)
 {
-	if (args->verbosity.getValue() != QUIET) {
-		va_list ap ;
-
-		fprintf (stderr, _("%s: warning: "), PROGNAME) ;
-
-		va_start(ap, fmt) ;
-		vfprintf (stderr, fmt, ap) ;
-		va_end (ap) ;
-
-		putc ('\n', stderr) ;
-	}
-
-	return ;
+	char *str = new char[MsgMaxSize] ;
+	vsnprintf (str, MsgMaxSize, msgfmt, ap) ;
+	return string (str) ;
 }
 
-void exit_err (char *fmt, ...)
+//
+// class Message
+//
+Message::Message (const char *msgfmt, ...)
+	: MessageBase()
 {
 	va_list ap ;
-
-	fprintf (stderr, "%s: ", PROGNAME) ;
-
-	va_start(ap, fmt) ;
-	vfprintf (stderr, fmt, ap) ;
+	va_start (ap, msgfmt) ;
+	setMessage (vcompose (msgfmt, ap)) ;
 	va_end (ap) ;
+}
 
-	putc ('\n', stderr) ;
+void Message::printMessage ()
+{
+	if (args->verbosity.getValue() == NORMAL ||
+		args->verbosity.getValue() == VERBOSE) {
 
-	exit (EXIT_FAILURE) ;
+		cerr << getMessage() << endl ;
+	}
+}
+
+//
+// class VerboseMessage
+//
+VerboseMessage::VerboseMessage (const char *msgfmt, ...)
+	: MessageBase()
+{
+	va_list ap ;
+	va_start (ap, msgfmt) ;
+	setMessage (vcompose (msgfmt, ap)) ;
+	va_end (ap) ;
+}
+
+void VerboseMessage::printMessage ()
+{
+	if (args->verbosity.getValue() == VERBOSE) {
+		cerr << getMessage() << endl ;
+	}
+}
+
+//
+// class Warning
+//
+Warning::Warning (const char *msgfmt, ...)
+	: MessageBase()
+{
+	va_list ap ;
+	va_start (ap, msgfmt) ;
+	setMessage (vcompose (msgfmt, ap)) ;
+	va_end (ap) ;
+}
+
+void Warning::printMessage ()
+{
+	if (args->verbosity.getValue() == NORMAL ||
+		args->verbosity.getValue() == VERBOSE) {
+
+		cerr << PROGNAME << _(": warning: ") << getMessage() << endl ;
+	}
+}
+
+//
+// class CriticalWarning
+//
+CriticalWarning::CriticalWarning (const char *msgfmt, ...)
+	: MessageBase()
+{
+	va_list ap ;
+	va_start (ap, msgfmt) ;
+	setMessage (vcompose (msgfmt, ap)) ;
+	va_end (ap) ;
+}
+
+void CriticalWarning::printMessage ()
+{
+	cerr << PROGNAME << _(": warning: ") << getMessage() << endl ;
+}
+
+//
+// class Question
+//
+Question::Question (void)
+	: MessageBase()
+{
+	yeschar = string (_("y")) ;
+	nochar = string (_("n")) ;
+}
+
+Question::Question (string msg)
+	: MessageBase (msg)
+{
+	yeschar = string (_("y")) ;
+	nochar = string (_("n")) ;
+}
+
+Question::Question (const char *msgfmt, ...)
+	: MessageBase()
+{
+	yeschar = string (_("y")) ;
+	nochar = string (_("n")) ;
+
+	va_list ap ;
+	va_start (ap, msgfmt) ;
+	setMessage (vcompose (msgfmt, ap)) ;
+	va_end (ap) ;
+}
+
+void Question::printMessage ()
+{
+	assert (!stdin_isused()) ;
+
+	cerr << getMessage() << " (" << yeschar << "/" << nochar << ") " ;
+}
+
+bool Question::getAnswer ()
+{
+	assert (!stdin_isused()) ;
+
+	struct termios oldattr = termios_singlekey_on () ;
+	char input[2] ;
+	input[0] = cin.get() ;
+	input[1] = '\0' ;
+	bool retval = (string (input) == yeschar) ;
+	termios_reset (oldattr) ;
+
+	cerr << endl ;
+	return retval ;
 }
