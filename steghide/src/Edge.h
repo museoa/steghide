@@ -32,7 +32,7 @@ class Edge {
 	 * constructs an edge object (calculates the weight)
 	 **/
 	Edge (Vertex *v1, unsigned short idx1, Vertex *v2, unsigned short idx2) ;
-	Edge (Vertex *v1, unsigned short idx1, Vertex *v2, unsigned short idx2, float w) ;
+	Edge (Vertex *v1, unsigned short idx1, Vertex *v2, unsigned short idx2, UWORD32 w) ;
 
 	Vertex *getVertex1 (void) const
 		{ return Vertex1 ; } ;
@@ -46,7 +46,7 @@ class Edge {
 	unsigned short getIndex2 (void) const
 		{ return Index2 ; } ;
 
-	float getWeight (void) ;
+	UWORD32 getWeight (void) ;
 
 	bool operator== (const Edge& e) const ;
 
@@ -93,8 +93,8 @@ class Edge {
 	/// contains the index of the sample (of those in Vertex2) that will be changed (if this edge is used)
 	unsigned short Index2 ;
 
-	/// contains the weight of this edge or FLT_MAX if it has not been calculated yet
-	float Weight ;
+	/// contains the weight of this edge or UWORD32_MAX if it has not been calculated yet
+	UWORD32 Weight ;
 } ;
 
 #endif // ndef SH_EDGE_H

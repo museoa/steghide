@@ -19,6 +19,7 @@
  */
 
 #include "SampleValueOppositeNeighbourhoodTest.h"
+#include "common.h"
 #include "utcommon.h"
 
 SampleValueOppositeNeighbourhoodTest::SampleValueOppositeNeighbourhoodTest (TestSuite* s)
@@ -32,7 +33,7 @@ SampleValueOppositeNeighbourhoodTest::SampleValueOppositeNeighbourhoodTest (Test
 void SampleValueOppositeNeighbourhoodTest::testQuicksort ()
 {
 	{
-		float* d = new float[2] ;
+		UWORD32* d = new UWORD32[2] ;
 		d[0] = 3 ;
 		d[1] = 5 ;
 		DummySVON.quicksort (SVEmpty, d, 0, 1) ;
@@ -41,7 +42,7 @@ void SampleValueOppositeNeighbourhoodTest::testQuicksort ()
 	}
 
 	{
-		float* d = new float[2] ;
+		UWORD32* d = new UWORD32[2] ;
 		d[0] = 5 ;
 		d[1] = 3 ;
 		DummySVON.quicksort (SVEmpty, d, 0, 1) ;
@@ -50,7 +51,7 @@ void SampleValueOppositeNeighbourhoodTest::testQuicksort ()
 	}
 
 	{
-		float* d = new float[3] ;
+		UWORD32* d = new UWORD32[3] ;
 		d[0] = 2 ;
 		d[1] = 2 ;
 		d[2] = 2 ;
@@ -60,11 +61,11 @@ void SampleValueOppositeNeighbourhoodTest::testQuicksort ()
 	}
 
 	{
-		float* d = new float[10] ;
-		d[0] = 3 ; d[1] = 12 ; d[2] = 8 ; d[3] = 2.5 ; d[4] = 22 ;
-		d[5] = 7 ; d[6] = 8 ; d[7] = 4 ; d[8] = 2 ; d[9] = 17 ;
+		UWORD32* d = new UWORD32[10] ;
+		d[0] = 3 ; d[1] = 12 ; d[2] = 8 ; d[3] = 2 ; d[4] = 22 ;
+		d[5] = 7 ; d[6] = 8 ; d[7] = 4 ; d[8] = 6 ; d[9] = 17 ;
 		DummySVON.quicksort (SVEmpty, d, 0, 9) ;
-		addTestResult ((d[0] == 2) && (d[1] == 2.5) && (d[2] == 3) && (d[3] == 4) && (d[4] == 7) &&
+		addTestResult ((d[0] == 2) && (d[1] == 3) && (d[2] == 4) && (d[3] == 6) && (d[4] == 7) &&
 					   (d[5] == 8) && (d[6] == 8) && (d[7] == 12) && (d[8] == 17) && (d[9] == 22)) ;
 		delete[] d ;
 	}

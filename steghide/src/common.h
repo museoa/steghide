@@ -43,9 +43,9 @@ typedef unsigned long	UWORD32 ;
 typedef unsigned short	UWORD16 ;
 typedef unsigned char	BYTE ;
 #endif
-#define MAX_UWORD32		0xFFFFFFFFUL
-#define MAX_UWORD16		0xFFFF
-#define MAX_BYTE		0xFF
+#define UWORD32_MAX		0xFFFFFFFFUL
+#define UWORD16_MAX		0xFFFF
+#define BYTE_MAX		0xFF
 
 //
 // specialised type definitions
@@ -55,7 +55,7 @@ typedef UWORD32 VertexLabel ;
 typedef UWORD32 SampleValueLabel ;
 typedef UWORD32 SampleKey ;
 
-#define MAX_SAMPLEKEY MAX_UWORD32
+#define SAMPLEKEY_MAX UWORD32_MAX
 
 //
 // gettext support

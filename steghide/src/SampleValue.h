@@ -83,7 +83,7 @@ class SampleValue {
 	 * \param s a sample value of the same type as this
 	 * \return the distance
 	 **/
-	virtual float calcDistance (const SampleValue *s) const = 0 ;
+	virtual UWORD32 calcDistance (const SampleValue *s) const = 0 ;
 
 	/**
 	 * get the bit that is embedded in this sample value
@@ -108,7 +108,7 @@ class SampleValue {
 	bool operator!= (const SampleValue& sv) const
 		{ return (getKey() != sv.getKey()) ; } ;
 
-	virtual float getRadius (void) const = 0 ;
+	virtual UWORD32 getRadius (void) const = 0 ;
 
 	/**
 	 * get the number of edges that this sample value contributes to a vertex

@@ -31,7 +31,7 @@ VertexContent::VertexContent (Graph* g, SampleValue**& svs, SamplePos*& sposs)
 	SampleValues = new SampleValue*[TheGraph->getSamplesPerVertex()] ;
 	for (unsigned short i = 0 ; i < TheGraph->getSamplesPerVertex() ; i++) {
 		unsigned short idx_minkey = i ;
-		SampleKey minkey = MAX_SAMPLEKEY ;
+		SampleKey minkey = SAMPLEKEY_MAX ;
 		for (unsigned short j = i ; j < TheGraph->getSamplesPerVertex() ; j++) {
 			if (svs[j]->getKey() < minkey) {
 				minkey = svs[j]->getKey() ;

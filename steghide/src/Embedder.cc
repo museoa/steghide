@@ -18,7 +18,6 @@
  *
  */
 
-#include <cfloat>
 #include <cstdlib>
 
 #include "AugmentingPathHeuristic.h"
@@ -152,7 +151,7 @@ void Embedder::embedExposedVertex (Vertex *v)
 {
 	SamplePos samplepos = 0 ;
 	SampleValue *newsample = NULL ;
-	float mindistance = FLT_MAX ;
+	UWORD32 mindistance = UWORD32_MAX ;
 	for (unsigned short i = 0 ; i < TheCvrStgFile->getSamplesPerEBit() ; i++) {
 		SampleValue *curold = v->getSampleValue(i) ;
 		SampleValue *curnew = v->getSampleValue(i)->getNearestOppositeSampleValue() ;

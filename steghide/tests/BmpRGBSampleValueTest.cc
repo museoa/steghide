@@ -18,8 +18,6 @@
  *
  */
 
-#include <cmath>
-
 #include "BmpRGBSampleValueTest.h"
 #include "utcommon.h"
 
@@ -59,10 +57,10 @@ BmpRGBSampleValueTest::~BmpRGBSampleValueTest()
 
 void BmpRGBSampleValueTest::testDistance()
 {
-	addTestResult (genericTestDistance (sv_0_0_0, sv_0_0_0, 0.0)) ;
-	addTestResult (genericTestDistance (sv_0_0_0, sv_0_3_4, 5.0)) ;
-	addTestResult (genericTestDistance (sv_0_3_4, sv_12_13_14, sqrt(344.0))) ;
-	addTestResult (genericTestDistance (sv_1_1_1, sv_128_128_128, sqrt(48387.0))) ;
-	addTestResult (genericTestDistance (sv_210_0_120, sv_12_13_14, sqrt(50609.0))) ;
-	addTestResult (genericTestDistance (sv_0_0_0, sv_255_255_255, sqrt(195075.0))) ;
+	addTestResult (genericTestDistance (sv_0_0_0, sv_0_0_0, 0)) ;
+	addTestResult (genericTestDistance (sv_0_0_0, sv_0_3_4, 25)) ;
+	addTestResult (genericTestDistance (sv_0_3_4, sv_12_13_14, 344)) ;
+	addTestResult (genericTestDistance (sv_1_1_1, sv_128_128_128, 48387)) ;
+	addTestResult (genericTestDistance (sv_210_0_120, sv_12_13_14, 50609)) ;
+	addTestResult (genericTestDistance (sv_0_0_0, sv_255_255_255, 195075)) ;
 }

@@ -34,7 +34,7 @@ JpegSampleValue::JpegSampleValue (const CvrStgFile* f, int c)
 
 bool JpegSampleValue::isNeighbour (const SampleValue *s) const
 {
-	return (calcDistance (s) <= Radius) ;
+	return (calcDistance(s) <= Radius) ;
 }
 
 // FIXME - it is assumed that the maximum and the minimum values are never touched (also in getOppositeNeighbours)
@@ -50,7 +50,7 @@ SampleValue *JpegSampleValue::getNearestOppositeSampleValue() const
 	return ((SampleValue *) new JpegSampleValue (getFile(), n_coeff)) ;
 }
 
-float JpegSampleValue::calcDistance (const SampleValue *s) const
+UWORD32 JpegSampleValue::calcDistance (const SampleValue *s) const
 {
 	const JpegSampleValue *sample = (const JpegSampleValue*) s ;
 	/* If s is not a JpegSampleValue then we get into real trouble here.
@@ -58,7 +58,7 @@ float JpegSampleValue::calcDistance (const SampleValue *s) const
 	it does not make sense to pass anything but a JpegSampleValue as s anyway. */
 
 	int d = DctCoeff - sample->DctCoeff ;
-	return ((d >= 0) ? ((float) d) : ((float) -d)) ;
+	return ((d >= 0) ? ((UWORD32) d) : ((UWORD32) -d)) ;
 }
 
-float JpegSampleValue::Radius = JpegSampleValue::DefaultRadius ;
+UWORD32 JpegSampleValue::Radius = JpegSampleValue::DefaultRadius ;

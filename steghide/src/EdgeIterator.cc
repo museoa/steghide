@@ -18,8 +18,6 @@
  *
  */
 
-#include <cfloat>
-
 #include "common.h"
 #include "Edge.h"
 #include "EdgeIterator.h"
@@ -93,7 +91,7 @@ void EdgeIterator::reset ()
 
 void EdgeIterator::findNextEdge ()
 {
-	float mindist = FLT_MAX ;
+	UWORD32 mindist = UWORD32_MAX ;
 	for (unsigned short i = 0 ; i < TheGraph->getSamplesPerVertex() ; i++) {
 		SampleValue* srcsv = SrcVertex->getSampleValue(i) ;
 		SampleValue* destsv = NULL ;
@@ -126,7 +124,7 @@ void EdgeIterator::findNextEdge ()
 
 		// test if the destination sample value leads to edge with (until now) minimal distance - thereby setting SrcIndex and SampleOccurenceIt
 		if (SVOppNeighsIndices[i] < TheGraph->SampleValueOppNeighs[srcsv].size()) {
-			float thisdist = srcsv->calcDistance(destsv) ;
+			UWORD32 thisdist = srcsv->calcDistance(destsv) ;
 			if (thisdist < mindist) {
 				mindist = thisdist ;
 				SrcIndex = i ;
@@ -135,7 +133,7 @@ void EdgeIterator::findNextEdge ()
 		}
 	}
 
-	if (mindist == FLT_MAX) {
+	if (mindist == UWORD32_MAX) {
 		// no edge has been found
 		Finished = true ;
 	}

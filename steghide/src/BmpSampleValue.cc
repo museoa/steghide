@@ -18,43 +18,31 @@
  *
  */
 
-#include <cmath>
-
 #include "BmpSampleValue.h"
 #include "common.h"
 
 BmpSampleValue::BmpSampleValue (void)
 		: SampleValue()
 {
-	if (Radius == 0.0) {
+	if (Radius == 0) {
 		Radius = getRadius() ;
-		RadiusSquared = Radius * Radius ;
 	}
 }
 
 BmpSampleValue::BmpSampleValue (const CvrStgFile* f)
 		: SampleValue (f)
 {
-	if (Radius == 0.0) {
+	if (Radius == 0) {
 		Radius = getRadius() ;
-		RadiusSquared = Radius * Radius ;
 	}
 }
 
 bool BmpSampleValue::isNeighbour (const SampleValue *s) const
 {
-	const BmpSampleValue *sample = (const BmpSampleValue*) s ;
-	/* If s is not a BmpSampleValue then we get into real trouble here.
-	But calcDistance is called very often, a dynamic_cast costs a lot of time and
-	it does not make sense to pass anything but a BmpSampleValue as s anyway. */
-
-	int dr = (int) getRed() - (int) sample->getRed() ;
-	int dg = (int) getGreen() - (int) sample->getGreen() ;
-	int db = (int) getBlue() - (int) sample->getBlue() ;
-	return ((dr*dr + dg*dg + db*db) <= RadiusSquared) ;
+	return (calcDistance(s) <= Radius) ;
 }
 
-float BmpSampleValue::calcDistance (const SampleValue *s) const
+UWORD32 BmpSampleValue::calcDistance (const SampleValue *s) const
 {
 	const BmpSampleValue *sample = (const BmpSampleValue*) s ;
 	/* If s is not a BmpSampleValue then we get into real trouble here.
@@ -64,12 +52,12 @@ float BmpSampleValue::calcDistance (const SampleValue *s) const
 	int dr = (int) getRed() - (int) sample->getRed() ;
 	int dg = (int) getGreen() - (int) sample->getGreen() ;
 	int db = (int) getBlue() - (int) sample->getBlue() ;
-	return (sqrt ((float) (dr*dr + dg*dg + db*db))) ;
+	return (UWORD32) (dr*dr + dg*dg + db*db) ;
 }
 
-float BmpSampleValue::getRadius () const
+UWORD32 BmpSampleValue::getRadius () const
 {
-	float retval ;
+	UWORD32 retval ;
 	if (Args.Radius.is_set()) {
 		retval = Args.Radius.getValue() ;
 	}
@@ -79,5 +67,4 @@ float BmpSampleValue::getRadius () const
 	return retval ;
 }
 
-float BmpSampleValue::Radius = 0.0 ;
-float BmpSampleValue::RadiusSquared = 0.0 ;
+UWORD32 BmpSampleValue::Radius = 0 ;

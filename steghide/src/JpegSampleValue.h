@@ -31,17 +31,17 @@ class JpegSampleValue : public SampleValue {
 
 	bool isNeighbour (const SampleValue *s) const ;
 	SampleValue* getNearestOppositeSampleValue (void) const ;
-	float calcDistance (const SampleValue *s) const ;
+	UWORD32 calcDistance (const SampleValue *s) const ;
 
-	float getRadius (void) const
+	UWORD32 getRadius (void) const
 		{ return Radius ; } ;
 
 	int getDctCoeff (void) const
 		{ return DctCoeff ; } ;
 
 	private:
-	static const float DefaultRadius = 1.0 ;
-	static float Radius ;
+	static const UWORD32 DefaultRadius = 1 ;
+	static UWORD32 Radius ;
 
 	int DctCoeff ;
 } ;

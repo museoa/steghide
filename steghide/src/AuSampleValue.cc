@@ -49,7 +49,7 @@ SampleValue *AuSampleValue::getNearestOppositeSampleValue() const
 	return ((SampleValue *) new AuSampleValue (getFile(), n_value)) ;
 }
 
-float AuSampleValue::calcDistance (const SampleValue *s) const
+UWORD32 AuSampleValue::calcDistance (const SampleValue *s) const
 {
 	const AuSampleValue* sample = (const AuSampleValue*) s ;
 	/* If s is not an AuSampleValue then we get into real trouble here.
@@ -57,12 +57,12 @@ float AuSampleValue::calcDistance (const SampleValue *s) const
 	it does not make sense to pass anything but an AuSampleValue as s anyway. */
 
 	int d = (int) Value - (int) sample->Value ;
-	return ((d >= 0) ? ((float) d) : ((float) -d)) ;
+	return ((d >= 0) ? ((UWORD32) d) : ((UWORD32) -d)) ;
 }
 
-float AuSampleValue::getRadius () const
+UWORD32 AuSampleValue::getRadius () const
 {
-	float retval ;
+	UWORD32 retval ;
 	if (Args.Radius.is_set()) {
 		retval = Args.Radius.getValue() ;
 	}
@@ -72,4 +72,4 @@ float AuSampleValue::getRadius () const
 	return retval ;
 }
 
-float AuSampleValue::Radius = AuSampleValue::DefaultRadius ;
+UWORD32 AuSampleValue::Radius = AuSampleValue::DefaultRadius ;

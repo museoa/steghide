@@ -513,8 +513,8 @@ bool Arguments::parse_Radius (ArgIt& curarg)
 			throw ArgError (_("the \"%s\" argument must be followed by the neighbourhood radius."), (curarg - 1)->c_str()) ;
 		}
 
-		float tmp = 0.0 ;
-		sscanf (curarg->c_str(), "%f", &tmp) ;
+		unsigned long tmp = 0 ;
+		sscanf (curarg->c_str(), "%lu", &tmp) ;
 		Radius.setValue (tmp) ;
 
 		found = true ;

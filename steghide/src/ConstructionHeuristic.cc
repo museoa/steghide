@@ -131,7 +131,7 @@ Vertex* ConstructionHeuristic::findVertexDegG (unsigned int k)
 		VerticesDegG.pop() ;
 
 		if ((TheMatching->isExposed(v)) && (v->getDegree() > 1)) { // implicitly delete vertices that have been moved to VerticesDeg1 or have already been matched
-			float weight_before = v->getShortestEdge()->getWeight() ;
+			UWORD32 weight_before = v->getShortestEdge()->getWeight() ;
 			
 			v->updateShortestEdge() ;
 

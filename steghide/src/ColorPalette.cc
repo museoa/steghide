@@ -18,9 +18,8 @@
  *
  */
 
-#include <cfloat>
-
 #include "ColorPalette.h"
+#include "common.h"
 
 unsigned int ColorPalette::getNearest (unsigned int idx, ColorPalette::SUBSET s)
 {
@@ -50,9 +49,9 @@ unsigned int ColorPalette::getNearest (unsigned int idx, ColorPalette::SUBSET s)
 	}
 
 	unsigned int idx_mindist = 0 ;
-	float mindist = FLT_MAX ;
+	UWORD32 mindist = UWORD32_MAX ;
 	for ( ; i < size() ; i += inc) {
-		float curdist = thistriple.calcDistance ((*this)[i]) ;
+		UWORD32 curdist = thistriple.calcDistance ((*this)[i]) ;
 		if (curdist < mindist && i != idx) {
 			mindist = curdist ;
 			idx_mindist = i ;

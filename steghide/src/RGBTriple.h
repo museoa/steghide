@@ -31,11 +31,11 @@ class RGBTriple {
 		: Red(r), Green(g), Blue(b) {} ;
 
 	/**
-	 * get the distance in the RGB cube between this triple and the triple t
+	 * get the squared distance in the RGB cube between this triple and the triple t
 	 * \param t another RGB triple
-	 * \return the distance between this and t
+	 * \return the square of the euclidean distance between this and t
 	 **/
-	float calcDistance (const RGBTriple& t) const ;
+	UWORD32 calcDistance (const RGBTriple& t) const ;
 
 	/**
 	 * returns true iff this triple and t are equal (i.e. have the same rgb values)

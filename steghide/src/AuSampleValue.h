@@ -22,6 +22,7 @@
 #define SH_AUSAMPLE_H
 
 #include "SampleValue.h"
+#include "common.h"
 
 class AuSampleValue : public SampleValue {
 	public:
@@ -33,9 +34,9 @@ class AuSampleValue : public SampleValue {
 
 	bool isNeighbour (const SampleValue *s) const ;
 	SampleValue* getNearestOppositeSampleValue (void) const ;
-	float calcDistance (const SampleValue *s) const ;
+	UWORD32 calcDistance (const SampleValue *s) const ;
 
-	virtual float getRadius() const ;
+	virtual UWORD32 getRadius() const ;
 
 	unsigned char getValue (void) const
 		{ return Value ; } ;
@@ -44,8 +45,8 @@ class AuSampleValue : public SampleValue {
 	/**
 	 * every pair of au samples whose distance is smaller than this constant are neighbours
 	 **/
-	static const float DefaultRadius = 1.0 ;
-	static float Radius ;
+	static const UWORD32 DefaultRadius = 1 ;
+	static UWORD32 Radius ;
 
 	unsigned char Value ;
 } ;

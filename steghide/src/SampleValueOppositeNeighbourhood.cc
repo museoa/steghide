@@ -19,6 +19,7 @@
  */
 
 #include <algorithm>
+#include <cmath>
 #include <vector>
 
 #include "BmpRGBSampleValue.h"
@@ -86,7 +87,7 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_rgb (const std::vector<Samp
 	svalues0.reserve (numsvs / 2) ;
 
 	unsigned short numcubes = 0 ;
-	short cubelen = (short int) roundup(svalues[0]->getRadius()) ;
+	short cubelen = (short) roundup (sqrt ((float) svalues[0]->getRadius())) ;
 	if (256 % cubelen == 0) {
 		numcubes = 256 / cubelen ;
 	}
@@ -99,8 +100,7 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_rgb (const std::vector<Samp
 
 	// fill svalues0 and cubes
 	for (unsigned long l = 0 ; l < numsvs ; l++) {
-		BmpRGBSampleValue *s = dynamic_cast<BmpRGBSampleValue*> (svalues[l]) ;
-		myassert (s != NULL) ;
+		BmpRGBSampleValue *s = (BmpRGBSampleValue*) svalues[l] ;
 		if (s->getBit() == 0) {
 			svalues0.push_back (s) ;
 		}
@@ -175,18 +175,18 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_wav (const std::vector<Samp
 	sort (svalues1.begin(), svalues1.end(), smaller) ;
 
 	// fill the OppNeighs vectors
-	int r_ub = roundup (svalues[0]->getRadius()) ;
+	int r = svalues[0]->getRadius() ;
 	OppNeighs = std::vector<std::vector<SampleValue*> > (n) ;
 	unsigned long n0 = svalues0.size() ;
 	unsigned long n1 = svalues1.size() ;
 	unsigned long start1 = 0 ;
 	for (unsigned long i0 = 0 ; i0 < n0 ; i0++) {
-		while ((start1 < n1) && (svalues1[start1]->getValue() < svalues0[i0]->getValue() - r_ub)) {
+		while ((start1 < n1) && (svalues1[start1]->getValue() < svalues0[i0]->getValue() - r)) {
 			start1++ ;
 		}
-		// start1 is the index of the first sample in svalues1 that is >= (svalues0[i0]->getValue - r_ub)
+		// start1 is the index of the first sample in svalues1 that is >= (svalues0[i0]->getValue - r)
 		unsigned long i1 = start1 ;
-		while ((i1 < n1) && (svalues1[i1]->getValue() <= svalues0[i0]->getValue() + r_ub)) {
+		while ((i1 < n1) && (svalues1[i1]->getValue() <= svalues0[i0]->getValue() + r)) {
 			OppNeighs[svalues0[i0]->getLabel()].push_back (svalues1[i1]) ;
 			OppNeighs[svalues1[i1]->getLabel()].push_back (svalues0[i0]) ;
 			i1++ ;
@@ -203,7 +203,7 @@ void SampleValueOppositeNeighbourhood::sortOppNeighs (void)
 		std::vector<SampleValue*>& oppneighs = OppNeighs[lbl] ;
 
 		if (oppneighs.size() > 0) {
-			float* distances = new float[oppneighs.size() + 1] ;
+			UWORD32* distances = new UWORD32[oppneighs.size() + 1] ;
 			for (unsigned int i = 0 ; i < oppneighs.size() ; i++) {
 				distances[i] = srcsample->calcDistance (oppneighs[i]) ;
 			}
@@ -215,7 +215,7 @@ void SampleValueOppositeNeighbourhood::sortOppNeighs (void)
 	}
 }
 
-void SampleValueOppositeNeighbourhood::quicksort (std::vector<SampleValue*>& oppneighs, float* distances, unsigned int l, unsigned int r)
+void SampleValueOppositeNeighbourhood::quicksort (std::vector<SampleValue*>& oppneighs, UWORD32* distances, unsigned int l, unsigned int r)
 {
 	if (l < r) {
 		unsigned int p = partition (oppneighs, distances, l, r, distances[r]) ;
@@ -226,7 +226,7 @@ void SampleValueOppositeNeighbourhood::quicksort (std::vector<SampleValue*>& opp
 	}
 }
 
-unsigned int SampleValueOppositeNeighbourhood::partition (std::vector<SampleValue*>& oppneighs, float* distances, unsigned int l, unsigned int r, float x)
+unsigned int SampleValueOppositeNeighbourhood::partition (std::vector<SampleValue*>& oppneighs, UWORD32* distances, unsigned int l, unsigned int r, UWORD32 x)
 {
 	unsigned int i = l, j = r ;
 	while (i < j) {
@@ -244,10 +244,10 @@ unsigned int SampleValueOppositeNeighbourhood::partition (std::vector<SampleValu
 	return i ;
 }
 
-void SampleValueOppositeNeighbourhood::swap (std::vector<SampleValue*>& oppneighs, float* distances, unsigned int i, unsigned int j)
+void SampleValueOppositeNeighbourhood::swap (std::vector<SampleValue*>& oppneighs, UWORD32* distances, unsigned int i, unsigned int j)
 {
 	SampleValue* tmp1 = oppneighs[i] ;
-	float tmp2 = distances[i] ;
+	UWORD32 tmp2 = distances[i] ;
 	oppneighs[i] = oppneighs[j] ;
 	distances[i] = distances[j] ;
 	oppneighs[j] = tmp1 ;
@@ -322,8 +322,8 @@ bool SampleValueOppositeNeighbourhood::check_sorted (bool verbose) const
 		const std::vector<SampleValue*> &oppneighs = OppNeighs[srclbl] ;
 		if (oppneighs.size() > 1) {
 			for (unsigned int i = 0 ; i < (oppneighs.size() - 1) ; i++) {
-				float d1 = srcsv->calcDistance (oppneighs[i]) ;
-				float d2 = srcsv->calcDistance (oppneighs[i + 1]) ;
+				UWORD32 d1 = srcsv->calcDistance (oppneighs[i]) ;
+				UWORD32 d2 = srcsv->calcDistance (oppneighs[i + 1]) ;
 				if (!(d1 <= d2)) {
 					err_unsorted = true ;
 					if (verbose) {

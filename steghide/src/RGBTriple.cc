@@ -18,16 +18,14 @@
  *
  */
 
-#include <cmath>
-
 #include "RGBTriple.h"
 
-float RGBTriple::calcDistance (const RGBTriple& t) const
+UWORD32 RGBTriple::calcDistance (const RGBTriple& t) const
 {
 	int dr = (int) Red - (int) t.Red ;
 	int dg = (int) Green - (int) t.Green ;
 	int db = (int) Blue - (int) t.Blue ;
-	return (sqrt ((float) (dr*dr + dg*dg + db*db))) ;
+	return (UWORD32) (dr*dr + dg*dg + db*db) ;
 }
 
 bool RGBTriple::operator== (const RGBTriple& t) const

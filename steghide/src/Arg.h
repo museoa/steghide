@@ -59,7 +59,7 @@ typedef Arg<COMMAND> ArgCommand ;
 typedef Arg<VERBOSITY> ArgVerbosity ;
 typedef Arg<bool> ArgBool ;
 typedef Arg<std::string> ArgString ;
-typedef Arg<float> ArgFloat ;
+typedef Arg<unsigned long> ArgULong ;
 typedef Arg<EncryptionAlgorithm> ArgEncAlgo ;
 typedef Arg<EncryptionMode> ArgEncMode ;
 #ifdef DEBUG

@@ -95,7 +95,7 @@ SampleValue *WavPCMSampleValue::getNearestOppositeSampleValue () const
 	return ((SampleValue *) new WavPCMSampleValue (getFile(), n_value)) ;
 }
 
-float WavPCMSampleValue::calcDistance (const SampleValue *s) const
+UWORD32 WavPCMSampleValue::calcDistance (const SampleValue *s) const
 {
         const WavPCMSampleValue *sample = (const WavPCMSampleValue*) s ;
         /* If s is not a WavPCMSampleValue then we get into real trouble here.
@@ -103,12 +103,12 @@ float WavPCMSampleValue::calcDistance (const SampleValue *s) const
         it does not make sense to pass anything but a WavPCMSampleValue as s anyway. */
 
 	int d = Value - sample->Value ;
-	return ((d >= 0) ? ((float) d) : ((float) -d)) ;
+	return ((d >= 0) ? ((UWORD32) d) : ((UWORD32) -d)) ;
 }
 
-float WavPCMSampleValue::getRadius () const
+UWORD32 WavPCMSampleValue::getRadius () const
 {
-	float retval ;
+	UWORD32 retval ;
 	if (Args.Radius.is_set()) {
 		retval = Args.Radius.getValue() ;
 	}
@@ -118,4 +118,4 @@ float WavPCMSampleValue::getRadius () const
 	return retval ;
 }
 
-float WavPCMSampleValue::Radius = 0.0 ;
+UWORD32 WavPCMSampleValue::Radius = 0 ;
