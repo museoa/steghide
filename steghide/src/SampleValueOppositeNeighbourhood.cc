@@ -75,9 +75,7 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_generic (const std::vector<
 	}
 
 	// sort OppNeighs data structure
-	for (unsigned long lbl = 0 ; lbl < numsvs ; lbl++) {
-		sort (OppNeighs[lbl].begin(), OppNeighs[lbl].end(), SmallerDistance(TheGraph->SampleValues[lbl])) ;
-	}
+	sortOppNeighs() ;
 }
 
 void SampleValueOppositeNeighbourhood::calcOppNeighs_rgb (const std::vector<SampleValue*> &svalues)
@@ -148,9 +146,7 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_rgb (const std::vector<Samp
 	}
 
 	// sort OppNeighs data structure
-	for (unsigned long lbl = 0 ; lbl < numsvs ; lbl++) {
-		sort (OppNeighs[lbl].begin(), OppNeighs[lbl].end(), SmallerDistance(TheGraph->SampleValues[lbl])) ;
-	}
+	sortOppNeighs() ;
 }
 
 void SampleValueOppositeNeighbourhood::calcOppNeighs_wav (const std::vector<SampleValue*> &svalues)
@@ -178,7 +174,7 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_wav (const std::vector<Samp
 	sort (svalues0.begin(), svalues0.end(), smaller) ;
 	sort (svalues1.begin(), svalues1.end(), smaller) ;
 
-	// fill the OppNeighs std::vectors
+	// fill the OppNeighs vectors
 	int r_ub = roundup (svalues[0]->getRadius()) ;
 	OppNeighs = std::vector<std::vector<SampleValue*> > (n) ;
 	unsigned long n0 = svalues0.size() ;
@@ -197,9 +193,65 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_wav (const std::vector<Samp
 	}
 
 	// FIXME - don't use generic sort (!)
-	for (unsigned long lbl = 0 ; lbl < n ; lbl++) {
-		sort (OppNeighs[lbl].begin(), OppNeighs[lbl].end(), SmallerDistance(TheGraph->SampleValues[lbl])) ;
+	sortOppNeighs() ;
+}
+
+void SampleValueOppositeNeighbourhood::sortOppNeighs (void)
+{
+	for (SampleValueLabel lbl = 0 ; lbl < OppNeighs.size() ; lbl++) {
+		SampleValue* srcsample = TheGraph->SampleValues[lbl] ;
+		std::vector<SampleValue*>& oppneighs = OppNeighs[lbl] ;
+
+		if (oppneighs.size() > 0) {
+			float* distances = new float[oppneighs.size() + 1] ;
+			for (unsigned int i = 0 ; i < oppneighs.size() ; i++) {
+				distances[i] = srcsample->calcDistance (oppneighs[i]) ;
+			}
+
+			quicksort (oppneighs, distances, 0, oppneighs.size() - 1) ;
+
+			delete[] distances ;
+		}
 	}
+}
+
+void SampleValueOppositeNeighbourhood::quicksort (std::vector<SampleValue*>& oppneighs, float* distances, unsigned int l, unsigned int r)
+{
+	if (l < r) {
+		unsigned int p = partition (oppneighs, distances, l, r, distances[r]) ;
+		if (p > 0) {
+			quicksort (oppneighs, distances, l, p - 1) ;
+		}
+		quicksort (oppneighs, distances, p + 1, r) ;
+	}
+}
+
+unsigned int SampleValueOppositeNeighbourhood::partition (std::vector<SampleValue*>& oppneighs, float* distances, unsigned int l, unsigned int r, float x)
+{
+	unsigned int i = l, j = r ;
+	while (i < j) {
+		while ((distances[i] < x) && (i < r)) {
+			i++ ;
+		}
+		while ((distances[j] >= x) && (j > l)) {
+			j-- ;
+		}
+		if (i < j) {
+			swap (oppneighs, distances, i, j) ;
+		}
+	}
+	swap (oppneighs, distances, i, r) ;
+	return i ;
+}
+
+void SampleValueOppositeNeighbourhood::swap (std::vector<SampleValue*>& oppneighs, float* distances, unsigned int i, unsigned int j)
+{
+	SampleValue* tmp1 = oppneighs[i] ;
+	float tmp2 = distances[i] ;
+	oppneighs[i] = oppneighs[j] ;
+	distances[i] = distances[j] ;
+	oppneighs[j] = tmp1 ;
+	distances[j] = tmp2 ;
 }
 
 int SampleValueOppositeNeighbourhood::roundup (float x)

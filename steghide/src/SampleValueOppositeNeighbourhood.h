@@ -65,6 +65,16 @@ class SampleValueOppositeNeighbourhood : private GraphAccess {
 	void calcOppNeighs_rgb (const std::vector<SampleValue*> &svalues) ;
 	void calcOppNeighs_wav (const std::vector<SampleValue*> &svalues) ;
 
+	void sortOppNeighs (void) ;
+	void quicksort (std::vector<SampleValue*>& oppneighs, float* distances, unsigned int l, unsigned int r) ;
+
+	/**
+	 * partition oppneighs/distances into those with distances less than and those with distances greater than and equal to x
+	 * \return the index in oppneighs/distances that separates the two
+	 **/
+	unsigned int partition (std::vector<SampleValue*>& oppneighs, float* distances, unsigned int l, unsigned int r, float x) ;
+	void swap (std::vector<SampleValue*>& oppneighs, float* distances, unsigned int i, unsigned int j) ;
+
 	/**
 	 * return the smallest integer that is >= x
 	 **/

@@ -27,6 +27,7 @@
 #include "GraphTest.h"
 #include "MHashTest.h"
 #include "PermutationTest.h"
+#include "SampleValueOppositeNeighbourhoodTest.h"
 
 bool ArgVerbose ;
 
@@ -63,6 +64,9 @@ int main (int argc, char *argv[])
 	ts.addUnitTest (&bmpwt) ;
 
 	// graph-theoretic stuff
+	SampleValueOppositeNeighbourhoodTest svont (&ts) ;
+	ts.addUnitTest (&svont) ;
+
 	GraphTest gt (&ts) ;
 	ts.addUnitTest (&gt) ;
 
