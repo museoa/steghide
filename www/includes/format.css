@@ -81,6 +81,12 @@ td.ssecrightlastclosed {
   border-left: solid thin black;
   border-right: solid thin black;
 }
+td.ssecrightonlyclosed {
+  background: #DED6C6;
+  border-top: solid thin black;
+  border-left: solid thin black;
+  border-right: solid thin black;
+}
 
 td.ssecrightfirstclosed:hover {
   background: #DDDDDD;
@@ -97,6 +103,12 @@ td.ssecrightlastclosed:hover {
   border-left: solid thin black;
   border-right: solid thin black;
 }
+td.ssecrightonlyclosed:hover {
+  background: #DDDDDD;
+  border-top: solid thin black;
+  border-left: solid thin black;
+  border-right: solid thin black;
+}
 
 td.ssecrightfirstopen {
   background: #DED6C6;
@@ -110,6 +122,12 @@ td.ssecrightdefaultopen {
 }
 td.ssecrightlastopen {
   background: #DED6C6;
+  border-left: solid thin black;
+  border-right: solid thin black;
+}
+td.ssecrightonlyopen {
+  background: #DED6C6;
+  border-top: solid thin black;
   border-left: solid thin black;
   border-right: solid thin black;
 }

@@ -15,7 +15,7 @@ If you are impatient and want to start using steghide as fast as possible take a
 Quick Start Section below. As a reference you will most likely want
 to consult the <a href="documentation/manpage.php">man(ual) page</a> that comes with the distribution
 (also available as <a href="documentation/manpage.pdf">pdf</a>, <a href="documentation/manpage.ps">postscript</a> and
-<a href="documentation/manpage.ps.gz">gzipped postscript</a>).<br>
+<a href="documentation/manpage.ps.gz">gzipped postscript</a>).
 If you are interested in the details
 of the implementation of steghide take a look at the source code documentation that comes with the
 source code distribution (for more details see the <a href="development.php">development section</a>).

@@ -92,7 +92,7 @@ function pseclinktr ($active, $css_td, $css_a, $imgsrc, $imgalt, $linkhref, $lin
  * print a td that contains a subsection link
  * \param link what to put into href
  * \param linkname name(text) of link
- * \param pos is "first", "default" or "last" to indicate veritcal position of this subsection
+ * \param pos is "first", "default" or "last" or "only" to indicate veritcal position of this subsection
  * \param isactive is this subsection currently active?
  **/
 function psseclinktd ($link, $linkname, $pos, $isactive, $spc)
@@ -110,7 +110,7 @@ function psseclinktd ($link, $linkname, $pos, $isactive, $spc)
 	}
 
 	echo $spc;
-	if ($pos != "first") {
+	if ($pos == "default" || $pos == "last") {
 		echo "<tr>";
 	}
 	echo "<td class=\"$css_td\"><a class=\"$css_a\"";
@@ -179,22 +179,29 @@ function psection ($sec, $sectioninfo, $activesecid, $isfirst, $spc)
 			// print subsections
 			$ssections = $sectioninfo["subsections"];
 
-			$firstssec = array_splice ($ssections, 0, 1);
-			$lastssec = array_splice ($ssections, count($ssections) - 1, 1);
-			$otherssec = $ssections ;
-
-			// first subsection (special treatment)
-			$ssinfo = current($firstssec);
-			psseclinktd ($ssinfo["link"], $ssinfo["linkname"], "first", (key($firstssec) == $activessec), $spc);
-
-			// other subsections
-			while (list($ssid, $ssinfo) = each ($otherssec)) { // other subsections
-				psseclinktd ($ssinfo["link"], $ssinfo["linkname"], "default", ($ssid == $activessec), $spc);
+			if (count($ssections) == 1) {
+				// the only subsection
+				$ssinfo = current($ssections);
+				psseclinktd ($ssinfo["link"], $ssinfo["linkname"], "only", (key($ssinfo) == $activessec), $spc);
 			}
+			else {
+				$firstssec = array_splice ($ssections, 0, 1);
+				$lastssec = array_splice ($ssections, count($ssections) - 1, 1);
+				$otherssec = $ssections ;
 
-			// last subsection (special treatment)
-			$ssinfo = current($lastssec);
-			psseclinktd ($ssinfo["link"], $ssinfo["linkname"], "last", (key($lastssec) == $activessec), $spc);
+				// first subsection (special treatment)
+				$ssinfo = current($firstssec);
+				psseclinktd ($ssinfo["link"], $ssinfo["linkname"], "first", (key($firstssec) == $activessec), $spc);
+
+				// other subsections
+				while (list($ssid, $ssinfo) = each ($otherssec)) { // other subsections
+					psseclinktd ($ssinfo["link"], $ssinfo["linkname"], "default", ($ssid == $activessec), $spc);
+				}
+
+				// last subsection (special treatment)
+				$ssinfo = current($lastssec);
+				psseclinktd ($ssinfo["link"], $ssinfo["linkname"], "last", (key($lastssec) == $activessec), $spc);
+			}
 
 			echo "$spc</table>\n";
 			echo "$spc</td></tr>\n";
