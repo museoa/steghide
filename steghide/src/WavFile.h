@@ -46,6 +46,7 @@ class WavFile : public CvrStgFile {
 	SampleValue* getSampleValue (SamplePos pos) const ;
 
 	std::vector<SampleValueAdjacencyList*> calcSVAdjacencyLists (const std::vector<SampleValue*>& svs) const ;
+	std::vector<MatchingAlgorithm*> getMatchingAlgorithms (Graph* g, Matching* m) const ;
 
 	unsigned short getBitsPerSample (void) const ;
 

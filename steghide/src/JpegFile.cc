@@ -27,12 +27,9 @@
 
 #include "AUtils.h"
 #include "BinaryIO.h"
-#include "BFSAPHeuristic.h"
-#include "DFSAPHeuristic.h"
 #include "JpegFile.h"
 #include "JpegSampleValue.h"
 #include "SMDConstructionHeuristic.h"
-#include "WKSConstructionHeuristic.h"
 #include "error.h"
 
 JpegFile::JpegFile (BinaryIO* io)
@@ -209,7 +206,6 @@ std::vector<MatchingAlgorithm*> JpegFile::getMatchingAlgorithms (Graph* g, Match
 {
 	std::vector<MatchingAlgorithm*> retval ;
 	retval.push_back (new SMDConstructionHeuristic (g, m)) ;
-	retval.push_back (new DFSAPHeuristic (g, m)) ;
 	return retval ;
 }
 

@@ -38,6 +38,7 @@ class BmpFile : public CvrStgFile {
 	void write (void) ;
 
 	std::list<CvrStgFile::Property> getProperties (void) const ;
+	std::vector<MatchingAlgorithm*> getMatchingAlgorithms (Graph* g, Matching* m) const ;
 
 	unsigned long getNumSamples (void) const ;
 	void replaceSample (const SamplePos pos, const SampleValue* s) ;
@@ -90,7 +91,8 @@ class BmpFile : public CvrStgFile {
 	static const unsigned short SizeBMCOREHEADER = 12 ;
 	static const unsigned int COMPRESSION_BI_RGB = 0 ;
 
-	static const unsigned short SamplesPerVertex_Palette = 2 ;
+	static const unsigned short SamplesPerVertex_SmallPalette = 2 ;
+	static const unsigned short SamplesPerVertex_LargePalette = 3 ;
 	static const unsigned short SamplesPerVertex_RGB = 2 ;
 	/// the default radius (400 = 20^2)
 	static const UWORD32 Radius = 400 ;

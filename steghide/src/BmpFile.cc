@@ -22,12 +22,17 @@
 #include <cstdlib>
 
 #include "AUtils.h"
+#include "BFSAPHeuristic.h"
 #include "ColorPalette.h"
 #include "CvrStgFile.h"
+#include "DFSAPHeuristic.h"
+#include "DMDConstructionHeuristic.h"
 #include "BmpFile.h"
 #include "BmpPaletteSampleValue.h"
 #include "BmpRGBSampleValue.h"
 #include "SampleValueAdjacencyList.h"
+#include "SMDConstructionHeuristic.h"
+#include "WKSConstructionHeuristic.h"
 #include "common.h"
 #include "error.h"
 
@@ -82,6 +87,18 @@ std::list<CvrStgFile::Property> BmpFile::getProperties () const
 	}
 	retval.push_back (CvrStgFile::Property (_("format"), formatstring)) ;
 
+	return retval ;
+}
+
+std::vector<MatchingAlgorithm*> BmpFile::getMatchingAlgorithms (Graph* g, Matching* m) const
+{
+	std::vector<MatchingAlgorithm*> retval ;
+	if (getBitCount() == 24) {
+		retval.push_back (new SMDConstructionHeuristic (g, m)) ;
+	}
+	else {
+		retval.push_back (new SMDConstructionHeuristic (g, m)) ;
+	}
 	return retval ;
 }
 
@@ -386,17 +403,17 @@ void BmpFile::bmpwin_readheaders ()
 	bmih.biBitCount = getBinIO()->read16_le () ;
 	switch (bmih.biBitCount) {
 		case 1:
-		setSamplesPerVertex (SamplesPerVertex_Palette) ;
+		setSamplesPerVertex (SamplesPerVertex_SmallPalette) ;
 		setEmbValueModulus (EmbValueModulus_SmallPalette) ;
 		break ;
 
 		case 4:
-		setSamplesPerVertex (SamplesPerVertex_Palette) ;
+		setSamplesPerVertex (SamplesPerVertex_SmallPalette) ;
 		setEmbValueModulus (EmbValueModulus_SmallPalette) ;
 		break ;
 
 		case 8:
-		setSamplesPerVertex (SamplesPerVertex_Palette) ;
+		setSamplesPerVertex (SamplesPerVertex_LargePalette) ;
 		setEmbValueModulus (EmbValueModulus_LargePalette) ;
 		break ;
 
@@ -485,17 +502,17 @@ void BmpFile::bmpos2_readheaders ()
 	bmch.bcBitCount = getBinIO()->read16_le () ;
 	switch (bmch.bcBitCount) {
 		case 1:
-		setSamplesPerVertex (SamplesPerVertex_Palette) ;
+		setSamplesPerVertex (SamplesPerVertex_SmallPalette) ;
 		setEmbValueModulus (EmbValueModulus_SmallPalette) ;
 		break ;
 
 		case 4:
-		setSamplesPerVertex (SamplesPerVertex_Palette) ;
+		setSamplesPerVertex (SamplesPerVertex_SmallPalette) ;
 		setEmbValueModulus (EmbValueModulus_SmallPalette) ;
 		break ;
 
 		case 8:
-		setSamplesPerVertex (SamplesPerVertex_Palette) ;
+		setSamplesPerVertex (SamplesPerVertex_LargePalette) ;
 		setEmbValueModulus (EmbValueModulus_LargePalette) ;
 		break ;
 

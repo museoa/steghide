@@ -23,7 +23,9 @@
 #include <cstring>
 
 #include "CvrStgFile.h"
+#include "DFSAPHeuristic.h"
 #include "SampleValueAdjacencyList.h"
+#include "SMDConstructionHeuristic.h"
 #include "WavFormatChunk.h"
 #include "WavChunkHeader.h"
 #include "WavChunkUnused.h"
@@ -78,6 +80,14 @@ std::list<CvrStgFile::Property> WavFile::getProperties () const
 	}
 	retval.push_back (CvrStgFile::Property (_("format"), formatstring)) ;
 
+	return retval ;
+}
+
+std::vector<MatchingAlgorithm*> WavFile::getMatchingAlgorithms (Graph* g, Matching* m) const
+{
+	std::vector<MatchingAlgorithm*> retval ;
+	retval.push_back (new SMDConstructionHeuristic (g, m)) ;
+	retval.push_back (new DFSAPHeuristic (g, m)) ;
 	return retval ;
 }
 

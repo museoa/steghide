@@ -35,6 +35,9 @@ class DMDConstructionHeuristic : public MatchingAlgorithm {
 
 	virtual ~DMDConstructionHeuristic (void) {} ;
 
+	const char* getName (void) const
+		{ return "Dynamic Minimum Degree Construction Heuristic" ; } ;
+
 	void run (void) ;
 
 	private:

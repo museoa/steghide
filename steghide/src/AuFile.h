@@ -41,6 +41,7 @@ class AuFile : public CvrStgFile {
 	void write (void) ;
 
 	std::list<CvrStgFile::Property> getProperties (void) const ;
+	std::vector<MatchingAlgorithm*> getMatchingAlgorithms (Graph* g, Matching* m) const ;
 
 	unsigned long getNumSamples (void) const
 		{ return Data->getNumSamples() ; } ;

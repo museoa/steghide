@@ -28,6 +28,8 @@
 #include "AuSampleValues.h"
 #include "CvrStgFile.h"
 #include "CvrStgObject.h"
+#include "DFSAPHeuristic.h"
+#include "SMDConstructionHeuristic.h"
 #include "common.h"
 #include "error.h"
 
@@ -216,5 +218,13 @@ unsigned short AuFile::AuHeader::getBytesPerSample () const
 		myassert(0) ;
 		break ;
 	}
+	return retval ;
+}
+
+std::vector<MatchingAlgorithm*> AuFile::getMatchingAlgorithms (Graph* g, Matching* m) const
+{
+	std::vector<MatchingAlgorithm*> retval ;
+	retval.push_back (new SMDConstructionHeuristic (g, m)) ;
+	retval.push_back (new DFSAPHeuristic (g, m)) ;
 	return retval ;
 }

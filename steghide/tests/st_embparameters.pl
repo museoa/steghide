@@ -24,7 +24,7 @@ sub runAlgorithm {
 	addTestResult(runEmbExtCmp(DATADIR . "pcm16_std.wav", DATADIR . RND100, \%args));
 
 	$args{a} = "2" ;
-	addTestResult(runEmbExtCmp(DATADIR . "os21x1_std.bmp", DATADIR . RND100, \%args));
+	addTestResult(runEmbExtCmp(DATADIR . "win3x1_std.bmp", DATADIR . RND100, \%args));
 	addTestResult(runEmbExtCmp(DATADIR . "win3x24_std.bmp", DATADIR . RND100, \%args));
 	addTestResult(runEmbExtCmp(DATADIR . "pcm8_std.wav", DATADIR . RND100, \%args));
 
