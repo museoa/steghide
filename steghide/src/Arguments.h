@@ -55,9 +55,13 @@ class Arguments {
 	bool stdin_isused (void) const ;
 
 	ArgCommand		Command ;
+	/// the embed file name, "" if stdin
 	ArgString		EmbFn ;
+	/// the extract file name, "" if stdout
 	ArgString		ExtFn ;
+	/// the cover file name, "" if stdin
 	ArgString		CvrFn ;
+	/// the stego file name, "" if stdout/stdin
 	ArgString		StgFn ;
 	ArgString		Passphrase ;
 	ArgBool			Checksum ;

@@ -29,6 +29,7 @@
 #include "common.h"
 
 class Edge ;
+class ProgressOutput ;
 
 /**
  * \class Matching
@@ -39,8 +40,9 @@ class Matching : private GraphAccess {
 	/**
 	 * create an empty matching that is ready for adding and augmenting
 	 * \param g the underlying graph
+	 * \param po a ProgressOutput object that will print the number of matched vertices (in percent)
 	 **/
-	Matching (Graph* g) ;
+	Matching (Graph* g, ProgressOutput* po = NULL) ;
 	
 	/**
 	 * returns true iff the vertex v is matched in this matching.
@@ -174,7 +176,16 @@ class Matching : private GraphAccess {
 	/// the std::list of all edges in the matching
 	std::list<Edge*> MatchingEdges ;
 
+	/// the number of edges in the matching
 	unsigned long Cardinality ;
+
+	/// the ProgressOutput object that will print the number of matched vertices (as percentage)
+	ProgressOutput* PrOut ;
+
+	/**
+	 * set the cardinality (thereby updating PrOut)
+	 **/
+	void setCardinality (unsigned long c) ;
 
 #ifdef DEBUG
 	public:

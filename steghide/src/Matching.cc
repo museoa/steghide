@@ -21,11 +21,12 @@
 #include "Edge.h"
 #include "Graph.h"
 #include "Matching.h"
+#include "ProgressOutput.h"
 #include "common.h"
 #include "msg.h"
 
-Matching::Matching (Graph* g)
-	: GraphAccess(g)
+Matching::Matching (Graph* g, ProgressOutput* po)
+	: GraphAccess(g), PrOut(po)
 {
 	unsigned long nvertices = TheGraph->getNumVertices() ;
 	for (unsigned long i = 0 ; i < nvertices ; i++) {
@@ -37,7 +38,7 @@ Matching::Matching (Graph* g)
 		VertexInformation.push_back (VertexInfo (i)) ;
 	}
 
-	Cardinality = 0 ;
+	setCardinality (0) ;
 }
 
 bool Matching::includesEdge (const Edge* e) const
@@ -73,7 +74,7 @@ Matching& Matching::addEdge (Edge *e)
 	VertexInformation[vlbl1].setMatched (edgeit) ;
 	VertexInformation[vlbl2].setMatched (edgeit) ;
 
-	Cardinality++ ;
+	setCardinality (Cardinality + 1) ;
 
 	return *this ;
 }
@@ -140,7 +141,7 @@ Matching& Matching::augment (const std::vector<Edge*> &path)
 	ExposedVertices.erase (VertexInformation[e->getVertex2()->getLabel()].getExposedIterator()) ;
 	VertexInformation[e->getVertex2()->getLabel()].setMatched (find (MatchingEdges.begin(), MatchingEdges.end(), e)) ;
 
-	Cardinality++ ;
+	setCardinality (Cardinality + 1) ;
 
 	return *this ;
 }
@@ -174,6 +175,14 @@ void Matching::printVerboseInfo (void) const
 	   			) ;
 		}
 #endif
+	}
+}
+
+void Matching::setCardinality (unsigned long c)
+{
+	Cardinality = c ;
+	if (PrOut) {
+		PrOut->update (((float) (2 * Cardinality)) / ((float) TheGraph->getNumVertices())) ;
 	}
 }
 

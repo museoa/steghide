@@ -30,6 +30,7 @@
 class Edge ;
 class Graph ;
 class Matching ;
+class ProgressOutput ;
 class Vertex ;
 
 /**
@@ -45,7 +46,7 @@ class Vertex ;
  **/
 class ConstructionHeuristic : private GraphAccess {
 	public:
-	ConstructionHeuristic (Graph* g) ;
+	ConstructionHeuristic (Graph* g, ProgressOutput* po = NULL) ;
 
 	void run (void) ;
 

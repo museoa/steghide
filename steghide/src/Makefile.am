@@ -7,7 +7,7 @@ BmpPaletteSampleValue.h BmpRGBSampleValue.h BmpSampleValue.h ColorPalette.h \
 ConstructionHeuristic.h CvrStgFile.h CvrStgObject.h Edge.h EdgeIterator.h \
 EmbData.h Embedder.h EncryptionAlgorithm.h EncryptionMode.h Extractor.h \
 Graph.h GraphAccess.h JpegFile.h JpegSampleValue.h MCryptPP.h MHashKeyGen.h \
-MHashPP.h Matching.h PseudoRandomSource.h RGBTriple.h RandomSource.h \
+MHashPP.h Matching.h PseudoRandomSource.h ProgressOutput.h RGBTriple.h RandomSource.h \
 SampleOccurence.h SampleValue.h SampleValueOppositeNeighbourhood.h Selector.h \
 Session.h SteghideError.h Terminal.h Vertex.h VertexContent.h WavChunk.h \
 WavChunkHeader.h WavChunkUnused.h WavFile.h WavFormatChunk.h \
@@ -21,7 +21,7 @@ BmpPaletteSampleValue.cc BmpRGBSampleValue.cc BmpSampleValue.cc \
 ColorPalette.cc ConstructionHeuristic.cc CvrStgFile.cc Edge.cc EdgeIterator.cc \
 EmbData.cc Embedder.cc EncryptionAlgorithm.cc EncryptionMode.cc Extractor.cc \
 Graph.cc JpegFile.cc JpegSampleValue.cc MCryptPP.cc MHashKeyGen.cc MHashPP.cc \
-Matching.cc PseudoRandomSource.cc RGBTriple.cc RandomSource.cc SampleValue.cc \
+Matching.cc PseudoRandomSource.cc ProgressOutput.cc RGBTriple.cc RandomSource.cc SampleValue.cc \
 SampleValueOppositeNeighbourhood.cc Selector.cc Session.cc SteghideError.cc \
 Terminal.cc Vertex.cc VertexContent.cc WavChunk.cc WavChunkHeader.cc \
 WavChunkUnused.cc WavFile.cc WavFormatChunk.cc WavPCMSampleValue.cc error.cc \

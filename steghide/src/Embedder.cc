@@ -18,6 +18,7 @@
  *
  */
 
+#include <cfloat>
 #include <cstdlib>
 
 #include "AugmentingPathHeuristic.h"
@@ -29,6 +30,7 @@
 #include "Edge.h"
 #include "Graph.h"
 #include "Matching.h"
+#include "ProgressOutput.h"
 #include "Selector.h"
 #include "Vertex.h"
 #include "common.h"
@@ -98,6 +100,11 @@ const Matching* Embedder::calculateMatching ()
 	VerboseMessage vmsg1 (_("calculating the matching...")) ;
 	vmsg1.printMessage() ;
 
+	ProgressOutput* prout = NULL ;
+	if (Args.Verbosity.getValue() == NORMAL) {
+		prout = new ProgressOutput (10) ; // FIXME - it is assumed that nconstrheur is 1
+	}
+
 	// do construction heuristic (maybe more than once)
 	unsigned int nconstrheur = Default_NConstrHeur ;
 #ifdef DEBUG
@@ -105,9 +112,9 @@ const Matching* Embedder::calculateMatching ()
 		nconstrheur = Args.NConstrHeur.getValue() ;
 	}
 #endif
-	Matching *bestmatching = NULL ;
+	Matching* bestmatching = NULL ;
 	for (unsigned int i = 0 ; i < nconstrheur ; i++) {
-		ConstructionHeuristic ch (TheGraph) ;
+		ConstructionHeuristic ch (TheGraph, prout) ;
 		ch.run() ;
 
 		if ((bestmatching == NULL) || (ch.getMatching()->getCardinality() > bestmatching->getCardinality())) {
@@ -125,6 +132,9 @@ const Matching* Embedder::calculateMatching ()
 	bestmatching->printVerboseInfo() ;
 
 	// do bounded augmenting path heuristic
+	if (prout) {
+		prout->setUpdateFrequency (1) ;
+	}
 	if (true) {
 		AugmentingPathHeuristic aph (TheGraph, bestmatching, (UWORD32) (TheGraph->getAvgVertexDegree() / 20)) ;
 		aph.run() ;
@@ -135,7 +145,7 @@ const Matching* Embedder::calculateMatching ()
 		bestmatching->printVerboseInfo() ;
 
 		// do unbounded augmenting path heuristic
-		if (false) {
+		if (true) {
 			aph.reset() ;
 			aph.run() ;
 			bestmatching = aph.getMatching() ;
@@ -144,6 +154,11 @@ const Matching* Embedder::calculateMatching ()
 			vmsg4.printMessage() ;
 			bestmatching->printVerboseInfo() ;
 		}
+	}
+
+	if (prout) {
+		prout->done() ;
+		delete prout ;
 	}
 
 	return bestmatching ;
@@ -162,7 +177,7 @@ void Embedder::embedExposedVertex (Vertex *v)
 {
 	SamplePos samplepos = 0 ;
 	SampleValue *newsample = NULL ;
-	UWORD32 mindistance = UWORD32_MAX ;
+	float mindistance = FLT_MAX ;
 	for (unsigned short i = 0 ; i < TheCvrStgFile->getSamplesPerEBit() ; i++) {
 		SampleValue *curold = v->getSampleValue(i) ;
 		SampleValue *curnew = v->getSampleValue(i)->getNearestOppositeSampleValue() ;

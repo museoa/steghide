@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: steghide 0.4.6b\n"
-"POT-Creation-Date: 2003-03-03 19:40+0100\n"
+"POT-Creation-Date: 2003-03-08 10:59+0100\n"
 "PO-Revision-Date: 2002-05-09 00:40+0200\n"
 "Last-Translator: Stefan Hetzl <shetzl@chello.at>\n"
 "Language-Team: Deutsch\n"
@@ -582,13 +582,13 @@ msgstr "Schreibe Stegodatei auf die Standardausgabe."
 msgid "writing stego file \"%s\"."
 msgstr "Schreibe Stegodatei \"%s\"."
 
-#: src/EmbData.cc:92
+#: src/EmbData.cc:96
 msgid ""
 "the embedded data is encrypted but steghide has been compiled without "
 "encryption support."
 msgstr ""
 
-#: src/EmbData.cc:136
+#: src/EmbData.cc:146
 #, fuzzy
 msgid ""
 "the embedded data is compressed. this is not implemented in this version "
@@ -597,7 +597,7 @@ msgstr ""
 "Die Klartextdaten sind komprimiert. Das ist in dieser Version nicht "
 "implementiert (Dateikorruption ?)."
 
-#: src/EmbData.cc:168
+#: src/EmbData.cc:178
 #, fuzzy
 msgid ""
 "please specify a file name for the extracted data (there is no name embedded "
@@ -606,38 +606,42 @@ msgstr ""
 "Bitte geben Sie einen Namen für die Klartextdatei an (es ist keiner in der "
 "Stegodatei eingebettet)"
 
-#: src/EmbData.cc:194
+#: src/EmbData.cc:204
 msgid "crc32 checksum test ok."
 msgstr "CRC32 Prüfsummentest in Ordnung."
 
-#: src/EmbData.cc:198
+#: src/EmbData.cc:208
 msgid "crc32 checksum failed! extracted data is probably corrupted."
 msgstr ""
 "CRC32 Prüfsummentest fehlgeschlagen! Die extrahierten Daten sind "
 "wahrscheinlich fehlerhaft."
 
-#: src/EmbData.cc:301
+#: src/EmbData.cc:311
 #, fuzzy, c-format
 msgid "the maximum length for the embedded file's name is %d characters."
 msgstr "Die maximale Länge für den Namen der Klartextdatei ist %d Zeichen."
 
-#: src/Embedder.cc:53
+#: src/Embedder.cc:52
 #, fuzzy
 msgid "the cover file is too short to embed the data."
 msgstr ""
 "Die Trägerdatei ist zu kurz, um die Daten einzubetten. Verwenden Sie eine "
 "andere Trägerdatei."
 
-#: src/Embedder.cc:99
+#: src/Embedder.cc:98
 msgid "calculating the matching..."
 msgstr ""
 
-#: src/Embedder.cc:124
+#: src/Embedder.cc:123
 msgid "best matching after construction heuristic:"
 msgstr ""
 
-#: src/Embedder.cc:135
-msgid "best matching after augmenting path heuristic:"
+#: src/Embedder.cc:133
+msgid "best matching after bounded augmenting path heuristic:"
+msgstr ""
+
+#: src/Embedder.cc:143
+msgid "best matching after unbounded augmenting path heuristic:"
 msgstr ""
 
 #: src/Extractor.cc:50
@@ -662,32 +666,32 @@ msgstr ""
 msgid "creating the graph..."
 msgstr ""
 
-#: src/Graph.cc:248
+#: src/Graph.cc:257
 #, c-format
 msgid "number of distinct sample values: %lu"
 msgstr ""
 
-#: src/Graph.cc:251
+#: src/Graph.cc:260
 #, c-format
 msgid "number of vertices: %lu"
 msgstr ""
 
-#: src/Graph.cc:254
+#: src/Graph.cc:263
 #, c-format
 msgid "average vertex degree: %.1f"
 msgstr ""
 
-#: src/Graph.cc:256
+#: src/Graph.cc:265
 #, c-format
 msgid "minimum vertex degree: %lu"
 msgstr ""
 
-#: src/Graph.cc:258
+#: src/Graph.cc:267
 #, c-format
 msgid "maximum vertex degree: %lu"
 msgstr ""
 
-#: src/Graph.cc:261
+#: src/Graph.cc:270
 #, c-format
 msgid "number of edges: %lu"
 msgstr ""

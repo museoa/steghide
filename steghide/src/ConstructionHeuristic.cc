@@ -24,7 +24,7 @@
 #include "Matching.h"
 #include "common.h"
 
-ConstructionHeuristic::ConstructionHeuristic (Graph* g)
+ConstructionHeuristic::ConstructionHeuristic (Graph* g, ProgressOutput* po)
 	: GraphAccess(g)
 {
 	unsigned long nvertices = g->getNumVertices() ;
@@ -48,7 +48,7 @@ ConstructionHeuristic::ConstructionHeuristic (Graph* g)
 		}
 	}
 
-	TheMatching = new Matching (g) ;
+	TheMatching = new Matching (g, po) ;
 }
 
 void ConstructionHeuristic::run ()
