@@ -10,23 +10,26 @@ steghide \- a steganography program
 ]
 .SH DESCRIPTION
 .B Steghide
-is a steganography program which embeds a secret message in a cover file by
-replacing some of the least significant bits of the cover file with bits of the
-secret message. After that, the secret message is imperceptible and can only be
-extracted with the correct passphrase. The result of the embedding process
-(an innocuous looking file with an embedded message) is called stego file.
+.\" is a steganography program which embeds a secret message in a cover file by
+.\" replacing some of the least significant bits of the cover file with bits of the
+.\" secret message. After that, the secret message is imperceptible and can only be
+.\" extracted with the correct passphrase. The result of the embedding process
+.\" (an innocuous looking file with an embedded message) is called stego file.
 
-The jpeg, bmp, wav and au file formats are supported by steghide. You can use a
-file of any of these formats as cover/stego file. There are no restrictions on
-the format of the plain file.
+.\" The jpeg, bmp, wav and au file formats are supported by steghide. You can use a
+.\" file of any of these formats as cover/stego file. There are no restrictions on
+.\" the format of the plain file.
 
-The plain data is encrypted before embedding. The encryption algorithm
-blowfish is used together with the hash algorithm MD5 (to create a key for
-blowfish from the passphrase).
+.\" The plain data is encrypted before embedding. The encryption algorithm
+.\" blowfish is used together with the hash algorithm MD5 (to create a key for
+.\" blowfish from the passphrase).
 
-Together with the plain data the name of the original plain file and a crc32
-checksum of the plain file is embedded in the stego file. The crc32 checksum
-is used to verify the integrity of the embedded message during extraction.
+.\" Together with the plain data the name of the original plain file and a crc32
+.\" checksum of the plain file is embedded in the stego file. The crc32 checksum
+.\" is used to verify the integrity of the embedded message during extraction.
+
+Of course, you do not need to know graph theory to use steghide. Just keep it mind
+that it boils down to finding pairs of pixels/samples that will be exchanged.
 
 .SH COMMANDS
 In this section the commands for steghide are listed. The first argument must
@@ -56,183 +59,104 @@ Display steghide's license. No arguments required.
 .B "help, --help"
 Display a help screen. No arguments required.
 
-.SH FILE NAMES
-.TP
-All file name arguments (-cf, -ef, -sf, -xf) also accept \- as a filename which makes steghide
-use standard input or standard output (whichever makes sense). Omitting the corresponding file
-name argument will have the same effect with two exceptions: If -sf is omitted for the embed command,
-then the modifications will be done directly in the cover file. If -xf is omitted for extraction,
-the file name that is embedded in the stego file will be used. So when you want to be sure
-that standard input/output is used, use - as filename.
-
 .SH EMBEDDING OPTIONS
 .TP
-.B "-ef, --embedfile"
+.B "-ef, --embedfile \fIfilename\fP"
 Specify the file that will be embedded, i.e. that contains the secret message. Note that
 steghide embeds the original file name in the stego file. If you omit the -xf argument
 when extracting data (see below), the embedded file will be saved to the current directory
 under its original name.
 
 .TP
-.B "-cf, --coverfile"
+.B "-cf, --coverfile \fIfilename\fP"
 Specify the cover file that will be used to embed data. The cover file must be in one
 of the following formats: AU, BMP, JPEG or WAV. The file-format will be detected
 automatically based on header information (the extension is not relevant).
 
 .TP
-.B "-sf, --stegofile"
+.B "-sf, --stegofile \fIfilename\fP"
 Specify the name for the stego file that will be created. If this argument is omitted
 when calling steghide with the embed command, then the modifications to embed the secret
 data will be made to the cover file without saving it under a new name.
 
 .TP
-.B "-e, --encryption"
+.B "-e, --encryption \fIalgo\fP [ \fImode\fP ] | \fImode\fP [ \fIalgo\fP ]"
 Specify encryption parameters. This option must be followed by one or two strings that identify
 an encryption algorithm and/or mode. You can get the names of all available algorithms and
-modes with the encinfo command. The default encryption is rijndael-128 (AES) in the cbc mode.
-
-.SH EXTRACTING OPTIONS
-.TP
-.B "-pf, --plainfile"
-This argument can be used with the embed and the extract command. When used
-with the embed command it defines the file that contains the secret message.
-
-When this argument is used with the extract command, a file with the name passed
-with this command will be created and the plain data that is embedded in the
-stego file will be written to this file.
-
-Note that steghide embeds the original file name of the plain file in the stego
-file. If you omit the -pf argument when extracting data, the embedded plain file
-will be saved to the current directory under its original name.
-
-If you use the argument
-.B -pf -
-standard input or standard output will be used
-instead of a file. You can use this notation with the -cf and -sf arguments too.
+modes with the encinfo command. The default encryption is \fBrijndael-128\fP (AES) in the \fBcbc\fP mode.
+If you do not want to use encryption, use \fB-e none\fP.
 
 .TP
-.B "-cf, --coverfile"
-Defines the file that is to be used as cover file, e.g.
-.B -cf mycover.bmp
-tells steghide to use the file mycover.bmp as cover file.
-
-This argument can only be used with the embed command.
+.B "-z, --compress \fIlevel\fP"
+Specify the compression level. The compression \fIlevel\fP can be any number in 1...9 where 1 means
+best speed and 9 means best compression.
 
 .TP
-.B "-sf, --stegofile"
-Defines the file that will be used as stego file. When this argument is used
-with the embed command, a file of that name will be created. When used with the
-extract command the file must already exist and contain an embedded message.
-
-The file format of the cover file (and the stego file) is detected automatically
-based on header information (the extension is not relevant). The current version
-of steghide supports the jpeg, bmp, wav and au file formats.
-
+.B "-Z, --dontcompress"
 
 .TP
-.B "-d, --distribution"
-This argument defines the method that is used to calculate the postions of the
-hidden bits in the cover/stego file. You can choose among two different
-methods: a constant interval length between two hidden bits (this method is
-called "cnsti") and a pseudo-random interval length between two hidden bits
-(this method is called "prndi").
-
-This argument can only be used with the embed command.
-
-To use the cnsti method you have to pass the following to steghide:
-.B -d cnsti <n>
-where <n> is the interval length you wish to use, i.e. the number of bytes
-(in the cover file) between two bytes that each contain a hidden bit.
-
-Supplying the following argument makes steghide use the prndi method:
-.B -d prndi <n>
-where <n> is the
-.B maximum
-interval length. The average interval length (using the prndi method) will be
-approximately the half of the maximum interval length.
-
-Usually you will not need to use the -d argument as it defaults to prndi with
-the maximum interval length that is possible for the specified plain file and
-cover file. This is the best setting.
-
-If you use
-.B -d cnsti
-(i.e. you omit the <n> argument), the maximum interval length for the cnsti
-method will be used. Using
-.B -d prndi
-is equal to the default.
-
-Note that the cnsti method is less secure so you should not use it.
+.B "-a, --algorithm"
 
 .TP
-.B "-k, --checksum"
-Embed a crc32 checksum of the plain file in the stego file. This is the
-default.
+.B "-g, --goal"
+
+.TP
+.B "-r, --radius"
 
 .TP
 .B "-K, --nochecksum"
-Do not embed a crc32 checksum. You can use this if the plain data already
+Do not embed a crc32 checksum. You can use this if the secret data already
 contains some type of checksum or if you do not want to embed those extra
-32 bits needed for the crc32 checksum for whatever reason.
-
-The -k and -K arguments can only be used with the embed command.
+32 bits needed for the crc32 checksum.
 
 .TP
-.B "-n, --embedplainname"
-Embed the name of the original plain file with the plain data. This is the
-default. The embedded plain file name is used by the extract command to save
-the plain data.
+.B "-N, --dontembedname"
+Do not embed the file name of the secret file. If this option is used, the
+extractor needs to specify a filename to tell steghide where to write the
+embedded data.
+
+.SH EXTRACTING OPTIONS
+.TP
+.B "-sf, --stegofile \fIfilename\fP"
 
 .TP
-.B "-N, --notembedplainname"
-Do not embed the name of the original plain file.
+.B "-xf, --extractfile \fIfilename\fP"
 
-The -n and -N arguments can only be used with the embed command.
+.\" .TP
+.\" .B "-pf, --plainfile"
+.\" This argument can be used with the embed and the extract command. When used
+.\" with the embed command it defines the file that contains the secret message.
+.\" 
+.\" When this argument is used with the extract command, a file with the name passed
+.\" with this command will be created and the plain data that is embedded in the
+.\" stego file will be written to this file.
+.\" 
+.\" Note that steghide embeds the original file name of the plain file in the stego
+.\" file. If you omit the -pf argument when extracting data, the embedded plain file
+.\" will be saved to the current directory under its original name.
+.\" 
+.\" If you use the argument
+.\" .B -pf -
+.\" standard input or standard output will be used
+.\" instead of a file. You can use this notation with the -cf and -sf arguments too.
+.\" 
+.\" .TP
+.\" .B "-cf, --coverfile"
+.\" Defines the file that is to be used as cover file, e.g.
+.\" .B -cf mycover.bmp
+.\" tells steghide to use the file mycover.bmp as cover file.
+.\" 
+.\" This argument can only be used with the embed command.
 
-.TP
-.B "-c, --compatibility"
-This switch makes steghide use the blowfish-compat encryption module (from
-libmcrypt) thus providing compatibility with libmcrypt versions < 2.4.9.
-
-Use this switch if you have a libmcrypt version >= 2.4.9 and want to send an
-embedded message to a person that has a libmcrypt version < 2.4.9. Also use
-this switch if you have a libmcrypt version >= 2.4.9 and want to read a message
-that has been embedded by a person with a libmcrypt version < 2.4.9.
-
-.TP
-.B "-e, --encryption"
-Encrypt the plain data before embedding. This is the default anyway, so you will
-not need this argument. You can use it to specify explicitly that encryption
-should be used.
-
-.TP
-.B "-E, --noencryption"
-Do
-.B not
-encrypt the plain data before embedding. Note that embedding unecrypted data is
-not recommended because it less secure.
-
-The -e and -E arguments can only be used with the embed command.
-
-.TP
-.B "-h, --sthdrencryption"
-Encrypt the stego header before embedding. The stego header is some
-administrative information that is also embedded in the stego file, for example
-the length of the plain data.
-
-Encrypting the stego header is the default, so there is no need to use this
-argument.
-
-.TP
-.B "-H, --nosthdrencryption"
-Do
-.B not
-encrypt the stego header before embedding. This is also not recommended.
-
-Important Note: If the sender of a stego file has not encrypted the stego
-header (i.e. has used the -H argument) then the receiver of the message must
-also use the -H argument with the extract command. Otherwise steghide will
-assume that the stego header is encrypted and will fail.
+.\" .TP
+.\" .B "-sf, --stegofile"
+.\" Defines the file that will be used as stego file. When this argument is used
+.\" with the embed command, a file of that name will be created. When used with the
+.\" extract command the file must already exist and contain an embedded message.
+.\" 
+.\" The file format of the cover file (and the stego file) is detected automatically
+.\" based on header information (the extension is not relevant). The current version
+.\" of steghide supports the jpeg, bmp, wav and au file formats.
 
 .SH COMMON OPTIONS
 The following options can be used with all commands (where it makes sense).
@@ -256,46 +180,18 @@ Supress information messages.
 .B "-f, --force"
 Always overwrite existing files.
 
+.SH FILE NAME OPTIONS
+.TP
+All file name arguments (-cf, -ef, -sf, -xf) also accept \- as a filename which makes steghide
+use standard input or standard output (whichever makes sense). Omitting the corresponding file
+name argument will have the same effect with two exceptions: If -sf is omitted for the embed command,
+then the modifications will be done directly in the cover file. If -xf is omitted for extraction,
+the file name that is embedded in the stego file will be used. So when you want to be sure
+that standard input/output is used, use - as filename.
+
 .SH EXAMPLES
-To embed the file secret.txt in the jpeg file cvr.jpg and save the resulting
-stego file as stg.jpg type:
 
-  $ steghide embed -pf secret.txt -cf cvr.jpg -sf stg.jpg
-  Enter passhrase:
-  Re-Enter passphrase:
-
-To extract this data again type:
-
-  $ steghide extract -sf stg.jpg
-  Enter passphrase:
-  writing plain file to "secret.txt".
-
-When embedding data, the name of the original plain file is embedded too: The
-extract command above will create a file secret.txt in the current directory
-and write the embedded data to secret.txt.
-
-You can override the embedded plain file name if you specify a -pf argument
-when extracting. The following command will put the embedded data into the file
-plain.txt:
-
-  $ steghide extract -sf stg.jpg -pf plain.txt
-  Enter passphrase:
-  writing plain file to "plain.txt".
-
-If you are using a system that supports pipes you can pass data via
-standard input to steghide. In the following example data is compressed before
-it is (encrypted and) embedded:
-
-  $ gzip -c pln.txt | steghide embed -cf cvr.bmp -sf stg.bmp -pf - -p "This is a passphrase."
-
-To extract (and view) the data from this file again, you could do something
-like this:
-
-  $ steghide extract -sf stg.bmp -pf - -p "This is a passphrase." | gunzip | less
-
-If you pass data to steghide via standard input or from steghide to another
-program via standard output, you need to specify the passphrase on the command
-line with the -p argument (as shown in the two commands above).
+take from README !
 
 .SH RETURN VALUE
 Steghide returns 0 on success and 1 if a failure occured and it had to terminate

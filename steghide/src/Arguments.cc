@@ -386,6 +386,9 @@ bool Arguments::parse_Compression (ArgIt& curarg)
 
 		int tmp = 0 ;
 		sscanf (curarg->c_str(), "%d", &tmp) ;
+		if (tmp < 1 || tmp > 9) {
+			throw ArgError (_("\"%s\" is not a valid compression level."), curarg->c_str()) ;
+		}
 		Compression.setValue (tmp) ;
 
 		found = true ;

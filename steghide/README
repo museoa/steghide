@@ -22,8 +22,6 @@ that communication is taking place. This is often achieved by using a (rather
 large) cover file and embedding the (rather short) secret message into this
 file. The result is a innocuous looking file (the stego file) that contains
 the secret message.
-If you want to know more about steganography, please visit:
-http://steghide.sourceforge.net/steganography.php
 
 Compilation and Installation :
 ==============================
@@ -93,7 +91,7 @@ procedure mentioned above for the Linux/Unix compilation.
 Quick-Start :
 =============
 
-Here are some examples how steghide can be used. Take a look at these to receive
+Here are some examples of how steghide can be used. Take a look at these to get
 a first impression. If you want more detailed information please read the
 manpage.
 
@@ -102,62 +100,50 @@ The basic usage is as follows:
   $ steghide embed -cf picture.jpg -ef secret.txt
   Enter passhrase:
   Re-Enter passphrase:
+  embedding secret.txt in picture.jpg...97.8% done
 
-This command will embed the file secret.txt in the cover-file picture.jpg.
-After that you can send picture.jpg to the designated receiver of the secret
+This command will embed the file secret.txt in the cover-file picture.jpg. The
+percentage at the end of the output does not mean that 97.8% of the secret data
+have been embedded but rather that 97.8% of the secret data have been embedded
+just by exchanging pixels. The higher this percentage the less likely is it that
+the embedded data is detected by a statistical test that is based on pixel/sample frequencies.
+
+After you have done that you can send picture.jpg to the designated receiver of the secret
 message. The Receiver has to call steghide in the following way:
 
   $ steghide extract -sf picture.jpg
   Enter passphrase:
+  wrote embedded data to "secret.txt".
 
 If the supplied passphrase is correct, the contents of the original file
 secret.txt will be extracted from the stego-file picture.jpg and saved under
 the same file name in the current directory.
 
+If you have received a file that contains embedded data and you want to get some information
+about it before extracting it, use the info command:
 
-
-
-
-
-To embed the file secret.txt in the jpeg file cvr.jpg and save the resulting
-stego file as stg.jpg type:
-
-  $ steghide embed -pf secret.txt -cf cvr.jpg -sf stg.jpg
-  Enter passhrase:
-  Re-Enter passphrase:
-
-To extract this data again type:
-
-  $ steghide extract -sf stg.jpg
+  $ steghide info received_file.wav
+  "received_file.wav":
+    format: wave audio, PCM encoding
+    capacity: 7.6 KB
+  Try to get information about embedded data ? (y/n) y
   Enter passphrase:
-  writing plain file to "secret.txt".
+    embedded file "secret.txt":
+      size: 1.6 KB
+      encrypted: rijndael-128, cbc
+      compressed: yes
 
-When embedding data, the name of the original plain file is embedded too: The
-extract command above will create a file secret.txt in the current directory
-and write the embedded data to secret.txt.
+After printing some general information about the stego file (format, capacity) you will be
+asked if steghide should try to get information about the embedded data. If you answer with
+yes you have to supply a passphrase. Steghide will then try to extract the embedded data
+with that passphrase and - if it succeeds - print some information about it.
 
-You can override the embedded plain file name if you specify a -pf argument
-when extracting. The following command will put the embedded data into the file
-plain.txt:
-
-  $ steghide extract -sf stg.jpg -pf plain.txt
-  Enter passphrase:
-  writing plain file to "plain.txt".
-
-If you are using a system that supports pipes you can pass data via
-standard input to steghide. In the following example data is compressed before
-it is (encrypted and) embedded:
-
-  $ gzip -c pln.txt | steghide embed -cf cvr.bmp -sf stg.bmp -pf - -p "This is a passphrase."
-
-To extract (and view) the data from this file again, you could do something
-like this:
-
-  $ steghide extract -sf stg.bmp -pf - -p "This is a passphrase." | gunzip | less
-
-If you pass data to steghide via standard input or from steghide to another
-program via standard output, you need to specify the passphrase on the command
-line with the -p argument (as shown in the two commands above).
+Especially when embedding large amounts of data you will notice that steghide takes some time
+to finish. If you are impatient you can use the -a option to speed things up. The -a option must
+be followed by a number between 0 and 3 and selects the algorithm to be used to calculate
+the embedding, where 0 is the fastest and 3 the most secure algorithm. You will notice that
+the exchange percentage won't be very high if you select a fast algorithm. This increases
+the probability that the embedding can be detected with a pixel/sample frequency based statistical test.
 
 Contact :
 =========
@@ -165,7 +151,7 @@ Contact :
 Website :
 ---------
 You can get the latest version of steghide as well as some additional
-information from the steghide website at:
+information and documentation from the steghide website at:
 http://steghide.sourceforge.net/
 
 Mailing Lists :

@@ -3,7 +3,7 @@ steghide 0.5.1 :
 
 * maintains first-order statistics for all file formats
 
-* support for all jpeg files (using libjpeg)
+* support for all types of jpeg files (using libjpeg)
 
 * compression of embedded data (using zlib)
 

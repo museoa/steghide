@@ -71,6 +71,9 @@ void Session::run ()
 				io.write8 (*i) ;
 			}
 			io.close() ;
+
+			Message m (_("wrote embedded data to \"%s\"."), fn.c_str()) ;
+			m.printMessage() ;
 		break ; }
 
 		case INFO: {

@@ -188,11 +188,11 @@ const Matching* Embedder::calculateMatching (ProgressOutput* prout)
 		else {
 			myassert (Args.Algorithm.getValue() == Arguments::Algorithm_CHOnly) ;
 		}
+	}
 
-		if (prout) {
-			prout->update (((float) (2 * bestmatching->getCardinality())) / ((float) Globs.TheGraph->getNumVertices()), true) ;
-			delete prout ;
-		}
+	if (prout) {
+		prout->update (((float) (2 * bestmatching->getCardinality())) / ((float) Globs.TheGraph->getNumVertices()), true) ;
+		delete prout ;
 	}
 
 	return bestmatching ;
