@@ -21,22 +21,18 @@
 #ifndef SH_SGI_HASH_MAP_H
 #define SH_SGI_HASH_MAP_H
 
-// FIXME - fill in all NAMESPACE_SGI definitions
-
 // this file is included to get access to a sgi::hash_map implementation
-// NAMESPACE_SGI is used for writing hash<...> specializations
+
 #ifdef __GNUC__
 # if __GNUC__ < 3
 #  include <hash_map.h>
     namespace sgi { using ::hash ; using ::hash_map ; } ;
-#   define NAMESPACE_SGI std
 # else
 #  include <ext/hash_map>
 #  if __GNUC_MINOR__ == 0
     namespace sgi = std ;			// GCC 3.0
 #  else
     namespace sgi = __gnu_cxx ;	// GCC 3.1 and later
-#   define NAMESPACE_SGI __gnu_cxx
 #  endif
 # endif
 #else
