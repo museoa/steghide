@@ -517,7 +517,7 @@ bool Arguments::parse_Encryption (ArgIt& curarg)
 
 			if (!MCryptPP::AlgoSupportsMode (EncAlgo.getValue(), EncMode.getValue())) {
 				throw SteghideError (_("the encryption algorithm \"%s\" can not be used with the mode \"%s\"."),
-					EncAlgo.getValue().getStringRep().c_str(), EncAlgo.getValue().getStringRep().c_str()) ;
+					EncAlgo.getValue().getStringRep().c_str(), EncMode.getValue().getStringRep().c_str()) ;
 			}
 		}
 #else
