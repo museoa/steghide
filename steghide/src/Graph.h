@@ -21,6 +21,7 @@
 #ifndef SH_GRAPH_H
 #define SH_GRAPH_H
 
+#include <iostream>
 #include <list>
 #include <map>
 #include <queue>
@@ -118,6 +119,9 @@ class Graph {
 	 * (available at: ftp://ftp.zib.de/pub/Packages/mathprog/matching/index.html
 	 **/
 	void print (void) const ;
+
+	void print_gml (std::ostream& out, unsigned int recdepth) const ;
+	void printVertex_gml (std::ostream& out, Vertex* v, unsigned int recdepth, std::vector<bool>& printed) const ;
 
 	void print_Vertices (unsigned short spc = 0) const ;
 #endif

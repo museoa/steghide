@@ -24,6 +24,7 @@
 
 #include "BitString.h"
 #include "CvrStgFile.h"
+#include "Edge.h"
 #include "Graph.h"
 #include "Selector.h"
 #include "Vertex.h"
@@ -513,6 +514,62 @@ void Graph::print (void) const
 				}
 			}
 
+		}
+	}
+}
+
+void Graph::print_gml (std::ostream& out, unsigned int recdepth) const
+{
+	out << "graph [" << std::endl ;
+	out << "    directed 0" << std::endl ;
+
+	srand ((unsigned int) time (NULL)) ;
+	std::vector<bool> printed (Vertices.size()) ;
+	for (unsigned int i = 0 ; i < Vertices.size() ; i++) {
+		if (!printed[i]) {
+			printVertex_gml (out, Vertices[i], recdepth, printed) ;
+		}
+	}
+
+	out << "]" << std::endl ;
+}
+
+void Graph::printVertex_gml (std::ostream& out, Vertex* vstart, unsigned int recdepth, std::vector<bool>& printed) const
+{
+	const float width = 1200.0 ;
+	const float height = 1000.0 ;
+
+	printed[vstart->getLabel()] = true ;
+
+	out << "    node [" << std::endl ;
+	out << "        id " << vstart->getLabel() << std::endl ;
+	out << "        label \"" << vstart->getLabel() << "\"" << std::endl ;
+	out << "        graphics [" << std::endl ;
+	out << "            x " << (width * (rand() / (RAND_MAX + 1.0))) << std::endl ;
+	out << "            y " << (height * (rand() / (RAND_MAX + 1.0))) << std::endl ;
+	out << "            w 10.0" << std::endl ;
+	out << "            h 10.0" << std::endl ;
+	out << "            type \"rectangle\"" << std::endl ;
+	out << "            width 1.0" << std::endl ;
+	out << "        ]" << std::endl ;
+	out << "    ]" << std::endl ;
+
+	if (recdepth > 0) {
+		EdgeIterator eit (vstart) ;
+		while (!eit.isFinished()) {
+			Edge* e = *eit ;
+			Vertex* vnext = e->getOtherVertex(vstart) ;
+			delete e ;
+
+			out << "    edge [" << std::endl ;
+			out << "        source " << vstart->getLabel() << std::endl ;
+			out << "        target " << vnext->getLabel() << std::endl ;
+			out << "    ]" << std::endl ;
+			if (!printed[vnext->getLabel()]) {
+				printVertex_gml (out, vnext, recdepth - 1, printed) ;
+			}
+
+			++eit ;
 		}
 	}
 }

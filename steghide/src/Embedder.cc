@@ -79,6 +79,11 @@ Embedder::Embedder ()
 		Globs.TheGraph->print() ;
 		exit (EXIT_SUCCESS) ;
 	}
+
+	if (Args.DebugCommand.getValue() == PRINTGMLGRAPH) {
+		Globs.TheGraph->print_gml (std::cout, Args.GmlGraphRecDepth.getValue()) ;
+		exit (EXIT_SUCCESS) ;
+	}
 #endif
 }
 

@@ -79,6 +79,7 @@ class Arguments {
 	ArgUInt			DebugLevel ;
 	ArgUInt			PriorityQueueRange ;
 	ArgUInt			NConstrHeur ;
+	ArgUInt			GmlGraphRecDepth ;
 #endif
 
 	private:
@@ -100,6 +101,7 @@ class Arguments {
 	static const unsigned int	Default_DebugLevel = 0 ;
 	static const unsigned int	Default_PriorityQueueRange = 0 ; // is never used
 	static const unsigned int	Default_NConstrHeur = 0 ; // is never used
+	static const unsigned int	Default_GmlGraphRecDepth = 0 ;
 #endif
 
 	/**

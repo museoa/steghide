@@ -661,6 +661,21 @@ bool Arguments::parse_Debug (ArgIt& curarg)
 		found = true ;
 		curarg++ ;
 	}
+	if (*curarg == "--printgmlgraph") {
+		if (DebugCommand.is_set()) {
+			throw SteghideError (_("you cannot use more than one debug command at a time.")) ;
+		}
+
+		DebugCommand.setValue (PRINTGMLGRAPH) ;
+		curarg++ ;
+
+		int tmp = 0 ;
+		sscanf (curarg->c_str(), "%d", &tmp) ;
+		GmlGraphRecDepth.setValue (tmp) ;
+
+		found = true ;
+		curarg++ ;
+	}
 	else if (*curarg == "--printfreqs") {
 		if (DebugCommand.is_set()) {
 			throw SteghideError (_("you cannot use more than one debug command at a time.")) ;
@@ -811,6 +826,7 @@ void Arguments::setDefaults (void)
 	DebugLevel.setValue (Default_DebugLevel, false) ;
 	PriorityQueueRange.setValue (Default_PriorityQueueRange, false) ;
 	NConstrHeur.setValue (Default_NConstrHeur, false) ;
+	GmlGraphRecDepth.setValue (Default_GmlGraphRecDepth, false) ;
 #endif
 }
 
