@@ -37,7 +37,8 @@ class SampleValueOppositeNeighbourhood {
 	vector<vector<SampleValueLabel> > OppNeighs ;
 
 	void calcOppNeighs_generic (const vector<SampleValue*> &svalues) ;
-	void calcOppNeighs_RGB (const vector<SampleValue*> &svalues) ;
+	void calcOppNeighs_rgb (const vector<SampleValue*> &svalues) ;
+	void calcOppNeighs_wav (const vector<SampleValue*> &svalues) ;
 } ;
 
 #endif // ndef SH_SVALUEOPPNEIGHS_H

@@ -18,18 +18,23 @@
  *
  */
 
+#include <algorithm>
 #include <vector>
 
 #include "bmpsamplevalue.h"
 #include "common.h"
 #include "samplevalue.h"
 #include "svalueoppneigh.h"
+#include "wavsamplevalue.h"
 
 SampleValueOppositeNeighbourhood::SampleValueOppositeNeighbourhood (const vector<SampleValue*> &svalues)
 {
 	if (svalues.size() > 0) { // graph contains at least one vertex
 		if (dynamic_cast<BmpRGBSampleValue*> (svalues[0])) {
-			calcOppNeighs_RGB (svalues) ;
+			calcOppNeighs_rgb (svalues) ;
+		}
+		else if (dynamic_cast<WavPCMSampleValue*> (svalues[0])) {
+			calcOppNeighs_wav (svalues) ;
 		}
 		else {
 			calcOppNeighs_generic (svalues) ;
@@ -72,7 +77,7 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_generic (const vector<Sampl
 	}
 }
 
-void SampleValueOppositeNeighbourhood::calcOppNeighs_RGB (const vector<SampleValue*> &svalues)
+void SampleValueOppositeNeighbourhood::calcOppNeighs_rgb (const vector<SampleValue*> &svalues)
 {
 	unsigned long numsvalues = svalues.size() ;
 
@@ -136,6 +141,50 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_RGB (const vector<SampleVal
 
 				}
 			}
+		}
+	}
+}
+
+void SampleValueOppositeNeighbourhood::calcOppNeighs_wav (const vector<SampleValue*> &svalues)
+{
+	// partition samples into those with getBit() == 0 and with getBit() == 1
+	unsigned long n = svalues.size() ;
+
+	vector<WavPCMSampleValue*> svalues0 ;
+	svalues0.reserve (n / 2) ;
+	vector<WavPCMSampleValue*> svalues1 ;
+	svalues1.reserve (n / 2) ;
+
+	for (unsigned long l = 0 ; l < n ; l++) {
+		WavPCMSampleValue *s = dynamic_cast<WavPCMSampleValue*> (svalues[l]) ;
+		assert (s != NULL) ;
+		if (s->getBit() == 0) {
+			svalues0.push_back (s) ;
+		}
+		else {
+			svalues1.push_back (s) ;
+		}
+	}
+
+	WavPCMSmaller smaller ;
+	sort (svalues0.begin(), svalues0.end(), smaller) ;
+	sort (svalues1.begin(), svalues1.end(), smaller) ;
+
+	int r_ub = (int) svalues[0]->getRadius() ; // FIXME - radius aufrunden
+
+	OppNeighs = vector<vector<SampleValueLabel> > (n) ;
+	unsigned long n0 = svalues0.size() ;
+	unsigned long n1 = svalues1.size() ;
+	unsigned long start1 = 0 ;
+	for (unsigned long i0 = 0 ; i0 < n0 ; i0++) {
+		while ((start1 < n1) && (svalues1[start1]->getValue() < svalues0[i0]->getValue() - r_ub)) {
+			start1++ ;
+		}
+		unsigned long i1 = start1 ;
+		while ((i1 < n1) && (svalues1[i1]->getValue() <= svalues0[i0]->getValue() + r_ub)) {
+			OppNeighs[svalues0[i0]->getLabel()].push_back (svalues1[i1]->getLabel()) ;
+			OppNeighs[svalues1[i1]->getLabel()].push_back (svalues0[i0]->getLabel()) ;
+			i1++ ;
 		}
 	}
 }
