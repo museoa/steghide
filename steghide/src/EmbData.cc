@@ -79,7 +79,9 @@ void EmbData::addBits (BitString addbits)
 	switch (State) {
 		case READ_MAGIC:
 		{
+#ifdef DEBUG
 			printDebug (1, "in the READ_MAGIC state") ;
+#endif
 			if (bits.getValue(0, NBitsMagic) == Magic) {
 				NumBitsNeeded = 1 ;
 				NumBitsRequested = AUtils::bminus<unsigned long> (NumBitsNeeded, Reservoir.getLength()) ;
