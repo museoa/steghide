@@ -116,7 +116,11 @@ void BinaryIO::open (string fn, MODE m)
 
 bool BinaryIO::eof (void)
 {
-	return feof (getStream()) ;
+	// FIXME
+	int c = fgetc (getStream()) ;
+	bool retval = feof (getStream()) ;
+	ungetc (c, getStream()) ;
+	return retval ;
 }
 
 void BinaryIO::close (void)

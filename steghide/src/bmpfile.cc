@@ -40,9 +40,31 @@ BmpFile::BmpFile ()
 }
 
 BmpFile::BmpFile (BinaryIO *io)
+	: CvrStgFile()
 {
-	BmpFile () ;
 	read (io) ;
+}
+
+// FIXME - die nächsten vier funkt ordentlich machen !
+// Daten als Pointer!!
+BmpFile::BITMAPFILEHEADER *BmpFile::getBMFH (void)
+{
+	return &bmfh ;
+}
+
+void BmpFile::setBMFH (BITMAPFILEHEADER *x)
+{
+	bmfh = *x ;
+}
+
+BmpFile::BMPINFO *BmpFile::getBmpInfo (void)
+{
+	return &bmi ;
+}
+
+void BmpFile::setBmpInfo (BMPINFO *x)
+{
+	bmi = *x ;
 }
 
 BmpFile::~BmpFile ()
@@ -152,7 +174,7 @@ void BmpFile::embedBit (unsigned long pos, int value)
 	assert (value == 0 || value == 1) ;
 
 	calcRC (pos, &row, &column) ;
-	bitmap[row][column] = (bitmap[row][column] & ~1) | value ;
+	bitmap[row][column] = (bitmap[row][column] & (unsigned char) ~1) | value ;
 }
 
 int BmpFile::extractBit (unsigned long pos)
@@ -201,7 +223,7 @@ void BmpFile::calcRC (unsigned long pos, unsigned long *row, unsigned long *colu
 void BmpFile::readheaders ()
 {
 	try {
-		bmfh.bfType = BinIO->read16_le() ;
+		bmfh.bfType = IdBm ;
 		bmfh.bfSize = BinIO->read32_le() ;
 		bmfh.bfReserved1 = BinIO->read16_le() ;
 		bmfh.bfReserved2 = BinIO->read16_le() ;
@@ -314,7 +336,7 @@ void BmpFile::bmpwin_readheaders ()
 			bmi.win.colors[i].rgbGreen = BinIO->read8() ;
 			bmi.win.colors[i].rgbRed = BinIO->read8() ;
 			if ((bmi.win.colors[i].rgbReserved = BinIO->read8()) != 0) {
-				pwarn (_("maybe corrupted windows bmp format (Reserved in RGBQUAD is non-zero)")) ;
+				pwarn (_("maybe corrupted windows bmp data (Reserved in RGBQUAD is non-zero).")) ;
 			}
 		}
 	}
@@ -526,13 +548,13 @@ void BmpFile::readdata ()
 
 		for (long line = height - 1 ; line >= 0 ; line--) {
 			bitmap[line] = (unsigned char *) s_malloc (linelength) ;
-			for (long posinline = 0 ; posinline <= linelength ; posinline++) {
+			for (long posinline = 0 ; posinline < linelength ; posinline++) {
 				bitmap[line][posinline] = BinIO->read8() ;
 			}
 
 			for (int i = 0 ; i < paddinglength ; i++) {
 				if (BinIO->read8() != 0) {
-					pwarn (_("maybe corrupted bmp format (padding byte set to non-zero)")) ;
+					pwarn (_("maybe corrupted bmp data (padding byte set to non-zero).")) ;
 				}
 			}
 		}
@@ -573,7 +595,7 @@ void BmpFile::writedata ()
 		}
 
 		for (long line = height - 1 ; line >= 0 ; line--) {
-			for (long posinline = 0 ; posinline <= linelength ; posinline++) {
+			for (long posinline = 0 ; posinline < linelength ; posinline++) {
 				BinIO->write8 (bitmap[line][posinline]) ;
 			}
 

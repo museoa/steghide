@@ -77,7 +77,7 @@ void CvrStgFile::transform (string stgfn)
 #if 0
 	if (file->filename != NULL) {
 		if (fclose (file->stream) == EOF) {
-			exit_err (_("could not close file \"%s\"."), file->filename) ;
+			exit_err (_("could not close the file \"%s\"."), file->filename) ;
 		}
 	}
 
@@ -109,16 +109,8 @@ void CvrStgFile::transform (string stgfn)
 	return ;
 }
 
-
-
-
-
-// FIXME - detectff sollte mit BinaryIO arbeiten und auch zurückgeben oder verwenden oder so - damit CvrStgFile bzw. abgeleitetes Objekt gleich mit BinaryIO weiterarbeiten kann - ohne rewind oder so...
-
-
-
 /* detects file format */
-static int detectff (BinaryIO *io)
+static int detectff (BinaryIO *io, unsigned long *rifflen)
 {
 	char buf[4] = { '\0', '\0', '\0', '\0' } ;
 	int retval = FF_UNKNOWN ;
@@ -139,10 +131,7 @@ static int detectff (BinaryIO *io)
 			retval = FF_AU ;
 		}
 		else if (strncmp ("RIFF", buf, 4) == 0) {
-			unsigned long rifflen ;
-
-			// FIXME - wie kommt WavFile an rifflen ??
-			rifflen = io->read32_le() ;
+			*rifflen = io->read32_le() ;
 			for (unsigned int i = 0 ; i < 4 ; i++) {
 				buf[i] = (char) io->read8() ;
 			}
@@ -158,9 +147,10 @@ static int detectff (BinaryIO *io)
 CvrStgFile *cvrstg_readfile (string filename)
 {
 	BinaryIO *BinIO = new BinaryIO (filename, BinaryIO::READ) ;
-	CvrStgFile *file = NULL ;
 
-	switch (detectff (BinIO)) {
+	CvrStgFile *file = NULL ;
+	unsigned long rifflen = 0 ;
+	switch (detectff (BinIO, &rifflen)) {
 		case FF_UNKNOWN:
 		if (BinIO->is_std()) {
 			throw SteghideError (_("the file format of the data from standard input is not supported.")) ;
@@ -175,7 +165,7 @@ CvrStgFile *cvrstg_readfile (string filename)
 		break ;
 
 		case FF_WAV:
-		file = new WavFile (BinIO) ;
+		file = new WavFile (BinIO, rifflen) ;
 		break ;
 
 		case FF_AU:

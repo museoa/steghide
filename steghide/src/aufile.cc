@@ -38,14 +38,14 @@
    wieso wird audio enconding nicht verwendet - muss nicht immer 8 bit sein !! */
 
 AuFile::AuFile (void)
-	: CvrStgFile ()
+	: CvrStgFile()
 {
 	// empty
 }
 
 AuFile::AuFile (BinaryIO *io)
+	: CvrStgFile()
 {
-	AuFile() ;
 	read (io) ;
 }
 
@@ -54,6 +54,28 @@ AuFile::~AuFile (void)
 	free (header) ;
 	free (infofield) ;
 	buffree (data) ;
+}
+
+BUFFER* AuFile::getData (void)
+{
+	return data ;
+}
+
+void AuFile::setData (BUFFER *d)
+{
+	// FIXME free old buffer
+	data = d ;
+}
+
+AuFile::AuHeader* AuFile::getHeader (void)
+{
+	return header ;
+}
+
+void AuFile::setHeader (AuHeader *h)
+{
+	// FIXME free old header
+	header = h ;
 }
 
 void AuFile::read (BinaryIO *io)
@@ -99,11 +121,10 @@ void AuFile::readheaders (void)
 	try {
 		header = (AuHeader *) s_malloc (sizeof (AuHeader)) ;
 
-		header->id[0] = BinIO->read8() ;
-		header->id[1] = BinIO->read8() ;
-		header->id[2] = BinIO->read8() ;
-		header->id[3] = BinIO->read8() ;
-		assert (strncmp (header->id, ".snd", 4) == 0) ;
+		header->id[0] = '.' ;
+		header->id[1] = 's' ;
+		header->id[2] = 'n' ;
+		header->id[3] = 'd' ;
 
 		header->offset = BinIO->read32_be() ;
 		header->size = BinIO->read32_be() ;

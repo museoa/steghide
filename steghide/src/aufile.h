@@ -37,9 +37,7 @@ class AuFile : public CvrStgFile {
 	void embedBit (unsigned long pos, int bit) ;
 	int extractBit (unsigned long pos) ;
 
-	private:
-	static const int HeaderSize = 24 ;
-
+	protected:
 	typedef struct struct_AuHeader {
 		char			id[4] ;
 		unsigned long	offset ;
@@ -48,6 +46,14 @@ class AuFile : public CvrStgFile {
 		unsigned long	samplerate ;
 		unsigned long	channels ;
 	} AuHeader ;
+
+	BUFFER *getData (void) ;
+	void setData (BUFFER *d) ;
+	AuHeader *getHeader (void) ;
+	void setHeader (AuHeader *h) ;
+
+	private:
+	static const int HeaderSize = 24 ;
 
 	AuHeader		*header ;
 	unsigned long	len_infofield ;

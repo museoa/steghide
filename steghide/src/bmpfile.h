@@ -37,13 +37,7 @@ class BmpFile : public CvrStgFile {
 	void embedBit (unsigned long pos, int bit) ;
 	int extractBit (unsigned long pos) ;
 
-	private:
-	static const unsigned int IdBm = 19778 ;
-	static const unsigned short SizeBMFILEHEADER = 14 ;
-	static const unsigned short SizeBMINFOHEADER = 40 ;
-	static const unsigned short SizeBMCOREHEADER = 12 ;
-	static const unsigned int BI_RGB = 0 ;
-
+	protected:
 #ifdef WIN32
 #include <windows.h>
 #else
@@ -110,11 +104,30 @@ class BmpFile : public CvrStgFile {
 		BMPINFO_OS2	os2 ;
 	} BMPINFO ;
 
+
+	BITMAPFILEHEADER *getBMFH (void) ;
+	void setBMFH (BITMAPFILEHEADER *x) ;
+	BMPINFO *getBmpInfo (void) ;
+	void setBmpInfo (BMPINFO *x) ;
+
+	private:
+	static const unsigned int IdBm = 19778 ;
+	static const unsigned short SizeBMFILEHEADER = 14 ;
+	static const unsigned short SizeBMINFOHEADER = 40 ;
+	static const unsigned short SizeBMCOREHEADER = 12 ;
+	static const unsigned int BI_RGB = 0 ;
+
 	enum SUBFORMAT { WIN, OS2 } ;
 
+#ifdef DEBUG
+	public:
+#endif
 	BITMAPFILEHEADER bmfh ;
 	BMPINFO bmi ;
 	unsigned char **bitmap ;
+#ifdef DEBUG
+	private:
+#endif
 
 	void readheaders () ;
 	void bmpwin_readheaders () ;

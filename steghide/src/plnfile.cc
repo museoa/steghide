@@ -259,6 +259,7 @@ PLNFILE *pln_createfile (void)
 /* clean up a PLNFILE structure (closes file, frees memory) */
 void pln_cleanup (PLNFILE *plnfile)
 {
+	/* FIXME - rewrite as destructor 
 	if ((plnfile->filename != "-") && (plnfile->stream != NULL)) {
 		fclose (plnfile->stream) ;
 	}
@@ -269,5 +270,6 @@ void pln_cleanup (PLNFILE *plnfile)
 		buffree (plnfile->plndata) ;
 	}
 	free (plnfile) ;
+	*/
 }
 

@@ -99,8 +99,6 @@ int main (int argc, char *argv[])
 			the random number generator in support.c "rnd" is used if numbers must be reproduceable */
 		srand ((unsigned int) time (NULL)) ;
 
-		// FIXME args->objekt init ???
-		//parsearguments (argc, argv) ;
 		args = new Arguments (argc, argv) ;
 
 		switch (args->command.getValue()) {
@@ -328,7 +326,7 @@ static void embedfile (string cvrfilename, string stgfilename, string plnfilenam
 
 	cvrstgfile = cvrstg_readfile (cvrfilename) ;
 
-	plnfile = pln_readfile ((char *) plnfilename.c_str()) ;
+	plnfile = pln_readfile (plnfilename == "" ? NULL : (char *) plnfilename.c_str()) ;
 
 	assemble_plndata (plnfile) ;
 

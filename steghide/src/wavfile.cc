@@ -35,14 +35,21 @@
 #include "msg.h"
 
 WavFile::WavFile ()
-	: CvrStgFile ()
+	: CvrStgFile()
 {
 	// empty
 }
 
 WavFile::WavFile (BinaryIO *io)
+	: CvrStgFile()
 {
-	WavFile () ;
+	read (io) ;
+}
+
+WavFile::WavFile (BinaryIO *io, unsigned long rl)
+	: CvrStgFile()
+{
+	riffchhdr.len = rl ;
 	read (io) ;
 }
 
@@ -202,11 +209,15 @@ void WavFile::writedata (void)
 void WavFile::readheaders ()
 {
 	try {
-		riffchhdr = *getChhdr() ;
-		id_wave[0] = BinIO->read8() ;
-		id_wave[1] = BinIO->read8() ;
-		id_wave[2] = BinIO->read8() ;
-		id_wave[3] = BinIO->read8() ;
+		riffchhdr.id[0] = 'R' ;
+		riffchhdr.id[1] = 'I' ;
+		riffchhdr.id[2] = 'F' ;
+		riffchhdr.id[3] = 'F' ;
+		// riffchhdr->len has been set in constructor or is undefined
+		id_wave[0] = 'W' ;
+		id_wave[1] = 'A' ;
+		id_wave[2] = 'V' ;
+		id_wave[3] = 'E' ;
 
 		/* FIXME - ev. hier noch nach "fmt " checken */
 		fmtchhdr = *getChhdr() ;

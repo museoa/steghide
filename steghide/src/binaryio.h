@@ -32,7 +32,10 @@ class BinaryIO {
 	void write32_le (unsigned long val) ;
 	void write32_be (unsigned long val) ;
 
+// FIXME	
+#ifndef DEBUG	
 	protected:
+#endif
 	FILE *getStream (void) ;
 	void setStream (FILE *s) ;
 	MODE getMode (void) ;

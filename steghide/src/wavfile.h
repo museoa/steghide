@@ -29,6 +29,7 @@ class WavFile : public CvrStgFile {
 	public:
 	WavFile (void) ;
 	WavFile (BinaryIO *io) ;
+	WavFile (BinaryIO *io, unsigned long rl) ;
 	~WavFile (void) ;
 
 	void read (BinaryIO *io) ;

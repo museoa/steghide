@@ -191,10 +191,11 @@ void embedsthdr (CvrStgFile *cvrstgfile, int dmtd, DMTDINFO dmtdinfo, int enc, c
 	}
 
 	bit = cp_bits_to_buf_le (hdrbuf, bit, (unsigned long) sthdr.encryption, SIZE_ENCRYPTION) ;
-	bit = cp_bits_to_buf_le (hdrbuf, bit, (unsigned long) sthdr.checksum, SIZE_CHECKSUM) ;
 
 	/* compression is not yet implemented */
 	bit = cp_bits_to_buf_le (hdrbuf, bit, (unsigned long) COMPR_NONE, SIZE_COMPRESSION) ;
+
+	bit = cp_bits_to_buf_le (hdrbuf, bit, (unsigned long) sthdr.checksum, SIZE_CHECKSUM) ;
 
 	/* eventually encrypt the buffer */
 	if (enc) {
