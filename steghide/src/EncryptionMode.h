@@ -56,6 +56,9 @@ class EncryptionMode {
 	std::string getStringRep (void) const ;
 	IRep getIntegerRep (void) const ;
 
+	bool operator== (const EncryptionMode& mode) const
+		{ return (Value == mode.Value) ; } ;
+
 	static bool isValidStringRep (std::string srep) ;
 	static bool isValidIntegerRep (unsigned int irep) ;
 

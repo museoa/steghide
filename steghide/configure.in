@@ -67,6 +67,20 @@ else
 	AC_DEFINE(USE_LIBMCRYPT,1,[use the libmcrypt library (header and lib are present)])
 fi	
 
+dnl Check for zlib
+AC_CHECK_LIB(z, zlibVersion)
+AC_CHECK_HEADER(zlib.h)
+if test "$ac_cv_header_zlib_h" = no || test "$ac_cv_lib_z_zlibVersion" = no ;
+then
+	echo "**********";
+	echo "zlib could not be found on your system. Steghide will be compiled without";
+	echo "the ability to compress and uncompress embedded data!";
+	echo "zlib can be downloaded from http://www.gzip.org/zlib/";
+	echo "**********";
+else
+	AC_DEFINE(USE_ZLIB,1,[use the z compression library (header and lib are present)])
+fi
+
 dnl Check for libjpeg
 AC_CHECK_LIB(jpeg, jpeg_read_coefficients)
 AC_CHECK_HEADER(jpeglib.h)

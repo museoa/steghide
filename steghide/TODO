@@ -1,8 +1,6 @@
 These are things that I plan to implement in the future:
 (in no particular order)
 
-* compress plain data before embedding (zlib)
-
 * support for other file formats (gif, mp3, avi, png)
 
 * gui frontend

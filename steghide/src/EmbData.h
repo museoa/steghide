@@ -24,6 +24,8 @@
 #include <string>
 #include <vector>
 
+#include "common.h"
+
 #include "EncryptionAlgorithm.h"
 #include "EncryptionMode.h"
 
@@ -31,10 +33,16 @@ class BitString ;
 
 class EmbData {
 	public:
-	enum MODE { EMBED, EXTRACT, UNDEF } ;
-	enum STATE { READCRYPT, READLENOFNEMBBITS, READNEMBBITS, READENCRYPTED, END } ;
-	EmbData (void) ;
-	EmbData (MODE m, std::string fn = "") ;
+	enum MODE { EMBED, EXTRACT } ;
+	enum STATE { READ_ENCINFO, READ_NPLAINBITS, READ_ENCRYPTED, END } ;
+
+	/**
+	 * construct a new EmbData object
+	 * \param m the mode (EMBED or EXTRACT)
+	 * \param pp the passphrase
+	 * \param fn the filename (only need for mode EMBED)
+	 **/
+	EmbData (MODE m, std::string pp, std::string fn = "") ;
 
 	BitString getBitString (void) ;
 
@@ -48,48 +56,46 @@ class EmbData {
 	void setEncMode (EncryptionMode m) ;
 	EncryptionMode getEncMode (void) const ;
 
-	void setCompression (bool c) ;
-	bool getCompression (void) const ;
+	void setCompression (int c) ;
+	int getCompression (void) const ;
 
 	void setChecksum (bool c) ;
 	bool getChecksum (void) const ;
 
-	/**
-	 * read the file FileName and put contents into Data
-	 **/
-	void read (void) ;
+	void setData (const std::vector<BYTE> data)
+		{ Data = data ; } ;
 
-	/**
-	 * write the contents of Data into FileName
-	 **/
-	void write (void) ;
+	std::vector<BYTE> getData (void) const
+		{ return Data ; } ;
+
+	std::string getFileName (void) const
+		{ return FileName ; } ;
 
 	protected:
 	std::string stripDir (std::string s) ;
-	/**
-	 * return minimal number of bits needed to save x
-	 **/
-	unsigned int nbits (unsigned long x) ;
 
 	private:
-	/// number of bits needed to code nbytes
-	static const unsigned int NBitsLenOfNEmbBits = 5 ;
-	/// number of bits need to code length of filename
-	static const unsigned int NBitsLenOfFileName = 8 ;
+	/// number of bits used to code the number of plain bits
+	static const unsigned int NBitsNPlainBits = 32 ;
+	/// number of bits used to code the number of uncompressed bits
+	static const unsigned int NBitsNUncompressedBits = 32 ;
 	/// size of a crc32 checksum in bits
 	static const unsigned int NBitsCrc32 = 32 ;
-	/// maximum size of embedded file name
-	static const unsigned int EmbFileNameMaxSize = 255 ;
 
 	MODE Mode ;
 	STATE State ;
 	
-	unsigned long NEmbBits ;
+	unsigned long NPlainBits ;
+
 	unsigned long NumBitsNeeded ;
+
+	std::string Passphrase ;
 
 	EncryptionAlgorithm EncAlgo ;
 	EncryptionMode EncMode ;
-	bool Compression ;
+	/// compression level: 0(none),1(best speed),...,9(best compression)
+	int Compression ;
+	/// will a checksum be embedded ?
 	bool Checksum ;
 	std::string FileName ;
 	/// contains the actual message to be embedded

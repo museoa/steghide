@@ -5,13 +5,13 @@ check_PROGRAMS = unittests
 EXTRA_DIST = systemtests.pl STSupport.pm st_fileformats.pl
 noinst_HEADERS = \
 AuFileTest.h BitStringTest.h BmpWinFileTest.h BmpOS2FileTest.h CvrStgFileTest.h \
-ColorPaletteTest.h DummyFile.h DummySampleValue.h MatchingTest.h MHashPPTest.h Test.h TestCategory.h \
+ColorPaletteTest.h DummyFile.h DummySampleValue.h EmbDataTest.h MatchingTest.h MHashPPTest.h Test.h TestCategory.h \
 GraphTest.h TestCategoryCaller.h TestSuite.h UnitTest.h utcommon.h \
 BmpPaletteSampleValueTest.h SampleValueOppositeNeighbourhoodTest.h SampleValueTest.h SelectorTest.h \
 VertexContentTest.h WavFileTest.h BmpRGBSampleValueTest.h AugmentingPathHeuristicTest.h
 unittests_SOURCES = \
 AuFileTest.cc BitStringTest.cc BmpWinFileTest.cc BmpOS2FileTest.cc CvrStgFileTest.cc \
-ColorPaletteTest.cc DummyFile.cc DummySampleValue.cc MatchingTest.cc GraphTest.cc MHashPPTest.cc TestSuite.cc UnitTest.cc \
+ColorPaletteTest.cc DummyFile.cc DummySampleValue.cc EmbDataTest.cc MatchingTest.cc GraphTest.cc MHashPPTest.cc TestSuite.cc UnitTest.cc \
 SampleValueTest.cc BmpPaletteSampleValueTest.cc BmpRGBSampleValueTest.cc SelectorTest.cc VertexContentTest.cc WavFileTest.cc \
 SampleValueOppositeNeighbourhoodTest.cc AugmentingPathHeuristicTest.cc main.cc
 unittests_LDADD = \

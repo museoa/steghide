@@ -61,6 +61,7 @@ typedef Arg<VERBOSITY> ArgVerbosity ;
 typedef Arg<bool> ArgBool ;
 typedef Arg<std::string> ArgString ;
 typedef Arg<unsigned long> ArgULong ;
+typedef Arg<int> ArgInt ;
 typedef Arg<float> ArgFloat ;
 typedef Arg<EncryptionAlgorithm> ArgEncAlgo ;
 typedef Arg<EncryptionMode> ArgEncMode ;

@@ -27,6 +27,7 @@
 #include "BmpPaletteSampleValueTest.h"
 #include "BmpOS2FileTest.h"
 #include "BmpWinFileTest.h"
+#include "EmbDataTest.h"
 #include "ColorPaletteTest.h"
 #include "GraphTest.h"
 #include "MatchingTest.h"
@@ -61,6 +62,9 @@ int main (int argc, char *argv[])
 
 	ColorPaletteTest cpt  (&ts) ;
 	ts.addUnitTest (&cpt) ;
+
+	EmbDataTest edt (&ts) ;
+	ts.addUnitTest (&edt) ;
 
 	// SampleValues
 	BmpRGBSampleValueTest rgbsvt (&ts) ;

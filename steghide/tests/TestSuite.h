@@ -30,7 +30,9 @@
 
 class TestSuite : public Test {
 	public:
-	enum TESTRESULT { KNOWNEXCEPTION, UNKNOWNEXCEPTION } ;
+	enum TESTRESULT {	NOTINSTALLED,	// when something that is needed for the test is not installed on the current system
+						KNOWNEXCEPTION,
+						UNKNOWNEXCEPTION } ;
 
 	TestSuite (void) ;
 

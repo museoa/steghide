@@ -65,6 +65,7 @@ class Arguments {
 	ArgString		StgFn ;
 	ArgString		Passphrase ;
 	ArgBool			Checksum ;
+	ArgInt			Compression ;
 	ArgBool			EmbedEmbFn ;
 	ArgEncAlgo		EncAlgo ;
 	ArgEncMode		EncMode ;
@@ -83,9 +84,12 @@ class Arguments {
 	private:
 	typedef std::vector<std::string>::const_iterator ArgIt ;
 
+	static const int		NoCompression = 0 ;
+
 	static const EncryptionAlgorithm Default_EncAlgo ;
 	static const EncryptionMode Default_EncMode ;
 	static const bool		Default_Checksum = true ;
+	static const int		Default_Compression = 9 ; // FIXME - really use slowest but smallest ?
 	static const bool		Default_EmbedEmbFn = true ;
 	static const bool		Default_Force = false ;
 	static const VERBOSITY	Default_Verbosity = NORMAL ;
@@ -117,6 +121,7 @@ class Arguments {
 	bool parse_StgFn (ArgIt& curarg) ;
 	bool parse_Passphrase (ArgIt& curarg) ;
 	bool parse_Checksum (ArgIt& curarg) ;
+	bool parse_Compression (ArgIt& curarg) ;
 	bool parse_EmbedEmbFn (ArgIt& curarg) ;
 	bool parse_Encryption (ArgIt& curarg) ;
 	bool parse_Radius (ArgIt& curarg) ;

@@ -21,12 +21,27 @@
 #include "BitString.h"
 #include "common.h"
 
+#ifdef USE_ZLIB
+namespace zlib {
+#include <zlib.h>
+}
+#endif // def USE_ZLIB
+
 #define BITPOS(n) (n % 8)
 #define BYTEPOS(n) (n / 8)
 
 BitString::BitString ()
 {
 	Length = 0 ;
+}
+
+BitString::BitString (const BitString& bs)
+{
+	Length = bs.Length ;
+	Data.resize(bs.Data.size()) ;
+	for (unsigned long i = 0 ; i < bs.Data.size() ; i++) {
+		Data[i] = bs.Data[i] ;
+	}
 }
 
 BitString::BitString (unsigned long l)
@@ -156,6 +171,28 @@ const std::vector<BYTE>& BitString::getBytes() const
 	return Data ;
 }
 
+BitString& BitString::truncate (const unsigned long s, const unsigned long e)
+{
+	unsigned long newsize_i = e - s ;
+	unsigned long newsize_y = 0 ;
+	if (newsize_i % 8 == 0) {
+		newsize_y = newsize_i / 8 ;
+	}
+	else {
+		newsize_y = newsize_i / 8 + 1 ;
+	}
+
+	for (unsigned long i = 0 ; i < newsize_i ; i++) {
+		// replace i-th bit with (s+i)-th bit
+		BIT bit = (*this)[s + i] ;
+		Data[BYTEPOS(i)] &= (BYTE) ~(1 << BITPOS(i)) ; // delete i-th bit
+		Data[BYTEPOS(i)] |= (BYTE) (bit << BITPOS(i)) ;
+	}
+	Length = newsize_i ;
+
+	return *this ;
+}
+
 BitString& BitString::pad (unsigned long mult, BIT v)
 {
 	while (Length % mult != 0) {
@@ -171,6 +208,103 @@ BitString& BitString::padRandom (unsigned long mult)
 	}
 	return *this ;
 }
+
+#ifdef USE_ZLIB
+BitString& BitString::compress (int level)
+{
+	myassert (level >= 1 && level <= 9) ;
+	pad (8, 0) ;
+
+	// prepare source buffer
+	zlib::uLong srclen = Data.size() ;
+	zlib::Byte *srcbuf = new zlib::Byte[srclen] ;
+	for (unsigned long i = 0 ; i < srclen ; i++) {
+		srcbuf[i] = Data[i] ;
+	}
+
+	// prepare dest buffer (see zlib manual for this magic length)
+	zlib::uLong destlen = ((zlib::uLong) ((Data.size() + 12) * 1.001)) + 1 ;
+	zlib::Byte* destbuf = new zlib::Byte[destlen] ;
+
+	// do compression
+	int ret = zlib::compress2 (destbuf, &destlen, (const zlib::Bytef*) srcbuf, srclen, level) ;
+	if (ret != Z_OK) {
+		switch (ret) {
+			case Z_MEM_ERROR:
+			throw SteghideError (_("could not allocate memory.")) ;
+			break ;
+
+			default:
+			throw SteghideError (_("error %d while calling zlib's compress2."), ret) ;
+			break ;
+		}
+	}
+
+	// write compressed data into Data
+	Data.resize (destlen) ;
+	for (unsigned long i = 0 ; i < destlen ; i++) {
+		Data[i] = destbuf[i] ;
+	}
+	Length = destlen * 8 ;
+
+	delete[] srcbuf ;
+	delete[] destbuf ;
+	return *this ;
+}
+
+BitString& BitString::uncompress (unsigned long idestlen)
+{
+	myassert (Length % 8 == 0) ;
+
+	// prepare source buffer
+	zlib::uLong srclen = Length / 8 ;
+	zlib::Byte* srcbuf = new zlib::Byte[srclen] ;
+	for (unsigned long i = 0 ; i < srclen ; i++) {
+		srcbuf[i] = Data[i] ;
+	}
+
+	// prepare destination buffer
+	zlib::uLong ydestlen = 0 ;
+	if (idestlen % 8 == 0) {
+		ydestlen = idestlen / 8 ;
+	}
+	else {
+		ydestlen = (idestlen / 8) + 1 ;
+	}
+	zlib::Byte* destbuf = new zlib::Byte[ydestlen] ;
+
+	// do uncompression
+	zlib::uLong ydestlen_before = ydestlen ;
+	int ret = zlib::uncompress (destbuf, &ydestlen, (const zlib::Bytef*) srcbuf, srclen) ;
+	if (ret != Z_OK) {
+		switch (ret) {
+			case Z_MEM_ERROR:
+			throw SteghideError (_("could not allocate memory.")) ;
+			break ;
+
+			case Z_DATA_ERROR:
+			throw SteghideError (_("can not uncompress data. compressed data is corrupted.")) ;
+			break ;
+
+			default:
+			throw SteghideError (_("error %d while calling zlib's uncompress."), ret) ;
+			break ;
+		}
+	}
+	myassert (ydestlen_before == ydestlen) ; // because idestlen must be _exactly_ size in bits
+
+	// write uncompressed data into Data
+	Data.resize (ydestlen) ;
+	for (unsigned long i = 0 ; i < ydestlen ; i++) {
+		Data[i] = destbuf[i] ;
+	}
+	Length = idestlen ;
+
+	delete[] srcbuf ;
+	delete[] destbuf ;
+	return *this ;
+}
+#endif // def USE_ZLIB
 
 bool BitString::operator== (const BitString &v) const
 {
@@ -188,6 +322,25 @@ bool BitString::operator== (const BitString &v) const
 		retval = false ;
 	}
 	
+	return retval ;
+}
+
+bool BitString::operator!= (const BitString &v) const
+{
+	bool retval = false ;
+
+	if (v.getLength() != getLength()) {
+		retval = true ;
+	}
+	else {
+		for (unsigned int i = 0 ; i < getLength() ; i++) {
+			if (v[i] != (*this)[i]) {
+				retval = true ;
+				break ;
+			}
+		}
+	}
+
 	return retval ;
 }
 

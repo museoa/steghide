@@ -18,35 +18,29 @@
  *
  */
 
-#ifndef SH_BITSTRINGTEST_H
-#define SH_BITSTRINGTEST_H
+#ifndef SH_EMBDATATEST_H
+#define SH_EMBDATATEST_H
 
-#define private public
-#define protected public
-#include "BitString.h"
-#undef private
-#undef protected
+class BitString ;
+#include "EmbData.h"
 
 #include "UnitTest.h"
 #include "TestSuite.h"
 
-class BitStringTest : public UnitTest {
+class EmbDataTest : public UnitTest {
 	public:
-	BitStringTest (TestSuite* s) ;
+	EmbDataTest (TestSuite* s) ;
 
-	void setup (void) ;
-	void cleanup (void) ;
-
-	void testBitInputOutput (void) ;
-	void testLength (void) ;
-	void testDatatypeInput (void) ;
-	void testDatatypeOutput (void) ;
-	void testEquality (void) ;
-	void testTruncation (void) ;
-	void testCompression (void) ;
+	void testEmbedding (void) ;
+	void testExtracting (void) ;
 
 	private:
-	BitString *bs_0, *bs_1, *bs_100, *bs_10010, *bs_10101110, *bs_101011101 ;
+	bool genericTestEmbedding (EmbData emb, BitString shouldbe) ;
+	/**
+	 * pass the BitString bs to emb using getNumBitsNeeded and addBits
+	 * \return true iff emb took exactly the (number of) bits from bs
+	 **/
+	bool feed_to (const BitString& bs, EmbData& emb) ;
 } ;
 
-#endif // ndef SH_BITSTRINGTEST_H
+#endif // ndef SH_EMBDATATEST_H

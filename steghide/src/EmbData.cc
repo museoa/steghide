@@ -26,29 +26,12 @@
 #include "MCryptPP.h"
 #include "MHashPP.h"
 
-EmbData::EmbData ()
+EmbData::EmbData (MODE m, std::string pp, std::string fn)
+	: Mode(m), Passphrase(pp), FileName(fn)
 {
-	Mode = UNDEF ;
-}
-
-EmbData::EmbData (MODE m, std::string fn)
-{
-	Mode = m ;
-	FileName = fn ;
-
-	switch (Mode) {
-		case EMBED: {
-			read() ;
-		break ; }
-
-		case EXTRACT: {
-			NumBitsNeeded = EncryptionAlgorithm::IRep_size + EncryptionMode::IRep_size ;
-			State = READCRYPT ;
-		break ; }
-
-		default: {
-			myassert (0) ;
-		break ; }
+	if (m == EXTRACT) {
+		NumBitsNeeded = EncryptionAlgorithm::IRep_size + EncryptionMode::IRep_size ;
+		State = READ_ENCINFO ;
 	}
 }
 
@@ -76,9 +59,9 @@ void EmbData::addBits (BitString bits)
 #endif
 
 	switch (State) {
-		case READCRYPT: {
+		case READ_ENCINFO: {
 #ifdef DEBUG
-			printDebug (1, "in the READCRYPT state") ;
+			printDebug (1, "in the READ_ENCINFO state") ;
 #endif
 
 			unsigned int algo = (unsigned int) bits.getValue (0, EncryptionAlgorithm::IRep_size) ;
@@ -89,8 +72,10 @@ void EmbData::addBits (BitString bits)
 			if (EncryptionMode::isValidIntegerRep (mode)) {
 				EncMode.setValue ((EncryptionMode::IRep) mode) ;
 			}
-			NumBitsNeeded = NBitsLenOfNEmbBits ;
-			State = READLENOFNEMBBITS ;
+
+			NumBitsNeeded = NBitsNPlainBits ;
+			State = READ_NPLAINBITS ;
+
 #ifndef USE_LIBMCRYPT
 			if (EncAlgo.getIntegerRep() != EncryptionAlgorithm::NONE) {
 				throw SteghideError (_("the embedded data is encrypted but steghide has been compiled without encryption support.")) ;
@@ -98,101 +83,86 @@ void EmbData::addBits (BitString bits)
 #endif
 		break ; }
 
-		case READLENOFNEMBBITS: {
+		case READ_NPLAINBITS: {
 #ifdef DEBUG
-			printDebug (1, "in the READLENOFNEMBBITS state") ;
+			printDebug (1, "in the READ_NPLAINBITS state") ;
 #endif
-			NumBitsNeeded = bits.getValue (0, NBitsLenOfNEmbBits) ;
-			State = READNEMBBITS ;
-		break ; }
+			
+			NPlainBits = bits.getValue (0, NBitsNPlainBits) ;
 
-		case READNEMBBITS: {
-#ifdef DEBUG
-			printDebug (1, "in the READNEMBBITS state") ;
-#endif
-			NEmbBits = bits.getValue (0, NumBitsNeeded) ;
 #ifdef USE_LIBMCRYPT
-			NumBitsNeeded = MCryptPP::getEncryptedSize (EncAlgo, EncMode, NEmbBits) ;
+			NumBitsNeeded = MCryptPP::getEncryptedSize (EncAlgo, EncMode, NPlainBits) ;
 #else
-			myassert (EncAlgo.getIntegerRep() == EncryptionAlgorithm::NONE) ;
-			NumBitsNeeded = NEmbBits ;
+			NumBitsNeeded = NPlainBits ;
 #endif
-			State = READENCRYPTED ;
+
+			State = READ_ENCRYPTED ;
 		break ; }
 
-		case READENCRYPTED: {
+		case READ_ENCRYPTED: {
 #ifdef DEBUG
-			printDebug (1, "in the READENCRYPTED state") ;
+			printDebug (1, "in the READ_ENCRYPTED state") ;
 #endif
+
+			BitString plain ;
 #ifdef USE_LIBMCRYPT
-			BitString decrypted ;
 			if (EncAlgo.getIntegerRep() == EncryptionAlgorithm::NONE) {
-				decrypted = bits ;
+				plain = bits ;
 			}
 			else {
 				MCryptPP crypto (EncAlgo, EncMode) ;
-				decrypted = crypto.decrypt (bits, Args.Passphrase.getValue()) ;
+				plain = crypto.decrypt (bits, Passphrase) ;
 			}
 #else
-			BitString decrypted = bits ;
+			plain = bits ;
 #endif
 
-			// TODO - zlib inflate here - decrypted becomes plain
+			plain.truncate (0, NPlainBits) ;	// cut off random padding used to achieve full number of encryption blocks
 
 			unsigned long pos = 0 ;
 
-			Compression = (bool) decrypted[pos++] ;
-			if (Compression) {
-				throw SteghideError (_("the embedded data is compressed. this is not implemented in this version (file corruption ?).")) ;
+			// read Compression (and uncompress)
+			Compression = ((plain[pos++]) ? 9 : 0) ; // to make compression contain a value that makes sense
+			if (Compression > 0) {
+				UWORD32 NUncompressedBits = plain.getValue (pos, NBitsNUncompressedBits) ;
+				pos += NBitsNUncompressedBits ;
+
+				plain.truncate (pos, plain.getLength()) ;
+				pos = 0 ;
+				plain.print() ;
+				plain.uncompress (NUncompressedBits) ;
 			}
 
-			Checksum = (bool) decrypted[pos++] ;
+			// read Checksum
+			Checksum = plain[pos++] ;
 			unsigned long extcrc32 = 0 ;
 			if (Checksum) {
-				extcrc32 = decrypted.getValue (pos, NBitsCrc32) ;
+				extcrc32 = plain.getValue (pos, NBitsCrc32) ;
 				pos += NBitsCrc32 ;
 			}
 
-			unsigned int lenoffilename = (unsigned int) decrypted.getValue (pos, NBitsLenOfFileName) ;
-			pos += NBitsLenOfFileName ;
-			std::string filename = "" ;
-			for (unsigned int i = 0 ; i < lenoffilename ; i++) {
-				filename += (char) decrypted.getValue (pos, 8) ;
+			// read filename
+			char curchar = '\0' ;
+			FileName = "" ;
+			do {
+				curchar = (char) plain.getValue (pos, 8) ;
+				if (curchar != '\0') {
+					FileName += curchar ;
+				}
 				pos += 8 ;
-			}
+			} while (curchar != '\0') ;
 
-			if (Args.ExtFn.is_set()) {
-				if (Args.ExtFn.getValue() == "") {
-					// write extracted data to stdout
-					FileName = "" ;
-				}
-				else {
-					// file name given by extracting user overrides embedded file name
-					FileName = Args.ExtFn.getValue() ;
-				}
-			}
-			else {
-				// write extracted data to file with embedded file name
-				myassert (Args.ExtFn.getValue() == "") ;
-				if (lenoffilename == 0) {
-					throw SteghideError (_("please specify a file name for the extracted data (there is no name embedded in the stego file).")) ;
-				}
-				FileName = filename ;
-			}
-
-			myassert ((NEmbBits - pos) % 8 == 0) ;
-
-			unsigned long extdatalen = (NEmbBits - pos) / 8 ;
-			Data.clear() ;
+			// extract data
+			myassert ((plain.getLength() - pos) % 8 == 0) ;
+			const unsigned long extdatalen = (plain.getLength() - pos) / 8 ;
+			Data.resize (extdatalen) ;
 			for (unsigned int i = 0 ; i < extdatalen ; i++) {
-				Data.push_back ((unsigned char) decrypted.getValue (pos, 8)) ;
+				Data[i] = ((BYTE) plain.getValue (pos, 8)) ;
 				pos += 8 ;
 			}
 
-			// the random padding data at the end of decrypted is ignored
-
+			// test if checksum is ok
 			if (Checksum) {
-				// test if checksum is ok
 				MHashPP hash (MHASH_CRC32) ;
 				for (std::vector<unsigned char>::iterator i = Data.begin() ; i != Data.end() ; i++) {
 					hash << *i ;
@@ -241,12 +211,12 @@ EncryptionMode EmbData::getEncMode () const
 	return EncMode ;
 }
 	
-void EmbData::setCompression (bool c)
+void EmbData::setCompression (int c)
 {
 	Compression = c ;
 }
 	
-bool EmbData::getCompression (void) const
+int EmbData::getCompression (void) const
 {
 	return Compression ;
 }
@@ -261,79 +231,55 @@ bool EmbData::getChecksum (void) const
 	return Checksum ;
 }
 
-void EmbData::read ()
-{
-	myassert (Mode == EMBED) ;
-
-	BinaryIO io (FileName, BinaryIO::READ) ;
-	while (!io.eof()) {
-		Data.push_back (io.read8()) ;
-	}
-	io.close() ;
-}
-
-void EmbData::write ()
-{
-	myassert (Mode == EXTRACT) ;
-
-	BinaryIO io (FileName, BinaryIO::WRITE) ;
-	for (std::vector<unsigned char>::iterator i = Data.begin() ; i != Data.end() ; i++) {
-		io.write8 (*i) ;
-	}
-	io.close() ;
-}
-
 BitString EmbData::getBitString ()
 {
 	myassert (Mode == EMBED) ;
 
-	BitString main ;
-	
-	main.append (Compression) ;
-	
-	main.append (Checksum) ;
+	// assembling data that can be compressed
+	BitString compr ;
+
+	compr.append (Checksum) ;
 	if (Checksum) {
 		MHashPP hash (MHASH_CRC32) ;
 		for (std::vector<unsigned char>::iterator i = Data.begin() ; i != Data.end() ; i++) {
 			hash << *i ;
 		}
 		hash << MHashPP::endhash ;
-		main.append (hash.getHashBits()) ;
+		compr.append (hash.getHashBits()) ;
 	}
 	
-	if ((Args.EmbFn.getValue() == "") || (!Args.EmbedEmbFn.getValue())) {
-		// standard input is used or plain file name embedding has been turned off explicitly
-		main.append ((unsigned char) 0, NBitsLenOfFileName) ;
-	}
-	else {
-		std::string tmp = stripDir (FileName) ;
-		if (tmp.size() > EmbFileNameMaxSize) {
-			throw SteghideError (_("the maximum length for the embedded file's name is %d characters."), EmbFileNameMaxSize) ;
-		}
-		main.append ((UWORD16) tmp.size(), NBitsLenOfFileName) ;
-		main.append (tmp) ;
-	}
+	compr.append (stripDir (FileName)) ;
+	compr.append ((BYTE) 0, 8) ; // end of fileame
 	
-	main.append (Data) ;
+	compr.append (Data) ;
 
-	// put header together - nembbits contains main.getLength() before encryption
-	BitString hdr ;
-	hdr.append((UWORD16) EncAlgo.getIntegerRep(), EncryptionAlgorithm::IRep_size) ;
-	hdr.append((UWORD16) EncMode.getIntegerRep(), EncryptionMode::IRep_size) ;
-	hdr.append((UWORD16) nbits(main.getLength()), NBitsLenOfNEmbBits).append((UWORD16) main.getLength(), nbits(main.getLength())) ;
+	// assembling data that can be encrypted
+	BitString plain ;
+	plain.append ((Compression > 0) ? true : false) ;
+	if (Compression > 0) {
+		plain.append (compr.getLength(), NBitsNUncompressedBits) ;
+		compr.compress (Compression) ;
+	}
+	plain.append (compr) ;
 
-	// TODO - zlib deflate here
-	
+	// put it all together
+	BitString main ;
+	main.append((UWORD16) EncAlgo.getIntegerRep(), EncryptionAlgorithm::IRep_size) ;
+	main.append((UWORD16) EncMode.getIntegerRep(), EncryptionMode::IRep_size) ;
+	main.append(plain.getLength(), NBitsNPlainBits) ;
+
 #ifdef USE_LIBMCRYPT
 	if (EncAlgo.getIntegerRep() != EncryptionAlgorithm::NONE) {
 		MCryptPP crypto (EncAlgo, EncMode) ;
-		main = crypto.encrypt (main, Args.Passphrase.getValue()) ;
+		plain = crypto.encrypt (plain, Passphrase) ;
 	}
 #else
 	myassert (EncAlgo.getIntegerRep() == EncryptionAlgorithm::NONE) ;
 #endif
 
-	return hdr.append(main) ;
+	main.append (plain) ;
+
+	return main ;
 }
 
 std::string EmbData::stripDir (std::string s)
@@ -346,21 +292,4 @@ std::string EmbData::stripDir (std::string s)
 		start += 1 ;
 	}
 	return s.substr (start, std::string::npos) ;
-}
-
-unsigned int EmbData::nbits (unsigned long x)
-{
-	unsigned int n = 0 ;
-	unsigned long y = 1 ;
-
-	if (x == 0) {
-		return 1 ;
-	}
-
-	while (x > (y - 1)) {
-		y = y * 2 ;
-		n = n + 1 ;
-	}
-
-	return n ;
 }

@@ -120,6 +120,11 @@ void TestSuite::addTestResult (bool r)
 void TestSuite::addTestResult (TestSuite::TESTRESULT r)
 {
 	switch (r) {
+		case NOTINSTALLED:
+		*OutStream << "not installed" << std::endl ;
+		runningCategory = "__none__" ;
+		break ;
+
 		case KNOWNEXCEPTION:
 		*OutStream << "caught known exception:" << std::endl ;
 		runningCategory = "__none__" ;

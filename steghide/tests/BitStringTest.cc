@@ -18,6 +18,8 @@
  *
  */
 
+#include "common.h"
+
 #include "BitStringTest.h"
 #include "TestCategoryCaller.h"
 
@@ -29,6 +31,8 @@ BitStringTest::BitStringTest (TestSuite* s)
 	ADDTESTCATEGORY (BitStringTest, testDatatypeInput) ;
 	ADDTESTCATEGORY (BitStringTest, testDatatypeOutput) ;
 	ADDTESTCATEGORY (BitStringTest, testEquality) ;
+	ADDTESTCATEGORY (BitStringTest, testTruncation) ;
+	ADDTESTCATEGORY (BitStringTest, testCompression) ;
 }
 
 void BitStringTest::setup ()
@@ -38,6 +42,11 @@ void BitStringTest::setup ()
 
 	bs_1 = new BitString() ;
 	bs_1->append(true) ;
+
+	bs_100 = new BitString() ;
+	bs_100->append(true) ;
+	bs_100->append(false) ;
+	bs_100->append(false) ;
 
 	bs_10010 = new BitString() ;
 	bs_10010->append(true) ;
@@ -72,6 +81,7 @@ void BitStringTest::cleanup ()
 {
 	delete bs_0 ;
 	delete bs_1 ;
+	delete bs_100 ;
 	delete bs_10010 ;
 	delete bs_10101110 ;
 	delete bs_101011101 ;
@@ -202,4 +212,42 @@ void BitStringTest::testEquality()
 		bs2.append(false).append(true).append(false).append(true) ;
 		addTestResult (bs1 == bs2) ;
 	}
+}
+
+void BitStringTest::testTruncation ()
+{
+	{
+		BitString bs1 = *bs_10010 ;
+		BitString bs2 = *bs_100 ;
+		addTestResult (bs1.truncate(0, 3) == bs2) ;
+	}
+
+	{
+		BitString bs1 = *bs_10101110 ;
+		BitString bs2 ; 
+		bs2.append(true).append(false).append(true).append(true) ;
+		addTestResult (bs1.truncate(2, 6) == bs2) ;
+	}
+}
+
+void BitStringTest::testCompression ()
+{
+#ifdef USE_ZLIB
+	{
+		BitString bs1 (std::string("a test of tests of some recurrence")) ;
+		BitString bs2 = bs1 ;
+		bs1.compress (9) ;
+		bs1.uncompress (bs2.getLength()) ;
+		addTestResult (bs1 == bs2) ;
+	}
+
+	{
+		BitString bs1 (std::string("afafafafafafafaf")) ;
+		BitString bs2 = bs1 ;
+		bs1.compress(9) ;
+		addTestResult (bs1 != bs2) ;
+	}
+#else
+	addTestResult (TestSuite::NOTINSTALLED) ;
+#endif // def USE_ZLIB
 }

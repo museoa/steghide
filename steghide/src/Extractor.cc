@@ -37,7 +37,7 @@ Extractor::Extractor ()
 void Extractor::extract ()
 {
 	Globs.TheCvrStgFile = CvrStgFile::readFile (StegoFileName) ;
-	EmbData embdata (EmbData::EXTRACT) ;
+	EmbData embdata (EmbData::EXTRACT, Args.Passphrase.getValue()) ;
 
 	Selector sel (Globs.TheCvrStgFile->getNumSamples(), Args.Passphrase.getValue()) ;
 
@@ -64,5 +64,31 @@ void Extractor::extract ()
 		embdata.addBits (bits) ;
 	}
 
-	embdata.write() ;
+	// write data
+	std::string fn ;
+	if (Args.ExtFn.is_set()) {
+		if (Args.ExtFn.getValue() == "") {
+			// write extracted data to stdout
+			fn = "" ;
+		}
+		else {
+			// file name given by extracting user overrides embedded file name
+			fn = Args.ExtFn.getValue() ;
+		}
+	}
+	else {
+		// write extracted data to file with embedded file name
+		myassert (Args.ExtFn.getValue() == "") ;
+		fn = embdata.getFileName() ;
+		if (fn.length() == 0) {
+			throw SteghideError (_("please specify a file name for the extracted data (there is no name embedded in the stego file).")) ;
+		}
+	}
+
+	BinaryIO io (fn, BinaryIO::WRITE) ;
+	std::vector<BYTE> data = embdata.getData() ;
+	for (std::vector<BYTE>::iterator i = data.begin() ; i != data.end() ; i++) {
+		io.write8 (*i) ;
+	}
+	io.close() ;
 }

@@ -41,12 +41,25 @@ Globals Globs ;
 
 Embedder::Embedder ()
 {
+	// read embfile
+	std::vector<BYTE> emb ;
+	BinaryIO embio (Args.EmbFn.getValue(), BinaryIO::READ) ;
+	while (!embio.eof()) {
+		emb.push_back (embio.read8()) ;
+	}
+	embio.close() ;
+
 	// create bitstring to be embedded
-	EmbData embdata (EmbData::EMBED, Args.EmbFn.getValue()) ;
+	std::string fn = "" ;
+	if (Args.EmbedEmbFn.getValue()) {
+		fn = Args.EmbFn.getValue() ;
+	}
+	EmbData embdata (EmbData::EMBED, Args.Passphrase.getValue(), fn) ;
 	embdata.setEncAlgo (Args.EncAlgo.getValue()) ;
 	embdata.setEncMode (Args.EncMode.getValue()) ;
-	embdata.setCompression (false) ;
+	embdata.setCompression (Args.Compression.getValue()) ;
 	embdata.setChecksum (Args.Checksum.getValue()) ;
+	embdata.setData (emb) ;
 	ToEmbed = embdata.getBitString() ;
 
 	// read cover-/stego-file

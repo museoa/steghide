@@ -46,6 +46,11 @@ class BitString {
 	BitString (void) ;
 	
 	/**
+	 * copy constructor
+	 **/
+	BitString (const BitString& bs) ;
+	
+	/**
 	 * construct a BitString containing l bits with value zero
 	 **/
 	BitString (const unsigned long l) ;
@@ -59,11 +64,11 @@ class BitString {
 	 * construct a BitString containing the characters in d as 8 bit unsigned chars
 	 **/
 	BitString (const std::string& d) ;
-	
+
 	/**
 	 * get the length of this bitstring (in bits)
 	 **/
-	unsigned long getLength (void) const
+	UWORD32 getLength (void) const
 		{ return Length ; } ;
 
 	/**
@@ -138,6 +143,14 @@ class BitString {
 	const std::vector<BYTE>& getBytes (void) const ;
 
 	/**
+	 * truncate this BitString
+	 * \param s start
+	 * \param e end
+	 * \return this BitString modified to contain only (*this)[s]...(*this)[e - 1]
+	 **/
+	BitString& truncate (const unsigned long s, const unsigned long e) ;
+
+	/**
 	 * pad this BitString with the value in v
 	 * \param mult this BitString is padded until size is a multiple of mult (given in bits)
 	 * \param v the value this BitString should be padded with
@@ -149,6 +162,32 @@ class BitString {
 	 * \param mult this BitString is padded until size is a multiple of mult (given in bits)
 	 **/
 	BitString& padRandom (const unsigned long mult) ;
+
+#ifdef USE_ZLIB
+	/**
+	 * compress this BitString using zlib's compress2 function
+	 * \param level the compression level (ranging from 1 (best speed) to 9 (best compression)
+	 *
+	 * As zlib operates on byte vectors and not on bit vectors, this BitString is padded
+	 * with zeros until the next byte boundary before starting the compression.
+	 **/
+	BitString& compress (int level) ;
+
+	/**
+	 * uncompress this BitString using zlib's uncompress function
+	 * \param idestlen the length of the uncompressed data (in bits)
+	 * \return this BitString modified to contain exactly idestlen uncompressed bits
+	 *
+	 * idestlen must be the size of the uncompressed data (in bits) to make
+	 * it possible to allocate a destination buffer and to give information
+	 * about the length of the uncompressed data without padding.
+	 *
+	 * A precondition for calling this function is that this BitString actually
+	 * contains data that has been compressed by the BitString::compress function,
+	 * and especially that the Length % 8 is 0.
+	 **/
+	BitString& uncompress (unsigned long idestlen) ;
+#endif // def USE_ZLIB
 
 	/**
 	 * get the value of the i-th bit
@@ -167,6 +206,12 @@ class BitString {
 	 **/
 	bool operator== (const BitString& v) const ;
 
+	/**
+	 * compare this BitString with the BitString v
+	 * \return true iff the lengths are not equal or there exists an index with different values
+	 **/
+	bool operator!= (const BitString& v) const ;
+
 #ifdef DEBUG
 	void print (unsigned short spc = 0) const ;
 	void printDebug (unsigned short level, unsigned short spc = 0) const ;
@@ -176,7 +221,7 @@ class BitString {
 	void _append (BIT v) ;
 
 	private:
-	unsigned long Length ;
+	UWORD32 Length ;
 	std::vector<BYTE> Data ;
 } ;
 

@@ -68,6 +68,9 @@ class EncryptionAlgorithm {
 	std::string getStringRep (void) const ;
 	IRep getIntegerRep (void) const ;
 
+	bool operator== (const EncryptionAlgorithm& algo) const
+		{ return (Value == algo.Value) ; } ;
+
 	/**
 	 * check if srep is a valid std::string representation (w.r.t the Translations array)
 	 * \param srep a std::string that maybe represents an encryption algorithm fron the Translations table

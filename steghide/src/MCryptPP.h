@@ -58,7 +58,20 @@ class MCryptPP {
 	 **/
 	void close (void) ;
 
+	/**
+	 * encrypt p using pp as passphrase
+	 * \param p the plaintext to be encrypted
+	 * \param pp the passphrase
+	 * \return the encrypted data (with the IV as first block (if an IV is used by this mode))
+	 **/
 	BitString encrypt (BitString p, std::string pp) ;
+
+	/**
+	 * decrypt c using pp as passphrase
+	 * \param c the ciphertext to be decrypted (with the IV as first block (if an IV is used by this mode))
+	 * \param pp the passphrase
+	 * \return the plain data data (without IV)
+	 **/
 	BitString decrypt (BitString c, std::string pp) ;
 
 	EncryptionAlgorithm getAlgorithm (void) const ;
@@ -89,7 +102,7 @@ class MCryptPP {
 	 *
 	 * The size of p must be a multiple of the blocksize of the encryption algorithm.
 	 **/
-	std::vector<unsigned char> _encrypt (std::vector<unsigned char> p, std::string pp) ;
+	std::vector<BYTE> _encrypt (std::vector<unsigned char> p, std::string pp) ;
 
 	/**
 	 * do the actual decryption
@@ -99,7 +112,7 @@ class MCryptPP {
 	 *
 	 * The size of c must be a multiple of the blocksize of the encryption algorithm.
 	 **/
-	std::vector<unsigned char> _decrypt (std::vector<unsigned char> c, std::string pp) ;
+	std::vector<BYTE> _decrypt (std::vector<unsigned char> c, std::string pp) ;
 
 	private:
 	/// true iff CryptD contains a valid encryption descriptor

@@ -72,6 +72,7 @@ void Arguments::parse ()
 		if (parse_StgFn(curarg)) continue ;
 		if (parse_Passphrase(curarg)) continue ;
 		if (parse_Checksum(curarg)) continue ;
+		if (parse_Compression(curarg)) continue ;
 		if (parse_EmbedEmbFn(curarg)) continue ;
 		if (parse_Encryption(curarg)) continue ;
 		if (parse_Radius(curarg)) continue ;
@@ -335,21 +336,7 @@ bool Arguments::parse_Checksum (ArgIt& curarg)
 {
 	bool found = false ;
 
-	if (*curarg == "-k" || *curarg == "--checksum") {
-		if (Command.getValue() != EMBED) {
-			throw ArgError (_("the argument \"%s\" can only be used with the \"embed\" command."), curarg->c_str()) ;
-		}
-
-		if (Checksum.is_set()) {
-			throw ArgError (_("the checksum argument can be used only once.")) ;
-		}
-
-		Checksum.setValue (true) ;
-
-		found = true ;
-		curarg++ ;
-	}
-	else if (*curarg == "-K" || *curarg == "--nochecksum") {
+	if (*curarg == "-K" || *curarg == "--nochecksum") {
 		if (Command.getValue() != EMBED) {
 			throw ArgError (_("the argument \"%s\" can only be used with the \"embed\" command."), curarg->c_str()) ;
 		}
@@ -367,25 +354,53 @@ bool Arguments::parse_Checksum (ArgIt& curarg)
 	return found ;
 }
 
-bool Arguments::parse_EmbedEmbFn (ArgIt& curarg)
+bool Arguments::parse_Compression (ArgIt& curarg)
 {
 	bool found = false ;
 
-	if (*curarg == "-n" || *curarg == "--embedname") {
+	if (*curarg == "-z" || *curarg == "--compress") {
 		if (Command.getValue() != EMBED) {
 			throw ArgError (_("the argument \"%s\" can only be used with the \"embed\" command."), curarg->c_str()) ;
 		}
 
-		if (EmbedEmbFn.is_set()) {
-			throw ArgError (_("the file name embedding argument can be used only once.")) ;
+		if (Compression.is_set()) {
+			throw ArgError (_("the compression argument can be used only once.")) ;
 		}
 
-		EmbedEmbFn.setValue (true) ;
+		if (++curarg == TheArguments.end()) {
+			throw ArgError (_("the \"%s\" argument must be followed by the compression level."), (curarg - 1)->c_str()) ;
+		}
+
+		int tmp = 0 ;
+		sscanf (curarg->c_str(), "%d", &tmp) ;
+		Compression.setValue (tmp) ;
 
 		found = true ;
 		curarg++ ;
 	}
-	else if (*curarg == "-N" || *curarg == "--dontembedname") {
+	else if (*curarg == "-Z" || *curarg == "--dontcompress") {
+		if (Command.getValue() != EMBED) {
+			throw ArgError (_("the argument \"%s\" can only be used with the \"embed\" command."), curarg->c_str()) ;
+		}
+
+		if (Compression.is_set()) {
+			throw ArgError (_("the compression argument can be used only once.")) ;
+		}
+
+		Compression.setValue (NoCompression) ;
+
+		found = true ;
+		curarg++ ;
+	}
+
+	return found ;
+}
+
+bool Arguments::parse_EmbedEmbFn (ArgIt& curarg)
+{
+	bool found = false ;
+
+	if (*curarg == "-N" || *curarg == "--dontembedname") {
 		if (Command.getValue() != EMBED) {
 			throw ArgError (_("the argument \"%s\" can only be used with the \"embed\" command."), curarg->c_str()) ;
 		}
@@ -770,6 +785,7 @@ void Arguments::setDefaults (void)
 	EncAlgo.setValue (Default_EncAlgo, false) ;
 	EncMode.setValue (Default_EncMode, false) ;
 	Checksum.setValue (Default_Checksum, false) ;
+	Compression.setValue (Default_Compression, false) ;
 	EmbedEmbFn.setValue (Default_EmbedEmbFn, false) ;
 	ExtFn.setValue ("", false) ;
 	Passphrase.setValue ("", false) ;
