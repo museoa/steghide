@@ -52,11 +52,11 @@ class VertexContent : private GraphAccess {
 	bool operator!= (VertexContent vc) const
 		{ return !(operator==(vc)) ; } ;
 
-	// FIXME nc - ev. stattdessen operator [] - ev. const return value
+	// FIXME - ev. stattdessen operator [] - ev. const return value
 	SampleValue *getSampleValue (unsigned short i) const
 		{ return SampleValues[i] ; } ; 
 
-	// FIXME nc - konstante Rückgabe
+	// FIXME - konstante Rückgabe
 	SampleValue **getSampleValues (void) const
 		{ return SampleValues ; } ;
 

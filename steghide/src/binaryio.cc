@@ -168,7 +168,7 @@ void BinaryIO::open (std::string fn, MODE m)
 
 bool BinaryIO::eof (void)
 {
-	// FIXME nc - is there another way to do this ?
+	// FIXME - is there another way to do this ?
 	int c = fgetc (getStream()) ;
 	bool retval = feof (getStream()) ;
 	ungetc (c, getStream()) ;

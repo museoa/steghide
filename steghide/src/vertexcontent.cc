@@ -104,8 +104,8 @@ list<Vertex*>::iterator VertexContent::unmarkDeletedFromOccurences (list<Vertex*
 }
 #endif
 
-// FIXME nc - ? pre-compute hash in constructor (to gain speed) - similar to Key of SampleValue->...
-// TODO nc - this should be tested
+// FIXME - ? pre-compute hash in constructor (to gain speed) - similar to Key of SampleValue->...
+// TODO - this should be tested
 size_t VertexContent::getHash (void) const
 {
 	size_t retval = 0 ;

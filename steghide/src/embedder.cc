@@ -120,14 +120,14 @@ const Matching *Embedder::calculateMatching ()
 		ConstructionHeuristic ch (TheGraph) ;
 		ch.run() ;
 
-		if (bestmatching && (ch.getMatching()->getCardinality() > bestmatching->getCardinality())) {
+		if ((bestmatching == NULL) || (ch.getMatching()->getCardinality() > bestmatching->getCardinality())) {
 			bestmatching = ch.getMatching() ;
 		}
 
 	}
 
 	// do augmenting path heuristic
-	if (true) { // TODO nc - make augmenting path heuristic optional ?
+	if (false) { // TODO - make augmenting path heuristic optional ?
 		AugmentingPathHeuristic aph (TheGraph, bestmatching) ;
 		aph.run() ;
 		bestmatching = aph.getMatching() ;

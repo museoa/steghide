@@ -158,7 +158,7 @@ class Graph {
 	 * the sample described by lbl.
 	 * The main purpose of this data structure is to hold the vertex degrees.
 	 **/
-	vector<list<VertexContent*> > VertexContents ; // FIXME nc - ?? use vector instead of list - performance in time/memory ??
+	vector<list<VertexContent*> > VertexContents ; // FIXME - ?? use vector instead of list - performance in time/memory ??
 #endif
 
 	vector<list<SampleOccurence> > SampleOccurences ;
@@ -180,7 +180,7 @@ class Graph {
 	 **/
 	void print (void) const ;
 
-	// FIXME nc - clean up these functions
+	// FIXME - clean up these functions
 
 	void printUnmatchedVertices (void) const ;
 	void printUnmatchedVerticescontaining (unsigned long samplekey) const ;

@@ -42,7 +42,7 @@ bool JpegSampleValue::isNeighbour (const SampleValue *s) const
 	return (calcDistance (s) <= Radius) ;
 }
 
-// FIXME nc - it is assumed that the maximum and the minimum values are never touched (also in getOppositeNeighbours)
+// FIXME - it is assumed that the maximum and the minimum values are never touched (also in getOppositeNeighbours)
 SampleValue *JpegSampleValue::getNearestOppositeSampleValue() const
 {
 	int n_coeff = 0 ;

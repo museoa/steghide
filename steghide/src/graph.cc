@@ -135,7 +135,7 @@ void Graph::constructEdges (const hash_set<VertexContent*,hash<VertexContent*>,V
 		unsigned long numedges = 0 ;
 		unsigned long noppneighs = SValueOppNeighs[lbl].size() ;
 		for (unsigned long i = 0 ; i < noppneighs ; i++) {
-			// FIXME nc - .size() needs linear time!
+			// FIXME - .size() needs linear time!
 			numedges += SampleOccurences[SValueOppNeighs[lbl][i]->getLabel()].size() ;
 		}
 		SampleValues[lbl]->setNumEdges (numedges) ;
@@ -148,7 +148,7 @@ Graph::~Graph()
 	for (vector<Vertex*>::iterator i = Vertices.begin() ; i != Vertices.end() ; i++) {
 		delete *i ;
 	}
-	// TODO nc - delete more...
+	// TODO - delete more...
 }
 
 void Graph::unmarkDeletedAllVertices ()
@@ -266,7 +266,7 @@ void Graph::print (void) const
 }
 
 #if 0
-// TODO nc - move to Matching
+// TODO - move to Matching
 void Graph::printUnmatchedVertices (void) const
 {
 	unsigned long num = 0 ;
@@ -453,7 +453,7 @@ bool Graph::check_sampleoppositeneighbourhood (void) const
 		}
 	}
 
-	// FIXME nc - also check all are neighbours
+	// FIXME - also check all are neighbours
 
 	cerr << "checking SampleValueOppositeNeighbourhood: all oppneighs are in this list" << endl ;
 	for (unsigned long i = 0 ; i < SampleValues.size() ; i++) {
@@ -482,7 +482,7 @@ bool Graph::check_sampleoppositeneighbourhood (void) const
 	return retval ;
 }
 
-// FIXME nc - needs Vertex::getContent().... !?
+// FIXME - needs Vertex::getContent().... !?
 bool Graph::check_vertexcontents (void) const
 {
 	bool retval = true ;
@@ -524,7 +524,7 @@ bool Graph::check_vertexcontents (void) const
 	return retval ;
 }
 
-// FIXME nc - fix this
+// FIXME - fix this
 bool Graph::check_sampleoccurences (void) const
 {
 	bool retval = true ;
@@ -561,7 +561,7 @@ bool Graph::check_sampleoccurences (void) const
 }
 
 #if 0
-// move to Matching - TODO nc
+// move to Matching - TODO
 void Graph::printUnmatchedVerticescontaining (unsigned long samplekey) const
 {
 	for (unsigned long i = 0 ; i < Vertices.size() ; i++) {

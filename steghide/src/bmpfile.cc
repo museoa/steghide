@@ -306,7 +306,7 @@ void BmpFile::bmpwin_readheaders ()
 	assert ((bmih.biBitCount == 1) ||
 			(bmih.biBitCount == 4) ||
 			(bmih.biBitCount == 8) || 
-			(bmih.biBitCount == 24)) ; // FIXME nc - 16bit bmps exist (os/2 maybe too)
+			(bmih.biBitCount == 24)) ; // FIXME - 16bit bmps exist (os/2 maybe too)
 	bmih.biCompression = getBinIO()->read32_le () ;
 	if (bmih.biCompression != COMPRESSION_BI_RGB) {
 		if (getBinIO()->is_std()) {

@@ -53,7 +53,7 @@ Matching& Matching::addEdge (Edge *e)
 
 Matching& Matching::augment (const vector<Edge*> &path)
 {
-	// TODO nc - test if this vector of edges really is a valid path ?
+	// TODO - test if this vector of edges really is a valid path ?
 	assert (path.size() & 2 == 1) ;
 	for (unsigned int i = 0 ; i < path.size() ; i += 2) {
 		Edge* e_add = path[i] ;

@@ -32,7 +32,7 @@ AugmentingPathHeuristic::AugmentingPathHeuristic (Graph *g, Matching *m)
 	TimeCounter = 0 ;
 	TimeCounters = vector<UWORD32> (numvertices, 0) ;
 
-	// FIXME nc - eigentlich hier kein init nötig, wird in getNextEdge dann ohnehin gemacht
+	// FIXME - eigentlich hier kein init nötig, wird in getNextEdge dann ohnehin gemacht
 	EdgeIterators.reserve (numvertices) ;
 	for (VertexLabel l = 0 ; l < numvertices ; l++) {
 		EdgeIterators.push_back (EdgeIterator (TheGraph, TheGraph->getVertex(l))) ;

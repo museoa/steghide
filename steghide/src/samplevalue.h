@@ -18,7 +18,7 @@
  *
  */
 
-// FIXME nc - check name of these ifdefs in bmpsamplevalue.h,etc.
+// FIXME - check name of these ifdefs in bmpsamplevalue.h,etc.
 #ifndef SH_SAMPLEVALUE_H
 #define SH_SAMPLEVALUE_H
 

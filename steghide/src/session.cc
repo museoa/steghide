@@ -96,8 +96,8 @@ void Session::printVersion ()
 	cout << "steghide version " << VERSION << endl ;
 }
 
-// TODO nc - test short und long arguments
-// FIXME nc - every error message should end with a "." - see .pot file
+// TODO - test short und long arguments
+// FIXME - every error message should end with a "." - see .pot file
 void Session::printHelp ()
 {
 	printVersion() ;

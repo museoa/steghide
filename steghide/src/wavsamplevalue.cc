@@ -25,7 +25,7 @@
 #include "wavfile.h"
 #include "wavsamplevalue.h"
 
-// TODO nc - ? derive WavPCMsmallSampleValue and WavPCMlargeSampleValue from WavPCMSampleValueValue
+// TODO - ? derive WavPCMsmallSampleValue and WavPCMlargeSampleValue from WavPCMSampleValueValue
 
 WavPCMSampleValue::WavPCMSampleValue (CvrStgFile *f, int v)
 	: SampleValue(f), Value(v)

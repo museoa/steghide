@@ -50,7 +50,7 @@ class CvrStgFile : public CvrStgObject {
 	 *
 	 * This is equivalent to getSample(pos)->getBit().
 	 **/
-	// FIXME nc - implement this in ...File to save some time - include tests: implementation in ...File is equivalent to getSample(pos)->getBit()
+	// FIXME - implement this in ...File to save some time - include tests: implementation in ...File is equivalent to getSample(pos)->getBit()
 	Bit getSampleBit (SamplePos pos) { return (getSampleValue(pos)->getBit()) ; }
 
 	protected:

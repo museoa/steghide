@@ -117,7 +117,7 @@ void EmbData::addBits (BitString bits)
 			BitString decrypted = bits ;
 #endif
 
-			// TODO nc - zlib inflate here - decrypted becomes plain
+			// TODO - zlib inflate here - decrypted becomes plain
 
 			unsigned long pos = 0 ;
 
@@ -302,7 +302,7 @@ BitString EmbData::getBitString ()
 	hdr.append((unsigned int) EncMode.getIntegerRep(), EncryptionMode::IRep_size) ;
 	hdr.append(nbits(main.getLength()), NBitsLenOfNEmbBits).append(main.getLength(), nbits(main.getLength())) ;
 
-	// TODO nc - zlib deflate here
+	// TODO - zlib deflate here
 	
 #ifdef USE_LIBMCRYPT
 	if (EncAlgo.getIntegerRep() != EncryptionAlgorithm::NONE) {
