@@ -22,14 +22,15 @@
 #include <cstdlib>
 #include <cstring>
 
-#include "common.h"
 #include "CvrStgFile.h"
 #include "AuFile.h"
 #include "BmpFile.h"
-#include "error.h"
 #include "JpegFile.h"
-#include "msg.h"
+#include "SampleValue.h"
 #include "WavFile.h"
+#include "common.h"
+#include "error.h"
+#include "msg.h"
 
 CvrStgFile::CvrStgFile (void)
 {

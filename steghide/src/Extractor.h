@@ -21,6 +21,8 @@
 #ifndef SH_EXTRACTOR_H
 #define SH_EXTRACTOR_H
 
+#include <string>
+
 class Extractor {
 	public:
 	Extractor (void) ;

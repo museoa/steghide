@@ -20,6 +20,7 @@
 
 #include "BmpFile.h"
 #include "BmpPaletteSampleValue.h"
+#include "ColorPalette.h"
 
 BmpPaletteSampleValue::BmpPaletteSampleValue (const CvrStgFile* f, unsigned char i)
 	: BmpSampleValue(f), Index(i)

@@ -24,6 +24,7 @@
 #include <vector>
 
 #include "RGBTriple.h"
+#include "common.h"
 
 /**
  * \class ColorPalette
@@ -51,7 +52,7 @@ class ColorPalette : public std::vector<RGBTriple> {
 	/**
 	 * add the color r/g/b to the end of this color palette
 	 **/
-	void addEntry (unsigned char r, unsigned char g, unsigned char b)
+	void addEntry (BYTE r, BYTE g, BYTE b)
 		{ push_back (RGBTriple (r, g, b)) ; } ;
 
 	/**

@@ -21,11 +21,15 @@
 #ifndef SH_EDGEITERATOR_H
 #define SH_EDGEITERATOR_H
 
-#include "common.h"
-#include "Graph.h"
+#include <list>
+
 #include "GraphAccess.h"
 #include "SampleOccurence.h"
-#include "Vertex.h"
+
+class Edge ;
+class Graph ;
+class SampleValue ;
+class Vertex ;
 
 /**
  * \class EdgeIterator

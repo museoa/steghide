@@ -20,15 +20,15 @@
 
 #include <list>
 #include <map>
-#include <queue>
 #include <vector>
 
-#include "common.h"
+#include "BitString.h"
 #include "CvrStgFile.h"
 #include "Graph.h"
-#include "msg.h"
 #include "Permutation.h"
 #include "Vertex.h"
+#include "common.h"
+#include "msg.h"
 #include "wrapper_hash_set.h"
 
 Graph::Graph (CvrStgFile *cvr, const BitString& emb, const Permutation& perm)

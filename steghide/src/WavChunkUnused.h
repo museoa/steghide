@@ -21,9 +21,11 @@
 #ifndef SH_WAVCHUNKUNUSED_H
 #define SH_WAVCHUNKUNUSED_H
 
-#include "BinaryIO.h"
+#include "common.h"
 #include "WavChunk.h"
-#include "WavChunkHeader.h"
+
+class BinaryIO ;
+class WavChunkHeader ;
 
 class WavChunkUnused : public WavChunk {
 	public:

@@ -20,12 +20,13 @@
 
 #include <string>
 
-#include "common.h"
+#include "BitString.h"
 #include "CvrStgFile.h"
 #include "EmbData.h"
 #include "Extractor.h"
 #include "SampleValue.h"
 #include "Permutation.h"
+#include "common.h"
 
 Extractor::Extractor ()
 {

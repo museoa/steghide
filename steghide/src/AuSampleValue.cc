@@ -23,7 +23,6 @@
 
 #include "AuSampleValue.h"
 #include "common.h"
-#include "RandomSource.h"
 
 unsigned char AuSampleValue::getValue () const
 {

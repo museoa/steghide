@@ -19,6 +19,8 @@
  */
 
 #include "error.h"
+#include "BinaryIO.h"
+#include "WavChunkHeader.h"
 #include "WavFormatChunk.h"
 
 void WavFormatChunk::read (BinaryIO *io)

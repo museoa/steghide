@@ -23,13 +23,14 @@
 
 #include <mhash.h>
 
-#include "BitString.h"
 #include "common.h"
 
-enum MHashCommand { endhash } ;
+class BitString ;
 
 class MHash {
 	public:
+	enum Command { endhash } ;
+
 	MHash (void) ;
 	MHash (hashid a) ;
 
@@ -59,7 +60,7 @@ class MHash {
 	 * interpret the command c
 	 * \param c a command (member of MHash::Command)
 	 **/
-	MHash& operator<< (MHashCommand c) ;
+	MHash& operator<< (Command c) ;
 
 	/**
 	 * get the hash bits

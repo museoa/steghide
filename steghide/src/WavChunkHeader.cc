@@ -18,6 +18,7 @@
  *
  */
 
+#include "BinaryIO.h"
 #include "WavChunkHeader.h"
 
 WavChunkHeader::WavChunkHeader (char *id, UWORD32 len)

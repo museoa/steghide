@@ -20,7 +20,7 @@
 
 #include "BmpRGBSampleValue.h"
 
-BmpRGBSampleValue::BmpRGBSampleValue (const CvrStgFile* f, unsigned char r, unsigned char g, unsigned char b)
+BmpRGBSampleValue::BmpRGBSampleValue (const CvrStgFile* f, BYTE r, BYTE g, BYTE b)
 	: BmpSampleValue(f), Color(r, g, b)
 {
 	SBit = (BIT) ((r & 1) ^ (g & 1) ^ (b & 1)) ;
@@ -49,7 +49,7 @@ SampleValue *BmpRGBSampleValue::getNearestOppositeSampleValue () const
 	return ((SampleValue*) new BmpRGBSampleValue (getFile(), candidates[rnd])) ;
 }
 
-void BmpRGBSampleValue::addNOSCandidate (std::vector<RGBTriple>& cands, unsigned char r, unsigned char g, unsigned char b) const
+void BmpRGBSampleValue::addNOSCandidate (std::vector<RGBTriple>& cands, BYTE r, BYTE g, BYTE b) const
 {
 	RGBTriple cand (r, g, b) ;
 	if (cand != Color) {
@@ -57,31 +57,16 @@ void BmpRGBSampleValue::addNOSCandidate (std::vector<RGBTriple>& cands, unsigned
 	}
 }
 
-unsigned char BmpRGBSampleValue::getRed() const
+BYTE BmpRGBSampleValue::minus (BYTE a, BYTE b) const
 {
-	return Color.Red ;
-}
-
-unsigned char BmpRGBSampleValue::getGreen() const
-{
-	return Color.Green ;
-}
-
-unsigned char BmpRGBSampleValue::getBlue() const
-{
-	return Color.Blue ;
-}
-
-unsigned char BmpRGBSampleValue::minus (unsigned char a, unsigned char b) const
-{
-	unsigned char retval = 0 ;
+	BYTE retval = 0 ;
 	if (a > b) {
 		retval = a - b ;
 	}
 	return retval ;
 }
 
-unsigned char BmpRGBSampleValue::plus (unsigned char a, unsigned char b) const
+BYTE BmpRGBSampleValue::plus (BYTE a, BYTE b) const
 {
 	unsigned int sum = a + b ;
 	return ((sum <= 255) ? sum : 255) ;

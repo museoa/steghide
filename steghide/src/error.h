@@ -21,11 +21,11 @@
 #ifndef SH_ERROR_H
 #define SH_ERROR_H
 
-#include <cstdio>
 #include <string>
 
-#include "BinaryIO.h"
 #include "SteghideError.h"
+
+class BinaryIO ;
 
 class ArgError : public SteghideError {
 	public:

@@ -24,6 +24,7 @@
 #include "error.h"
 #include "Terminal.h"
 
+#ifdef HAVE_TERMIOS_H
 Terminal::Terminal ()
 {
 	if ((tcgetattr (STDIN_FILENO, &InitAttr)) != 0) {
@@ -67,3 +68,10 @@ void Terminal::reset ()
 		throw SteghideError (_("could not set terminal attributes.")) ;
 	}
 }
+#else
+// TODO - do something that makes more sense - especially on Windows systems
+Terminal::Terminal() {}
+void Terminal::EchoOff() {}
+void Terminal::SingleKeyOn() {}
+void Terminal::reset() {}
+#endif // def HAVE_TERMIOS_H

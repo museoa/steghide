@@ -29,12 +29,12 @@
 
 #include <mcrypt.h>
 
-#include "error.h"
+#include "BitString.h"
 #include "EncryptionAlgorithm.h"
 #include "EncryptionMode.h"
 #include "MCrypt.h"
 #include "MHashKeyGen.h"
-#include "RandomSource.h"
+#include "error.h"
 
 MCrypt::MCrypt ()
 {

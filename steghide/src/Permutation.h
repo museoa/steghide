@@ -45,28 +45,6 @@ class Permutation {
 	 **/
 	Permutation (UWORD32 w, std::string pp = "", UWORD32 n = MAX_UWORD32) ;
 
-#if 0
-	/**
-	 * increment the argument of the permutation
-	 *
-	 * If this Permutation is already at its end and operator++
-	 * is called, an assertion in this function fails.
-	 **/
-	Permutation& operator++ (void) ;
-
-	/**
-	 * get the current value of the permutation
-	 **/
-	UWORD32 operator* (void) ;
-
-	/**
-	 * reset this permutation, so that *(*this) returns first value
-	 **/
-	void reset (void) ;
-
-#endif
-
-
 	/**
 	 * get the value of the permutation at position pos
 	 **/

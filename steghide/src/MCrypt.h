@@ -29,9 +29,9 @@
 
 #include <mcrypt.h>
 
-#include "BitString.h"
-#include "EncryptionAlgorithm.h"
-#include "EncryptionMode.h"
+class BitString ;
+class EncryptionAlgorithm ;
+class EncryptionMode ;
 
 #ifdef WIN32
 #define MCRYPTPP_LIBDIR	"./modules/"

@@ -23,16 +23,18 @@
 
 #include "AugmentingPathHeuristic.h"
 #include "BitString.h"
-#include "common.h"
 #include "ConstructionHeuristic.h"
 #include "CvrStgFile.h"
 #include "EmbData.h"
 #include "Embedder.h"
-#include "error.h"
+#include "Edge.h"
+#include "Graph.h"
 #include "Matching.h"
-#include "msg.h"
 #include "Permutation.h"
 #include "Vertex.h"
+#include "common.h"
+#include "error.h"
+#include "msg.h"
 
 Embedder::Embedder ()
 {
@@ -134,12 +136,6 @@ const Matching* Embedder::calculateMatching ()
 	VerboseMessage vmsg3 (_("best matching after augmenting path heuristic:")) ;
 	vmsg3.printMessage() ;
 	bestmatching->printVerboseInfo() ;
-
-#if 0
-	if (!bestmatching->check()) {
-		std::cerr << "check of matching to be embedded FAILED" << std::endl ;
-	}
-#endif
 
 	return bestmatching ;
 }

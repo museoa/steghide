@@ -21,9 +21,13 @@
 #ifndef SH_MATCHING_H
 #define SH_MATCHING_H
 
-#include "Graph.h"
+#include <list>
+#include <vector>
+
 #include "GraphAccess.h"
 #include "Vertex.h"
+
+class Edge ;
 
 /**
  * \class Matching

@@ -19,6 +19,10 @@
  */
 
 #include "AugmentingPathHeuristic.h"
+#include "Edge.h"
+#include "EdgeIterator.h"
+#include "Graph.h"
+#include "Matching.h"
 #include "common.h"
 
 AugmentingPathHeuristic::AugmentingPathHeuristic (Graph* g, Matching* m)

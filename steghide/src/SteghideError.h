@@ -21,6 +21,8 @@
 #ifndef SH_STEGHIDEERROR_H
 #define SH_STEGHIDEERROR_H
 
+#include <string>
+
 #include "msg.h"
 
 class SteghideError : public MessageBase {

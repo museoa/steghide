@@ -19,6 +19,7 @@
  */
 
 #include "WavChunk.h"
+#include "WavChunkHeader.h"
 
 WavChunk::~WavChunk ()
 {

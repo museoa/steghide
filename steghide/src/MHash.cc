@@ -99,7 +99,7 @@ MHash& MHash::operator<< (BYTE v)
 	return *this ;
 }
 
-MHash& MHash::operator<< (MHashCommand c)
+MHash& MHash::operator<< (MHash::Command c)
 {
 	switch (c) {
 		case endhash:

@@ -25,11 +25,8 @@
 
 #include "BinaryIO.h"
 #include "CvrStgObject.h"
-#include "SampleValue.h"
 
-#if 0
-extern CvrStgFile* TheCvrStgFile ;
-#endif
+class SampleValue ;
 
 class CvrStgFile : public CvrStgObject {
 	public:

@@ -21,14 +21,13 @@
 #ifndef SH_EMBEDDER_H
 #define SH_EMBEDDER_H
 
-#include <string>
-#include <vector>
-
 #include "BitString.h"
-#include "common.h"
-#include "CvrStgFile.h"
-#include "Graph.h"
-#include "Matching.h"
+
+class Edge ;
+class CvrStgFile ;
+class Graph ;
+class Matching ;
+class Vertex ;
 
 class Embedder {
 	public:

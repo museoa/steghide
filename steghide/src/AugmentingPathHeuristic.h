@@ -21,9 +21,13 @@
 #ifndef SH_AUGHEUR_H
 #define SH_AUGHEUR_H
 
-#include "EdgeIterator.h"
-#include "Graph.h"
-#include "Matching.h"
+#include "GraphAccess.h"
+#include "Vertex.h"
+
+class Edge ;
+class EdgeIterator ;
+class Graph ;
+class Matching ;
 
 /**
  * \class AugmentingPathHeuristic

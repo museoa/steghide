@@ -22,7 +22,7 @@
 #define SH_EDGE_H
 
 #include "common.h"
-// declared here to prevent circulating #includes
+
 class SampleValue ;
 class Vertex ;
 
@@ -61,7 +61,7 @@ class Edge {
 	/**
 	 * get the position of the sample that should be changed to embed the bit represented by the vertex v
 	 **/
-	SamplePos getSamplePos (Vertex *v) const ;
+	SamplePos getSamplePos (Vertex* v) const ;
 
 	/**
 	 * get the old sample value that will be replaced to embed the bit represented by the vertex v

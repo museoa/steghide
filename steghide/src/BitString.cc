@@ -20,7 +20,6 @@
 
 #include "BitString.h"
 #include "common.h"
-#include "RandomSource.h"
 
 #define BITPOS(n) (n % 8)
 #define BYTEPOS(n) (n / 8)

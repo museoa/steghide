@@ -22,12 +22,12 @@
 #define SH_VERTEX_H
 
 #include "common.h"
-#include "Edge.h"
-#include "Graph.h"
 #include "GraphAccess.h"
-#include "SampleOccurence.h"
-#include "SampleValue.h"
 #include "VertexContent.h"
+
+class Edge ;
+class SampleOccurence ;
+class SampleValue ;
 
 /**
  * \class Vertex

@@ -22,7 +22,6 @@
 #define SH_JPEGSAMPLE_H
 
 #include "SampleValue.h"
-#include "common.h"
 
 class JpegSampleValue : public SampleValue {
 	public:

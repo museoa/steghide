@@ -22,6 +22,8 @@
 
 #include "MHashTest.h"
 
+#include "BitString.h"
+
 MHashTest::MHashTest (TestSuite* s)
 	: UnitTest ("MHash", s)
 {
@@ -76,7 +78,7 @@ bool MHashTest::genericTestMHash (hashid a, BitString data, BYTE* shouldbe)
 	bool retval = true ;
 
 	MHash hash (a) ;
-	hash << data << endhash ;
+	hash << data << MHash::endhash ;
 	const std::vector<unsigned char>& result = hash.getHashBytes() ;
 	for (unsigned short i = 0 ; i < result.size() ; i++) {
 		if (result[i] != shouldbe[i]) {

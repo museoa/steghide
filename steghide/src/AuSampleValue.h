@@ -22,7 +22,6 @@
 #define SH_AUSAMPLE_H
 
 #include "SampleValue.h"
-#include "common.h"
 
 class AuSampleValue : public SampleValue {
 	public:

@@ -19,6 +19,7 @@
  */
 
 #include "common.h"
+#include "BitString.h"
 #include "MHash.h"
 #include "Permutation.h"
 
@@ -65,55 +66,6 @@ void Permutation::calculate (UWORD32 n)
 	}
 }
 
-#if 0
-Permutation& Permutation::operator++ ()
-{
-	do {
-		CurArg++ ;
-		myassert (CurArg <= MaxArg) ;
-
-		UWORD32 x = lower (CurArg) ;
-		UWORD32 y = higher (CurArg) ;
-
-		y = shortxor (y, keyhash (Key1, x)) ;
-		x = shortxor (x, keyhash (Key2, y)) ;
-		y = shortxor (y, keyhash (Key3, x)) ;
-		x = shortxor (x, keyhash (Key4, y)) ;
-
-		CurValue = concat (x, y) ;
-	} while (CurValue >= Width) ;
-
-	return *this ;
-}
-#endif
-
-#if 0
-void Permutation::reset()
-{
-	bool first = true ;
-	do {
-		if (first) {
-			CurArg = 0 ;
-			first = false ;
-		}
-		else {
-			CurArg++ ;
-		}
-		myassert (CurArg <= MaxArg) ;
-
-		UWORD32 x = lower (CurArg) ;
-		UWORD32 y = higher (CurArg) ;
-
-		y = shortxor (y, keyhash (Key1, x)) ;
-		x = shortxor (x, keyhash (Key2, y)) ;
-		y = shortxor (y, keyhash (Key3, x)) ;
-		x = shortxor (x, keyhash (Key4, y)) ;
-
-		CurValue = concat (x, y) ;
-	} while (CurValue >= Width) ;
-}
-#endif
-
 void Permutation::setWidth (UWORD32 w)
 {
 	myassert (w > 0) ;
@@ -149,7 +101,7 @@ void Permutation::setWidth (UWORD32 w)
 void Permutation::setKey (std::string pp)
 {
 	MHash hash (MHASH_MD5) ;
-	hash << pp << endhash ;
+	hash << pp << MHash::endhash ;
 	BitString hashbits = hash.getHashBits() ;
 
 	myassert (hashbits.getLength() == 128) ;
@@ -170,7 +122,7 @@ UWORD32 Permutation::keyhash (UWORD32 key, UWORD32 arg)
 	for (unsigned short i = 0 ; i < (NBits / 2) ; i += 8) {
 		hash << (BYTE) ((arg >> i) & 0xFF) ;
 	}
-	hash << endhash ;
+	hash << MHash::endhash ;
 	std::vector<BYTE> hashbytes = hash.getHashBytes() ;
 	myassert (hashbytes.size() == 16) ;
 

@@ -20,6 +20,7 @@
 
 #include "common.h"
 #include "BinaryIO.h"
+#include "BitString.h"
 #include "EmbData.h"
 #include "error.h"
 #include "MCrypt.h"
@@ -177,7 +178,7 @@ void EmbData::addBits (BitString bits)
 				for (std::vector<unsigned char>::iterator i = Data.begin() ; i != Data.end() ; i++) {
 					hash << *i ;
 				}
-				hash << endhash ;
+				hash << MHash::endhash ;
 				unsigned long calccrc32 = hash.getHashBits().getValue(0, NBitsCrc32) ;
 
 				if (calccrc32 == extcrc32) {
@@ -277,7 +278,7 @@ BitString EmbData::getBitString ()
 		for (std::vector<unsigned char>::iterator i = Data.begin() ; i != Data.end() ; i++) {
 			hash << *i ;
 		}
-		hash << endhash ;
+		hash << MHash::endhash ;
 		main.append (hash.getHashBits()) ;
 	}
 	

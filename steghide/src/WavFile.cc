@@ -26,6 +26,9 @@
 #include "CvrStgFile.h"
 #include "error.h"
 #include "msg.h"
+#include "WavFormatChunk.h"
+#include "WavChunkHeader.h"
+#include "WavChunkUnused.h"
 #include "WavFile.h"
 #include "WavPCMSampleValue.h"
 

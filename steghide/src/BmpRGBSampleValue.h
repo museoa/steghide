@@ -23,6 +23,7 @@
 
 #include "BmpSampleValue.h"
 #include "RGBTriple.h"
+#include "common.h"
 
 /**
  * \class BmpRGBSampleValue
@@ -32,43 +33,39 @@ class BmpRGBSampleValue : public BmpSampleValue {
 	public:
 	BmpRGBSampleValue (void)
 		: BmpSampleValue() {} ;
-	BmpRGBSampleValue (const CvrStgFile* f, unsigned char r, unsigned char g, unsigned char b) ;
+	BmpRGBSampleValue (const CvrStgFile* f, BYTE r, BYTE g, BYTE b) ;
 	BmpRGBSampleValue (const CvrStgFile* f, RGBTriple t) ;
 
 	SampleValue* getNearestOppositeSampleValue (void) const ;
 
-	unsigned char getRed (void) const ;
-	unsigned char getGreen (void) const ;
-	unsigned char getBlue (void) const ;
+	BYTE getRed (void) const
+		{ return Color.Red ; } ;
+
+	BYTE getGreen (void) const
+		{ return Color.Green ; } ;
+
+	BYTE getBlue (void) const
+		{ return Color.Blue ; } ;
 
 	private:
 	RGBTriple Color ;
 
-	struct RGBVector {
-		RGBVector (int r, int g, int b)
-			: Red(r),Green(g),Blue(b) {} ;
-
-		int Red ;
-		int Green ;
-		int Blue ;
-	} ;
-
 	/**
-	 * add the unsigned chars a and b
+	 * add the BYTEs a and b
 	 * \return min(255, a + b)
 	 **/
-	unsigned char plus (unsigned char a, unsigned char b) const ;
+	BYTE plus (BYTE a, BYTE b) const ;
 
 	/**
-	 * substract the unsigned char b from the unsigned char a
+	 * substract the BYTE b from the BYTE a
 	 * \return max(0, a - b)
 	 **/
-	unsigned char minus (unsigned char a, unsigned char b) const ;
+	BYTE minus (BYTE a, BYTE b) const ;
 
 	/**
 	 * add a candidate for the nearest opposite sample to cands
 	 **/
-	void addNOSCandidate (std::vector<RGBTriple>& cands, unsigned char r, unsigned char g, unsigned char b) const ;
+	void addNOSCandidate (std::vector<RGBTriple>& cands, BYTE r, BYTE g, BYTE b) const ;
 } ;
 
 #endif // ndef SH_BMPRGBSAMPLEVALUE_H

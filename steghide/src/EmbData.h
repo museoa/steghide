@@ -21,9 +21,13 @@
 #ifndef SH_EMBDATA_H
 #define SH_EMBDATA_H
 
-#include "BitString.h"
+#include <string>
+#include <vector>
+
 #include "EncryptionAlgorithm.h"
 #include "EncryptionMode.h"
+
+class BitString ;
 
 class EmbData {
 	public:
@@ -89,7 +93,7 @@ class EmbData {
 	bool Checksum ;
 	std::string FileName ;
 	/// contains the actual message to be embedded
-	std::vector<unsigned char> Data ;
+	std::vector<BYTE> Data ;
 } ;
 
 #endif // ndef SH_EMBDATA_H

@@ -22,11 +22,12 @@
 #include <iostream>
 #include <vector>
 
-#include "common.h"
 #include "Embedder.h"
 #include "Extractor.h"
+#include "CvrStgFile.h"
 #include "MCrypt.h"
 #include "Session.h"
+#include "common.h"
 
 void Session::run ()
 {

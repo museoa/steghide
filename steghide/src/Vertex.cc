@@ -19,7 +19,9 @@
  */
 
 #include "common.h"
+#include "Edge.h"
 #include "EdgeIterator.h"
+#include "Graph.h"
 #include "Vertex.h"
 
 Vertex::Vertex (Graph* g, VertexLabel l, SamplePos* sposs, VertexContent *vc)

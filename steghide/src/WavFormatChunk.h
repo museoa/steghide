@@ -21,9 +21,10 @@
 #ifndef SH_WAVFORMATCHUNK_H
 #define SH_WAVFORMATCHUNK_H
 
-#include "BinaryIO.h"
 #include "common.h"
 #include "WavChunk.h"
+
+class BinaryIO ;
 
 class WavFormatChunk : public WavChunk {
 	public:

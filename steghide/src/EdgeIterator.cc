@@ -21,7 +21,11 @@
 #include <cfloat>
 
 #include "common.h"
+#include "Edge.h"
 #include "EdgeIterator.h"
+#include "Graph.h"
+#include "SampleOccurence.h"
+#include "Vertex.h"
 
 EdgeIterator::EdgeIterator (Graph* g, Vertex *v)
 	: GraphAccess (g)

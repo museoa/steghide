@@ -21,7 +21,6 @@
 #ifndef SH_SAMPLEOCCURENCE_H
 #define SH_SAMPLEOCCURENCE_H
 
-// decalred here to prevent circulating #includes
 class Vertex ;
 
 class SampleOccurence {

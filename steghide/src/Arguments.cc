@@ -22,11 +22,10 @@
 #include <iostream>
 #include <string>
 
-#include "Arguments.h"
 #include "common.h"
 #include "error.h"
-#include "MCrypt.h"
 #include "msg.h"
+#include "MCrypt.h"
 #include "Terminal.h"
 
 #ifdef DEBUG
@@ -685,6 +684,11 @@ bool Arguments::parse_Debug (ArgIt& curarg)
 std::string Arguments::getPassphrase (bool doublecheck)
 {
     int c = EOF ;
+
+#ifndef HAVE_TERMIOS_H
+	Warning w (_("unknown terminal. the passphrase you type now will be visible.")) ;
+	w.printMessage() ;
+#endif
 
 	std::cerr << _("Enter passphrase: ") ;
 	Terminal term ;

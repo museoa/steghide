@@ -183,6 +183,10 @@ void Question::printMessage () const
 {
 	myassert (!Args.stdin_isused()) ;
 
+#ifndef HAVE_TERMIOS_H
+	Warning w (_("unknown terminal. you might need to press <Enter> after answering.")) ;
+	w.printMessage() ;
+#endif
 	std::cerr << getMessage() << " (" << yeschar << "/" << nochar << ") " ;
 }
 

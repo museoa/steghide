@@ -24,7 +24,8 @@
 #include <functional>
 
 #include "SampleValue.h"
-#include "common.h"
+
+class CvrStgFile ;
 
 class WavPCMSampleValue : public SampleValue {
 	public:

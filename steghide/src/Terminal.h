@@ -21,9 +21,16 @@
 #ifndef SH_TERMINAL_H
 #define SH_TERMINAL_H
 
-// FIXME - only if termios.h is available on target system
-#include <termios.h>
+#include "common.h"
 
+#if HAVE_TERMIOS_H
+#include <termios.h>
+#endif
+
+/**
+ * \class Terminal
+ * \brief provides some terminal access
+ **/
 class Terminal {
 	public:
 	Terminal (void) ;
@@ -33,8 +40,10 @@ class Terminal {
 	void reset (void) ;
 
 	private:
+#if HAVE_TERMIOS_H
 	/// contains the attributes of the terminal when this object was constructed
 	struct termios InitAttr ;
+#endif
 } ;
 
 #endif // ndef SH_TERMINAL_H

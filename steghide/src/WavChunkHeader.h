@@ -21,8 +21,9 @@
 #ifndef SH_WAVCHUNKHEADER_H
 #define SH_WAVCHUNKHEADER_H
 
-#include "BinaryIO.h"
 #include "common.h"
+
+class BinaryIO ;
 
 class WavChunkHeader {
 	public:

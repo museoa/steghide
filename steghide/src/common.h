@@ -32,6 +32,32 @@
 #endif
 
 //
+// generic type definitions
+#ifdef HAVE_CONFIG_H
+typedef TYPE_UWORD32	UWORD32 ;
+typedef TYPE_UWORD16	UWORD16 ;
+typedef TYPE_BYTE		BYTE ;
+#else
+// use types that are at least the correct size
+typedef unsigned long	UWORD32 ;
+typedef unsigned short	UWORD16 ;
+typedef unsigned char	BYTE ;
+#endif
+#define MAX_UWORD32		0xFFFFFFFFUL
+#define MAX_UWORD16		0xFFFF
+#define MAX_BYTE		0xFF
+
+//
+// specialised type definitions
+typedef bool BIT ;
+typedef UWORD32 SamplePos ;
+typedef UWORD32 VertexLabel ;
+typedef UWORD32 SampleValueLabel ;
+typedef UWORD32 SampleKey ;
+
+#define MAX_SAMPLEKEY MAX_UWORD32
+
+//
 // gettext support
 #include <libintl.h>
 #define _(S) gettext (S)
@@ -58,31 +84,5 @@ extern Arguments Args ;
 // every class has access to random data
 #include "RandomSource.h"
 extern RandomSource RndSrc ;
-
-//
-// generic type definitions
-#ifdef HAVE_CONFIG_H
-typedef TYPE_UWORD32	UWORD32 ;
-typedef TYPE_UWORD16	UWORD16 ;
-typedef TYPE_BYTE		BYTE ;
-#else
-// use types that are at least the correct size
-typedef unsigned long	UWORD32 ;
-typedef unsigned short	UWORD16 ;
-typedef unsigned char	BYTE ;
-#endif
-#define MAX_UWORD32		4294967295UL
-#define MAX_UWORD16		65535
-#define MAX_BYTE		256
-
-//
-// specialised type definitions
-typedef bool BIT ;
-typedef UWORD32 SamplePos ;
-typedef UWORD32 VertexLabel ;
-typedef UWORD32 SampleValueLabel ;
-typedef UWORD32 SampleKey ;
-
-#define SAMPLEKEY_MAX 0xFFFFFFFFUL ;
 
 #endif // ndef SH_COMMON_H

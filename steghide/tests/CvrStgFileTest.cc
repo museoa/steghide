@@ -22,6 +22,7 @@
 #include <cstdlib>
 
 #include "CvrStgFileTest.h"
+#include "SampleValue.h"
 #include "utcommon.h"
 
 // TODO: new test - readwrite with the same file name

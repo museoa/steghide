@@ -23,11 +23,12 @@
 
 #include <vector>
 
-#include "BinaryIO.h"
 #include "CvrStgFile.h"
-#include "WavChunkHeader.h"
-#include "WavChunkUnused.h"
-#include "WavFormatChunk.h"
+
+class BinaryIO ;
+class WavChunkHeader ;
+class WavChunkUnused ;
+class WavFormatChunk ;
 
 class WavFile : public CvrStgFile {
 	public:

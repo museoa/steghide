@@ -39,14 +39,14 @@ class RandomSource {
 	 * get a random byte
 	 * \return a random byte
 	 **/
-	unsigned char getByte (void) ;
+	BYTE getByte (void) ;
 
 	/**
 	 * get n random bytes
 	 * \param n the number of requested random bytes
 	 * \return n random bytes
 	 **/
-	std::vector<unsigned char> getBytes (unsigned int n) ;
+	std::vector<BYTE> getBytes (unsigned int n) ;
 
 	/**
 	 * get n random bits
@@ -70,7 +70,7 @@ class RandomSource {
 
 	private:
 	unsigned int RandomBytePos ;
-	unsigned char RandomByte ;
+	BYTE RandomByte ;
 	/**
 	 * determines the random input - is either opened file pointer to
 	 * /dev/urandom or NULL (the rand() function is then used as random source)

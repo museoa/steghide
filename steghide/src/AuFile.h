@@ -23,8 +23,9 @@
 
 #include <vector>
 
-#include "BinaryIO.h"
 #include "CvrStgFile.h"
+
+class BinaryIO ;
 
 class AuFile : public CvrStgFile {
 	public:

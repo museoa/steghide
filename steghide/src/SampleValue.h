@@ -22,11 +22,10 @@
 #define SH_SAMPLEVALUE_H
 
 #include <functional>
-#include <list>
 
 #include "common.h"
 #include "wrapper_hash_set.h"
-// declared here to prevent circulating #includes
+
 class CvrStgFile ;
 
 /**

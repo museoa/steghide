@@ -22,7 +22,7 @@
 #define SH_CVRSTGOBJECT_H
 
 #include "common.h"
-// declared here to prevent circulating #includes
+
 class SampleValue ;
 
 /**

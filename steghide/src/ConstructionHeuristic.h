@@ -21,8 +21,16 @@
 #ifndef SH_CONSTRHEUR_H
 #define SH_CONSTRHEUR_H
 
-#include "Graph.h"
-#include "Matching.h"
+#include <functional>
+#include <queue>
+#include <vector>
+
+#include "GraphAccess.h"
+
+class Edge ;
+class Graph ;
+class Matching ;
+class Vertex ;
 
 /**
  * \class ConstructionHeuristic

@@ -18,6 +18,8 @@
  *
  */
 
+#include "Edge.h"
+#include "Graph.h"
 #include "Matching.h"
 #include "msg.h"
 

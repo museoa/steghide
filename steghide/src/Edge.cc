@@ -20,6 +20,7 @@
 
 #include "common.h"
 #include "Edge.h"
+#include "SampleValue.h"
 #include "Vertex.h"
 
 Edge::Edge (Vertex *v1, unsigned short idx1, Vertex *v2, unsigned short idx2)

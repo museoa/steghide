@@ -23,9 +23,10 @@
 
 #include <vector>
 
-#include "BinaryIO.h"
 #include "CvrStgFile.h"
 #include "jpegframe.h"
+
+class BinaryIO ;
 
 /**
  * \class JpegFile

@@ -18,6 +18,8 @@
  *
  */
 
+#include "BinaryIO.h"
+#include "WavChunkHeader.h"
 #include "WavChunkUnused.h"
 
 void WavChunkUnused::read (BinaryIO *io)

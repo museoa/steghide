@@ -26,10 +26,10 @@
 
 #include "common.h"
 #include "GraphAccess.h"
-#include "SampleValue.h"
 #include "wrapper_hash_set.h"
-// declared here to prevent circulating includes
+
 class Graph ;
+class SampleValue ;
 class Vertex ;
 
 /**
@@ -93,9 +93,6 @@ class VertexContent : private GraphAccess {
 
 	bool hasOccurences (void) const
 		{ return !Occurences.empty() ; } ;
-
-	// FIXME - for bool check() function: check for SampleValue pointer equivalence against Graph::SampleValues
-	// FIXME - do this here or in Graph::check() ??
 
 #ifdef DEBUG
 	void print (unsigned short spc = 0) const ;

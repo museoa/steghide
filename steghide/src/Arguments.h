@@ -25,8 +25,6 @@
 #include <vector>
 
 #include "Arg.h"
-class EncryptionAlgorithm ;
-class EncryptionMode ;
 
 /**
  * \class Arguments

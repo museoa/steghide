@@ -23,6 +23,7 @@
 #include <cstdio>
 #include <cstdarg>
 
+#include "BinaryIO.h"
 #include "common.h"
 #include "error.h"
 

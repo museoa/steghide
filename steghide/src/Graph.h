@@ -26,15 +26,17 @@
 #include <queue>
 #include <vector>
 
-#include "BitString.h"
-#include "common.h"
-#include "SampleOccurence.h"
+#include "EdgeIterator.h"
 #include "SampleValueOppositeNeighbourhood.h"
-#include "Vertex.h"
-#include "VertexContent.h"
 #include "wrapper_hash_set.h"
+#include "common.h"
 
+class BitString ;
+class SampleOccurence ;
 class Permutation ;
+class Vertex ;
+class VertexContent ;
+struct VertexContentsEqual ;
 
 /**
  * \class Graph

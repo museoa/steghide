@@ -21,6 +21,8 @@
 #ifndef SH_SESSION_H
 #define SH_SESSION_H
 
+#include <string>
+
 class Session {
 	public:
 	Session (void) {} ;

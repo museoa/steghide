@@ -23,10 +23,10 @@
 
 #include <vector>
 
-#include "BinaryIO.h"
-#include "ColorPalette.h"
 #include "CvrStgFile.h"
-#include "common.h"
+
+class BinaryIO ;
+class ColorPalette ;
 
 class BmpFile : public CvrStgFile {
 	public:
