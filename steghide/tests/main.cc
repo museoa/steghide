@@ -20,6 +20,7 @@
 
 #include "TestSuite.h"
 
+#include "AuFileTest.h"
 #include "BitStringTest.h"
 #include "BmpRGBSampleValueTest.h"
 #include "BmpOS2FileTest.h"
@@ -60,6 +61,9 @@ int main (int argc, char *argv[])
 	ts.addUnitTest (&rgbsvt) ;
 
 	// CvrStgFiles
+	AuFileTest aut (&ts) ;
+	ts.addUnitTest (&aut) ;
+
 	BmpOS2FileTest bmpot (&ts) ;
 	ts.addUnitTest (&bmpot) ;
 

@@ -139,6 +139,7 @@ void Arguments::parse_Command (ArgIt& curarg)
 		setDefaults () ;
 	}
 	else if (*curarg == "capacity" || *curarg == "--capacity") {
+		// FIXME - capcity should not need -cf, "steghide capacity file.jpg" should do it
 		Command.setValue (CAPACITY) ;
 		setDefaults() ;
 	}

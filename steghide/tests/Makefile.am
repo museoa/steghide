@@ -8,7 +8,7 @@ GraphTest.h TestCategoryCaller.h TestSuite.h UnitTest.h utcommon.h \
 SampleValueOppositeNeighbourhoodTest.h SampleValueTest.h SelectorTest.h \
 VertexContentTest.h WavFileTest.h BmpRGBSampleValueTest.h
 unittests_SOURCES = \
-BitStringTest.cc BmpWinFileTest.cc BmpOS2FileTest.cc CvrStgFileTest.cc \
+AuFileTest.cc BitStringTest.cc BmpWinFileTest.cc BmpOS2FileTest.cc CvrStgFileTest.cc \
 DummyFile.cc DummySampleValue.cc MatchingTest.cc GraphTest.cc MHashPPTest.cc TestSuite.cc UnitTest.cc \
 SampleValueTest.cc BmpRGBSampleValueTest.cc SelectorTest.cc VertexContentTest.cc WavFileTest.cc \
 SampleValueOppositeNeighbourhoodTest.cc main.cc
