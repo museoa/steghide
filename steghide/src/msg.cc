@@ -33,11 +33,13 @@
 MessageBase::MessageBase ()
 {
 	setMessage (std::string(_("__no_message_defined__"))) ;
+	setNewline (true) ;
 }
 
 MessageBase::MessageBase (std::string msg)
 {
 	setMessage (msg) ;
+	setNewline (true) ;
 }
 
 MessageBase::MessageBase (const char *msgfmt, ...)
@@ -46,6 +48,7 @@ MessageBase::MessageBase (const char *msgfmt, ...)
 	va_start (ap, msgfmt) ;
 	setMessage (msgfmt, ap) ;
 	va_end (ap) ;
+	setNewline (true) ;
 }
 
 void MessageBase::setMessage (const char *msgfmt, ...)
@@ -90,7 +93,7 @@ void Message::printMessage () const
 {
 	if (Args.Verbosity.getValue() == NORMAL ||
 		Args.Verbosity.getValue() == VERBOSE) {
-		std::cerr << getMessage() << std::endl ;
+		std::cerr << getMessage() << getNewline() ;
 	}
 }
 
@@ -110,10 +113,7 @@ VerboseMessage::VerboseMessage (const char *msgfmt, ...)
 void VerboseMessage::printMessage () const
 {
 	if (Args.Verbosity.getValue() == VERBOSE) {
-		std::cerr << getMessage() ;
-		if (Newline) {
-			std::cerr << std::endl ;
-		}
+		std::cerr << getMessage() << getNewline() ;
 	}
 }
 
@@ -132,7 +132,7 @@ Warning::Warning (const char *msgfmt, ...)
 void Warning::printMessage () const
 {
 	if (Args.Verbosity.getValue() != QUIET) {
-		std::cerr << "steghide: " << _("warning:") << " " << getMessage() << std::endl ;
+		std::cerr << "steghide: " << _("warning:") << " " << getMessage() << getNewline() ;
 	}
 }
 
@@ -150,7 +150,7 @@ CriticalWarning::CriticalWarning (const char *msgfmt, ...)
 
 void CriticalWarning::printMessage () const
 {
-	std::cerr << "steghide: " << _("warning:") << " " << getMessage() << std::endl ;
+	std::cerr << "steghide: " << _("warning:") << " " << getMessage() << getNewline() ;
 }
 
 //

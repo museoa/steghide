@@ -92,17 +92,9 @@ void WKSConstructionHeuristic::run ()
 		}
 	}
 
-#if 0
-	if (Args.Verbosity.getValue() == STATS) {
-		printf ("%.4f:", ((float) numDeg1) / ((float) (numDeg1 + numDegG))) ; // rate of appliances of Deg1-rule
-	}
-#endif
-
 	TheGraph->unmarkDeletedAllVertices() ;
 }
 
-// FIXME - speed improvement possible if checkNeighboursDeg1 takes an Edge as parameter ?
-// FIXME - speed improvement if getDegree() is called always (not just for real neighbours) ?
 void WKSConstructionHeuristic::checkNeighboursDeg1 (Vertex *v)
 {
 	// for all sample values in v...

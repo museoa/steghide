@@ -73,9 +73,6 @@ Graph::Graph (CvrStgFile *cvr, const BitString& emb, Selector& sel)
 	constructVertices (sposs, svalues, tvalues) ;
 
 	constructEdges () ;
-#if 0
-	std::cerr << "checking svalists... " << ((check_SVALists(true)) ? "OK" : "FAILED!") << std::endl ;	// FIXME DELME DEBUG
-#endif
 }
 
 void Graph::constructSamples (const std::vector<SamplePos*>& sposs, std::vector<SampleValue**>& svalues)

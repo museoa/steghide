@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2003-09-25 15:53+0200\n"
+"POT-Creation-Date: 2003-09-25 18:24+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -106,7 +106,7 @@ msgstr ""
 msgid " done"
 msgstr ""
 
-#: ProgressOutput.cc:71
+#: ProgressOutput.cc:71 ProgressOutput.cc:78
 msgid " done\n"
 msgstr ""
 
@@ -316,7 +316,7 @@ msgid ""
 "embeddings of version %d."
 msgstr ""
 
-#: CvrStgFile.cc:211
+#: CvrStgFile.cc:212
 msgid ""
 "can not read input file. steghide has been compiled without support for jpeg "
 "files."
@@ -346,7 +346,7 @@ msgstr ""
 msgid "could not close random input file."
 msgstr ""
 
-#: BinaryIO.cc:142
+#: BinaryIO.cc:137
 #, c-format
 msgid "could not close the file \"%s\"."
 msgstr ""
@@ -404,7 +404,7 @@ msgstr ""
 msgid "could not open libmcrypt module \"%s\",\"%s\"."
 msgstr ""
 
-#: BinaryIO.cc:118
+#: BinaryIO.cc:113
 #, c-format
 msgid "could not open the file \"%s\"."
 msgstr ""
@@ -417,7 +417,7 @@ msgstr ""
 msgid "crc32 checksum failed! extracted data is probably corrupted."
 msgstr ""
 
-#: Embedder.cc:102
+#: Embedder.cc:104
 msgid "creating the graph..."
 msgstr ""
 
@@ -425,16 +425,16 @@ msgstr ""
 msgid "data from standard input:\n"
 msgstr ""
 
-#: BinaryIO.cc:74
+#: BinaryIO.cc:70
 #, c-format
 msgid "did not write to file \"%s\"."
 msgstr ""
 
-#: Embedder.cc:191
+#: Embedder.cc:193
 msgid "done"
 msgstr ""
 
-#: Embedder.cc:152
+#: Embedder.cc:154
 #, c-format
 msgid "embedding %s in %s..."
 msgstr ""
@@ -459,7 +459,7 @@ msgstr ""
 msgid "error, exiting. (no error message defined)."
 msgstr ""
 
-#: Embedder.cc:203
+#: Embedder.cc:205
 #, c-format
 msgid "executing %s..."
 msgstr ""
@@ -555,12 +555,12 @@ msgstr ""
 msgid "premature end of file \"%s\"."
 msgstr ""
 
-#: Embedder.cc:85
+#: Embedder.cc:87
 #, c-format
 msgid "reading cover file \"%s\"..."
 msgstr ""
 
-#: Embedder.cc:82
+#: Embedder.cc:84
 msgid "reading cover file from standard input..."
 msgstr ""
 
@@ -582,7 +582,7 @@ msgstr ""
 msgid "reading stego file from standard input..."
 msgstr ""
 
-#: Embedder.cc:140 Embedder.cc:146
+#: Embedder.cc:142 Embedder.cc:148
 msgid "standard input"
 msgstr ""
 
@@ -746,7 +746,7 @@ msgstr ""
 msgid "the compression argument can be used only once."
 msgstr ""
 
-#: Embedder.cc:96
+#: Embedder.cc:98
 msgid "the cover file is too short to embed the data."
 msgstr ""
 
@@ -771,12 +771,7 @@ msgstr ""
 msgid "the encryption argument can be used only once."
 msgstr ""
 
-#: BinaryIO.cc:68
-#, c-format
-msgid "the file \"%s\" does already exist."
-msgstr ""
-
-#: BinaryIO.cc:71
+#: BinaryIO.cc:67
 #, c-format
 msgid "the file \"%s\" does already exist. overwrite ?"
 msgstr ""
@@ -874,7 +869,7 @@ msgstr ""
 msgid "unknown terminal. the passphrase you type now will be visible."
 msgstr ""
 
-#: msg.cc:190
+#: msg.cc:188
 msgid "unknown terminal. you might need to press <Enter> after answering."
 msgstr ""
 
@@ -899,12 +894,12 @@ msgstr ""
 msgid "writing extracted data to standard output..."
 msgstr ""
 
-#: Embedder.cc:184
+#: Embedder.cc:186
 #, c-format
 msgid "writing stego file \"%s\"... "
 msgstr ""
 
-#: Embedder.cc:181
+#: Embedder.cc:183
 msgid "writing stego file to standard output... "
 msgstr ""
 

@@ -52,8 +52,6 @@ MHashKeyGen::~MHashKeyGen ()
 
 std::vector<unsigned char> MHashKeyGen::createKey (std::string password)
 {
-	// FIXME - myassert (ready) ;
-
 	char *passwd = (char *) s_malloc (password.size() + 1) ;
 	strcpy (passwd, password.c_str()) ;
 	int passwdlen = strlen (passwd) ;

@@ -69,7 +69,7 @@ void Terminal::reset ()
 	}
 }
 #else
-// FIXME - do something that makes more sense - especially on Windows systems
+// TODO - do something that makes more sense - especially on Windows systems
 Terminal::Terminal() {}
 void Terminal::EchoOff() {}
 void Terminal::SingleKeyOn() {}

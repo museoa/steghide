@@ -37,6 +37,19 @@ class MessageBase {
 	void setMessage (std::string msg)
 		{ Message = msg ; } ;
 
+	/**
+	 * toggle newline printing on/off
+	 * \param prnl wether to print a newline character after the message
+	 **/
+	void setNewline (bool prnl)
+		{ Newline = prnl ; } ;
+
+	/**
+	 * return either "\n" or "" depending on wether this message should be followed by a newline or not
+	 **/
+	const std::string getNewline (void) const
+		{ return (Newline ? "\n" : "") ; } ;
+
 	void setMessage (const char *msgfmt, ...) ;
 	virtual void printMessage (void) const = 0 ;
 
@@ -48,6 +61,7 @@ class MessageBase {
 
 	private:
 	std::string Message ;
+	bool Newline ;
 } ;
 
 class Message : public MessageBase {
@@ -61,21 +75,11 @@ class Message : public MessageBase {
 
 class VerboseMessage : public MessageBase {
 	public:
-	VerboseMessage (void) : MessageBase() { setNewline(true) ; } ;
-	VerboseMessage (std::string msg) : MessageBase (msg) { setNewline(true) ; } ;
+	VerboseMessage (void) : MessageBase() {} ;
+	VerboseMessage (std::string msg) : MessageBase (msg) {} ;
 	VerboseMessage (const char *msgfmt, ...) ;
 
-	/**
-	 * toggle newline printing on/off
-	 * \param prnl wether to print a newline character after the message
-	 **/
-	void setNewline (bool prnl)
-		{ Newline = prnl ; } ;
-
 	void printMessage (void) const ;
-
-	private:
-	bool Newline ;
 } ;
 
 class Warning : public MessageBase {

@@ -77,8 +77,6 @@ void WKSConstructionHeuristicTest::setup ()
 		ch3 = new WKSConstructionHeuristic (g3, m3, 100.0) ;
 		gl3 = Globs ;
 	}
-
-	// FIXME - test with real (i.e. large) graphs
 }
 
 void WKSConstructionHeuristicTest::cleanup ()

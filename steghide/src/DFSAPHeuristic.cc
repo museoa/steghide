@@ -104,10 +104,6 @@ void DFSAPHeuristic::run ()
 	}
 
 	delete[] path ;
-
-#if 0
-	std::cout << NSuccessful << ":" << NEdgesSuccessful << ":" << NUnsuccessful << ":" << NEdgesUnsuccessful << ":" << SuccessString << std::endl ;
-#endif
 }
 
 #ifdef DEBUG

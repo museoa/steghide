@@ -178,20 +178,26 @@ void Embedder::embed ()
 	// write stego file
 	Globs.TheCvrStgFile->transform (Args.StgFn.getValue()) ;
 
-	VerboseMessage vws ;
+	bool displaydone = false ;
 	if (Globs.TheCvrStgFile->is_std()) {
-		vws.setMessage (_("writing stego file to standard output... ")) ;
+		Message ws (_("writing stego file to standard output... ")) ;
+		ws.printMessage() ;
 	}
 	else {
-		vws.setMessage (_("writing stego file \"%s\"... "), Globs.TheCvrStgFile->getName().c_str()) ;
+		if (Args.StgFn.getValue() != Args.CvrFn.getValue()) {
+			Message ws (_("writing stego file \"%s\"... "), Globs.TheCvrStgFile->getName().c_str()) ;
+			ws.setNewline (false) ;
+			ws.printMessage() ;
+			displaydone = true ;
+		}
 	}
-	vws.setNewline(false) ;
-	vws.printMessage() ;
 
 	Globs.TheCvrStgFile->write() ;
 
-	VerboseMessage vwsd (_("done")) ;
-	vwsd.printMessage() ;
+	if (displaydone) {
+		Message wsd (_("done")) ;
+		wsd.printMessage() ;
+	}
 }
 
 const Matching* Embedder::calculateMatching (ProgressOutput* prout)

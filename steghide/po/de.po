@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
-"POT-Creation-Date: 2003-09-25 15:53+0200\n"
+"POT-Creation-Date: 2003-09-25 18:24+0200\n"
 "PO-Revision-Date: 2003-09-24 22:52+0200\n"
 "Last-Translator: Stefan Hetzl <shetzl@chello.at>\n"
 "Language-Team: Deutsch\n"
@@ -158,7 +158,7 @@ msgstr " FEHLGESCHLAGEN!"
 msgid " done"
 msgstr " fertig"
 
-#: ProgressOutput.cc:71
+#: ProgressOutput.cc:71 ProgressOutput.cc:78
 msgid " done\n"
 msgstr " fertig\n"
 
@@ -416,7 +416,7 @@ msgstr ""
 "versuche Einbettung der version %d zu lesen, aber steghide %s unterstützt "
 "nur Einbettungen der version %d."
 
-#: CvrStgFile.cc:211
+#: CvrStgFile.cc:212
 msgid ""
 "can not read input file. steghide has been compiled without support for jpeg "
 "files."
@@ -452,7 +452,7 @@ msgstr "Es konnte nicht genügend Speicher alloziiert werden."
 msgid "could not close random input file."
 msgstr "Die Datei zum Lesen von Zufallsdaten konnte nicht geschlossen werden."
 
-#: BinaryIO.cc:142
+#: BinaryIO.cc:137
 #, c-format
 msgid "could not close the file \"%s\"."
 msgstr "Die Datei \"%s\" konnte nicht geschlossen werden."
@@ -516,7 +516,7 @@ msgstr ""
 msgid "could not open libmcrypt module \"%s\",\"%s\"."
 msgstr "Das libmcrypt Modul \"%s\",\"%s\" konnte nicht geöffnet werden."
 
-#: BinaryIO.cc:118
+#: BinaryIO.cc:113
 #, c-format
 msgid "could not open the file \"%s\"."
 msgstr "Die Datei \"%s\" konnte nicht geöffnet werden."
@@ -531,7 +531,7 @@ msgstr ""
 "CRC32 Prüfsummentest fehlgeschlagen! Die extrahierten Daten sind "
 "wahrscheinlich fehlerhaft."
 
-#: Embedder.cc:102
+#: Embedder.cc:104
 msgid "creating the graph..."
 msgstr "Erzeugung des Graphen..."
 
@@ -539,16 +539,16 @@ msgstr "Erzeugung des Graphen..."
 msgid "data from standard input:\n"
 msgstr "Daten von der Standardeingabe:\n"
 
-#: BinaryIO.cc:74
+#: BinaryIO.cc:70
 #, c-format
 msgid "did not write to file \"%s\"."
 msgstr "Datei \"%s\" wurde nicht geschrieben."
 
-#: Embedder.cc:191
+#: Embedder.cc:193
 msgid "done"
 msgstr "fertig"
 
-#: Embedder.cc:152
+#: Embedder.cc:154
 #, c-format
 msgid "embedding %s in %s..."
 msgstr "Bette %s in %s ein..."
@@ -577,7 +577,7 @@ msgstr ""
 msgid "error, exiting. (no error message defined)."
 msgstr "Fehler, Programmende. (keine Fehlermeldung definiert)."
 
-#: Embedder.cc:203
+#: Embedder.cc:205
 #, c-format
 msgid "executing %s..."
 msgstr "Führe %s aus..."
@@ -682,12 +682,12 @@ msgstr "Die wav-Header aus der Datei \"%s\" sind unvollständig."
 msgid "premature end of file \"%s\"."
 msgstr "Die Datei \"%s\" ist unvollständig."
 
-#: Embedder.cc:85
+#: Embedder.cc:87
 #, c-format
 msgid "reading cover file \"%s\"..."
 msgstr "Lese Trägerdatei \"%s\"..."
 
-#: Embedder.cc:82
+#: Embedder.cc:84
 msgid "reading cover file from standard input..."
 msgstr "Lese Trägerdatei von der Standardeingabe..."
 
@@ -709,7 +709,7 @@ msgstr "Lese Stegodatei \"%s\"..."
 msgid "reading stego file from standard input..."
 msgstr "Lese Stegodatei von der Standardeingabe..."
 
-#: Embedder.cc:140 Embedder.cc:146
+#: Embedder.cc:142 Embedder.cc:148
 msgid "standard input"
 msgstr "Standardeingabe"
 
@@ -904,7 +904,7 @@ msgstr "Das Prüfsumme-Argument kann nur einmal verwendet werden."
 msgid "the compression argument can be used only once."
 msgstr "Das Kompression-Argument kann nur einmal verwendet werden."
 
-#: Embedder.cc:96
+#: Embedder.cc:98
 msgid "the cover file is too short to embed the data."
 msgstr "Die Trägerdatei ist zu kurz, um die Daten einzubetten."
 
@@ -931,12 +931,7 @@ msgstr ""
 msgid "the encryption argument can be used only once."
 msgstr "Das Verschlüsselung-Argument kann nur einmal verwendet werden."
 
-#: BinaryIO.cc:68
-#, c-format
-msgid "the file \"%s\" does already exist."
-msgstr "Die Datei \"%s\" existiert bereits."
-
-#: BinaryIO.cc:71
+#: BinaryIO.cc:67
 #, c-format
 msgid "the file \"%s\" does already exist. overwrite ?"
 msgstr "Die Datei \"%s\" existiert bereits. Überschreiben ?"
@@ -1045,7 +1040,7 @@ msgid "unknown terminal. the passphrase you type now will be visible."
 msgstr ""
 "Unbekanntes Terminal. Das Passwort das Sie jetzt eingeben wird sichtbar sein."
 
-#: msg.cc:190
+#: msg.cc:188
 msgid "unknown terminal. you might need to press <Enter> after answering."
 msgstr ""
 "Unbekanntes Terminal. Vielleicht müssen Sie zur Bestätigung der Antwort auf "
@@ -1074,12 +1069,12 @@ msgstr "Schreibe extrahierte Daten nach \"%s\"..."
 msgid "writing extracted data to standard output..."
 msgstr "Schreibe extrahierte Daten auf die Standardausgabe..."
 
-#: Embedder.cc:184
+#: Embedder.cc:186
 #, c-format
 msgid "writing stego file \"%s\"... "
 msgstr "Schreibe Stegodatei \"%s\"... "
 
-#: Embedder.cc:181
+#: Embedder.cc:183
 msgid "writing stego file to standard output... "
 msgstr "Schreibe Stegodatei auf die Standardausgabe... "
 
@@ -1110,3 +1105,6 @@ msgstr "Sie können nicht mehr als ein debug-Kommando auf einmal verwenden."
 #, c-format
 msgid "you have to suppy a filename to the \"%s\" command."
 msgstr "Das Kommando \"%s\" benötigt einen Dateinamen."
+
+#~ msgid "the file \"%s\" does already exist."
+#~ msgstr "Die Datei \"%s\" existiert bereits."

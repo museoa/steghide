@@ -33,7 +33,7 @@ class MHashKeyGenTest : public UnitTest {
 
 	private:
 #if 0
-	// FIXME - implement this unit test
+	// TODO - implement this unit test
 	bool genericTestReference () ;
 #endif
 } ;

@@ -39,10 +39,6 @@ EdgeIterator::EdgeIterator (Vertex *v, ITERATIONMODE m)
 
 EdgeIterator::EdgeIterator (const EdgeIterator& eit)
 {
-#if 0
-	SrcVertex = eit.SrcVertex ;
-	SrcIndex = eit.SrcIndex ;
-#endif
 	CurrentEdge = eit.CurrentEdge ;
 	Mode = eit.Mode ;
 	SVALIndices = new unsigned long[Globs.TheCvrStgFile->getSamplesPerVertex()] ;
@@ -58,7 +54,6 @@ EdgeIterator::~EdgeIterator ()
 	delete[] SVALIndices ;
 }
 
-// FIXME - speed improvement if no switch is used - instead a virtual function a derived classes ?
 void EdgeIterator::operator++ ()
 {
 	myassert (!Finished) ;

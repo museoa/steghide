@@ -27,7 +27,7 @@ MCryptPPTest::MCryptPPTest (TestSuite* s)
 	ADDTESTCATEGORY (MCryptPPTest, testDecryption) ;
 }
 
-// FIXME - implement this unit test
+// TODO - implement this unit test
 
 void MCryptPPTest::testEncryption (void)
 {
