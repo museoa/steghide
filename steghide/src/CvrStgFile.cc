@@ -98,6 +98,30 @@ BIT CvrStgFile::getSampleBit (const SamplePos pos) const
 	return retval ;
 }
 
+#ifdef DEBUG
+std::map<SampleKey,unsigned long>* CvrStgFile::getFrequencies ()
+{
+	unsigned long n = getNumSamples() ;
+	std::map<SampleKey,unsigned long>* table = new std::map<SampleKey,unsigned long> () ;
+
+	for (unsigned long pos = 0 ; pos < n ; pos++) {
+		SampleValue *sv = getSampleValue (pos) ;
+		(*table)[sv->getKey()]++ ;
+		delete sv ;
+	}
+
+	return table ;
+}
+
+void CvrStgFile::printFrequencies (const std::map<SampleKey,unsigned long>& freqs)
+{
+	for (std::map<SampleKey,unsigned long>::const_iterator fit = freqs.begin() ; fit != freqs.end() ; fit++) {
+		std::cout << fit->first << ": " << fit->second << std::endl ;
+	}
+}
+
+#endif // def DEBUG
+
 CvrStgFile::FILEFORMAT CvrStgFile::guessff (BinaryIO *io)
 {
 	char buf[4] = { '\0', '\0', '\0', '\0' } ;
@@ -152,7 +176,11 @@ CvrStgFile* CvrStgFile::readFile (const std::string& fn)
 		break ; }
 
 		case JPEG: {
+#ifdef USE_LIBJPEG
 			file = new JpegFile (BinIO) ;
+#else
+			throw SteghideError (_("can not read input file. steghide has been compiled without support for jpeg files.")) ;
+#endif
 		break ; }
 
 		default: {

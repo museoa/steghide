@@ -30,8 +30,5 @@ unittests_LDADD = \
 ../src/SteghideError.o ../src/Terminal.o ../src/Vertex.o \
 ../src/VertexContent.o ../src/WavChunk.o ../src/WavChunkHeader.o \
 ../src/WavChunkUnused.o ../src/WavFile.o ../src/WavFormatChunk.o \
-../src/WavPCMSampleValue.o ../src/error.o ../src/jpegbase.o \
-../src/jpegentropycoded.o ../src/jpegframe.o ../src/jpegframehdr.o \
-../src/jpeghufftable.o ../src/jpegjfifapp0.o ../src/jpegrestart.o \
-../src/jpegscan.o ../src/jpegscanhdr.o ../src/jpegunusedseg.o ../src/msg.o
+../src/WavPCMSampleValue.o ../src/error.o ../src/msg.o
 MAINTAINERCLEANFILES = Makefile.in

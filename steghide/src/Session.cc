@@ -62,6 +62,12 @@ void Session::run ()
 			printHelp() ;
 		break ; }
 
+#ifdef DEBUG
+		case PRINTFREQS: {
+			printFrequencies() ;
+		break ; }
+#endif
+
 		default: {
 			myassert (0) ;
 		break ; }
@@ -206,3 +212,28 @@ void Session::printLicense ()
  		"along with this program; if not, write to the Free Software\n"
  		"Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.\n") ;
 }
+
+#ifdef DEBUG
+void Session::printFrequencies ()
+{
+	std::map<SampleKey,unsigned long> Frequencies ;
+	const std::list<std::string>& flist = Args.FileList.getValue() ;
+	for (std::list<std::string>::const_iterator fnit = flist.begin() ; fnit != flist.end() ; fnit++) {
+		CvrStgFile *f = CvrStgFile::readFile (*fnit) ;
+		addFrequencies (&Frequencies, f->getFrequencies()) ;
+		delete f ;
+	}
+
+	// get CvrStgFile in correct format to call printFrequencies
+	CvrStgFile *f = CvrStgFile::readFile (*(Args.FileList.getValue().begin())) ;
+	f->printFrequencies (Frequencies) ;
+	delete f ;
+}
+
+void Session::addFrequencies (std::map<SampleKey,unsigned long>* f1, const std::map<SampleKey,unsigned long>* f2)
+{
+	for (std::map<SampleKey,unsigned long>::const_iterator fit = f2->begin() ; fit != f2->end() ; fit++) {
+		(*f1)[fit->first] += fit->second ;
+	}
+}
+#endif // def DEBUG

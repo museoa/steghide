@@ -29,20 +29,29 @@ JpegSampleValue::JpegSampleValue (int c)
 {
 	int dctcoeff = ((DctCoeff >= 0) ? DctCoeff : -DctCoeff) ;
 	SBit = (BIT) (dctcoeff % 2) ;
-	Key = (unsigned long) DctCoeff ;
+	Key = (UWORD32) DctCoeff ;
 	setRadius (DefaultRadius) ;
 }
 
-// FIXME - it is assumed that the maximum and the minimum values are never touched (also in getOppositeNeighbours)
 SampleValue *JpegSampleValue::getNearestOppositeSampleValue() const
 {
 	int n_coeff = 0 ;
-	if (RndSrc.getBool()) {
-		n_coeff = DctCoeff - 1 ;
+
+	if (DctCoeff == 1) {
+		n_coeff = 2 ;
+	}
+	else if (DctCoeff == -1) {
+		n_coeff = -2 ;
 	}
 	else {
-		n_coeff = DctCoeff + 1 ;
+		if (RndSrc.getBool()) {
+			n_coeff = DctCoeff - 1 ;
+		}
+		else {
+			n_coeff = DctCoeff + 1 ;
+		}
 	}
+
 	return ((SampleValue *) new JpegSampleValue (n_coeff)) ;
 }
 

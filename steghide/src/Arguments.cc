@@ -122,56 +122,63 @@ void Arguments::parse ()
 
 void Arguments::parse_Command (ArgIt& curarg)
 {
-#ifdef DEBUG
-	DebugMode = false ;
-	if (*curarg == "debug") {
-		DebugMode = true ;
-		++curarg ;
-	}
-#endif
-
 	if (*curarg == "embed" || *curarg == "--embed") {
 		Command.setValue (EMBED) ;
 		setDefaults () ;
+		++curarg ;
 	}
 	else if (*curarg == "extract" || *curarg == "--extract") {
 		Command.setValue (EXTRACT) ;
 		setDefaults () ;
+		++curarg ;
 	}
 	else if (*curarg == "capacity" || *curarg == "--capacity") {
 		// FIXME - capcity should not need -cf, "steghide capacity file.jpg" should do it
 		Command.setValue (CAPACITY) ;
 		setDefaults() ;
+		++curarg ;
 	}
 	else if (*curarg == "encinfo" || *curarg == "--encinfo") {
 		Command.setValue (ENCINFO) ;
 		if (TheArguments.size() > 1) {
 			throw ArgError (_("you cannot use arguments with the \"encinfo\" command.")) ;
 		}
+		++curarg ;
 	}
 	else if (*curarg == "version" || *curarg == "--version") {
 		Command.setValue (SHOWVERSION) ;
 		if (TheArguments.size() > 1) {
 			throw ArgError (_("you cannot use arguments with the \"version\" command.")) ;
 		}
+		++curarg ;
 	}
 	else if (*curarg == "license" || *curarg == "--license") {
 		Command.setValue (SHOWLICENSE) ;
 		if (TheArguments.size() > 1) {
 			throw ArgError (_("you cannot use arguments with the \"license\" command.")) ;
 		}
+		++curarg ;
 	}
 	else if (*curarg == "help" || *curarg == "--help") {
 		Command.setValue (SHOWHELP) ;
 		if (TheArguments.size() > 1) {
 			throw ArgError (_("you cannot use arguments with the \"help\" command.")) ;
 		}
+		++curarg ;
 	}
+#ifdef DEBUG
+	else if (*curarg == "printfreqs" || *curarg == "--printfreqs") {
+		Command.setValue (PRINTFREQS) ;
+		std::list<std::string> flist ;
+		while ((++curarg) != TheArguments.end()) {
+			flist.push_back (*curarg) ;
+		}
+		FileList.setValue (flist) ;
+	}
+#endif
 	else {
 		throw ArgError (_("unknown command \"%s\"."), curarg->c_str()) ;
 	}
-
-	++curarg ;
 }
 
 bool Arguments::parse_EmbFn (ArgIt& curarg)
@@ -617,83 +624,81 @@ bool Arguments::parse_Debug (ArgIt& curarg)
 {
 	bool found = false ;
 
-	if (DebugMode) {
-		if (*curarg == "--printgraph") {
-			if (DebugCommand.is_set()) {
-				throw SteghideError (_("you cannot use more than one debug command at a time.")) ;
-			}
-
-			DebugCommand.setValue (PRINTGRAPH) ;
-
-			found = true ;
-			curarg++ ;
+	if (*curarg == "--printgraph") {
+		if (DebugCommand.is_set()) {
+			throw SteghideError (_("you cannot use more than one debug command at a time.")) ;
 		}
-		else if (*curarg == "--printstats")  {
-			if (DebugCommand.is_set()) {
-				throw SteghideError (_("you cannot use more than one debug command at a time.")) ;
-			}
 
-			DebugCommand.setValue (PRINTSTATS) ;
+		DebugCommand.setValue (PRINTGRAPH) ;
 
-			found = true ;
-			++curarg ;
+		found = true ;
+		curarg++ ;
+	}
+	else if (*curarg == "--printfreqs") {
+		if (DebugCommand.is_set()) {
+			throw SteghideError (_("you cannot use more than one debug command at a time.")) ;
 		}
-		else if (*curarg == "--debuglevel") {
-			if (DebugLevel.is_set()) {
-				throw ArgError (_("the debug level argument can be used only once.")) ;
-			}
 
-			if (++curarg == TheArguments.end()) {
-				throw ArgError (_("the \"%s\" argument must be followed by the debug level."), (curarg - 1)->c_str()) ;
-			}
+		DebugCommand.setValue (PRINTSTATS) ;
 
-			unsigned int tmp = 0 ;
-			sscanf (curarg->c_str(), "%u", &tmp) ;
-			DebugLevel.setValue (tmp) ;
-
-			found = true ;
-			++curarg ;
+		found = true ;
+		++curarg ;
+	}
+	else if (*curarg == "--debuglevel") {
+		if (DebugLevel.is_set()) {
+			throw ArgError (_("the debug level argument can be used only once.")) ;
 		}
-		else if (*curarg == "--priorityqueuerange") {
-			if (Command.getValue() != EMBED) {
-				throw ArgError (_("argument \"%s\" can only be used with the \"embed\" command."), curarg->c_str()) ;
-			}
 
-			if (PriorityQueueRange.is_set()) {
-				throw ArgError (_("the priority queue range argument can be used only once.")) ;
-			}
-
-			if (++curarg == TheArguments.end()) {
-				throw ArgError (_("the \"%s\" argument must be followed by the priority queue range."), (curarg - 1)->c_str()) ;
-			}
-
-			unsigned int tmp = 0 ;
-			sscanf (curarg->c_str(), "%u", &tmp) ;
-			PriorityQueueRange.setValue (tmp) ;
-
-			found = true ;
-			++curarg ;
+		if (++curarg == TheArguments.end()) {
+			throw ArgError (_("the \"%s\" argument must be followed by the debug level."), (curarg - 1)->c_str()) ;
 		}
-		else if (*curarg == "--nconstrheur") {
-			if (Command.getValue() != EMBED) {
-				throw ArgError (_("argument \"%s\" can only be used with the \"embed\" command."), curarg->c_str()) ;
-			}
 
-			if (NConstrHeur.is_set()) {
-				throw ArgError (_("the number construction heuristic argument can be used only once.")) ;
-			}
+		unsigned int tmp = 0 ;
+		sscanf (curarg->c_str(), "%u", &tmp) ;
+		DebugLevel.setValue (tmp) ;
 
-			if (++curarg == TheArguments.end()) {
-				throw ArgError (_("the \"%s\" argument must be followed by the number of times the construction heuristic should be run."), (curarg - 1)->c_str()) ;
-			}
-
-			unsigned int tmp = 0 ;
-			sscanf (curarg->c_str(), "%u", &tmp) ;
-			NConstrHeur.setValue (tmp) ;
-
-			found = true ;
-			++curarg ;
+		found = true ;
+		++curarg ;
+	}
+	else if (*curarg == "--priorityqueuerange") {
+		if (Command.getValue() != EMBED) {
+			throw ArgError (_("argument \"%s\" can only be used with the \"embed\" command."), curarg->c_str()) ;
 		}
+
+		if (PriorityQueueRange.is_set()) {
+			throw ArgError (_("the priority queue range argument can be used only once.")) ;
+		}
+
+		if (++curarg == TheArguments.end()) {
+			throw ArgError (_("the \"%s\" argument must be followed by the priority queue range."), (curarg - 1)->c_str()) ;
+		}
+
+		unsigned int tmp = 0 ;
+		sscanf (curarg->c_str(), "%u", &tmp) ;
+		PriorityQueueRange.setValue (tmp) ;
+
+		found = true ;
+		++curarg ;
+	}
+	else if (*curarg == "--nconstrheur") {
+		if (Command.getValue() != EMBED) {
+			throw ArgError (_("argument \"%s\" can only be used with the \"embed\" command."), curarg->c_str()) ;
+		}
+
+		if (NConstrHeur.is_set()) {
+			throw ArgError (_("the number construction heuristic argument can be used only once.")) ;
+		}
+
+		if (++curarg == TheArguments.end()) {
+			throw ArgError (_("the \"%s\" argument must be followed by the number of times the construction heuristic should be run."), (curarg - 1)->c_str()) ;
+		}
+
+		unsigned int tmp = 0 ;
+		sscanf (curarg->c_str(), "%u", &tmp) ;
+		NConstrHeur.setValue (tmp) ;
+
+		found = true ;
+		++curarg ;
 	}
 
 	return found ;

@@ -21,7 +21,10 @@
 #ifndef SH_SESSION_H
 #define SH_SESSION_H
 
+#include <map>
 #include <string>
+
+#include "common.h"
 
 class Session {
 	public:
@@ -36,5 +39,12 @@ class Session {
 	void printVersion (void) ;
 	void printHelp (void) ;
 	void printLicense (void) ;
+#ifdef DEBUG
+	void printFrequencies (void) ;
+	/**
+	 * add the frequencies in f2 to those in f1 (changing only f1 - like f1 += f2)
+	 **/
+	void addFrequencies (std::map<SampleKey,unsigned long>* f1, const std::map<SampleKey,unsigned long>* f2) ;
+#endif
 } ;
 #endif //ndef SH_SESSION_H

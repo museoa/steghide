@@ -1,6 +1,8 @@
 steghide 0.5.1 :
 ================
 
+* support for all jpeg files (using libjpeg)
+
 * a 'capacity' command to display the capacity of a cover file
 
 * use of permutation as distribution function

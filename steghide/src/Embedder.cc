@@ -141,7 +141,7 @@ const Matching* Embedder::calculateMatching ()
 	if (prout) {
 		prout->setUpdateFrequency (1) ;
 	}
-	if (true) {
+	if (false) {
 		AugmentingPathHeuristic aph (Globs.TheGraph, bestmatching, Args.Goal.getValue(), (UWORD32) (Globs.TheGraph->getAvgVertexDegree() / 20)) ;
 		aph.run() ;
 		bestmatching = aph.getMatching() ;

@@ -21,6 +21,7 @@
 #ifndef SH_ARG_H
 #define SH_ARG_H
 
+#include <list>
 #include <string>
 
 #include "EncryptionAlgorithm.h"
@@ -49,7 +50,7 @@ template<class T> class Arg {
 	bool set ;
 } ;
 
-enum COMMAND { EMBED, EXTRACT, CAPACITY, ENCINFO, SHOWVERSION, SHOWLICENSE, SHOWHELP } ;
+enum COMMAND { EMBED, EXTRACT, CAPACITY, ENCINFO, SHOWVERSION, SHOWLICENSE, SHOWHELP, PRINTFREQS } ;
 enum VERBOSITY { QUIET, NORMAL, VERBOSE } ;
 #ifdef DEBUG
 enum DEBUGCOMMAND { NONE, PRINTSTATS, PRINTGRAPH } ;
@@ -64,6 +65,7 @@ typedef Arg<float> ArgFloat ;
 typedef Arg<EncryptionAlgorithm> ArgEncAlgo ;
 typedef Arg<EncryptionMode> ArgEncMode ;
 #ifdef DEBUG
+typedef Arg<std::list<std::string> > ArgStringList ;
 typedef Arg<unsigned int> ArgUInt ;
 typedef Arg<DEBUGCOMMAND> ArgDebugCommand ;
 #endif

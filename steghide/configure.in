@@ -67,6 +67,20 @@ else
 	AC_DEFINE(USE_LIBMCRYPT,1,[use the libmcrypt library (header and lib are present)])
 fi	
 
+dnl Check for libjpeg
+AC_CHECK_LIB(jpeg, jpeg_read_coefficients)
+AC_CHECK_HEADER(jpeglib.h)
+if test "$ac_cv_header_jpeglib_h" = no || test "$ac_cv_lib_jpeg_jpeg_read_coefficients" = no ;
+then
+	echo "**********";
+	echo "libjpeg could not be found on your system. Steghide will be compiled without";
+	echo "support for jpeg files. You will not be able to read or write jpeg files!";
+	echo "libjpeg can be downloaded from http://www.ijg.org/";
+	echo "**********";
+else
+	AC_DEFINE(USE_LIBJPEG,1,[use the libjpeg library (header and lib are present)])
+fi
+
 dnl Checks for header files.
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT

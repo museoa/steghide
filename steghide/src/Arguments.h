@@ -74,6 +74,7 @@ class Arguments {
 	ArgVerbosity	Verbosity ;
 #ifdef DEBUG
 	ArgDebugCommand	DebugCommand ;
+	ArgStringList	FileList ;
 	ArgUInt			DebugLevel ;
 	ArgUInt			PriorityQueueRange ;
 	ArgUInt			NConstrHeur ;
@@ -130,8 +131,6 @@ class Arguments {
 	void setDefaults (void) ;
 
 	std::vector<std::string> TheArguments ;
-	/// true iff the first argument was "debug"
-	bool DebugMode ;
 } ;
 
 // gcc does not support the export keyword

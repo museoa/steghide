@@ -134,9 +134,9 @@ void AuFile::read (BinaryIO *io)
 	Data->read (getBinIO(), n) ;
 }
 
-void AuFile::write()
+void AuFile::write ()
 {
-	CvrStgFile::write () ;
+	CvrStgFile::write() ;
 
 	try {
 		// write header

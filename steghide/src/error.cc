@@ -161,6 +161,6 @@ void NotImplementedError::printMessage () const
 {
 	SteghideError::printMessage() ;
 	printf (_("This feature is not implemented (yet). Please let me (shetzl@chello.at) know\n"
-		"this to increase the chance that this will be implemented in the near future.\n"
-		"Steghide has to exit now. Sorry.\n")) ;
+		"that you want to use this functionality to increase the chance that this will\n"
+		"be implemented in the near future. Steghide has to exit now. Sorry.\n")) ;
 }

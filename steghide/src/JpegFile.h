@@ -21,34 +21,64 @@
 #ifndef SH_JPEGFILE_H
 #define SH_JPEGFILE_H
 
+#include "common.h"
+
+#ifdef USE_LIBJPEG
+
 #include <vector>
 
-#include "CvrStgFile.h"
-#include "jpegframe.h"
+extern "C" {
+#include <stdio.h>
+#include <jpeglib.h>
+}
 
 class BinaryIO ;
+#include "CvrStgFile.h"
+class SampleValue ;
 
 /**
  * \class JpegFile
- * \brief a cover/stego file in jpeg, i.e. jfif format
+ * \brief a cover-/stego-file in the jpeg file format
+ *
+ * This class uses the JPEG library by the IJG for access to jpeg files.
  **/
 class JpegFile : public CvrStgFile {
 	public:
-	JpegFile (void) ;
-	JpegFile (BinaryIO *io) ;
-	~JpegFile (void) ;
+	JpegFile (BinaryIO* io) ;
 
-	void read (BinaryIO *io) ;
+	void read (BinaryIO* io) ;
 	void write (void) ;
 
 	unsigned long getNumSamples (void) const ;
 	void replaceSample (const SamplePos pos, const SampleValue* s) ;
-	SampleValue* getSampleValue (SamplePos pos) const ;
-	unsigned short getSamplesPerEBit (void) const ;
+	SampleValue* getSampleValue (const SamplePos pos) const ;
+	unsigned short getSamplesPerEBit (void) const
+		{ return SamplesPerEBit ; } ;
+
+#ifdef DEBUG
+	std::map<SampleKey,unsigned long>* getFrequencies (void) ;
+	/**
+	 * SampleKey is unsigned, jpeg dct coefficients are signed data. This function is a specialization
+	 * of printFrequencies that converts the SampleKeys back to dct coefficient values before printing
+	 * them and also prints the values starting from the lowest (negative) and ending with the highest
+	 * (positive).
+	 **/
+	void printFrequencies (const std::map<SampleKey,unsigned long>& freqs) ;
+#endif
 
 	private:
-	/// the frame of the jpeg file
-	JpegFrame *frame ;
+	/// the number of dct coefficients per block
+	static const unsigned int CoeffPerBlock = 64 ;
+	static const unsigned short SamplesPerEBit = 2 ;
+
+	struct jpeg_compress_struct CInfo ;
+	struct jpeg_decompress_struct DeCInfo ;
+	jvirt_barray_ptr* DctCoeffs ;
+
+	std::vector<SWORD16> LinDctCoeffs ;
+	std::vector<UWORD32> StegoIndices ;
 } ;
+
+#endif // def USE_LIBJPEG
 
 #endif // ndef SH_JPEGFILE_H

@@ -158,12 +158,15 @@ class BinaryIO {
 
 	void writestring (const std::string& s) ;
 
+	/**
+	 * get the underlying cstdio FILE* pointer
+	 **/
+	FILE* getStream (void) const
+		{ return Stream ; } ;
+
 	protected:
 	void setStream (FILE* s)
 		{ Stream = s ; } ;
-
-	FILE* getStream (void) const
-		{ return Stream ; } ;
 
 	void setName (const std::string& fn)
 		{ Name = fn ; } ;

@@ -22,6 +22,7 @@
 #define SH_CVRSTGFILE_H
 
 #include <string>
+#include <map>
 
 #include "BinaryIO.h"
 #include "CvrStgObject.h"
@@ -69,6 +70,20 @@ class CvrStgFile : public CvrStgObject {
 	 * This is equivalent to getSample(pos)->getBit().
 	 **/
 	BIT getSampleBit (const SamplePos pos) const ;
+
+#ifdef DEBUG
+	/**
+	 * return a map that contains the absolute sample frequencies indexed by sample key
+	 **/
+	virtual std::map<SampleKey,unsigned long>* getFrequencies (void) ;
+	/**
+	 * print the frequency table freqs
+	 *
+	 * This method is meant to be overriden in *File to provide a file-format specific way
+	 * of printing a frequency table.
+	 **/
+	virtual void printFrequencies (const std::map<SampleKey,unsigned long>& freqs) ;
+#endif
 
 	protected:
 	void setBinIO (BinaryIO* io)

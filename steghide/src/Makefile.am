@@ -12,9 +12,7 @@ MatchingAlgorithm.h ProgressOutput.h PseudoRandomSource.h RGBTriple.h RandomSour
 SampleOccurence.h SampleValue.h SampleValueOppositeNeighbourhood.h Selector.h \
 Session.h SteghideError.h Terminal.h Vertex.h VertexContent.h WavChunk.h \
 WavChunkHeader.h WavChunkUnused.h WavFile.h WavFormatChunk.h \
-WavPCMSampleValue.h common.h error.h jpegbase.h jpegentropycoded.h jpegframe.h \
-jpegframehdr.h jpeghufftable.h jpegjfifapp0.h jpegrestart.h jpegscan.h \
-jpegscanhdr.h jpegunusedseg.h msg.h wrapper_hash_map.h wrapper_hash_set.h
+WavPCMSampleValue.h common.h error.h msg.h wrapper_hash_map.h wrapper_hash_set.h
 steghide_SOURCES = \
 Arg.cc Arguments.cc AssertionFailed.cc AuFile.cc \
 AugmentingPathHeuristic.cc BinaryIO.cc BitString.cc \
@@ -26,9 +24,7 @@ MatchingAlgorithm.cc Matching.cc ProgressOutput.cc PseudoRandomSource.cc RGBTrip
 RandomSource.cc SampleValue.cc SampleValueOppositeNeighbourhood.cc Selector.cc \
 Session.cc SteghideError.cc Terminal.cc Vertex.cc VertexContent.cc WavChunk.cc \
 WavChunkHeader.cc WavChunkUnused.cc WavFile.cc WavFormatChunk.cc \
-WavPCMSampleValue.cc error.cc jpegbase.cc jpegentropycoded.cc jpegframe.cc \
-jpegframehdr.cc jpeghufftable.cc jpegjfifapp0.cc jpegrestart.cc jpegscan.cc \
-jpegscanhdr.cc jpegunusedseg.cc main.cc msg.cc
+WavPCMSampleValue.cc error.cc main.cc msg.cc
 localedir = $(datadir)/locale
 LIBTOOL = $(SHELL) libtool
 MAINTAINERCLEANFILES = Makefile.in
