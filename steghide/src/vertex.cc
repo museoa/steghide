@@ -28,10 +28,7 @@ Vertex::Vertex (Graph* g, VertexLabel l, SamplePos* sposs, VertexContent *vc)
 	setLabel (l) ;
 	SamplePositions = sposs ;
 	Content = vc ;
-	assert (Content > (VertexContent*) 0xff) ;
-#if 0
-	VertexOccurenceIt = Content->addOccurence (this) ;
-#endif
+	SampleOccurenceIts = new list<SampleOccurence>::iterator[SamplesPerVertex] ;
 	ShortestEdge = NULL ;
 	valid = true ;
 }
@@ -54,7 +51,7 @@ void Vertex::markDeleted ()
 
 		// delete from sample occurences in graph
 		for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
-			SampleOccurenceIt[i] = TheGraph->markDeletedSampleOccurence (SampleOccurenceIt[i]) ;
+			SampleOccurenceIts[i] = TheGraph->markDeletedSampleOccurence (SampleOccurenceIts[i]) ;
 		}
 		valid = false ;
 	}
@@ -65,7 +62,7 @@ void Vertex::unmarkDeleted ()
 	if (!valid) {
 		// undelete into sample occurences in graph
 		for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
-			SampleOccurenceIt[i] = TheGraph->unmarkDeletedSampleOccurence (SampleOccurenceIt[i]) ;
+			SampleOccurenceIts[i] = TheGraph->unmarkDeletedSampleOccurence (SampleOccurenceIts[i]) ;
 		}
 
 #if 0

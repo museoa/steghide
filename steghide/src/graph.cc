@@ -114,6 +114,8 @@ void Graph::constructVertices (vector<SamplePos*>& sposs, vector<SampleValue**>&
 		NumVertexContents = vc_set.size() ;
 	}
 #endif
+
+	return ;
 }
 
 void Graph::constructEdges (const hash_set<VertexContent*,hash<VertexContent*>,VertexContentsEqual>& vc_set)
@@ -126,7 +128,9 @@ void Graph::constructEdges (const hash_set<VertexContent*,hash<VertexContent*>,V
 	for (vector<Vertex*>::iterator it = Vertices.begin() ; it != Vertices.end() ; it++) {
 		for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
 			SampleOccurence occ (*it, j) ;
-			SampleOccurences[(*it)->getSampleValue(j)->getLabel()].push_back (occ) ;
+			SampleValueLabel lbl = (*it)->getSampleValue(j)->getLabel() ;
+			list<SampleOccurence>::iterator occit = SampleOccurences[lbl].insert (SampleOccurences[lbl].end(), occ) ;
+			(*it)->setSampleOccurenceIt (j, occit) ;
 		}
 	}
 

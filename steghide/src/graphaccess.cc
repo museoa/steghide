@@ -23,8 +23,15 @@
 #include "graphaccess.h"
 
 //DEBUG
+
+GraphAccess::GraphAccess ()
+{
+	cerr << "uninitialized graph access constructor call" << endl ;
+}
+
 GraphAccess::GraphAccess (Graph *g)
 {
+#if 0
 	if (TheGraph == NULL) {
 //		cerr << "graph access first time" << endl ;
 		TheGraph = g ;
@@ -34,7 +41,12 @@ GraphAccess::GraphAccess (Graph *g)
 		//cerr << "graph access with " << TheGraph->getNumVertices() << " vertices." << endl ;
 		assert (TheGraph == g) ;
 	}
+#endif
+	TheGraph = g ;
+	SamplesPerVertex = TheGraph->getSamplesPerVertex() ;
 }
 
+#if 0
 Graph* GraphAccess::TheGraph = NULL ;
 unsigned short GraphAccess::SamplesPerVertex = 0 ;
+#endif

@@ -101,6 +101,9 @@ class Vertex : private GraphAccess {
 	void setLabel (VertexLabel l)
 		{ Label = l ; } ;
 
+	void setSampleOccurenceIt (unsigned short i, list<SampleOccurence>::iterator it)
+		{ SampleOccurenceIts[i] = it ; }
+
 #ifdef DEBUG
 	void print (void) const ;
 #endif
@@ -113,13 +116,15 @@ class Vertex : private GraphAccess {
 	SamplePos* SamplePositions ;
 
 	/// the content of this vertex
-	VertexContent *Content ;
+	VertexContent* Content ;
 
+#if 0
 	/// points to an entry in the list of vertex occurences in the vertex content
 	list<Vertex*>::iterator VertexOccurenceIt ;
+#endif
 
 	/// point to entries in lists of sample occurences in the graph
-	list<SampleOccurence>::iterator* SampleOccurenceIt ;
+	list<SampleOccurence>::iterator* SampleOccurenceIts ;
 
 	/// the shortest edge of this vertex (as calculated by updateShortestEdge)
 	Edge *ShortestEdge ;

@@ -60,7 +60,7 @@ class Graph {
 	 * construct vertex-related data structures
 	 *
 	 * needs: sposs(unsorted), svalues(unsorted), SampleValues
-	 * provides: sposs(sorted), svalues(sorted), vc_set, VertexContents (values), Vertices
+	 * provides: sposs(sorted), svalues(sorted), vc_set, VertexContents (values), Vertices (except SampleOccurenceIts)
 	 **/
 	void constructVertices (vector<SamplePos*>& sposs, vector<SampleValue**>& svalues,
 		hash_set<VertexContent*,hash<VertexContent*>,VertexContentsEqual>& vc_set) ;
@@ -68,8 +68,8 @@ class Graph {
 	/**
 	 * construct edge-related data structures
 	 *
-	 * needs: vc_set, SampleValues, Vertices
-	 * provides: SValueOppNeighs, SampleOccurences, VertexContents (degrees)
+	 * needs: vc_set, SampleValues, Vertices (except SampleOccurenceIts)
+	 * provides: SValueOppNeighs, SampleOccurences, VertexContents (degrees), Vertices (SampleOccurenceIts)
 	 **/
 	void constructEdges (const hash_set<VertexContent*,hash<VertexContent*>,VertexContentsEqual>& vc_set) ;
 
@@ -86,7 +86,7 @@ class Graph {
 	 * \param i the vertex label (index) of the vertex to be returned (must be < getNumVertices())
 	 * \return the i-th vertex
 	 **/
-	Vertex *getVertex (VertexLabel l) const
+	Vertex* getVertex (VertexLabel l) const
 		{ return Vertices[l] ; } ;
 
 	void unmarkDeletedAllVertices (void) ;

@@ -31,7 +31,7 @@ ConstructionHeuristic::ConstructionHeuristic (Graph *g)
 	VerticesDegG = priority_queue<Vertex*, vector<Vertex*>, LongerShortestEdge> () ;
 
 	for (VertexLabel l = 0 ; l < nvertices ; l++) {	
-		Vertex *v = TheGraph->getVertex(l) ;
+		Vertex *v = g->getVertex(l) ;
 		v->updateShortestEdge() ;
 		if (v->getDegree() != 0) {
 			if (v->getDegree() == 1) {
@@ -43,7 +43,7 @@ ConstructionHeuristic::ConstructionHeuristic (Graph *g)
 		}
 	}
 
-	TheMatching = new Matching (TheGraph) ;
+	TheMatching = new Matching (g) ;
 }
 
 void ConstructionHeuristic::run ()

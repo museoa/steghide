@@ -21,16 +21,20 @@
 #ifndef SH_GRAPHACCESS_H
 #define SH_GRAPHACCESS_H
 
+// DEBUG
+#include <iostream>
+
 class Graph ;
 
 class GraphAccess {
 	public:
-	GraphAccess (void) {} ;
+	GraphAccess (void) ;
 	GraphAccess (Graph* g) ;
 
 	protected:
-	static Graph* TheGraph ;
-	static unsigned short SamplesPerVertex ;
+	// FIXME - these two should be static
+	Graph* TheGraph ;
+	unsigned short SamplesPerVertex ;
 } ;
 
 #endif // ndef SH_GRAPHACCESS_H
