@@ -1,6 +1,6 @@
 /*
  * steghide 0.5.1 - a steganography program
- * Copyright (C) 2002 Stefan Hetzl <shetzl@chello.at>
+ * Copyright (C) 2002 Stefan Hetzl <shetzl.at>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,35 +18,37 @@
  *
  */
 
-#ifndef SH_BITSTRINGTEST_H
-#define SH_BITSTRINGTEST_H
+#ifndef SH_PERMUTATIONTEST_H
+#define SH_PERMUTATIONTEST_H
 
 #include <cppunit/TestCase.h>
 #include <cppunit/TestSuite.h>
 
 #define private public
 #define protected public
-#include "BitString.h"
+#include "Permutation.h"
 #undef private
 #undef protected
 
-class BitStringTest : public CppUnit::TestCase {
+class PermutationTest : public CppUnit::TestCase {
 	public:
-	BitStringTest (std::string name) : CppUnit::TestCase (name) {} ;
+	PermutationTest (std::string name) : CppUnit::TestCase (name) {} ;
 
 	void setUp (void) ;
 	void tearDown (void) ;
 	void registerTests (CppUnit::TestSuite* suite) ;
 
-	void testBitInputOutput (void) ;
-	void testLength (void) ;
-	void testDatatypeInput (void) ;
-	void testDatatypeOutput (void) ;
-	void testEquality (void) ;
+	void testIsPermutation (void) ;
 
 	private:
-	BitString *bs_0, *bs_1, *bs_10010, *bs_10101110, *bs_101011101 ;
+	Permutation *p1, *p2, *p3, *p4, *p5, *p6, *p7, *p8 ;
 
+	/**
+	 * CPPUNIT_ASSERTs that p is a permutation, i.e. that
+	 * every i \in {0...Width-1} occures exactly once in p and
+	 * that no i >= Width occures in p.
+	 **/
+	void genericTestIsPermutation (Permutation& p) ;
 } ;
 
-#endif // ndef SH_BITSTRINGTEST_H
+#endif // ndef SH_PERMUTATIONTEST_H

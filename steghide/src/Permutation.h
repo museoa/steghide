@@ -36,6 +36,9 @@ class Permutation {
 
 	/**
 	 * increment the argument of the permutation
+	 *
+	 * If this Permutation is already at its end and operator++
+	 * is called, an assertion in this function fails.
 	 **/
 	Permutation& operator++ (void) ;
 
@@ -50,6 +53,13 @@ class Permutation {
 	void reset (void) ;
 
 	void setWidth (unsigned long w) ;
+
+	/**
+	 * get the width of this permutation
+	 **/
+	unsigned long getWidth (void) const
+		{ return Width ; } ;
+
 	void setKey (std::string pp) ;
 
 	private:

@@ -2,10 +2,10 @@ if HAVE_CPPUNIT
 AM_CPPFLAGS = -I../src
 TESTS = testall
 check_PROGRAMS = testall
-noinst_HEADERS = BitStringTest.h
+noinst_HEADERS = BitStringTest.h PermutationTest.h
 # testall_DEPENDENCIES = all in ../src
 # FIXME - how can a cross-directory dependency be coded with automake ?
-testall_SOURCES = main.cc BitStringTest.cc
+testall_SOURCES = main.cc BitStringTest.cc PermutationTest.cc
 testall_LDADD = \
 ../src/Arg.o ../src/Arguments.o \
 ../src/AssertionFailed.o ../src/AuFile.o \
