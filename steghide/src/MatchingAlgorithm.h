@@ -27,6 +27,7 @@ class Matching ;
 class MatchingAlgorithm {
 	public:
 	MatchingAlgorithm (Graph* g, Matching* m, float goal) ;
+	virtual ~MatchingAlgorithm (void) {} ;
 
 	virtual void run (void) = 0 ;
 

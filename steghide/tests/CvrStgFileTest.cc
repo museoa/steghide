@@ -168,6 +168,17 @@ bool CvrStgFileTest::genericTestSVALCalculation (const CvrStgFile* f, const Grap
 	return ok ;
 }
 
+bool CvrStgFileTest::genericTestEmbeddedValue (const CvrStgFile* f) const
+{
+	bool retval = true ;
+	for (SamplePos pos = 0 ; pos < f->getNumSamples() ; pos++) {
+		SampleValue* sv = f->getSampleValue(pos) ;
+		retval = (sv->getEmbeddedValue() == f->getEmbeddedValue(pos)) && retval ;
+		delete sv ;
+	}
+	return retval ;
+}
+
 bool CvrStgFileTest::areEqual (const std::string& fn1, const std::string& fn2) const
 {
 	char command[256] ;

@@ -74,7 +74,6 @@ void AugmentingPathHeuristic::run ()
 {
 	const Edge** path = new const Edge*[TheGraph->getNumVertices()] ;
 
-	// FIXME - ? as reference
 	const std::list<Vertex*> ExposedVertices = TheMatching->getExposedVertices() ;
 	for (std::list<Vertex*>::const_iterator expv = ExposedVertices.begin() ;
 		(expv != ExposedVertices.end()) && (TheMatching->getCardinality() < CardinalityGoal) ; expv++) {
@@ -187,11 +186,11 @@ unsigned long AugmentingPathHeuristic::searchAugmentingPath (Vertex *v0, const E
 				VertexOnPath[e->getVertex2()->getLabel()] = false ;
 				
 				// matched edge: pop from path
-				myassert (path[pathlen - 1] == e) ;
+				myassert (TheMatching->includesEdge(*(path[pathlen - 1])) && path[pathlen - 1] == e) ;
 				pathlen-- ;
 
 				// unmatched edge: pop from path and delete (has been created only for path)
-				myassert (!TheMatching->includesEdge(path[pathlen - 1])) ;
+				myassert (!TheMatching->includesEdge(*(path[pathlen - 1]))) ;
 				pathlen-- ;
 
 				// set w,e,w_next to complete backtracking step

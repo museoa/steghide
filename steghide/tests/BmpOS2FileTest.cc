@@ -33,6 +33,7 @@ BmpOS2FileTest::BmpOS2FileTest (TestSuite* s)
 	ADDTESTCATEGORY (BmpOS2FileTest, testReadEmbedExtract) ;
 	ADDTESTCATEGORY (BmpOS2FileTest, testReadEmbedWriteReadExtract) ;
 	ADDTESTCATEGORY (BmpOS2FileTest, testPosition) ;
+	ADDTESTCATEGORY (BmpOS2FileTest, testEmbeddedValue) ;
 }
 
 void BmpOS2FileTest::setup ()
@@ -114,4 +115,12 @@ void BmpOS2FileTest::testPosition()
 void BmpOS2FileTest::testReadExtractCompare ()
 {
 	// TODO
+}
+
+void BmpOS2FileTest::testEmbeddedValue ()
+{
+	Globs = gl1 ; addTestResult (genericTestEmbeddedValue (f1)) ;
+	Globs = gl2 ; addTestResult (genericTestEmbeddedValue (f2)) ;
+	Globs = gl3 ; addTestResult (genericTestEmbeddedValue (f3)) ;
+	Globs = gl4 ; addTestResult (genericTestEmbeddedValue (f4)) ;
 }

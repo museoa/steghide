@@ -33,6 +33,7 @@ BmpWinFileTest::BmpWinFileTest (TestSuite* s)
 	ADDTESTCATEGORY (BmpWinFileTest, testReadEmbedExtract) ;
 	ADDTESTCATEGORY (BmpWinFileTest, testReadEmbedWriteReadExtract) ;
 	ADDTESTCATEGORY (BmpWinFileTest, testPosition) ;
+	ADDTESTCATEGORY (BmpWinFileTest, testEmbeddedValue) ;
 }
 
 void BmpWinFileTest::setup ()
@@ -126,4 +127,12 @@ void BmpWinFileTest::testPosition()
 void BmpWinFileTest::testReadExtractCompare()
 {
 	// TODO
+}
+
+void BmpWinFileTest::testEmbeddedValue ()
+{
+	Globs = gl1 ; addTestResult (genericTestEmbeddedValue (f1)) ;
+	Globs = gl2 ; addTestResult (genericTestEmbeddedValue (f2)) ;
+	Globs = gl3 ; addTestResult (genericTestEmbeddedValue (f3)) ;
+	Globs = gl4 ; addTestResult (genericTestEmbeddedValue (f4)) ;
 }

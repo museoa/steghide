@@ -32,7 +32,8 @@
 #include "DummyFile.h"
 #include "AugmentingPathHeuristicTest.h"
 
-#define CREATEEDGE(G,V1,V2) (new Edge ((G)->getVertex(V1), 0, (G)->getVertex(V2), 1))
+#define CREATEEDGEPTR(G,V1,V2) (new Edge ((G)->getVertex(V1), 0, (G)->getVertex(V2), 1))
+#define CREATEEDGEOBJ(G,V1,V2) (Edge ((G)->getVertex(V1), 0, (G)->getVertex(V2), 1))
 
 AugmentingPathHeuristicTest::AugmentingPathHeuristicTest (TestSuite* s)
 	: UnitTest ("AugmentingPathHeuristic", s)
@@ -65,7 +66,7 @@ void AugmentingPathHeuristicTest::setup ()
 		DummyFile::createGraph (adjlist, &bs2, &f2, &s2) ;
 		g2 = new Graph (f2, *bs2, *s2) ;
 		m2 = new Matching (g2) ;
-		m2->addEdge (CREATEEDGE (g2, 1, 2)) ;
+		m2->addEdge (CREATEEDGEOBJ (g2, 1, 2)) ;
 		aph2 = new AugmentingPathHeuristic (g2, m2, 100.0) ;
 		gl2 = Globs ;
 	}
@@ -83,9 +84,9 @@ void AugmentingPathHeuristicTest::setup ()
 		DummyFile::createGraph (adjlist, &bs3, &f3, &s3) ;
 		g3 = new Graph (f3, *bs3, *s3) ;
 		m3 = new Matching (g3) ;
-		m3->addEdge (CREATEEDGE (g3, 1, 2)) ;
-		m3->addEdge (CREATEEDGE (g3, 3, 4)) ;
-		m3->addEdge (CREATEEDGE (g3, 5, 6)) ;
+		m3->addEdge (CREATEEDGEOBJ (g3, 1, 2)) ;
+		m3->addEdge (CREATEEDGEOBJ (g3, 3, 4)) ;
+		m3->addEdge (CREATEEDGEOBJ (g3, 5, 6)) ;
 		aph3 = new AugmentingPathHeuristic (g3, m3, 100.0) ;
 		gl3 = Globs ;
 	}
@@ -103,9 +104,9 @@ void AugmentingPathHeuristicTest::setup ()
 		DummyFile::createGraph (adjlist, &bs4, &f4, &s4) ;
 		g4 = new Graph (f4, *bs4, *s4) ;
 		m4 = new Matching (g4) ;
-		m4->addEdge (CREATEEDGE (g4, 1, 2)) ;
-		m4->addEdge (CREATEEDGE (g4, 3, 4)) ;
-		m4->addEdge (CREATEEDGE (g4, 5, 6)) ;
+		m4->addEdge (CREATEEDGEOBJ (g4, 1, 2)) ;
+		m4->addEdge (CREATEEDGEOBJ (g4, 3, 4)) ;
+		m4->addEdge (CREATEEDGEOBJ (g4, 5, 6)) ;
 		aph4 = new AugmentingPathHeuristic (g4, m4, 100.0) ;
 		gl4 = Globs ;
 	}
@@ -129,12 +130,12 @@ void AugmentingPathHeuristicTest::setup ()
 		DummyFile::createGraph (adjlist, &bs5, &f5, &s5) ;
 		g5 = new Graph (f5, *bs5, *s5) ;
 		m5 = new Matching (g5) ;
-		m5->addEdge (CREATEEDGE (g5, 2, 12)) ;
-		m5->addEdge (CREATEEDGE (g5, 3, 13)) ;
-		m5->addEdge (CREATEEDGE (g5, 4, 6)) ;
-		m5->addEdge (CREATEEDGE (g5, 5, 7)) ;
-		m5->addEdge (CREATEEDGE (g5, 8, 10)) ;
-		m5->addEdge (CREATEEDGE (g5, 9, 11)) ;
+		m5->addEdge (CREATEEDGEOBJ (g5, 2, 12)) ;
+		m5->addEdge (CREATEEDGEOBJ (g5, 3, 13)) ;
+		m5->addEdge (CREATEEDGEOBJ (g5, 4, 6)) ;
+		m5->addEdge (CREATEEDGEOBJ (g5, 5, 7)) ;
+		m5->addEdge (CREATEEDGEOBJ (g5, 8, 10)) ;
+		m5->addEdge (CREATEEDGEOBJ (g5, 9, 11)) ;
 		aph5 = new AugmentingPathHeuristic (g5, m5, 100.0) ;
 		gl5 = Globs ;
 	}
@@ -162,8 +163,8 @@ void AugmentingPathHeuristicTest::testAlgorithm ()
 
 	{
 		Globs = gl2 ;
-		Edge* e01 = CREATEEDGE (g2, 0, 1) ;
-		Edge* e23 = CREATEEDGE (g2, 2, 3) ;
+		Edge e01 = CREATEEDGEOBJ (g2, 0, 1) ;
+		Edge e23 = CREATEEDGEOBJ (g2, 2, 3) ;
 		aph2->run() ;
 		addTestResult ( m2->getCardinality() == 2 &&
 						m2->includesEdge(e01) &&
@@ -172,10 +173,10 @@ void AugmentingPathHeuristicTest::testAlgorithm ()
 
 	{
 		Globs = gl3 ;
-		Edge* e01 = CREATEEDGE (g3, 0, 1) ;
-		Edge* e26 = CREATEEDGE (g3, 2, 6) ;
-		Edge* e34 = CREATEEDGE (g3, 3, 4) ;
-		Edge* e57 = CREATEEDGE (g3, 5, 7) ;
+		Edge e01 = CREATEEDGEOBJ (g3, 0, 1) ;
+		Edge e26 = CREATEEDGEOBJ (g3, 2, 6) ;
+		Edge e34 = CREATEEDGEOBJ (g3, 3, 4) ;
+		Edge e57 = CREATEEDGEOBJ (g3, 5, 7) ;
 		aph3->run() ;
 		addTestResult ( m3->getCardinality() == 4 &&
 						m3->includesEdge(e01) &&
@@ -194,12 +195,12 @@ void AugmentingPathHeuristicTest::testAlgorithm ()
 
 	{
 		Globs = gl5 ;
-		Edge* e2_12 = CREATEEDGE (g5, 2, 12) ;
-		Edge* e3_13 = CREATEEDGE (g5, 3, 13) ;
-		Edge* e4_6 = CREATEEDGE (g5, 4, 6) ;
-		Edge* e5_7 = CREATEEDGE (g5, 5, 7) ;
-		Edge* e8_10 = CREATEEDGE (g5, 8, 10) ;
-		Edge* e9_11 = CREATEEDGE (g5, 9, 11) ;
+		Edge e2_12 = CREATEEDGEOBJ (g5, 2, 12) ;
+		Edge e3_13 = CREATEEDGEOBJ (g5, 3, 13) ;
+		Edge e4_6 = CREATEEDGEOBJ (g5, 4, 6) ;
+		Edge e5_7 = CREATEEDGEOBJ (g5, 5, 7) ;
+		Edge e8_10 = CREATEEDGEOBJ (g5, 8, 10) ;
+		Edge e9_11 = CREATEEDGEOBJ (g5, 9, 11) ;
 		aph5->run() ;
 		addTestResult ( m5->getCardinality() == 6 &&
 						m5->includesEdge(e2_12) &&

@@ -177,6 +177,7 @@ void EdgeIterator::findNextEdge ()
 	}
 }
 
+#ifdef DEBUG
 void EdgeIterator::print (unsigned short spc) const
 {
 	char* space = new char[spc + 1] ;
@@ -197,5 +198,6 @@ void EdgeIterator::print (unsigned short spc) const
 		std::cerr << space << "SVALIndices[" << i << "]: " << SVALIndices[i] << std::endl ;
 	}
 }
+#endif
 
 UWORD32 EdgeIterator::MaxNumEdges = UWORD32_MAX ;

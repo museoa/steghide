@@ -43,35 +43,38 @@ Matching::Matching (Graph* g, ProgressOutput* po)
 
 Matching::~Matching ()
 {
+	for (std::list<Edge*>::iterator edgeit = MatchingEdges.begin() ; edgeit != MatchingEdges.end() ; edgeit++) {
+		delete (*edgeit) ;
+	}
 }
 
-bool Matching::includesEdge (const Edge* e) const
+bool Matching::includesEdge (const Edge& e) const
 {
-	Vertex* v1 = e->getVertex1() ;
-	Vertex* v2 = e->getVertex2() ;
+	Vertex* v1 = e.getVertex1() ;
+	Vertex* v2 = e.getVertex2() ;
 	bool v1ok = false, v2ok = false ;
 
 	if (VertexInformation[v1->getLabel()].isMatched()) {
-		if (*(VertexInformation[v1->getLabel()].getMatchingEdge()) == *e) {
+		if (*(VertexInformation[v1->getLabel()].getMatchingEdge()) == e) {
 			v1ok = true ;
 		}
 	}
 	if (VertexInformation[v2->getLabel()].isMatched()) {
-		if (*(VertexInformation[v2->getLabel()].getMatchingEdge()) == *e) {
+		if (*(VertexInformation[v2->getLabel()].getMatchingEdge()) == e) {
 			v2ok = true ;
 		}
 	}
 	return (v1ok && v2ok) ;
 }
 
-Matching& Matching::addEdge (Edge *e)
+void Matching::addEdge (const Edge& e)
 {
-	VertexLabel vlbl1 = e->getVertex1()->getLabel() ;
-	VertexLabel vlbl2 = e->getVertex2()->getLabel() ;
+	VertexLabel vlbl1 = e.getVertex1()->getLabel() ;
+	VertexLabel vlbl2 = e.getVertex2()->getLabel() ;
 
 	myassert (VertexInformation[vlbl1].isExposed()) ;
 	myassert (VertexInformation[vlbl2].isExposed()) ;
-	std::list<Edge*>::iterator edgeit = MatchingEdges.insert (MatchingEdges.end(), new Edge (*e)) ;
+	std::list<Edge*>::iterator edgeit = MatchingEdges.insert (MatchingEdges.end(), new Edge (e)) ;
 
 	ExposedVertices.erase (VertexInformation[vlbl1].getExposedIterator()) ;
 	ExposedVertices.erase (VertexInformation[vlbl2].getExposedIterator()) ;
@@ -79,14 +82,12 @@ Matching& Matching::addEdge (Edge *e)
 	VertexInformation[vlbl2].setMatched (edgeit) ;
 
 	setCardinality (Cardinality + 1) ;
-
-	return *this ;
 }
 
-Matching& Matching::removeEdge (Edge* e)
+void Matching::removeEdge (const Edge& e)
 {
-	Vertex* v1 = e->getVertex1() ;
-	Vertex* v2 = e->getVertex2() ;
+	Vertex* v1 = e.getVertex1() ;
+	Vertex* v2 = e.getVertex2() ;
 	VertexLabel vlbl1 = v1->getLabel() ;
 	VertexLabel vlbl2 = v2->getLabel() ;
 
@@ -98,8 +99,8 @@ Matching& Matching::removeEdge (Edge* e)
 	std::list<Edge*>::iterator eit1 = VertexInformation[vlbl1].getMatchedIterator() ;
 	std::list<Edge*>::iterator eit2 = VertexInformation[vlbl2].getMatchedIterator() ;
 	myassert (eit1 == eit2) ;
+	delete (*eit1) ;
 	MatchingEdges.erase (eit1) ;
-	// FIXME - delete (mem) the erased edge
 
 	// add v1,v2 to ExposedVertices
 	std::list<Vertex*>::iterator expvit1 = ExposedVertices.insert (ExposedVertices.end(), v1) ;
@@ -108,11 +109,11 @@ Matching& Matching::removeEdge (Edge* e)
 	VertexInformation[vlbl2].setExposed (expvit2) ;
 
 	setCardinality (Cardinality - 1) ;
-	return *this ;
 }
 
 Matching& Matching::augment (const Edge** path, unsigned long len)
 {
+	// TODO - rewrite this to use structure like: while (+--+==+ -> +==+--+); +--+ -> +==+ where == is matched edge
 	myassert (len % 2 == 1) ;
 	bool e_was_matched = false ;
 	Edge *e = NULL ;
@@ -141,10 +142,8 @@ Matching& Matching::augment (const Edge** path, unsigned long len)
 			VertexLabel v2lbl = v2->getLabel() ;
 
 			// remove old edge from matching
-			// FIXME - delete edge - doesn't work on Sun (?)
+			delete (*(VertexInformation[v2lbl].getMatchedIterator())) ;
 			MatchingEdges.erase (VertexInformation[v2lbl].getMatchedIterator()) ;
-			//std::list<Edge*>::iterator delme = MatchingEdges.erase (VertexInformation[v2lbl].getMatchedIterator()) ;
-			//delete *delme ;
 
 			// v2 is exposed now (for one iteration)
 			std::list<Vertex*>::iterator expvit2 = ExposedVertices.insert (ExposedVertices.end(), v2) ;
@@ -169,7 +168,6 @@ Matching& Matching::augment (const Edge** path, unsigned long len)
 		e_before = e ;
 	}
 
-	// FIXME - don't use find!
 	ExposedVertices.erase (VertexInformation[e->getVertex2()->getLabel()].getExposedIterator()) ;
 	VertexInformation[e->getVertex2()->getLabel()].setMatched (find (MatchingEdges.begin(), MatchingEdges.end(), e)) ;
 

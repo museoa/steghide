@@ -73,3 +73,12 @@ void JpegFileTest::testReadExtractCompare ()
 {
 	// TODO
 }
+
+void JpegFileTest::testEmbeddedValue ()
+{
+#if 0
+	Globs = gl1 ; addTestResult (genericTestEmbeddedValue (f1)) ;
+	Globs = gl2 ; addTestResult (genericTestEmbeddedValue (f2)) ;
+	Globs = gl3 ; addTestResult (genericTestEmbeddedValue (f3)) ;
+#endif
+}

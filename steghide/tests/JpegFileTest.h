@@ -36,6 +36,7 @@ class JpegFileTest : public CvrStgFileTest {
 	void testReadEmbedWriteReadExtract (void) ;
 	void testPosition (void) ;
 	void testReadExtractCompare (void) ;
+	void testEmbeddedValue (void) ;
 
 	private:
 	BitString *bs1, *bs2 ;

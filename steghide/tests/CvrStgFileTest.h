@@ -48,6 +48,11 @@ class CvrStgFileTest : public UnitTest {
 	bool genericTestPosition (const CvrStgFile* f, const SamplePos pos, SampleValue* sv_r) const ;
 	bool genericTestSVALCalculation (const CvrStgFile* f, const Graph* g) const ;
 
+	/**
+	 * for all sample positions, test if f->getEmbeddedValue(p) and f->getSampleValue(p)->getEmbeddedValue() return the same result
+	 **/
+	bool genericTestEmbeddedValue (const CvrStgFile* f) const ;
+
 	private:
 	bool areEqual (const std::string& fn1, const std::string& fn2) const ;
 	void removeFile (const std::string& fn) const ;

@@ -38,6 +38,7 @@ class WavFileTest : public CvrStgFileTest {
 	void testPosition (void) ;
 	void testReadExtractCompare (void) ;
 	void testSVALCalculation (void) ;
+	void testEmbeddedValue (void) ;
 
 	private:
 	BitString *bs1, *bs2 ;

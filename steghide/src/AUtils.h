@@ -21,6 +21,8 @@
 #ifndef SH_AUTILS_H
 #define SH_AUTILS_H
 
+#include <cmath>
+
 /**
  * \class AUtils
  * \brief provides some generic functions for non-standard arithmetic operations

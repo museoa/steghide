@@ -2,8 +2,8 @@ package STSupport;
 require Exporter;
 use File::Compare;
 
-our @ISA = qw(Exporter);
-our @EXPORT = qw(
+@ISA = qw(Exporter);
+@EXPORT = qw(
 	DATADIR RND100
 	getArgString
 	startCategory endCategory startSubCategory endSubCategory addTestResult
@@ -25,8 +25,8 @@ use constant TAB => "    " ;
 use constant STEGHIDE => "../src/steghide" ;
 use constant DEFAULTSTGFN => "stgfile" ;
 use constant DEFAULTEXTFN => "extfile" ;
-use constant DEFEMBARGBASE => (command => "embed", f => "", q => "", p => "\"a passphrase\"", sf => DEFAULTSTGFN) ;
-use constant DEFEXTARGBASE => (command => "extract", f => "", q => "", p => "\"a passphrase\"", sf => DEFAULTSTGFN, xf => DEFAULTEXTFN) ;
+use constant DEFEMBARGBASE => (command => "embed", f => "", "q" => "", p => "\"a passphrase\"", sf => DEFAULTSTGFN) ;
+use constant DEFEXTARGBASE => (command => "extract", f => "", "q" => "", p => "\"a passphrase\"", sf => DEFAULTSTGFN, xf => DEFAULTEXTFN) ;
 
 #
 # parse arguments for a st_*.pl script

@@ -167,10 +167,10 @@ const Matching* Embedder::calculateMatching (ProgressOutput* prout)
 		MatchingAlgos = Globs.TheCvrStgFile->getMatchingAlgorithms (Globs.TheGraph, matching) ;
 	}
 
-	for (std::vector<MatchingAlgorithm*>::const_iterator ait = MatchingAlgos.begin() ; ait != MatchingAlgos.end() ; ait++) {
+	for (std::vector<MatchingAlgorithm*>::iterator ait = MatchingAlgos.begin() ; ait != MatchingAlgos.end() ; ait++) {
 		(*ait)->setGoal (Args.Goal.getValue()) ;
 		(*ait)->run() ;
-		delete *ait ;
+		delete (*ait) ;
 	}
 
 	matching->printVerboseInfo() ;

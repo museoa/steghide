@@ -42,7 +42,7 @@ void DMDConstructionHeuristic::run (void)
 		Edge* e = v1->getShortestEdge() ;
 		Vertex* v2 = e->getOtherVertex(v1) ;
 
-		TheMatching->addEdge(e) ;
+		TheMatching->addEdge(*e) ;
 
 		v1->markDeleted() ;
 		v2->markDeleted() ;

@@ -77,17 +77,20 @@ class CvrStgFile : public CvrStgObject {
 	 * \param svs a vector of unique(!) sample values where svs[i]->getLabel() == i holds for all i
 	 * \return a vector of SampleValueAdjacencyLists where retval[i] only contains sample values with getEmbValue() == i
 	 *
-	 * This method is virtual to allow specializations (with performance in mind).
-	 *
 	 * Every row in the adjacency lists must be sorted in the following order: The first sample value has
 	 * the least distance to the source sample value, the last has the largest distance. If two sample values
 	 * in one row have the same distance to the source sample value, the order does not matter.
+	 *
+	 * May be overridden in derived class to provide a faster version.
 	 **/
 	virtual std::vector<SampleValueAdjacencyList*> calcSVAdjacencyLists (const std::vector<SampleValue*>& svs) const ;
 
 	/**
 	 * get recommended list of matching algorithms
 	 * \param m an empty matching - will be used in construction of MatchingAlgorithm objects
+	 *
+	 * The MatchingAlgorithm objects returned by this function should be deleted by the caller
+	 * if they are no longer needed.
 	 **/
 	virtual std::vector<MatchingAlgorithm*> getMatchingAlgorithms (Graph* g, Matching* m) const ;
 
@@ -132,9 +135,11 @@ class CvrStgFile : public CvrStgObject {
 	 * \param pos the position of the sample
 	 * \return the value that is embedded in the sample at the given sample position
 	 *
-	 * This is equivalent to getSample(pos)->getEmbeddedValue().
+	 * This is equivalent to getSample(pos)->getEmbeddedValue() and is implemented here like this.
+	 *
+	 * May be overwritten by derived class to provide a faster version.
 	 **/
-	EmbValue getEmbeddedValue (const SamplePos pos) const ;
+	virtual EmbValue getEmbeddedValue (const SamplePos pos) const ;
 
 #ifdef DEBUG
 	/**

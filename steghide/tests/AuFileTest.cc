@@ -31,6 +31,7 @@ AuFileTest::AuFileTest (TestSuite* s)
 	ADDTESTCATEGORY (AuFileTest, testReadEmbedWriteReadExtract) ;
 	ADDTESTCATEGORY (AuFileTest, testPosition) ;
 	ADDTESTCATEGORY (AuFileTest, testReadExtractCompare) ;
+	ADDTESTCATEGORY (AuFileTest, testEmbeddedValue) ;
 }
 
 void AuFileTest::setup ()
@@ -120,4 +121,11 @@ void AuFileTest::testReadExtractCompare ()
 		Globs = gl3 ;
 		// TODO
 	}
+}
+
+void AuFileTest::testEmbeddedValue ()
+{
+	Globs = gl1 ; addTestResult (genericTestEmbeddedValue (f1)) ;
+	Globs = gl2 ; addTestResult (genericTestEmbeddedValue (f2)) ;
+	Globs = gl3 ; addTestResult (genericTestEmbeddedValue (f3)) ;
 }

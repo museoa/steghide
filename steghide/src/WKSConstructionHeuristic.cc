@@ -84,7 +84,7 @@ void WKSConstructionHeuristic::run ()
 #ifdef DEBUG
 			printDebug (5, "WKSConstructionHeuristic: inserting edge %lu - %lu into matching", v->getLabel(), vother->getLabel()) ;
 #endif
-			TheMatching->addEdge(e) ;
+			TheMatching->addEdge(*e) ;
 			v->markDeleted() ;
 			vother->markDeleted() ;
 			checkNeighboursDeg1 (v) ;

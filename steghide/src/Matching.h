@@ -84,7 +84,7 @@ class Matching {
 	 * does this matching include the edge e ?
 	 * \return true iff the edge e is element of this matching
 	 **/
-	bool includesEdge (const Edge* e) const ;
+	bool includesEdge (const Edge& e) const ;
 
 	/**
 	 * get the cardinality (the number of matched edges)
@@ -112,10 +112,8 @@ class Matching {
 	 *
 	 * For e=(v1,v2): neither v1 nor v2 are allowed to be adjacent
 	 * to an edge that is already in the matching, 
-	 *
-	 * The Edge e is not copied so it must not be deleted while still in this Matching.
 	 **/
-	Matching &addEdge (Edge *e) ;
+	void addEdge (const Edge& e) ;
 
 	/**
 	 * remove an edge from the matching
@@ -123,7 +121,7 @@ class Matching {
 	 *
 	 * The edge e _must_ be in this matching
 	 **/
-	Matching &removeEdge (Edge *e) ;
+	void removeEdge (const Edge& e) ;
 
 	/**
 	 * get the list of all edges in this matching

@@ -34,6 +34,7 @@ WavFileTest::WavFileTest (TestSuite* s)
 	ADDTESTCATEGORY (WavFileTest, testReadEmbedWriteReadExtract) ;
 	ADDTESTCATEGORY (WavFileTest, testPosition) ;
 	ADDTESTCATEGORY (WavFileTest, testSVALCalculation) ;
+	ADDTESTCATEGORY (WavFileTest, testEmbeddedValue) ;
 }
 
 void WavFileTest::setup ()
@@ -103,4 +104,10 @@ void WavFileTest::testSVALCalculation ()
 {
 	Globs = gl1 ; addTestResult (genericTestSVALCalculation (f1, g1)) ;
 	Globs = gl2 ; addTestResult (genericTestSVALCalculation (f2, g2)) ;
+}
+
+void WavFileTest::testEmbeddedValue ()
+{
+	Globs = gl1 ; addTestResult (genericTestEmbeddedValue (f1)) ;
+	Globs = gl2 ; addTestResult (genericTestEmbeddedValue (f2)) ;
 }
