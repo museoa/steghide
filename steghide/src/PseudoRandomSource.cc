@@ -18,34 +18,12 @@
  *
  */
 
-#ifndef SH_GRAPHTEST_H
-#define SH_GRAPHTEST_H
+#include "PseudoRandomSource.h"
 
-#include "UnitTest.h"
-
-class TestSuite ;
-class CvrStgFile ;
-class BitString ;
-class Selector ;
-class Graph ;
-
-class GraphTest : public UnitTest {
-	public:
-	GraphTest (TestSuite* s) ;
-	~GraphTest (void) ;
-
-	void testVertices (void) ;
-	void testSampleValues (void) ;
-	void testVertexContents (void) ;
-	void testSampleOccurences (void) ;
-	void testSampleValueOppNeighs (void) ;
-	
-	private:
-	std::string* datadir ;
-	CvrStgFile *f1, *f2, *f3, *f4, *f5, *f6, *f7, *f8, *f_f ;
-	BitString *bs1, *bs2, *bs3, *bs4, *bs5, *bs6, *bs7, *bs8, *bs_f ;
-	Selector *s1, *s2, *s3, *s4, *s5, *s6, *s7, *s8, *s_f ;
-	Graph *g1, *g2, *g3, *g4, *g5, *g6, *g7, *g8, *g_f ;
-} ;
-
-#endif // ndef SH_GRAPHTEST_H
+UWORD32 PseudoRandomSource::getValue (UWORD32 n)
+{
+	// doing the step of the linear congruential method
+	Value = A * Value + C ;
+	// scale value to [0...1) and multiply with n
+	return (UWORD32) (((double) n) * ((double) Value / (double) 4294967296.0)) ;
+}

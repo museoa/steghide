@@ -25,7 +25,7 @@
 #include "EmbData.h"
 #include "Extractor.h"
 #include "SampleValue.h"
-#include "Permutation.h"
+#include "Selector.h"
 #include "common.h"
 
 Extractor::Extractor ()
@@ -39,8 +39,7 @@ void Extractor::extract ()
 	CvrStgFile *stgfile = CvrStgFile::readFile (StegoFileName) ;
 	EmbData embdata (EmbData::EXTRACT) ;
 
-	// FIXME - supply num to Permutatin constructor (efficiency!)
-	Permutation perm (stgfile->getNumSamples(), Args.Passphrase.getValue()) ;
+	Selector sel (stgfile->getNumSamples(), Args.Passphrase.getValue()) ;
 
 	unsigned int sam_ebit = stgfile->getSamplesPerEBit() ;
 	unsigned long ebit_idx = 0 ;
@@ -58,7 +57,7 @@ void Extractor::extract ()
 		for (unsigned long i = 0 ; i < bitsneeded ; i++, ebit_idx++) {
 			BIT xorresult = 0 ;
 			for (unsigned int j = 0 ; j < sam_ebit ; j++) {
-				xorresult ^= stgfile->getSampleBit (perm[(ebit_idx * sam_ebit) + j]) ;
+				xorresult ^= stgfile->getSampleBit (sel[(ebit_idx * sam_ebit) + j]) ;
 			}
 			bits.append (xorresult) ;
 		}

@@ -25,7 +25,7 @@
 #include "Graph.h"
 #undef private
 #undef protected
-#include "Permutation.h"
+#include "Selector.h"
 
 #include "utcommon.h"
 #include "GraphTest.h"
@@ -37,48 +37,48 @@ GraphTest::GraphTest (TestSuite* s)
 
 	f1 = CvrStgFile::readFile (*datadir + "win3x1_std.bmp") ;
 	bs1 = new BitString (std::string ("this BitString will be embedded")) ;
-	p1 = new Permutation (bs1->getLength() * f1->getSamplesPerEBit(), std::string ("a passphrase")) ;
-	g1 = new Graph (f1, *bs1, *p1) ;
+	s1 = new Selector (bs1->getLength() * f1->getSamplesPerEBit(), std::string ("a passphrase")) ;
+	g1 = new Graph (f1, *bs1, *s1) ;
 
 	f2 = CvrStgFile::readFile (*datadir + "win3x4_std.bmp") ;
 	bs2 = new BitString (std::string ("this is a test")) ;
-	p2 = new Permutation (bs2->getLength() * f2->getSamplesPerEBit(), std::string ("another passphrase")) ;
-	g2 = new Graph (f2, *bs2, *p2) ;
+	s2 = new Selector (bs2->getLength() * f2->getSamplesPerEBit(), std::string ("another passphrase")) ;
+	g2 = new Graph (f2, *bs2, *s2) ;
 
 	f3 = CvrStgFile::readFile (*datadir + "win3x8_std.bmp") ;
 	bs3 = new BitString (std::string ("this is another test")) ;
-	p3 = new Permutation (bs3->getLength() * f3->getSamplesPerEBit(), std::string ("yet another passphrase")) ;
-	g3 = new Graph (f3, *bs3, *p3) ;
+	s3 = new Selector (bs3->getLength() * f3->getSamplesPerEBit(), std::string ("yet another passphrase")) ;
+	g3 = new Graph (f3, *bs3, *s3) ;
 
 	f4 = CvrStgFile::readFile (*datadir + "win3x24_std.bmp") ;
 	bs4 = new BitString (std::string ("this time embedding in RGB pixel data")) ;
-	p4 = new Permutation (bs4->getLength() * f4->getSamplesPerEBit(), std::string ("a true-color passphrase ;-)")) ;
-	g4 = new Graph (f4, *bs4, *p4) ;
+	s4 = new Selector (bs4->getLength() * f4->getSamplesPerEBit(), std::string ("a true-color passphrase ;-)")) ;
+	g4 = new Graph (f4, *bs4, *s4) ;
 
 	f5 = CvrStgFile::readFile (*datadir + "os21x1_std.bmp") ;
 	bs5 = new BitString (std::string ("this BitString will be embedded")) ;
-	p5 = new Permutation (bs5->getLength() * f5->getSamplesPerEBit(), std::string ("a passphrase")) ;
-	g5 = new Graph (f5, *bs5, *p5) ;
+	s5 = new Selector (bs5->getLength() * f5->getSamplesPerEBit(), std::string ("a passphrase")) ;
+	g5 = new Graph (f5, *bs5, *s5) ;
 
 	f6 = CvrStgFile::readFile (*datadir + "os21x4_std.bmp") ;
 	bs6 = new BitString (std::string ("this is a test")) ;
-	p6 = new Permutation (bs6->getLength() * f6->getSamplesPerEBit(), std::string ("another passphrase")) ;
-	g6 = new Graph (f6, *bs6, *p6) ;
+	s6 = new Selector (bs6->getLength() * f6->getSamplesPerEBit(), std::string ("another passphrase")) ;
+	g6 = new Graph (f6, *bs6, *s6) ;
 
 	f7 = CvrStgFile::readFile (*datadir + "os21x8_std.bmp") ;
 	bs7 = new BitString (std::string ("this is another test")) ;
-	p7 = new Permutation (bs7->getLength() * f7->getSamplesPerEBit(), std::string ("yet another passphrase")) ;
-	g7 = new Graph (f7, *bs7, *p7) ;
+	s7 = new Selector (bs7->getLength() * f7->getSamplesPerEBit(), std::string ("yet another passphrase")) ;
+	g7 = new Graph (f7, *bs7, *s7) ;
 
 	f8 = CvrStgFile::readFile (*datadir + "os21x24_std.bmp") ;
 	bs8 = new BitString (std::string ("this time embedding in RGB pixel data")) ;
-	p8 = new Permutation (bs8->getLength() * f8->getSamplesPerEBit(), std::string ("a true-color passphrase ;-)")) ;
-	g8 = new Graph (f8, *bs8, *p8) ;
+	s8 = new Selector (bs8->getLength() * f8->getSamplesPerEBit(), std::string ("a true-color passphrase ;-)")) ;
+	g8 = new Graph (f8, *bs8, *s8) ;
 
 	f_f = CvrStgFile::readFile (*datadir + "win3x24_std.bmp") ;
 	bs_f = new BitString (std::string ("this time embedding in RGB pixel data")) ;
-	p_f = new Permutation (bs_f->getLength() * f_f->getSamplesPerEBit(), std::string ("a true-color passphrase ;-)")) ;
-	g_f = new Graph (f_f, *bs_f, *p_f) ;
+	s_f = new Selector (bs_f->getLength() * f_f->getSamplesPerEBit(), std::string ("a true-color passphrase ;-)")) ;
+	g_f = new Graph (f_f, *bs_f, *s_f) ;
 
 	ADDTESTCATEGORY (GraphTest, testVertices) ;
 	ADDTESTCATEGORY (GraphTest, testSampleValues) ;
@@ -90,15 +90,15 @@ GraphTest::GraphTest (TestSuite* s)
 GraphTest::~GraphTest()
 {
 	delete datadir ;
-	delete f1 ; delete bs1 ; delete p1 ; delete g1 ;
-	delete f2 ; delete bs2 ; delete p2 ; delete g2 ;
-	delete f3 ; delete bs3 ; delete p3 ; delete g3 ;
-	delete f4 ; delete bs4 ; delete p4 ; delete g4 ;
-	delete f5 ; delete bs5 ; delete p5 ; delete g5 ;
-	delete f6 ; delete bs6 ; delete p6 ; delete g6 ;
-	delete f7 ; delete bs7 ; delete p7 ; delete g7 ;
-	delete f8 ; delete bs8 ; delete p8 ; delete g8 ;
-	delete f_f ; delete bs_f ; delete p_f ; delete g_f ;
+	delete f1 ; delete bs1 ; delete s1 ; delete g1 ;
+	delete f2 ; delete bs2 ; delete s2 ; delete g2 ;
+	delete f3 ; delete bs3 ; delete s3 ; delete g3 ;
+	delete f4 ; delete bs4 ; delete s4 ; delete g4 ;
+	delete f5 ; delete bs5 ; delete s5 ; delete g5 ;
+	delete f6 ; delete bs6 ; delete s6 ; delete g6 ;
+	delete f7 ; delete bs7 ; delete s7 ; delete g7 ;
+	delete f8 ; delete bs8 ; delete s8 ; delete g8 ;
+	delete f_f ; delete bs_f ; delete s_f ; delete g_f ;
 }
 
 void GraphTest::testVertices()

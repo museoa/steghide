@@ -18,40 +18,29 @@
  *
  */
 
-#ifndef SH_PERMUTATIONTEST_H
-#define SH_PERMUTATIONTEST_H
+#ifndef SH_SGI_HASH_MAP_H
+#define SH_SGI_HASH_MAP_H
 
-#define private public
-#define protected public
-#include "Permutation.h"
-#undef private
-#undef protected
+// FIXME - fill in all NAMESPACE_SGI definitions
 
-#include "UnitTest.h"
-#include "TestSuite.h"
+// this file is included to get access to a sgi::hash_map implementation
+// NAMESPACE_SGI is used for writing hash<...> specializations
+#ifdef __GNUC__
+# if __GNUC__ < 3
+#  include <hash_map.h>
+    namespace sgi { using ::hash ; using ::hash_map ; } ;
+#   define NAMESPACE_SGI std
+# else
+#  include <ext/hash_map>
+#  if __GNUC_MINOR__ == 0
+    namespace sgi = std ;			// GCC 3.0
+#  else
+    namespace sgi = ::__gnu_cxx ;	// GCC 3.1 and later
+#   define NAMESPACE_SGI __gnu_cxx
+#  endif
+# endif
+#else
+  namespace sgi = std ;
+#endif
 
-class PermutationTest : public UnitTest {
-	public:
-	PermutationTest (TestSuite* s) ;
-	~PermutationTest (void) ;
-
-	void testIsPermutation (void) ;
-	void testIsIdPermutation (void) ;
-
-	private:
-	Permutation *p1, *p2, *p3, *p4, *p5, *p6, *p7, *p8, *p9, *p10, *p11 ;
-
-	/**
-	 * tests if p is a permutation, i.e. if
-	 * every i \in {0...Width-1} occures exactly once in p and
-	 * that no i >= Width occures in p.
-	 **/
-	bool genericTestIsPermutation (Permutation& p) ;
-
-	/**
-	 * tests if p is the identity permutation
-	 **/
-	bool genericTestIsIdPermutation (Permutation& p) ;
-} ;
-
-#endif // ndef SH_PERMUTATIONTEST_H
+#endif // ndef SH_SGI_HASH_MAP_H

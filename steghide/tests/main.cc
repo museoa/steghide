@@ -26,7 +26,6 @@
 #include "BmpWinFileTest.h"
 #include "GraphTest.h"
 #include "MHashPPTest.h"
-#include "PermutationTest.h"
 #include "SampleValueOppositeNeighbourhoodTest.h"
 #include "WavFileTest.h"
 
@@ -49,9 +48,6 @@ int main (int argc, char *argv[])
 
 	MHashPPTest mht (&ts) ;
 	ts.addUnitTest (&mht) ;
-
-	PermutationTest pt (&ts) ;
-	ts.addUnitTest (&pt) ;
 
 	// SampleValues
 	BmpRGBSampleValueTest rgbsvt (&ts) ;

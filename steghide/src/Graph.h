@@ -33,7 +33,7 @@
 
 class BitString ;
 class SampleOccurence ;
-class Permutation ;
+class Selector ;
 class Vertex ;
 class VertexContent ;
 struct VertexContentsEqual ;
@@ -56,7 +56,7 @@ class Graph {
 	 * \param cvr the underlying cover file
 	 * \param emb the bitstring to be embedded
 	 **/
-	Graph (CvrStgFile* cvr, const BitString& emb, const Permutation& perm) ;
+	Graph (CvrStgFile* cvr, const BitString& emb, Selector& sel) ;
 
 	/**
 	 * destructor

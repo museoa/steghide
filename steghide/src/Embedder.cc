@@ -30,7 +30,7 @@
 #include "Edge.h"
 #include "Graph.h"
 #include "Matching.h"
-#include "Permutation.h"
+#include "Selector.h"
 #include "Vertex.h"
 #include "common.h"
 #include "error.h"
@@ -54,9 +54,8 @@ Embedder::Embedder ()
 	}
 
 	// create graph
-	Permutation perm (TheCvrStgFile->getNumSamples(), Args.Passphrase.getValue(),
-		(ToEmbed.getLength() * TheCvrStgFile->getSamplesPerEBit())) ;
-	TheGraph = new Graph (TheCvrStgFile, ToEmbed, perm) ;
+	Selector sel (TheCvrStgFile->getNumSamples(), Args.Passphrase.getValue()) ;
+	TheGraph = new Graph (TheCvrStgFile, ToEmbed, sel) ;
 	TheGraph->printVerboseInfo() ;
 
 #ifdef DEBUG

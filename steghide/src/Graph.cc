@@ -25,13 +25,13 @@
 #include "BitString.h"
 #include "CvrStgFile.h"
 #include "Graph.h"
-#include "Permutation.h"
+#include "Selector.h"
 #include "Vertex.h"
 #include "common.h"
 #include "msg.h"
 #include "wrapper_hash_set.h"
 
-Graph::Graph (CvrStgFile *cvr, const BitString& emb, const Permutation& perm)
+Graph::Graph (CvrStgFile *cvr, const BitString& emb, Selector& sel)
 {
 	VerboseMessage v (_("creating the graph...")) ;
 	v.printMessage() ;
@@ -46,7 +46,7 @@ Graph::Graph (CvrStgFile *cvr, const BitString& emb, const Permutation& perm)
 		SamplePos *poss = new SamplePos[SamplesPerEBit] ;
 		BIT parity = 0 ;
 		for (unsigned int j = 0 ; j < SamplesPerEBit ; j++) {
-			poss[j] = perm[(i * SamplesPerEBit) + j] ;
+			poss[j] = sel[(i * SamplesPerEBit) + j] ;
 			parity ^= File->getSampleBit (poss[j]) ;
 		}
 

@@ -125,7 +125,7 @@ class BitString {
 	 * return a value composed from bits in this BitString
 	 * \param s the index of the first bit to be used for the return value
 	 * \param l the total number of bits to be used for the return value (must be <= 32)
-	 * \return the unsigned long value (*this)[s],...,(*this)[s+l-1]
+	 * \return the value (*this)[s],...,(*this)[s+l-1]
 	 **/
 	UWORD32 getValue (const unsigned long s, const unsigned short l) const ;
 
