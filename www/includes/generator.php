@@ -257,6 +257,8 @@ function pHead ()
 
 	$secinfo = getSectionInfo($SectionID);
 	echo "<title>" . $secinfo["title"] . "</title>\n";
+	echo "<meta name=\"author\" content=\"Stefan Hetzl <shetzl@chello.at>\">\n";
+	echo "<meta http-equiv=\"content-type\" content=\"text/html; charset=ISO-8859-1\">\n";
 	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"$ToRoot$CSSFile\">\n";
 }
 
