@@ -39,7 +39,7 @@ class SampleValueTest : public UnitTest {
 	 * \param dist this should be the distance between s1 and s2
 	 * \return true iff distance is commutative and return dist
 	 **/
-	bool genericTestDistance (SampleValue* s1, SampleValue* s2, float dist) ;
+	bool genericTestDistance (SampleValue* s1, SampleValue* s2, UWORD32 dist) ;
 
 	/**
 	 * generic neighbourhood test

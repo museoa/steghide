@@ -23,6 +23,7 @@
 #include "AuFileTest.h"
 #include "BitStringTest.h"
 #include "BmpRGBSampleValueTest.h"
+#include "BmpPaletteSampleValueTest.h"
 #include "BmpOS2FileTest.h"
 #include "BmpWinFileTest.h"
 #include "GraphTest.h"
@@ -59,6 +60,9 @@ int main (int argc, char *argv[])
 	// SampleValues
 	BmpRGBSampleValueTest rgbsvt (&ts) ;
 	ts.addUnitTest (&rgbsvt) ;
+
+	BmpPaletteSampleValueTest palsvt (&ts) ;
+	ts.addUnitTest (&palsvt) ;
 
 	// CvrStgFiles
 	AuFileTest aut (&ts) ;
