@@ -31,7 +31,7 @@
 #include "GraphTest.h"
 
 GraphTest::GraphTest (TestSuite* s)
-	: UnitTest ("GraphTest", s)
+	: UnitTest ("Graph", s)
 {
 	datadir = new std::string (DATADIR) ;
 
@@ -75,6 +75,14 @@ GraphTest::GraphTest (TestSuite* s)
 	p8 = new Permutation (bs8->getLength() * f8->getSamplesPerEBit(), std::string ("a true-color passphrase ;-)")) ;
 	g8 = new Graph (f8, *bs8, *p8) ;
 
+	f_f = CvrStgFile::readFile (*datadir + "win3x24_std.bmp") ;
+	bs_f = new BitString (std::string ("this time embedding in RGB pixel data")) ;
+	p_f = new Permutation (bs_f->getLength() * f_f->getSamplesPerEBit(), std::string ("a true-color passphrase ;-)")) ;
+	g_f = new Graph (f_f, *bs_f, *p_f) ;
+
+	ADDTESTCATEGORY (GraphTest, testVertices) ;
+	ADDTESTCATEGORY (GraphTest, testSampleValues) ;
+	ADDTESTCATEGORY (GraphTest, testVertexContents) ;
 	ADDTESTCATEGORY (GraphTest, testSampleValueOppNeighs) ;
 }
 
@@ -89,6 +97,55 @@ GraphTest::~GraphTest()
 	delete f6 ; delete bs6 ; delete p6 ; delete g6 ;
 	delete f7 ; delete bs7 ; delete p7 ; delete g7 ;
 	delete f8 ; delete bs8 ; delete p8 ; delete g8 ;
+	delete f_f ; delete bs_f ; delete p_f ; delete g_f ;
+}
+
+void GraphTest::testVertices()
+{
+	addTestResult (g1->check_Vertices()) ;
+	addTestResult (g2->check_Vertices()) ;
+	addTestResult (g3->check_Vertices()) ;
+	addTestResult (g4->check_Vertices()) ;
+	addTestResult (g5->check_Vertices()) ;
+	addTestResult (g6->check_Vertices()) ;
+	addTestResult (g7->check_Vertices()) ;
+	addTestResult (g8->check_Vertices()) ;
+
+	// violate label consistency
+	Vertex* tmp = g_f->Vertices[10] ;
+	g_f->Vertices[10] = g_f->Vertices[11] ;
+	g_f->Vertices[11] = tmp ;
+	addTestResult (!g_f->check_Vertices()) ;
+}
+
+void GraphTest::testSampleValues()
+{
+	addTestResult (g1->check_SampleValues()) ;
+	addTestResult (g2->check_SampleValues()) ;
+	addTestResult (g3->check_SampleValues()) ;
+	addTestResult (g4->check_SampleValues()) ;
+	addTestResult (g5->check_SampleValues()) ;
+	addTestResult (g6->check_SampleValues()) ;
+	addTestResult (g7->check_SampleValues()) ;
+	addTestResult (g8->check_SampleValues()) ;
+
+	// violate uniqueness
+	g_f->SampleValues[0] = g_f->SampleValues[1] ;
+	addTestResult (!g_f->check_SampleValues()) ;
+}
+
+void GraphTest::testVertexContents()
+{
+	addTestResult (g1->check_VertexContents()) ;
+	addTestResult (g2->check_VertexContents()) ;
+	addTestResult (g3->check_VertexContents()) ;
+	addTestResult (g4->check_VertexContents()) ;
+	addTestResult (g5->check_VertexContents()) ;
+	addTestResult (g6->check_VertexContents()) ;
+	addTestResult (g7->check_VertexContents()) ;
+	addTestResult (g8->check_VertexContents()) ;
+
+	// TODO - violate pointer equivalence
 }
 
 void GraphTest::testSampleValueOppNeighs()
@@ -101,4 +158,6 @@ void GraphTest::testSampleValueOppNeighs()
 	addTestResult (g6->SampleValueOppNeighs.check()) ;
 	addTestResult (g7->SampleValueOppNeighs.check()) ;
 	addTestResult (g8->SampleValueOppNeighs.check()) ;
+
+	// TODO - violate sorting
 }

@@ -34,14 +34,17 @@ class GraphTest : public UnitTest {
 	GraphTest (TestSuite* s) ;
 	~GraphTest (void) ;
 
+	void testVertices (void) ;
+	void testSampleValues (void) ;
+	void testVertexContents (void) ;
 	void testSampleValueOppNeighs (void) ;
 	
 	private:
 	std::string* datadir ;
-	CvrStgFile *f1, *f2, *f3, *f4, *f5, *f6, *f7, *f8 ;
-	BitString *bs1, *bs2, *bs3, *bs4, *bs5, *bs6, *bs7, *bs8 ;
-	Permutation *p1, *p2, *p3, *p4, *p5, *p6, *p7, *p8 ;
-	Graph *g1, *g2, *g3, *g4, *g5, *g6, *g7, *g8 ;
+	CvrStgFile *f1, *f2, *f3, *f4, *f5, *f6, *f7, *f8, *f_f ;
+	BitString *bs1, *bs2, *bs3, *bs4, *bs5, *bs6, *bs7, *bs8, *bs_f ;
+	Permutation *p1, *p2, *p3, *p4, *p5, *p6, *p7, *p8, *p_f ;
+	Graph *g1, *g2, *g3, *g4, *g5, *g6, *g7, *g8, *g_f ;
 } ;
 
 #endif // ndef SH_GRAPHTEST_H
