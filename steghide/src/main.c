@@ -18,6 +18,10 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <string.h>
 #include <ctype.h>
 #include <stdio.h>
@@ -59,10 +63,12 @@ static void cleanup (void) ;
 
 int main (int argc, char *argv[])
 {
+#ifndef DEBUG
 	/* initialize gettext */
 	setlocale (LC_ALL, "") ;
 	bindtextdomain (PACKAGE, LOCALEDIR) ;
 	textdomain (PACKAGE) ;
+#endif
 
 	/* 	the C "rand" generator is used if random numbers need not be reproduceable,
 		the random number generator in support.c "rnd" is used if numbers must be reproduceable */
