@@ -64,7 +64,7 @@ class ConstructionHeuristic : private GraphAccess {
 	 **/
 	void checkNeighboursDeg1 (Vertex *v) ;
 
-	/// contains all vertices of degree 1
+	/// contains all vertices of degree 1 - every vertex in this queue has a correct shortest edge if it still has degree 1
 	priority_queue<Vertex*, vector<Vertex*>, LongerShortestEdge> VerticesDeg1 ;
 	/// contains all vertices with degree greater than 1
 	priority_queue<Vertex*, vector<Vertex*>, LongerShortestEdge> VerticesDegG ;

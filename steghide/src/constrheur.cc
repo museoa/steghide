@@ -103,6 +103,7 @@ void ConstructionHeuristic::checkNeighboursDeg1 (Vertex *v)
 				if ((*jt)->getDegree() == 1) {
 					list<Vertex*> occ = (*jt)->getOccurences() ;
 					for (list<Vertex*>::iterator kt = occ.begin() ; kt != occ.end() ; kt++) {
+						(*kt)->updateShortestEdge() ;
 						VerticesDeg1.push (*kt) ;
 					}
 				}
@@ -177,9 +178,6 @@ Vertex *ConstructionHeuristic::findVertexDeg1 (unsigned int k)
 		assert (v->getDegree() <= 1) ;
 
 		if ((v->getDegree() == 1) && TheMatching->isExposed(v)) { // implicitly delete vertices that have degree zero or have already been matched
-#if 0
-			v->updateShortestEdge() ;
-#endif
 			if (topk.size() == k - 1) {
 				for (unsigned int i = 0 ; i < k - 1 ; i++) {
 					VerticesDeg1.push (topk[i]) ;

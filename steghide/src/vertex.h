@@ -111,6 +111,7 @@ class Vertex : private GraphAccess {
 
 #ifdef DEBUG
 	void print (void) const ;
+	void printEdges (void) const ;
 #endif
 
 	private:

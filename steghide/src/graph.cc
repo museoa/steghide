@@ -99,7 +99,6 @@ void Graph::constructVertices (vector<SamplePos*>& sposs, vector<SampleValue**>&
 	}
 
 	for (VertexLabel i = 0 ; i < numvertices ; i++) {
-		cerr << "addding vertex with label " << i << endl ;
 		// has vertex content already been created ?
 		VertexContent *vc = new VertexContent (this, svalues[i], sposs[i]) ;
 		hash_set<VertexContent*,hash<VertexContent*>,VertexContentsEqual>::iterator res = vc_set.find (vc) ;
@@ -341,16 +340,9 @@ unsigned long Graph::check_degree (Vertex *v) const
 	unsigned long degree = 0 ;
 	for (unsigned short i = 0 ; i < SamplesPerEBit ; i++) {
 		SampleValue *srcsample = v->getSampleValue(i) ;
-		for (vector<Vertex*>::const_iterator j = Vertices.begin() ; j != Vertices.end() ; j++) {
-			if ((*j)->getLabel() != v->getLabel()) { // no loops
-				for (unsigned short k = 0 ; k < SamplesPerEBit ; k++) {
-					SampleValue *destsample = (*j)->getSampleValue(k) ;
-					if ((srcsample->isNeighbour(destsample)) && (srcsample->getBit() != destsample->getBit())) {
-						// is opposite neighbour
-						degree++ ;
-					}
-				}
-			}
+		const vector<SampleValue*> oppneighs = SValueOppNeighs[srcsample] ;
+		for (vector<SampleValue*>::const_iterator it = oppneighs.begin() ; it != oppneighs.end() ; it++) {
+			degree += SampleOccurences[(*it)->getLabel()].size() ;
 		}
 	}
 	return degree ;

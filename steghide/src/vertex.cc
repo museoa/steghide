@@ -41,7 +41,7 @@ Vertex::~Vertex ()
 
 void Vertex::markDeleted ()
 {
-	printDebug (2, "marking vertex with label %ul as deleted.", getLabel()) ;
+	printDebug (2, "marking vertex with label %lu as deleted.", getLabel()) ;
 
 	if (valid) {
 		// decrement neighbour degrees
@@ -65,7 +65,7 @@ void Vertex::markDeleted ()
 
 void Vertex::unmarkDeleted ()
 {
-	printDebug (2, "unmarking deletion of vertex with label %ul.", getLabel()) ;
+	printDebug (2, "unmarking deletion of vertex with label %lu.", getLabel()) ;
 
 	if (!valid) {
 		// undelete into sample occurences in graph
@@ -106,10 +106,22 @@ void Vertex::updateShortestEdge ()
 void Vertex::print() const
 {
 	cerr << "vertex with label " << getLabel() << endl ;
-	for (unsigned short i = 0 ; i < TheGraph->getSamplesPerVertex() ; i++) {
+	for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
 		cerr << "  SampleLabel[" << i << "] is " << getSampleValue(i)->getLabel() << endl ;
 		cerr << "  SamplePositon[" << i << "] is " << getSamplePos(i) << endl ;
-		cerr << "  SampleKey[" << i << "] is " << hex << getSampleValue(i)->getKey() << endl ;
+		cerr << "  SampleKey[" << i << "] is " << hex << getSampleValue(i)->getKey() << dec << endl ;
+	}
+}
+
+void Vertex::printEdges() const
+{
+	cerr << "edges of vertex with label " << getLabel() << endl ;
+	EdgeIterator edgeit (TheGraph, TheGraph->getVertex(getLabel())) ;
+	while (*edgeit != NULL) {
+		Edge* e = *edgeit ;
+		cerr << "  label of other vertex: " << e->getOtherVertex(this)->getLabel() << endl ;
+		cerr << "  weight: " << e->getWeight() << endl ;
+		++edgeit ;
 	}
 }
 #endif

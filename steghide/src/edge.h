@@ -46,7 +46,7 @@ class Edge {
 	/**
 	 * get the vertex on this edge that is not equal to v
 	 **/
-	Vertex *getOtherVertex (Vertex *v) const ;
+	Vertex *getOtherVertex (const Vertex *v) const ;
 
 	/**
 	 * get the position of the sample that should be changed to embed the bit represented by the vertex v

@@ -160,6 +160,7 @@ class Graph {
 #ifdef DEBUG
 	unsigned long NumVertexContents ;
 
+	public:
 	/**
 	 * prints graph in a format suitable as input to the C implementation
 	 * of Gabow's non-weighted matching algorithm by E. Rothberg to stdout

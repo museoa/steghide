@@ -37,7 +37,7 @@ Edge::Edge (Vertex *v1, unsigned short idx1, Vertex *v2, unsigned short idx2, fl
 	assert (v1->getLabel() != v2->getLabel()) ;
 }
 
-Vertex *Edge::getOtherVertex (Vertex *v) const
+Vertex *Edge::getOtherVertex (const Vertex *v) const
 {
 	Vertex *retval = NULL ;
 	if (v->getLabel() == Vertex1->getLabel()) {
