@@ -47,52 +47,11 @@ BmpFile::BmpFile (BinaryIO *io)
 
 BmpFile::~BmpFile ()
 {
-	switch (getSubformat()) {
-		case WIN:
-		if (bmi.win.ncolors > 0) {
-			free (bmi.win.colors) ;
-		}
-		for (int i = 0 ; i < bmi.win.bmih.biHeight ; i++) {
-			free (bitmap[i]) ;
-		}
-		free (bitmap) ;
-		break ;
-
-		case OS2:
-		if (bmi.os2.ncolors > 0) {
-			free (bmi.os2.colors) ;
-		}
-		for (unsigned int i = 0 ; i < bmi.os2.bmch.bcHeight ; i++) {
-			free (bitmap[i]) ;
-		}
-		free (bitmap) ;
-		break ;
-
-		default:
-		assert (0) ;
-		break ;
-	}
 }
 
 BmpFile::SUBFORMAT BmpFile::getSubformat () const
 {
-	SUBFORMAT retval ;
-
-	switch (bmi.win.bmih.biSize) {
-		case SizeBMINFOHEADER:
-		retval = WIN ;
-		break ;
-
-		case SizeBMCOREHEADER:
-		retval = OS2 ;
-		break ;
-
-		default:
-		assert (0) ;
-		break ;
-	}
-
-	return retval ;
+	return subformat ;
 }
 
 void BmpFile::read (BinaryIO *io)
@@ -117,23 +76,23 @@ unsigned long BmpFile::getCapacity () const
 
 	switch (getSubformat()) {
 		case WIN:
-		if (bmi.win.bmih.biBitCount * bmi.win.bmih.biWidth % 8 == 0) {
-			linelength = bmi.win.bmih.biBitCount * bmi.win.bmih.biWidth / 8 ;
+		if (bmi_win.bmih.biBitCount * bmi_win.bmih.biWidth % 8 == 0) {
+			linelength = bmi_win.bmih.biBitCount * bmi_win.bmih.biWidth / 8 ;
 		}
 		else {
-			linelength = (bmi.win.bmih.biBitCount * bmi.win.bmih.biWidth / 8) + 1;
+			linelength = (bmi_win.bmih.biBitCount * bmi_win.bmih.biWidth / 8) + 1;
 		}
-		retval = bmi.win.bmih.biHeight * linelength ;
+		retval = bmi_win.bmih.biHeight * linelength ;
 		break ;
 
 		case OS2:
-		if (bmi.os2.bmch.bcBitCount * bmi.os2.bmch.bcWidth % 8 == 0) {
-			linelength = bmi.os2.bmch.bcBitCount * bmi.os2.bmch.bcWidth / 8 ;
+		if (bmi_os2.bmch.bcBitCount * bmi_os2.bmch.bcWidth % 8 == 0) {
+			linelength = bmi_os2.bmch.bcBitCount * bmi_os2.bmch.bcWidth / 8 ;
 		}
 		else {
-			linelength = (bmi.os2.bmch.bcBitCount * bmi.os2.bmch.bcWidth / 8) + 1;
+			linelength = (bmi_os2.bmch.bcBitCount * bmi_os2.bmch.bcWidth / 8) + 1;
 		}
-		retval = bmi.os2.bmch.bcHeight * linelength ;
+		retval = bmi_os2.bmch.bcHeight * linelength ;
 		break ;
 
 		default:
@@ -151,7 +110,7 @@ void BmpFile::embedBit (unsigned long pos, int value)
 
 	unsigned long row = 0, column = 0 ;
 	calcRC (pos, &row, &column) ;
-	bitmap[row][column] = (bitmap[row][column] & (unsigned char) ~1) | value ;
+	bitmap[row][column] = (bitmap[row][column] & (unsigned char) ~0x01) | value ;
 }
 
 int BmpFile::extractBit (unsigned long pos) const
@@ -160,7 +119,7 @@ int BmpFile::extractBit (unsigned long pos) const
 
 	unsigned long row = 0, column = 0 ;
 	calcRC (pos, &row, &column) ;
-	return (bitmap[row][column] & 1) ;
+	return (bitmap[row][column] & 0x01) ;
 }
 
 void BmpFile::calcRC (unsigned long pos, unsigned long *row, unsigned long *column) const
@@ -169,23 +128,23 @@ void BmpFile::calcRC (unsigned long pos, unsigned long *row, unsigned long *colu
 
 	switch (getSubformat()) {
 		case WIN:
-		if (bmi.win.bmih.biBitCount * bmi.win.bmih.biWidth % 8 == 0) {
-			width = bmi.win.bmih.biBitCount * bmi.win.bmih.biWidth / 8 ;
+		if (bmi_win.bmih.biBitCount * bmi_win.bmih.biWidth % 8 == 0) {
+			width = bmi_win.bmih.biBitCount * bmi_win.bmih.biWidth / 8 ;
 		}
 		else {
-			width = (bmi.win.bmih.biBitCount * bmi.win.bmih.biWidth / 8) + 1;
+			width = (bmi_win.bmih.biBitCount * bmi_win.bmih.biWidth / 8) + 1;
 		}
-		height = bmi.win.bmih.biHeight ;
+		height = bmi_win.bmih.biHeight ;
 		break ;
 
 		case OS2:
-		if (bmi.os2.bmch.bcBitCount * bmi.os2.bmch.bcWidth % 8 == 0) {
-			width = bmi.os2.bmch.bcBitCount * bmi.os2.bmch.bcWidth / 8 ;
+		if (bmi_os2.bmch.bcBitCount * bmi_os2.bmch.bcWidth % 8 == 0) {
+			width = bmi_os2.bmch.bcBitCount * bmi_os2.bmch.bcWidth / 8 ;
 		}
 		else {
-			width = (bmi.os2.bmch.bcBitCount * bmi.os2.bmch.bcWidth / 8) + 1;
+			width = (bmi_os2.bmch.bcBitCount * bmi_os2.bmch.bcWidth / 8) + 1;
 		}
-		height = bmi.os2.bmch.bcHeight ;
+		height = bmi_os2.bmch.bcHeight ;
 		break ;
 
 		default:
@@ -210,10 +169,12 @@ void BmpFile::readheaders ()
 		unsigned long tmpSize = getBinIO()->read32_le() ;
 		switch (tmpSize) {
 			case SizeBMINFOHEADER:	/* file has windows bmp format */
+			subformat = WIN ;
 			bmpwin_readheaders () ;
 			break ;
 
 			case SizeBMCOREHEADER:	/* file has OS/2 bmp format */
+			subformat = OS2 ;
 			bmpos2_readheaders () ;
 			break ;
 
@@ -250,18 +211,18 @@ void BmpFile::readheaders ()
 
 void BmpFile::bmpwin_readheaders ()
 {
-	bmi.win.bmih.biSize = SizeBMINFOHEADER ;
-	bmi.win.bmih.biWidth = getBinIO()->read32_le () ;
-	bmi.win.bmih.biHeight = getBinIO()->read32_le () ;
-	bmi.win.bmih.biPlanes = getBinIO()->read16_le () ;
-	assert (bmi.win.bmih.biPlanes == 1) ;
-	bmi.win.bmih.biBitCount = getBinIO()->read16_le () ;
-	assert ((bmi.win.bmih.biBitCount == 1) ||
-			(bmi.win.bmih.biBitCount == 4) ||
-			(bmi.win.bmih.biBitCount == 8) || 
-			(bmi.win.bmih.biBitCount == 24)) ;
-	bmi.win.bmih.biCompression = getBinIO()->read32_le () ;
-	if (bmi.win.bmih.biCompression != BI_RGB) {
+	bmi_win.bmih.biSize = SizeBMINFOHEADER ;
+	bmi_win.bmih.biWidth = getBinIO()->read32_le () ;
+	bmi_win.bmih.biHeight = getBinIO()->read32_le () ;
+	bmi_win.bmih.biPlanes = getBinIO()->read16_le () ;
+	assert (bmi_win.bmih.biPlanes == 1) ;
+	bmi_win.bmih.biBitCount = getBinIO()->read16_le () ;
+	assert ((bmi_win.bmih.biBitCount == 1) ||
+			(bmi_win.bmih.biBitCount == 4) ||
+			(bmi_win.bmih.biBitCount == 8) || 
+			(bmi_win.bmih.biBitCount == 24)) ;
+	bmi_win.bmih.biCompression = getBinIO()->read32_le () ;
+	if (bmi_win.bmih.biCompression != BI_RGB) {
 		if (getBinIO()->is_std()) {
 			throw SteghideError (_("the bitmap data from standard input is compressed which is not supported.")) ;
 		}
@@ -269,25 +230,25 @@ void BmpFile::bmpwin_readheaders ()
 			throw SteghideError (_("the bitmap data in \"%s\" is compressed which is not supported."), getBinIO()->getName().c_str()) ;
 		}
 	}
-	bmi.win.bmih.biSizeImage = getBinIO()->read32_le () ;
-	bmi.win.bmih.biXPelsPerMeter = getBinIO()->read32_le () ;
-	bmi.win.bmih.biYPelsPerMeter = getBinIO()->read32_le () ;
-	bmi.win.bmih.biClrUsed = getBinIO()->read32_le () ;
-	bmi.win.bmih.biClrImportant = getBinIO()->read32_le () ;
+	bmi_win.bmih.biSizeImage = getBinIO()->read32_le () ;
+	bmi_win.bmih.biXPelsPerMeter = getBinIO()->read32_le () ;
+	bmi_win.bmih.biYPelsPerMeter = getBinIO()->read32_le () ;
+	bmi_win.bmih.biClrUsed = getBinIO()->read32_le () ;
+	bmi_win.bmih.biClrImportant = getBinIO()->read32_le () ;
 
-	if (bmi.win.bmih.biBitCount == 24) {
-		bmi.win.colors = NULL ;
-		bmi.win.ncolors = 0 ;
+	if (bmi_win.bmih.biBitCount == 24) {
+		bmi_win.colors.clear() ;
+		bmi_win.ncolors = 0 ;
 	}
 	else {
 		/* a color table exists */
-		switch (bmi.win.bmih.biBitCount) {
+		switch (bmi_win.bmih.biBitCount) {
 			case 1:
 			if (args->command.getValue() == EMBED) {
 				Warning w (_("using a black/white bitmap as cover is very insecure!")) ;
 				w.printMessage() ;
 			}
-			bmi.win.ncolors = 2 ;
+			bmi_win.ncolors = 2 ;
 			break ;
 
 			case 4:
@@ -295,27 +256,27 @@ void BmpFile::bmpwin_readheaders ()
 				Warning w (_("using a 16-color bitmap as cover is very insecure!")) ;
 				w.printMessage() ;
 			}
-			bmi.win.ncolors = 16 ;
+			bmi_win.ncolors = 16 ;
 			break ;
 
 			case 8:
-			bmi.win.ncolors = 256 ;
+			bmi_win.ncolors = 256 ;
 			break ;
 
 			default:
 			assert (0) ;
 			break ;
 		}
-		if (bmi.win.bmih.biClrUsed != 0) {
-			bmi.win.ncolors = bmi.win.bmih.biClrUsed ;
+		if (bmi_win.bmih.biClrUsed != 0) {
+			bmi_win.ncolors = bmi_win.bmih.biClrUsed ;
 		}
 
-		bmi.win.colors = (RGBQUAD *) s_malloc ((sizeof (RGBQUAD)) * bmi.win.ncolors) ;
-		for (unsigned int i = 0 ; i < bmi.win.ncolors ; i++) {
-			bmi.win.colors[i].rgbBlue = getBinIO()->read8() ;
-			bmi.win.colors[i].rgbGreen = getBinIO()->read8() ;
-			bmi.win.colors[i].rgbRed = getBinIO()->read8() ;
-			if ((bmi.win.colors[i].rgbReserved = getBinIO()->read8()) != 0) {
+		bmi_win.colors = vector<RGBQUAD> (bmi_win.ncolors) ;
+		for (unsigned int i = 0 ; i < bmi_win.ncolors ; i++) {
+			bmi_win.colors[i].rgbBlue = getBinIO()->read8() ;
+			bmi_win.colors[i].rgbGreen = getBinIO()->read8() ;
+			bmi_win.colors[i].rgbRed = getBinIO()->read8() ;
+			if ((bmi_win.colors[i].rgbReserved = getBinIO()->read8()) != 0) {
 				Warning w (_("maybe corrupted windows bmp data (Reserved in RGBQUAD is non-zero).")) ;
 				w.printMessage() ;
 			}
@@ -327,30 +288,30 @@ void BmpFile::bmpwin_readheaders ()
 
 void BmpFile::bmpos2_readheaders ()
 {
-	bmi.os2.bmch.bcSize = SizeBMCOREHEADER ;
-	bmi.os2.bmch.bcWidth = getBinIO()->read16_le () ;
-	bmi.os2.bmch.bcHeight = getBinIO()->read16_le () ;
-	bmi.os2.bmch.bcPlanes = getBinIO()->read16_le () ;
-	assert (bmi.os2.bmch.bcPlanes == 1) ;
-	bmi.os2.bmch.bcBitCount = getBinIO()->read16_le () ;
-	assert ((bmi.os2.bmch.bcBitCount == 1) ||
-			(bmi.os2.bmch.bcBitCount == 4) ||
-			(bmi.os2.bmch.bcBitCount == 8) || 
-			(bmi.os2.bmch.bcBitCount == 24)) ;
+	bmi_os2.bmch.bcSize = SizeBMCOREHEADER ;
+	bmi_os2.bmch.bcWidth = getBinIO()->read16_le () ;
+	bmi_os2.bmch.bcHeight = getBinIO()->read16_le () ;
+	bmi_os2.bmch.bcPlanes = getBinIO()->read16_le () ;
+	assert (bmi_os2.bmch.bcPlanes == 1) ;
+	bmi_os2.bmch.bcBitCount = getBinIO()->read16_le () ;
+	assert ((bmi_os2.bmch.bcBitCount == 1) ||
+			(bmi_os2.bmch.bcBitCount == 4) ||
+			(bmi_os2.bmch.bcBitCount == 8) || 
+			(bmi_os2.bmch.bcBitCount == 24)) ;
 
-	if (bmi.os2.bmch.bcBitCount == 24) {
-		bmi.os2.colors = NULL ;
-		bmi.os2.ncolors = 0 ;
+	if (bmi_os2.bmch.bcBitCount == 24) {
+		bmi_os2.colors.clear() ;
+		bmi_os2.ncolors = 0 ;
 	}
 	else {
 		/* a color table exists */
-		switch (bmi.os2.bmch.bcBitCount) {
+		switch (bmi_os2.bmch.bcBitCount) {
 			case 1:
 			if (args->command.getValue() == EMBED) {
 				Warning w (_("using a black/white bitmap as cover is very insecure!")) ;
 				w.printMessage() ;
 			}
-			bmi.os2.ncolors = 2 ;
+			bmi_os2.ncolors = 2 ;
 			break ;
 
 			case 4:
@@ -358,11 +319,11 @@ void BmpFile::bmpos2_readheaders ()
 				Warning w (_("using a 16-color bitmap as cover is very insecure!")) ;
 				w.printMessage() ;
 			}
-			bmi.os2.ncolors = 16 ;
+			bmi_os2.ncolors = 16 ;
 			break ;
 
 			case 8:
-			bmi.os2.ncolors = 256 ;
+			bmi_os2.ncolors = 256 ;
 			break ;
 
 			default:
@@ -370,11 +331,11 @@ void BmpFile::bmpos2_readheaders ()
 			break ;
 		}
 
-		bmi.os2.colors = (RGBTRIPLE *) s_malloc ((sizeof (RGBTRIPLE)) * bmi.os2.ncolors) ;
-		for (unsigned int i = 0 ; i < bmi.os2.ncolors ; i++) {
-			bmi.os2.colors[i].rgbtBlue = getBinIO()->read8() ;
-			bmi.os2.colors[i].rgbtGreen = getBinIO()->read8() ;
-			bmi.os2.colors[i].rgbtRed = getBinIO()->read8() ;
+		bmi_os2.colors = vector<RGBTRIPLE> (bmi_os2.ncolors) ;
+		for (unsigned int i = 0 ; i < bmi_os2.ncolors ; i++) {
+			bmi_os2.colors[i].rgbtBlue = getBinIO()->read8() ;
+			bmi_os2.colors[i].rgbtGreen = getBinIO()->read8() ;
+			bmi_os2.colors[i].rgbtRed = getBinIO()->read8() ;
 		}
 	}
 
@@ -420,41 +381,41 @@ void BmpFile::writeheaders ()
 
 void BmpFile::bmpwin_writeheaders ()
 {
-	getBinIO()->write32_le (bmi.win.bmih.biSize) ;
-	getBinIO()->write32_le (bmi.win.bmih.biWidth) ;
-	getBinIO()->write32_le (bmi.win.bmih.biHeight) ;
-	getBinIO()->write16_le (bmi.win.bmih.biPlanes) ;
-	getBinIO()->write16_le (bmi.win.bmih.biBitCount) ;
-	getBinIO()->write32_le (bmi.win.bmih.biCompression) ;
-	getBinIO()->write32_le (bmi.win.bmih.biSizeImage) ;
-	getBinIO()->write32_le (bmi.win.bmih.biXPelsPerMeter) ;
-	getBinIO()->write32_le (bmi.win.bmih.biYPelsPerMeter) ;
-	getBinIO()->write32_le (bmi.win.bmih.biClrUsed) ;
-	getBinIO()->write32_le (bmi.win.bmih.biClrImportant) ;
+	getBinIO()->write32_le (bmi_win.bmih.biSize) ;
+	getBinIO()->write32_le (bmi_win.bmih.biWidth) ;
+	getBinIO()->write32_le (bmi_win.bmih.biHeight) ;
+	getBinIO()->write16_le (bmi_win.bmih.biPlanes) ;
+	getBinIO()->write16_le (bmi_win.bmih.biBitCount) ;
+	getBinIO()->write32_le (bmi_win.bmih.biCompression) ;
+	getBinIO()->write32_le (bmi_win.bmih.biSizeImage) ;
+	getBinIO()->write32_le (bmi_win.bmih.biXPelsPerMeter) ;
+	getBinIO()->write32_le (bmi_win.bmih.biYPelsPerMeter) ;
+	getBinIO()->write32_le (bmi_win.bmih.biClrUsed) ;
+	getBinIO()->write32_le (bmi_win.bmih.biClrImportant) ;
 
-	if (bmi.win.ncolors > 0) {
-		for (unsigned int i = 0 ; i < bmi.win.ncolors ; i++) {
-			getBinIO()->write8 (bmi.win.colors[i].rgbBlue) ;
-			getBinIO()->write8 (bmi.win.colors[i].rgbGreen) ;
-			getBinIO()->write8 (bmi.win.colors[i].rgbRed) ;
-			getBinIO()->write8 (bmi.win.colors[i].rgbReserved) ;
+	if (bmi_win.ncolors > 0) {
+		for (unsigned int i = 0 ; i < bmi_win.ncolors ; i++) {
+			getBinIO()->write8 (bmi_win.colors[i].rgbBlue) ;
+			getBinIO()->write8 (bmi_win.colors[i].rgbGreen) ;
+			getBinIO()->write8 (bmi_win.colors[i].rgbRed) ;
+			getBinIO()->write8 (bmi_win.colors[i].rgbReserved) ;
 		}
 	}
 }
 
 void BmpFile::bmpos2_writeheaders ()
 {
-	getBinIO()->write32_le (bmi.os2.bmch.bcSize) ;
-	getBinIO()->write16_le (bmi.os2.bmch.bcWidth) ;
-	getBinIO()->write16_le (bmi.os2.bmch.bcHeight) ;
-	getBinIO()->write16_le (bmi.os2.bmch.bcPlanes) ;
-	getBinIO()->write16_le (bmi.os2.bmch.bcBitCount) ;
+	getBinIO()->write32_le (bmi_os2.bmch.bcSize) ;
+	getBinIO()->write16_le (bmi_os2.bmch.bcWidth) ;
+	getBinIO()->write16_le (bmi_os2.bmch.bcHeight) ;
+	getBinIO()->write16_le (bmi_os2.bmch.bcPlanes) ;
+	getBinIO()->write16_le (bmi_os2.bmch.bcBitCount) ;
 
-	if (bmi.os2.ncolors > 0) {
-		for (unsigned int i = 0 ; i < bmi.os2.ncolors ; i++) {
-			getBinIO()->write8 (bmi.os2.colors[i].rgbtBlue) ;
-			getBinIO()->write8 (bmi.os2.colors[i].rgbtGreen) ;
-			getBinIO()->write8 (bmi.os2.colors[i].rgbtRed) ;
+	if (bmi_os2.ncolors > 0) {
+		for (unsigned int i = 0 ; i < bmi_os2.ncolors ; i++) {
+			getBinIO()->write8 (bmi_os2.colors[i].rgbtBlue) ;
+			getBinIO()->write8 (bmi_os2.colors[i].rgbtGreen) ;
+			getBinIO()->write8 (bmi_os2.colors[i].rgbtRed) ;
 		}
 	}
 }
@@ -466,20 +427,20 @@ long BmpFile::calcLinelength ()
 
 	switch (getSubformat()) {
 		case WIN:
-		if (bmi.win.bmih.biBitCount * bmi.win.bmih.biWidth % 8 == 0) {
-			retval = bmi.win.bmih.biBitCount * bmi.win.bmih.biWidth / 8 ;
+		if (bmi_win.bmih.biBitCount * bmi_win.bmih.biWidth % 8 == 0) {
+			retval = bmi_win.bmih.biBitCount * bmi_win.bmih.biWidth / 8 ;
 		}
 		else {
-			retval = (bmi.win.bmih.biBitCount * bmi.win.bmih.biWidth / 8) + 1;
+			retval = (bmi_win.bmih.biBitCount * bmi_win.bmih.biWidth / 8) + 1;
 		}
 		break ;
 
 		case OS2:
-		if (bmi.os2.bmch.bcBitCount * bmi.os2.bmch.bcWidth % 8 == 0) {
-			retval = bmi.os2.bmch.bcBitCount * bmi.os2.bmch.bcWidth / 8 ;
+		if (bmi_os2.bmch.bcBitCount * bmi_os2.bmch.bcWidth % 8 == 0) {
+			retval = bmi_os2.bmch.bcBitCount * bmi_os2.bmch.bcWidth / 8 ;
 		}
 		else {
-			retval = (bmi.os2.bmch.bcBitCount * bmi.os2.bmch.bcWidth / 8) + 1;
+			retval = (bmi_os2.bmch.bcBitCount * bmi_os2.bmch.bcWidth / 8) + 1;
 		}
 		break ;
 
@@ -497,11 +458,11 @@ long BmpFile::getHeight ()
 
 	switch (getSubformat()) {
 		case WIN:
-		retval = bmi.win.bmih.biHeight ;
+		retval = bmi_win.bmih.biHeight ;
 		break ;
 
 		case OS2:
-		retval = bmi.os2.bmch.bcHeight ;
+		retval = bmi_os2.bmch.bcHeight ;
 		break ;
 
 		default:
@@ -527,12 +488,10 @@ void BmpFile::readdata ()
 			paddinglength = 4 - (linelength % 4) ;
 		}
 
-		bitmap = (unsigned char **) s_malloc ((sizeof (unsigned char*)) * height) ;
-
+		bitmap = vector<vector<unsigned char> > (height) ;
 		for (long line = height - 1 ; line >= 0 ; line--) {
-			bitmap[line] = (unsigned char *) s_malloc (linelength) ;
 			for (long posinline = 0 ; posinline < linelength ; posinline++) {
-				bitmap[line][posinline] = getBinIO()->read8() ;
+				bitmap[line].push_back (getBinIO()->read8()) ;
 			}
 
 			for (int i = 0 ; i < paddinglength ; i++) {
@@ -541,6 +500,10 @@ void BmpFile::readdata ()
 					w.printMessage() ;
 				}
 			}
+		}
+
+		while (!getBinIO()->eof()) {
+			atend.push_back (getBinIO()->read8()) ;
 		}
 	}
 	catch (BinaryInputError e) {
@@ -579,6 +542,7 @@ void BmpFile::writedata ()
 		}
 
 		for (long line = height - 1 ; line >= 0 ; line--) {
+			assert (bitmap[line].size() == (unsigned long) linelength) ;
 			for (long posinline = 0 ; posinline < linelength ; posinline++) {
 				getBinIO()->write8 (bitmap[line][posinline]) ;
 			}
@@ -586,6 +550,10 @@ void BmpFile::writedata ()
 			for (unsigned int i = 0 ; i < paddinglength ; i++) {
 				getBinIO()->write8 (0) ;
 			}
+		}
+
+		for (vector<unsigned char>::iterator i = atend.begin() ; i != atend.end() ; i++) {
+			getBinIO()->write8 (*i) ;
 		}
 	}
 	catch (BinaryOutputError e) {

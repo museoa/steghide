@@ -21,6 +21,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string>
 
 #include <libintl.h>
 #define _(S) gettext (S)
@@ -128,7 +129,6 @@ void assemble_plndata (PLNFILE *plnfile)
 {
 	BUFFER *buf = NULL, *tmpbuf = NULL ;
 	unsigned long pos = 0 ;
-	char *tmp = NULL ;
 	int nbytes_plnfilename = 0 ;
 	int i = 0 ;
 
@@ -142,7 +142,9 @@ void assemble_plndata (PLNFILE *plnfile)
 	else {
 		assert (args->plnfn.is_set()) ;
 
-		tmp = stripdir ((char *) args->plnfn.getValue().c_str()) ;
+		char *tmp = (char *) s_malloc (strlen (args->plnfn.getValue().c_str()) + 1) ;
+		strcpy (tmp, args->plnfn.getValue().c_str()) ;
+		tmp = stripdir (tmp) ;
 
 		if ((nbytes_plnfilename = strlen (tmp)) > PLNFILENAME_MAXLEN) {
 			throw SteghideError (_("the maximum length for the plain file name is %d characters."), PLNFILENAME_MAXLEN) ;

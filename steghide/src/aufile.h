@@ -21,6 +21,8 @@
 #ifndef SH_AUFILE_H
 #define SH_AUFILE_H
 
+#include <vector>
+
 #include "binaryio.h"
 #include "bufmanag.h"
 #include "cvrstgfile.h"
@@ -48,18 +50,16 @@ class AuFile : public CvrStgFile {
 		unsigned long	channels ;
 	} AuHeader ;
 
-	BUFFER *getData (void) ;
-	void setData (BUFFER *d) ;
-	AuHeader *getHeader (void) ;
-	void setHeader (AuHeader *h) ;
+	vector<unsigned char> getData (void) ;
+	void setData (vector<unsigned char> d) ;
 
 	private:
 	static const int HeaderSize = 24 ;
 
-	AuHeader		*header ;
-	unsigned long	len_infofield ;
-	void			*infofield ;
-	BUFFER			*data ;
+	AuHeader header ;
+	unsigned long len_infofield ;
+	vector<unsigned char> infofield ;
+	vector<unsigned char> data ;
 
 	void readheaders (void) ;
 	void readdata (void) ;

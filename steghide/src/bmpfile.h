@@ -21,6 +21,8 @@
 #ifndef SH_BMPFILE_H
 #define SH_BMPFILE_H
 
+#include <vector>
+
 #include "arguments.h"
 #include "binaryio.h"
 #include "cvrstgfile.h"
@@ -91,19 +93,14 @@ class BmpFile : public CvrStgFile {
 	typedef struct struct_BMPINFO_WIN {
 		BITMAPINFOHEADER	bmih ;
 		unsigned int		ncolors ;
-		RGBQUAD				*colors ;
+		vector<RGBQUAD>		colors ;
 	} BMPINFO_WIN ;
 
 	typedef struct struct_BMPINFO_OS2 {
 		BITMAPCOREHEADER	bmch ;
 		unsigned int		ncolors ;
-		RGBTRIPLE			*colors ;
+		vector<RGBTRIPLE>	colors ;
 	} BMPINFO_OS2 ;
-
-	typedef union union_BMPINFO {
-		BMPINFO_WIN	win ;
-		BMPINFO_OS2	os2 ;
-	} BMPINFO ;
 
 	private:
 	static const unsigned int IdBm = 19778 ;
@@ -114,9 +111,13 @@ class BmpFile : public CvrStgFile {
 
 	enum SUBFORMAT { WIN, OS2 } ;
 
+	SUBFORMAT subformat ;
 	BITMAPFILEHEADER bmfh ;
-	BMPINFO bmi ;
-	unsigned char **bitmap ;
+	BMPINFO_WIN	bmi_win ;
+	BMPINFO_OS2	bmi_os2 ;
+	vector<vector <unsigned char> > bitmap ;
+	/// contains bytes that are appended at the end of the bitmap data (some image editors apparently do this)
+	vector<unsigned char> atend ;
 
 	void readheaders () ;
 	void bmpwin_readheaders () ;

@@ -5,6 +5,8 @@ steghide 0.4.6 :
 
 * switched from C to C++ (partial rewrite)
 
+* bugfixes	
+
 
 steghide 0.4.5 :
 ================

@@ -193,7 +193,7 @@ void swap (unsigned long *x, unsigned long *y)
 	*y = t ;
 }
 
-char *stripdir (char *filename)
+char *stripdir (const char *filename)
 {
 	int i = 0, j = 0, start = 0, end = 0 ;
 	char *retval = NULL ;
@@ -210,6 +210,7 @@ char *stripdir (char *filename)
 	for (i = start ; i <= end ; i++, j++) {
 		retval[j] = filename [i] ;
 	}
+	retval[j] = '\0' ;
 
 	return retval ;
 }

@@ -95,8 +95,7 @@ vector<vector <unsigned long> > JpegEntropyCoded::getFreqs ()
 	}
 
 	for (unsigned int destspec = 0 ; destspec <= maxdestspec ; destspec++) {
-		vector<unsigned long> tmp(257) ;
-		freq.push_back (tmp) ;
+		freq.push_back (vector<unsigned long> (257)) ;
 		freq[destspec][256] = 1 ;
 	}
 

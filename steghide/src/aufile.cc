@@ -18,10 +18,11 @@
  *
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <assert.h>
+#include <cassert>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <vector>
 
 #include <libintl.h>
 #define _(S) gettext (S)
@@ -48,31 +49,16 @@ AuFile::AuFile (BinaryIO *io)
 
 AuFile::~AuFile (void)
 {
-	free (header) ;
-	free (infofield) ;
-	buffree (data) ;
 }
 
-BUFFER* AuFile::getData (void)
+vector<unsigned char> AuFile::getData (void)
 {
 	return data ;
 }
 
-void AuFile::setData (BUFFER *d)
+void AuFile::setData (vector<unsigned char> d)
 {
-	buffree (data) ;
 	data = d ;
-}
-
-AuFile::AuHeader* AuFile::getHeader (void)
-{
-	return header ;
-}
-
-void AuFile::setHeader (AuHeader *h)
-{
-	delete header ;
-	header = h ;
 }
 
 void AuFile::read (BinaryIO *io)
@@ -93,7 +79,7 @@ void AuFile::write()
 
 unsigned long AuFile::getCapacity() const
 {
-	return data->length ;
+	return data.size() ;
 }
 
 void AuFile::embedBit (unsigned long pos, int value)
@@ -101,7 +87,7 @@ void AuFile::embedBit (unsigned long pos, int value)
 	assert (value == 0 || value == 1) ;
 	assert (pos < getCapacity()) ;
 
-	bufsetbit (data, pos, 0, value) ;
+	data[pos] = (data[pos] & (unsigned char) ~0x01) | value ;
 
 	return ;
 }
@@ -110,34 +96,27 @@ int AuFile::extractBit (unsigned long pos) const
 {
 	assert (pos < getCapacity()) ;
 
-	return bufgetbit (data, pos, 0) ;
+	return (data[pos] & 0x01) ;
 }
 
 void AuFile::readheaders (void)
 {
 	try {
-		header = new AuHeader ;
+		header.id[0] = '.' ;
+		header.id[1] = 's' ;
+		header.id[2] = 'n' ;
+		header.id[3] = 'd' ;
 
-		header->id[0] = '.' ;
-		header->id[1] = 's' ;
-		header->id[2] = 'n' ;
-		header->id[3] = 'd' ;
+		header.offset = getBinIO()->read32_be() ;
+		header.size = getBinIO()->read32_be() ;
+		header.encoding = getBinIO()->read32_be() ;
+		header.samplerate = getBinIO()->read32_be() ;
+		header.channels = getBinIO()->read32_be() ;
 
-		header->offset = getBinIO()->read32_be() ;
-		header->size = getBinIO()->read32_be() ;
-		header->encoding = getBinIO()->read32_be() ;
-		header->samplerate = getBinIO()->read32_be() ;
-		header->channels = getBinIO()->read32_be() ;
-
-		if ((len_infofield = (header->offset - HeaderSize)) != 0) {
-			unsigned char *ptr = NULL ;
-			unsigned int i = 0 ;
-
-			infofield = s_malloc (len_infofield) ;
-
-			ptr = (unsigned char *) infofield ;
-			for (i = 0 ; i < len_infofield ; i++) {
-				ptr[i] = getBinIO()->read8() ;
+		if ((len_infofield = (header.offset - HeaderSize)) != 0) {
+			infofield.clear() ;
+			for (unsigned long i = 0 ; i < len_infofield ; i++) {
+				infofield.push_back (getBinIO()->read8()) ;
 			}
 		}
 	}
@@ -167,22 +146,19 @@ void AuFile::readheaders (void)
 void AuFile::writeheaders (void)
 {
 	try {
-		getBinIO()->write8 (header->id[0]) ;
-		getBinIO()->write8 (header->id[1]) ;
-		getBinIO()->write8 (header->id[2]) ;
-		getBinIO()->write8 (header->id[3]) ;
-		getBinIO()->write32_be (header->offset) ;
-		getBinIO()->write32_be (header->size) ;
-		getBinIO()->write32_be (header->encoding) ;
-		getBinIO()->write32_be (header->samplerate) ;
-		getBinIO()->write32_be (header->channels) ;
+		getBinIO()->write8 (header.id[0]) ;
+		getBinIO()->write8 (header.id[1]) ;
+		getBinIO()->write8 (header.id[2]) ;
+		getBinIO()->write8 (header.id[3]) ;
+		getBinIO()->write32_be (header.offset) ;
+		getBinIO()->write32_be (header.size) ;
+		getBinIO()->write32_be (header.encoding) ;
+		getBinIO()->write32_be (header.samplerate) ;
+		getBinIO()->write32_be (header.channels) ;
 
 		if (len_infofield != 0) {
-			unsigned char *ptr = (unsigned char *) infofield ;
-			unsigned int i = 0 ;
-
-			for (i = 0 ; i < len_infofield ; i++) {
-				getBinIO()->write8 (ptr[i]) ;
+			for (unsigned long i = 0 ; i < len_infofield ; i++) {
+				getBinIO()->write8 (infofield[i]) ;
 			}
 		}
 	}
@@ -205,17 +181,13 @@ void AuFile::readdata (void)
 {
 	try {
 		/* if available, use size of audio data (in bytes) to create buffer */
-		if (header->size == 0xFFFFFFFF) {
-			data = bufcreate (0) ;
-		}
-		else {
-			data = bufcreate (header->size) ;
+		data.clear() ;
+		if (header.size != 0xFFFFFFFF) {
+			data.reserve (header.size) ;
 		}
 
-		unsigned long bufpos = 0 ;
 		while (!getBinIO()->eof()) {
-			bufsetbyte (data, bufpos, getBinIO()->read8()) ;
-			bufpos++ ;
+			data.push_back (getBinIO()->read8()) ;
 		}
 	}
 	catch (BinaryInputError e) {
@@ -244,12 +216,8 @@ void AuFile::readdata (void)
 void AuFile::writedata (void)
 {
 	try {
-		int c = ENDOFBUF ;
-		unsigned long bufpos = 0 ;
-
-		while ((c = bufgetbyte (data, bufpos)) != ENDOFBUF) {
-			getBinIO()->write8 ((unsigned char) c) ;
-			bufpos++ ;
+		for (vector<unsigned char>::iterator i = data.begin() ; i != data.end() ; i++) {
+			getBinIO()->write8 (*i) ;
 		}
 	}
 	catch (BinaryOutputError e) {

@@ -31,7 +31,7 @@
 /* function prototypes */
 void srnd (unsigned long seed) ;
 int rnd (unsigned long max) ;
-char *stripdir (char *filename) ;
+char *stripdir (const char *filename) ;
 void swap (unsigned long *x, unsigned long *y) ;
 char *get_passphrase (bool doublecheck) ;
 struct termios termios_echo_off (void) ;
