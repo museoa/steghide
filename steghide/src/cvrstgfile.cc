@@ -73,40 +73,6 @@ void CvrStgFile::transform (string stgfn)
 {
 	delete BinIO ;
 	BinIO = new BinaryIO (stgfn, BinaryIO::WRITE) ;
-
-#if 0
-	if (file->filename != NULL) {
-		if (fclose (file->stream) == EOF) {
-			exit_err (_("could not close the file \"%s\"."), file->filename) ;
-		}
-	}
-
-	file->filename = stgfilename ;
-	if (file->filename == NULL) {
-		file->stream = stdout ;
-	}
-	else {
-		if (!args->force.value) {
-			/* check if file already exists */
-			if (fileexists (file->filename)) {
-				if ((args->cvrfn.value == NULL) || (args->plnfn.value == NULL)) {
-					exit_err (_("file \"%s\" does already exist."), file->filename) ;
-				}
-				else {
-					if (!pquestBinIOn (_("file \"%s\" does already exist. overwrite ?"), file->filename)) {
-						exit_err (_("did not write to file \"%s\"."), file->filename) ;
-					}
-				}
-			}
-		}
-
-		if ((file->stream = fopen (file->filename, "wb")) == NULL) {
-			exit_err (_("could not create stego file \"%s\"."), file->filename) ;
-		}
-	}
-#endif
-
-	return ;
 }
 
 /* detects file format */

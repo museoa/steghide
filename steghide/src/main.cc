@@ -218,7 +218,7 @@ static void fillsthdr (unsigned long nbytescvrbuf, unsigned long nbytesplain, un
 		break ;
 	}
 
-	sthdr.mask = 1 ; /* only for backwards compatibility to 0.4.x versions */
+	sthdr.mask = DEFAULTMASK ; /* only for backwards compatibility to 0.4.x versions */
 
 	if (args->encryption.getValue()) {
 		sthdr.encryption = ENC_MCRYPT ;

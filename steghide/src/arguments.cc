@@ -27,38 +27,34 @@ Arguments::Arguments (int argc, char *argv[])
 
 void Arguments::parse (int argc, char *argv[])
 {
-	int i ;
-
-	/* FIXME statt strncmps hier überall string == verwenden - nicht auf Länge fehleranfällig */
-
-	/* check for first argument -> command */
+	// check for first argument -> command
 	if (argc == 1) {
 		command.setValue (SHOWHELP) ;
 		return ;
 	}
-	else if ((strncmp (argv[1], "embed\0", 6) == 0) || (strncmp (argv[1], "--embed\0", 8) == 0)) {
+	else if (string (argv[1]) == "embed" || string (argv[1]) == "--embed") {
 		command.setValue (EMBED) ;
 		setDefaults () ;
 	}
-	else if ((strncmp (argv[1], "extract\0", 8) == 0) || (strncmp (argv[1], "--extract\0", 10) == 0)) {
+	else if (string (argv[1]) == "extract" || string (argv[1]) == "--extract") {
 		command.setValue (EXTRACT) ;
 		setDefaults () ;
 	}
-	else if ((strncmp (argv[1], "version\0", 8) == 0) || (strncmp (argv[1], "--version\0", 10) == 0)) {
+	else if (string (argv[1]) == "version" || string (argv[1]) == "--version") {
 		command.setValue (SHOWVERSION) ;
 		if (argc > 2) {
 			pwarn (_("you cannot use arguments with the \"version\" command")) ;
 		}
 		return ;
 	}
-	else if ((strncmp (argv[1], "license\0", 8) == 0) || (strncmp (argv[1], "--license\0", 10) == 0)) {
+	else if (string (argv[1]) == "license" || string (argv[1]) == "--license") {
 		command.setValue (SHOWLICENSE) ;
 		if (argc > 2) {
 			pwarn (_("you cannot use arguments with the \"license\" command")) ;
 		}
 		return ;
 	}
-	else if ((strncmp (argv[1], "help\0", 5) == 0) || (strncmp (argv[1], "--help\0", 7) == 0)) {
+	else if (string (argv[1]) == "help" || string (argv[1]) == "--help") {
 		command.setValue (SHOWHELP) ;
 		if (argc > 2) {
 			pwarn (_("you cannot use arguments with the \"help\" command")) ;
@@ -66,7 +62,7 @@ void Arguments::parse (int argc, char *argv[])
 		return ;
 	}
 #ifdef DEBUG
-	else if (strncmp (argv[1], "test\0", 5) == 0) {
+	else if (string (argv[1]) == "test") {
 		steghide_test_all () ;
 		exit (EXIT_SUCCESS) ;
 	}
@@ -75,9 +71,9 @@ void Arguments::parse (int argc, char *argv[])
 		exit_err (_("unknown command \"%s\". type \"%s --help\" for help."), argv[1], PROGNAME) ;
 	}
 
-	/* check rest of arguments */
-	for (i = 2; i < argc; i++) {
-		if ((strncmp (argv[i], "-d\0", 3) == 0) || (strncmp (argv[i], "--distribution\0", 15) == 0)) {
+	// parse rest of arguments
+	for (int i = 2; i < argc; i++) {
+		if (string (argv[i]) == "-d" || string (argv[i]) == "--distribution") {
 			unsigned int tmp = 0 ;
 
 			if (command.getValue() != EMBED) {
@@ -92,7 +88,7 @@ void Arguments::parse (int argc, char *argv[])
 				exit_err (_("the argument \"%s\" is incomplete. type \"%s --help\" for help."), argv[i - 1], PROGNAME) ;
 			}
 
-			if (strncmp (argv[i], "cnsti\0", 6) == 0) {
+			if (string (argv[i]) == "cnsti") {
 				dmtd.setValue (DMTD_CNSTI) ;
 				
 				if ((i + 1 < argc) && (argv[i + 1][0] != '-')) {
@@ -107,7 +103,7 @@ void Arguments::parse (int argc, char *argv[])
 					dmtdinfo.setValue (di) ;	
 				}
 			}
-			else if ((strncmp (argv[i], "prndi\0", 6) == 0)) {
+			else if (string (argv[i]) == "prndi") {
 				dmtd.setValue (DMTD_PRNDI) ;
 				
 				if ((i + 1 < argc) && (argv[i + 1][0] != '-')) {
@@ -127,7 +123,7 @@ void Arguments::parse (int argc, char *argv[])
 			}
 		}
 
-		else if ((strncmp (argv[i], "-e\0", 3) == 0) || (strncmp (argv[i], "--encryption\0", 13) == 0)) {
+		else if (string (argv[i]) == "-e" || string (argv[i]) == "--encryption") {
 			if (command.getValue() != EMBED) {
 				exit_err (_("the argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
@@ -139,7 +135,7 @@ void Arguments::parse (int argc, char *argv[])
 			encryption.setValue (true) ;
 		}
 
-		else if ((strncmp (argv[i], "-E\0", 3) == 0) || (strncmp (argv[i], "--noencryption\0", 15) == 0)) {
+		else if (string (argv[i]) == "-E" || string (argv[i]) == "--noencryption") {
 			if (command.getValue () != EMBED) {
 				exit_err (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
@@ -151,7 +147,7 @@ void Arguments::parse (int argc, char *argv[])
 			encryption.setValue (false) ;
 		}
 
-		else if ((strncmp (argv[i], "-h\0", 3) == 0) || (strncmp (argv[i], "--sthdrencryption\0", 18) == 0)) {
+		else if (string (argv[i]) == "-h" || string (argv[i]) == "--sthdrencryption") {
 			if (sthdrencryption.is_set()) {
 				exit_err (_("the stego header encryption argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
@@ -159,7 +155,7 @@ void Arguments::parse (int argc, char *argv[])
 			sthdrencryption.setValue (true) ;
 		}
 
-		else if ((strncmp (argv[i], "-H\0", 3) == 0) || (strncmp (argv[i], "--nosthdrencryption\0", 20) == 0)) {
+		else if (string (argv[i]) == "-H" || string (argv[i]) == "--nosthdrencryption") {
 			if (sthdrencryption.is_set()) {
 				exit_err (_("the stego header encryption argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
@@ -167,7 +163,7 @@ void Arguments::parse (int argc, char *argv[])
 			sthdrencryption.setValue (false) ;
 		}
 
-		else if ((strncmp (argv[i], "-k\0", 3) == 0) || (strncmp (argv[i], "--checksum\0", 11) == 0)) {
+		else if (string (argv[i]) == "-k" || string (argv[i]) == "--checksum") {
 			if (command.getValue() != EMBED) {
 				exit_err (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
@@ -179,7 +175,7 @@ void Arguments::parse (int argc, char *argv[])
 			checksum.setValue (true) ;
 		}
 
-		else if ((strncmp (argv[i], "-K\0", 3) == 0) || (strncmp (argv[i], "--nochecksum\0", 13) == 0)) {
+		else if (string (argv[i]) == "-K" || string (argv[i]) == "--nochecksum") {
 			if (command.getValue() != EMBED) {
 				exit_err (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
@@ -191,7 +187,7 @@ void Arguments::parse (int argc, char *argv[])
 			checksum.setValue (false) ;
 		}
 
-		else if ((strncmp (argv[i], "-n\0", 3) == 0) || (strncmp (argv[i], "--embedplainname\0", 17) == 0)) {
+		else if (string (argv[i]) == "-n" || string (argv[i]) == "--embedplainname") {
 			if (command.getValue() != EMBED) {
 				exit_err (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
@@ -203,7 +199,7 @@ void Arguments::parse (int argc, char *argv[])
 			embedplnfn.setValue (true) ;
 		}
 
-		else if ((strncmp (argv[i], "-N\0", 3) == 0) || (strncmp (argv[i], "--notembedplainname\0", 20) == 0)) {
+		else if (string (argv[i]) == "-N" || string (argv[i]) == "--notembedplainname") {
 			if (command.getValue() != EMBED) {
 				exit_err (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
@@ -215,7 +211,7 @@ void Arguments::parse (int argc, char *argv[])
 			embedplnfn.setValue (false) ;
 		}
 
-		else if ((strncmp (argv[i], "-c\0", 3) == 0) || (strncmp (argv[i], "--compatibility\0", 16) == 0)) {
+		else if (string (argv[i]) == "-c" || string (argv[i]) == "--compatibility") {
 			if (compatibility.is_set()) {
 				exit_err (_("the compatibility argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
@@ -223,7 +219,7 @@ void Arguments::parse (int argc, char *argv[])
 			compatibility.setValue (true) ;
 		}
 
-		else if ((strncmp (argv[i], "-p\0", 3) == 0) || (strncmp (argv[i], "--passphrase\0", 13) == 0)) {
+		else if (string (argv[i]) == "-p" || string (argv[i]) == "--passphrase") {
 			if (passphrase.is_set()) {
 				exit_err (_("the passphrase argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
@@ -237,13 +233,13 @@ void Arguments::parse (int argc, char *argv[])
 			}
 			passphrase.setValue (argv[i]) ;
 
-			/* overwrite passphrase in argv in order to avoid that it can be read with the ps command  */
+			// overwrite passphrase in argv in order to avoid that it can be read with the ps command
 			for (unsigned int j = 0 ; j < strlen (argv[i]) ; j++) {
 				argv[i][j] = ' ' ;
 			}
 		}
 
-		else if ((strncmp (argv[i], "-cf\0", 4) == 0) || (strncmp (argv[i], "--coverfile\0", 16) == 0)) {
+		else if (string (argv[i]) == "-cf" || string (argv[i]) == "--coverfile") {
 			if (command.getValue() != EMBED) {
 				exit_err (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
@@ -256,7 +252,7 @@ void Arguments::parse (int argc, char *argv[])
 				exit_err (_("the \"%s\" argument must be followed by the cover file name. type \"%s --help\" for help."), argv[i - 1], PROGNAME) ;
 			}
 
-			if (strncmp (argv[i], "-\0", 2) == 0) {
+			if (string (argv[i]) == "-") {
 				cvrfn.setValue ("") ;
 			}
 			else {
@@ -264,7 +260,7 @@ void Arguments::parse (int argc, char *argv[])
 			}
 		}
 
-		else if ((strncmp (argv[i], "-sf\0", 4) == 0) || (strncmp (argv[i], "--stegofile\0", 12) == 0)) {
+		else if (string (argv[i]) == "-sf" || string (argv[i]) == "--stegofile") {
 			if (stgfn.is_set()) {
 				exit_err (_("the stego file name argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
@@ -273,7 +269,7 @@ void Arguments::parse (int argc, char *argv[])
 				exit_err (_("the \"%s\" argument must be followed by the stego file name. type \"%s --help\" for help."), argv[i - 1], PROGNAME) ;
 			}
 
-			if (strncmp (argv[i], "-\0", 2) == 0) {
+			if (string (argv[i]) == "-") {
 				stgfn.setValue ("") ;
 			}
 			else {
@@ -281,7 +277,7 @@ void Arguments::parse (int argc, char *argv[])
 			}
 		}
 
-		else if ((strncmp (argv[i], "-pf\0", 4) == 0) || (strncmp (argv[i], "--plainfile\0", 12) == 0)) {
+		else if (string (argv[i]) == "-pf" || string (argv[i]) == "--plainfile") {
 			if (plnfn.is_set()) {
 				exit_err (_("the plain file name argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
@@ -290,7 +286,7 @@ void Arguments::parse (int argc, char *argv[])
 				exit_err (_("the \"%s\" argument must be followed by the plain file name. type \"%s --help\" for help."), argv[i - 1], PROGNAME) ;
 			}
 
-			if (strncmp (argv[i], "-\0", 2) == 0) {
+			if (string (argv[i]) == "-") {
 				plnfn.setValue ("") ;
 			}
 			else {
@@ -298,7 +294,7 @@ void Arguments::parse (int argc, char *argv[])
 			}
 		}
 
-		else if ((strncmp (argv[i], "-f\0", 3) == 0) || (strncmp (argv[i], "--force\0", 8) == 0)) {
+		else if (string (argv[i]) == "-f" || string (argv[i]) == "--force") {
 			if (force.is_set()) {
 				exit_err (_("the force argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
@@ -306,7 +302,7 @@ void Arguments::parse (int argc, char *argv[])
 			force.setValue (true);
 		}
 
-		else if ((strncmp (argv[i], "-q\0", 3) == 0) || (strncmp (argv[i], "--quiet\0", 8) == 0)) {
+		else if (string (argv[i]) == "-q" || string (argv[i]) == "--quiet") {
 			if (verbosity.is_set()) {
 				exit_err (_("the \"%s\" argument cannot be used here because the verbosity has already been set."), argv[i]) ;
 			}
@@ -314,7 +310,7 @@ void Arguments::parse (int argc, char *argv[])
 			verbosity.setValue (QUIET) ;
 		}
 
-		else if ((strncmp (argv[i], "-v\0", 3) == 0) || (strncmp (argv[i], "--verbose\0", 10) == 0)) {
+		else if (string (argv[i]) == "-v" || string (argv[i]) == "--verbose") {
 			if (verbosity.is_set()) {
 				exit_err (_("the \"%s\" argument cannot be used here because the verbosity has already been set."), argv[i]) ;
 			}
@@ -327,7 +323,7 @@ void Arguments::parse (int argc, char *argv[])
 		}
 	}
 
-	/* argument post-processing */
+	// argument post-processing 
 	if (command.getValue() == EMBED) {
 		if ((cvrfn.getValue() == "") && (plnfn.getValue() == "")) {
 			exit_err (_("standard input cannot be used for cover AND plain data. type \"%s --help\" for help."), PROGNAME) ;
@@ -335,7 +331,7 @@ void Arguments::parse (int argc, char *argv[])
 	}
 
 	if (!passphrase.is_set()) {
-		/* prompt for passphrase */
+		// prompt for passphrase
 		if (command.getValue() == EMBED) {
 			if ((cvrfn.getValue() == "") || (plnfn.getValue() == "")) {
 				exit_err (_("if standard input is used, the passphrase must be specified on the command line.")) ;

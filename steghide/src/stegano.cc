@@ -36,11 +36,8 @@
 
 STEGOHEADER sthdr = { 0, 0, { { 0 } }, '\0', 0, 0, 0 } ;
 
-static int nstgbits (void) ;
-#ifndef DEBUG
 void dmtd_reset (unsigned int dmtd, DMTDINFO dmtdinfo, unsigned long resetpos) ;
 unsigned long dmtd_nextpos (void) ;
-#endif
 static unsigned int findmaxilen_cnsti (unsigned long cvrbytes, unsigned long plnbytes, unsigned long firstplnpos) ;
 static unsigned int findmaxilen_prndi (unsigned long cvrbytes, unsigned long plnbytes, unsigned long firstplnpos) ;
 static int simprndi_ok (unsigned long cvrbytes, unsigned long plnbits, unsigned long firstplnpos, unsigned int imlen) ;
@@ -52,9 +49,7 @@ static unsigned long curdmtd_curpos ;
 /* embed plain data in cover data (resulting in stego data) */
 void embeddata (CvrStgFile *cvrstgfile, unsigned long firstcvrpos, PLNFILE *plnfile)
 {
-	int plnbits = 0 ;
 	int bit = 0 ;
-	int i = 0 ;
 	unsigned long plnpos_byte = 0, plnpos_bit = 0 ;
 	unsigned long cvrpos_byte = firstcvrpos ;
 
@@ -63,26 +58,17 @@ void embeddata (CvrStgFile *cvrstgfile, unsigned long firstcvrpos, PLNFILE *plnf
 	dmtd_reset (sthdr.dmtd, sthdr.dmtdinfo, cvrpos_byte) ;
 
 	while (plnpos_byte < plnfile->plndata->length) {
-		plnbits = 0 ;
-		for (i = 0 ; i < nstgbits() ; i++) {
-			if ((bit = bufgetbit (plnfile->plndata, plnpos_byte, plnpos_bit)) != ENDOFBUF) {
-				plnbits |= (bit << i) ;
-				if (plnpos_bit == 7) {
-					plnpos_byte++ ;
-					plnpos_bit = 0 ;
-				}
-				else {
-					plnpos_bit++ ;
-				}
+		if ((bit = bufgetbit (plnfile->plndata, plnpos_byte, plnpos_bit)) != ENDOFBUF) {
+			if (plnpos_bit == 7) {
+				plnpos_byte++ ;
+				plnpos_bit = 0 ;
+			}
+			else {
+				plnpos_bit++ ;
 			}
 		}
 
-		/* FIXME DELME
-		cvrbyte = bufgetbyte (cvrdata, cvrpos_byte) ;
-		bufsetbyte (cvrdata, cvrpos_byte, setbits (cvrbyte, plnbits)) ;
-		*/
-		cvrstgfile->embedBit (cvrpos_byte, plnbits) ;
-		
+		cvrstgfile->embedBit (cvrpos_byte, bit) ;
 		cvrpos_byte = dmtd_nextpos () ;
 
 		if ((cvrpos_byte >= cvrstgfile->getCapacity()) && (plnpos_byte < plnfile->plndata->length)) {
@@ -97,7 +83,7 @@ void embeddata (CvrStgFile *cvrstgfile, unsigned long firstcvrpos, PLNFILE *plnf
 BUFFER *extractdata (CvrStgFile *cvrstgfile, unsigned long firststgpos)
 {
 	BUFFER *plndata = NULL ;
-	int plnbits = 0, i = 0 ;
+	int bit = 0 ;
 	unsigned long plnpos_byte = 0, plnpos_bit = 0 ;
 	unsigned long size = 0 ;
 	unsigned long stgpos_byte = firststgpos ;
@@ -121,20 +107,15 @@ BUFFER *extractdata (CvrStgFile *cvrstgfile, unsigned long firststgpos)
 	}
 
 	while (plnpos_byte < size) {
-		/* FIXME DELME
-		plnbits = getbits (bufgetbyte (stgdata, stgpos_byte)) ;
-		*/
-		plnbits = cvrstgfile->extractBit (stgpos_byte) ;
-		for (i = 0 ; i < nstgbits() ; i++) {
-			if (plnpos_byte < size) {
-				bufsetbit (plndata, plnpos_byte, plnpos_bit, ((plnbits & (1 << i)) >> i)) ;
-				if (plnpos_bit == 7) {
-					plnpos_byte++ ;
-					plnpos_bit = 0 ;
-				}
-				else {
-					plnpos_bit++ ;
-				}
+		bit = cvrstgfile->extractBit (stgpos_byte) ;
+		if (plnpos_byte < size) {
+			bufsetbit (plndata, plnpos_byte, plnpos_bit, bit) ;
+			if (plnpos_bit == 7) {
+				plnpos_byte++ ;
+				plnpos_bit = 0 ;
+			}
+			else {
+				plnpos_bit++ ;
 			}
 		}
 
@@ -182,13 +163,8 @@ void embedsthdr (CvrStgFile *cvrstgfile, int dmtd, DMTDINFO dmtdinfo, int enc, c
 		break ;
 	}
 
-	if (sthdr.mask == DEFAULTMASK) {
-		bit = cp_bits_to_buf_le (hdrbuf, bit, (unsigned long) 0, SIZE_MASKUSED) ;
-	}
-	else {
-		bit = cp_bits_to_buf_le (hdrbuf, bit, (unsigned long) 1, SIZE_MASKUSED) ;
-		bit = cp_bits_to_buf_le (hdrbuf, bit, (unsigned long) sthdr.mask, SIZE_MASK) ;
-	}
+	// always use the default mask
+	bit = cp_bits_to_buf_le (hdrbuf, bit, (unsigned long) 0, SIZE_MASKUSED) ;
 
 	bit = cp_bits_to_buf_le (hdrbuf, bit, (unsigned long) sthdr.encryption, SIZE_ENCRYPTION) ;
 
@@ -214,9 +190,6 @@ void embedsthdr (CvrStgFile *cvrstgfile, int dmtd, DMTDINFO dmtdinfo, int enc, c
 	cvrbytepos = 0 ;
 	for (bit = 0 ; bit < sthdrbuflen ; bit++) {
 		bitval = (hdrbuf[bit / 8] & (1 << (bit % 8))) >> (bit % 8) ;
-		/* FIXME DELME
-		bufsetbit (cvrdata, cvrbytepos, 0, bitval) ;
-		*/
 		cvrstgfile->embedBit (cvrbytepos, bitval) ;
 		if (((cvrbytepos = dmtd_nextpos()) >= cvrstgfile->getCapacity()) && (bit < sthdrbuflen)) {
 			exit_err (_("the cover file is too short to embed the stego header. use another cover file.")) ;
@@ -255,9 +228,6 @@ void extractsthdr (CvrStgFile *cvrstgfile, int dmtd, DMTDINFO dmtdinfo, int enc,
 
 	for (bit = 0 ; bit < hdrbuflen * 8 ; bit++) {
 		oldcvrbytepos[bit] = cvrbytepos ;
-		/* FIXME DELME
-		bitval = bufgetbit (stgdata, cvrbytepos, 0) ;
-		*/
 		bitval = cvrstgfile->extractBit (cvrbytepos) ;
 		hdrbuf[bit / 8] |= bitval << (bit % 8) ;
 		if (((cvrbytepos = dmtd_nextpos()) >= cvrstgfile->getCapacity()) &&
@@ -306,7 +276,9 @@ void extractsthdr (CvrStgFile *cvrstgfile, int dmtd, DMTDINFO dmtdinfo, int enc,
 			exit_err (_("the mask saved in the stego header is zero (file corruption ?).")) ;
 		}
 		sthdr.mask = (unsigned int) tmp ;
-		exit_err (_("the mask saved in the stego header is not the default (1). This is no longer supported.")) ;
+		if (sthdr.mask != 1) {
+			exit_err (_("the mask saved in the stego header is not the default (1). This is no longer supported (file corruption ?).")) ;
+		}
 	}
 	else {
 		sthdr.mask = 1 ;
@@ -333,21 +305,6 @@ void extractsthdr (CvrStgFile *cvrstgfile, int dmtd, DMTDINFO dmtdinfo, int enc,
 	}
 
 	return ;
-}
-
-/* returns the number of set bits in sthdr.mask */
-static int nstgbits (void)
-{
-	int i = 0, n = 0 ;
-
-	for (i = 0; i < 8; i++)
-		if (sthdr.mask & (1 << i))
-			n++ ;
-
-	/* FIXME muss jetzt 1 sein - keine Möglichkeit mehr andere mask zu behandeln - ? Funktion raushauen */
-	assert (n == 1) ;
-
-	return n ;
 }
 
 void dmtd_reset (unsigned int dmtd, DMTDINFO dmtdinfo, unsigned long resetpos)

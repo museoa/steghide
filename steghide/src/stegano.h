@@ -125,10 +125,8 @@ void embeddata (CvrStgFile *cvrstgfile, unsigned long firstcvrpos, PLNFILE *plnf
 BUFFER *extractdata (CvrStgFile *cvrstgfile, unsigned long firststgpos) ;
 void embedsthdr (CvrStgFile *cvrstgfile, int dmtd, DMTDINFO dmtdinfo, int enc, char *passphrase, unsigned long *firstplnpos) ;
 void extractsthdr (CvrStgFile *cvrstgfile, int dmtd, DMTDINFO dmtdinfo, int enc, char *passphrase, unsigned long *firstplnpos) ;
-#ifdef DEBUG
 void dmtd_reset (unsigned int dmtd, DMTDINFO dmtdinfo, unsigned long resetpos) ;
 unsigned long dmtd_nextpos (void) ;
-#endif
 unsigned long calc_ubfirstplnpos (int dmtd, DMTDINFO dmtdinfo, int enc, unsigned long nbytesplain) ;
 void setmaxilen (unsigned long cvrbytes, unsigned long plnbytes, unsigned long firstplnpos) ;
 

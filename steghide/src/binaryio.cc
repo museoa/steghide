@@ -3,8 +3,11 @@
 #include <libintl.h>
 #define _(S) gettext (S)
 
+#include "arguments.h"
 #include "binaryio.h"
 #include "error.h"
+#include "msg.h"
+#include "support.h"
 
 BinaryIO::BinaryIO (void)
 {
@@ -98,7 +101,7 @@ void BinaryIO::open (string fn, MODE m)
 			break ;
 
 			case WRITE:
-			// FIXME - overwrite test hier ?? (--force)
+			checkforce (fn.c_str()) ;
 			cmode = "wb" ;
 			break ;
 		}

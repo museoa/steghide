@@ -28,7 +28,9 @@
 #include <libintl.h>
 #define _(S) gettext (S)
 
+#include "arguments.h"
 #include "crypto.h"
+#include "error.h"
 #include "support.h"
 #include "msg.h"
 
@@ -245,80 +247,6 @@ void *s_realloc (void *ptr, size_t size)
 	return retval ;
 }
 
-#if 0
-int read16_le (FILE *file)
-{
-	int bytes[2] ;
-
-	bytes[0] = getc (file) ;
-	bytes[1] = getc (file) ;
-
-	return ((bytes[1] << 8) | bytes[0]) ;
-}
-
-int read16_be (FILE *file)
-{
-	int bytes[2] ;
-
-	bytes[0] = getc (file) ;
-	bytes[1] = getc (file) ;
-
-	return ((bytes[0] << 8) | bytes[1]) ;
-}
-
-unsigned long read32_le (FILE *file)
-{
-	int bytes[4] ;
-
-	bytes[0] = getc (file) ;
-	bytes[1] = getc (file) ;
-	bytes[2] = getc (file) ;
-	bytes[3] = getc (file) ;
-
-	return ((bytes[3] << 24) | (bytes[2] << 16) | (bytes[1] << 8) | bytes[0]) ;
-}
-
-unsigned long read32_be (FILE *file)
-{
-	int bytes[4] ;
-
-	bytes[0] = getc (file) ;
-	bytes[1] = getc (file) ;
-	bytes[2] = getc (file) ;
-	bytes[3] = getc (file) ;
-
-	return ((bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | bytes[3]) ;
-}
-
-void write16_le (FILE *file, int val)
-{
-	putc (val & 0xFF, file) ;
-	putc ((val >> 8) & 0xFF, file) ;
-}
-
-void write16_be (FILE *file, int val)
-{
-	putc ((val >> 8) & 0xFF, file) ;
-	putc (val & 0xFF, file) ;
-}
-
-void write32_le (FILE *file, unsigned long val)
-{
-	putc (val & 0xFF, file) ;
-	putc ((val >> 8) & 0xFF, file) ;
-	putc ((val >> 16) & 0xFF, file) ;
-	putc ((val >> 24) & 0xFF, file) ;
-}
-
-void write32_be (FILE *file, unsigned long val)
-{
-	putc ((val >> 24) & 0xFF, file) ;
-	putc ((val >> 16) & 0xFF, file) ;
-	putc ((val >> 8) & 0xFF, file) ;
-	putc (val & 0xFF, file) ;
-}
-#endif
-
 void cp32ul2uc_be (unsigned char *dest, unsigned long src)
 {
 	dest[0] = (src >> 24) & 0xFF ;
@@ -398,4 +326,31 @@ unsigned int nbits (unsigned long x)
 	}
 
 	return n ;
+}
+
+void checkforce (const char *filename)
+{
+	if (!args->force.getValue()) {
+		if (fileexists ((char *) filename)) {
+			bool stdin_isused = false ;
+			if (args->command.getValue() == EMBED &&
+				(args->plnfn.getValue() == "" ||
+				args->cvrfn.getValue() == "")) {
+				stdin_isused = true ;
+			}
+			if (args->command.getValue() == EXTRACT &&
+				args->stgfn.getValue() == "") {
+				stdin_isused = true ;
+			}
+
+			if (stdin_isused) {
+				throw SteghideError (_("the file \"%s\" does already exist."), filename) ;
+			}
+			else {
+				if (!pquestion (_("the file \"%s\" does already exist. overwrite ?"), filename)) {
+					throw SteghideError (_("did not write to file \"%s\"."), filename) ;
+				}
+			}
+		}
+	}
 }

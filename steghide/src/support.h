@@ -49,16 +49,6 @@ void cp32uc2ul_le (unsigned long *dest, unsigned char *src) ;
 unsigned int cp_bits_to_buf_le (void *buf, unsigned int bufbitpos, unsigned long val, unsigned int val_nbits) ;
 unsigned int cp_bits_from_buf_le (void *buf, unsigned int bufbitpos, unsigned long *val, unsigned int val_nbits) ;
 unsigned int nbits (unsigned long x) ;
+void checkforce (const char *filename) ;
 
-#if 0
-int read16_le (FILE *file) ;
-int read16_be (FILE *file) ;
-unsigned long read32_le (FILE *file) ;
-unsigned long read32_be (FILE *file) ;
-
-void write16_le (FILE *file, int val) ;
-void write16_be (FILE *file, int val) ;
-void write32_le (FILE *file, unsigned long val) ;
-void write32_be (FILE *file, unsigned long val) ;
-#endif
 #endif /* ndef SH_SUPPORT_H */

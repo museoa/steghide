@@ -96,20 +96,7 @@ void pln_writefile (PLNFILE *plnfile)
 		plnfile->stream = stdout ;
 	}
 	else {
-		if (!args->force.getValue()) {
-			/* check if file already exists */
-			if (fileexists (plnfile->filename)) {
-				if (args->stgfn.getValue() == "") {
-					exit_err (_("file \"%s\" does already exist."), plnfile->filename) ;
-				}
-				else {
-					if (!pquestion (_("file \"%s\" does already exist. overwrite ?"), plnfile->filename)) {
-						exit_err (_("did not write to file \"%s\"."), plnfile->filename) ;
-					}
-				}
-			}
-		}
-
+		checkforce (plnfile->filename) ;
 		if ((plnfile->stream = fopen (plnfile->filename, "wb")) == NULL) {
 			exit_err (_("could not create plain file \"%s\"."), plnfile->filename) ;
 		}

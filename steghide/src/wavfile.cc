@@ -219,8 +219,18 @@ void WavFile::readheaders ()
 		id_wave[2] = 'V' ;
 		id_wave[3] = 'E' ;
 
-		/* FIXME - ev. hier noch nach "fmt " checken */
 		fmtchhdr = *getChhdr() ;
+		if (!(fmtchhdr.id[0] == 'f' &&
+			fmtchhdr.id[1] == 'm' &&
+			fmtchhdr.id[2] == 't' &&
+			fmtchhdr.id[3] == ' ')) {
+			if (BinIO->is_std()) {
+				throw SteghideError (_("could not find the format chunk in the wav file from standard input.")) ;
+			}
+			else {
+				throw SteghideError (_("could not find the format chunk in the wav file \"%s\"."), BinIO->getName().c_str()) ;
+			}
+		}
 		if ((fmtch.FormatTag = BinIO->read16_le()) != FormatPCM) {
 			if (BinIO->is_std()) {
 				throw SteghideError (_("the wav file from standard input has a format that is not supported.")) ;
