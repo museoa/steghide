@@ -26,10 +26,8 @@
 #include "common.h"
 
 AugmentingPathHeuristic::AugmentingPathHeuristic (Graph* g, Matching* m, UWORD32 mne)
-	: GraphAccess(g)
+	: TheGraph(g), TheMatching(m)
 {
-	TheMatching = m ;
-
 	unsigned long numvertices = g->getNumVertices() ;
 	VertexOnPath = std::vector<bool> (numvertices, false) ;
 
@@ -38,7 +36,7 @@ AugmentingPathHeuristic::AugmentingPathHeuristic (Graph* g, Matching* m, UWORD32
 
 	EdgeIterators.reserve (numvertices) ;
 	for (VertexLabel l = 0 ; l < numvertices ; l++) {
-		EdgeIterators.push_back (EdgeIterator (g, g->getVertex(l))) ;
+		EdgeIterators.push_back (EdgeIterator (g->getVertex(l))) ;
 	}
 	EdgeIterator::setMaxNumEdges (mne) ;
 }

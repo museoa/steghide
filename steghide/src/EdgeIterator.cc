@@ -18,28 +18,26 @@
  *
  */
 
-#include "common.h"
 #include "Edge.h"
 #include "EdgeIterator.h"
 #include "Graph.h"
 #include "SampleOccurence.h"
 #include "Vertex.h"
+#include "common.h"
 
-EdgeIterator::EdgeIterator (Graph* g, Vertex *v)
-	: GraphAccess (g)
+EdgeIterator::EdgeIterator (Vertex *v)
 {
 	SrcVertex = v ;
-	SVOppNeighsIndices = new unsigned long[TheGraph->getSamplesPerVertex()] ;
+	SVOppNeighsIndices = new unsigned long[Globs.TheGraph->getSamplesPerVertex()] ;
 	reset() ;
 }
 
 EdgeIterator::EdgeIterator (const EdgeIterator& eit)
-	: GraphAccess (eit.TheGraph)
 {
 	SrcVertex = eit.SrcVertex ;
 	SrcIndex = eit.SrcIndex ;
-	SVOppNeighsIndices = new unsigned long[eit.TheGraph->getSamplesPerVertex()] ;
-	for (unsigned short i = 0 ; i < eit.TheGraph->getSamplesPerVertex() ; i++) {
+	SVOppNeighsIndices = new unsigned long[Globs.TheGraph->getSamplesPerVertex()] ;
+	for (unsigned short i = 0 ; i < Globs.TheGraph->getSamplesPerVertex() ; i++) {
 		SVOppNeighsIndices[i] = eit.SVOppNeighsIndices[i] ;
 	}
 	Finished = eit.Finished ;
@@ -64,14 +62,14 @@ EdgeIterator& EdgeIterator::operator++ ()
 {
 	myassert (!Finished) ;
 	SampleValue* srcsv = SrcVertex->getSampleValue(SrcIndex) ;
-	SampleValue* destsv = TheGraph->SampleValueOppNeighs[srcsv][SVOppNeighsIndices[SrcIndex]] ;
+	SampleValue* destsv = Globs.TheGraph->SampleValueOppNeighs[srcsv][SVOppNeighsIndices[SrcIndex]] ;
 
 	do { // to avoid looping edge (SrcVertex,SrcVertex)
 		SampleOccurenceIt++ ;
-	} while ((SampleOccurenceIt != TheGraph->SampleOccurences[destsv->getLabel()].end()) &&
+	} while ((SampleOccurenceIt != Globs.TheGraph->SampleOccurences[destsv->getLabel()].end()) &&
 		(SampleOccurenceIt->getVertex()->getLabel() == SrcVertex->getLabel())) ;
 
-	if (SampleOccurenceIt == TheGraph->SampleOccurences[destsv->getLabel()].end()) {
+	if (SampleOccurenceIt == Globs.TheGraph->SampleOccurences[destsv->getLabel()].end()) {
 		// search new destination sample value
 		SVOppNeighsIndices[SrcIndex]++ ;
 		findNextEdge() ;
@@ -88,7 +86,7 @@ EdgeIterator& EdgeIterator::operator++ ()
 void EdgeIterator::reset ()
 {
 	Finished = false ;
-	for (unsigned short i = 0 ; i < TheGraph->getSamplesPerVertex() ; i++) {
+	for (unsigned short i = 0 ; i < Globs.TheGraph->getSamplesPerVertex() ; i++) {
 		SVOppNeighsIndices[i] = 0 ;
 	}
 	findNextEdge() ;
@@ -98,18 +96,18 @@ void EdgeIterator::reset ()
 void EdgeIterator::findNextEdge ()
 {
 	UWORD32 mindist = UWORD32_MAX ;
-	for (unsigned short i = 0 ; i < TheGraph->getSamplesPerVertex() ; i++) {
+	for (unsigned short i = 0 ; i < Globs.TheGraph->getSamplesPerVertex() ; i++) {
 		SampleValue* srcsv = SrcVertex->getSampleValue(i) ;
 		SampleValue* destsv = NULL ;
 		std::list<SampleOccurence>::const_iterator soccit_candidate ;
 
 		// increment SVOppNeighsIndices[i] until it points to a valid destination sample value
-		while (SVOppNeighsIndices[i] < TheGraph->SampleValueOppNeighs[srcsv].size()) {
-			destsv = TheGraph->SampleValueOppNeighs[srcsv][SVOppNeighsIndices[i]] ;
+		while (SVOppNeighsIndices[i] < Globs.TheGraph->SampleValueOppNeighs[srcsv].size()) {
+			destsv = Globs.TheGraph->SampleValueOppNeighs[srcsv][SVOppNeighsIndices[i]] ;
 
 			// look for a sample occurence of destsv - thereby setting soccit_candidate
 			bool found = false ;
-			const std::list<SampleOccurence>& socc = TheGraph->SampleOccurences[destsv->getLabel()] ;
+			const std::list<SampleOccurence>& socc = Globs.TheGraph->SampleOccurences[destsv->getLabel()] ;
 			soccit_candidate = socc.begin() ;
 			while (!found && soccit_candidate != socc.end()) {
 				if (soccit_candidate->getVertex()->getLabel() == SrcVertex->getLabel()) {
@@ -129,7 +127,7 @@ void EdgeIterator::findNextEdge ()
 		}
 
 		// test if the destination sample value leads to edge with (until now) minimal distance - thereby setting SrcIndex and SampleOccurenceIt
-		if (SVOppNeighsIndices[i] < TheGraph->SampleValueOppNeighs[srcsv].size()) {
+		if (SVOppNeighsIndices[i] < Globs.TheGraph->SampleValueOppNeighs[srcsv].size()) {
 			UWORD32 thisdist = srcsv->calcDistance(destsv) ;
 			if (thisdist < mindist) {
 				mindist = thisdist ;

@@ -303,7 +303,7 @@ SampleValue *JpegEntropyCoded::getSampleValue (SamplePos pos) const
 	JpegScan *p_scan = (JpegScan *) getParent() ;
 	JpegFrame *p_frame = (JpegFrame *) p_scan->getParent() ;
 	JpegFile *p_file = p_frame->getFile() ;
-	return ((SampleValue *) new JpegSampleValue ((CvrStgFile *) p_file, dctcoeffs[pos])) ;
+	return ((SampleValue *) new JpegSampleValue (dctcoeffs[pos])) ;
 }
 
 unsigned char JpegEntropyCoded::decode (BinaryIO *io, JpegHuffmanTable *ht)

@@ -41,8 +41,6 @@ class Embedder {
 	static const unsigned int Default_NConstrHeur = 1 ;
 
 	BitString ToEmbed ;
-	CvrStgFile* TheCvrStgFile ;
-	Graph* TheGraph ;
 
 	/**
 	 * do the matching algorithms

@@ -31,23 +31,14 @@
  **/
 class BmpPaletteSampleValue : public BmpSampleValue {
 	public:
-	BmpPaletteSampleValue (void)
-		: BmpSampleValue() {} ;
-	BmpPaletteSampleValue (const CvrStgFile* f, unsigned char i) ;
+	BmpPaletteSampleValue (BYTE i) ;
 
 	SampleValue* getNearestOppositeSampleValue (void) const ;
 
-	BYTE getIndex (void) const
-		{ return Index ; } ;
-
-	BYTE getRed (void) const
-		{ return (*Palette)[Index].Red ; } ;
-
-	BYTE getGreen (void) const
-		{ return (*Palette)[Index].Green ; } ;
-
-	BYTE getBlue (void) const
-		{ return (*Palette)[Index].Blue ; } ;
+	BYTE getIndex (void) const { return Index ; } ;
+	BYTE getRed (void) const { return (*Palette)[Index].Red ; } ;
+	BYTE getGreen (void) const { return (*Palette)[Index].Green ; } ;
+	BYTE getBlue (void) const { return (*Palette)[Index].Blue ; } ;
 
 	private:
 	ColorPalette* Palette ;

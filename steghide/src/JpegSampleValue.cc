@@ -24,8 +24,8 @@
 #include "common.h"
 #include "JpegSampleValue.h"
 
-JpegSampleValue::JpegSampleValue (const CvrStgFile* f, int c)
-	: SampleValue(f), DctCoeff (c)
+JpegSampleValue::JpegSampleValue (int c)
+	: DctCoeff (c)
 {
 	int dctcoeff = ((DctCoeff >= 0) ? DctCoeff : -DctCoeff) ;
 	SBit = (BIT) (dctcoeff % 2) ;
@@ -43,7 +43,7 @@ SampleValue *JpegSampleValue::getNearestOppositeSampleValue() const
 	else {
 		n_coeff = DctCoeff + 1 ;
 	}
-	return ((SampleValue *) new JpegSampleValue (getFile(), n_coeff)) ;
+	return ((SampleValue *) new JpegSampleValue (n_coeff)) ;
 }
 
 UWORD32 JpegSampleValue::calcDistance (const SampleValue *s) const

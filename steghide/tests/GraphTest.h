@@ -32,7 +32,9 @@ class Graph ;
 class GraphTest : public UnitTest {
 	public:
 	GraphTest (TestSuite* s) ;
-	~GraphTest (void) ;
+
+	void setup (void) ;
+	void cleanup (void) ;
 
 	void testVertices (void) ;
 	void testSampleValues (void) ;
@@ -41,11 +43,11 @@ class GraphTest : public UnitTest {
 	void testSampleValueOppNeighs (void) ;
 	
 	private:
-	std::string* datadir ;
 	CvrStgFile *f1, *f2, *f3, *f4, *f5, *f6, *f7, *f8, *f_f ;
 	BitString *bs1, *bs2, *bs3, *bs4, *bs5, *bs6, *bs7, *bs8, *bs_f ;
 	Selector *s1, *s2, *s3, *s4, *s5, *s6, *s7, *s8, *s_f ;
 	Graph *g1, *g2, *g3, *g4, *g5, *g6, *g7, *g8, *g_f ;
+	Globals gl1, gl2, gl3, gl4, gl5, gl6, gl7, gl8, gl_f ;
 } ;
 
 #endif // ndef SH_GRAPHTEST_H

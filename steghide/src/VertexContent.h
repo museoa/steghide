@@ -24,7 +24,6 @@
 #include <functional>
 #include <list>
 
-#include "GraphAccess.h"
 #include "common.h"
 #include "wrapper_hash_set.h"
 
@@ -51,12 +50,14 @@ class Vertex ;
  * the step that finds all vertices with degree 1 only the vertex contents
  * need to be searched for degree 1 and there is only a constant number
  * of vertex contents (the maximum is | Sample-space | ^ k).
+ *
+ * <b>NOTE:</b> VertexContent relies on the Globals object pointed to by the Globs pointer.
+ * This means that it must be set correctly before using any method of a VertexContent object.
  **/
-class VertexContent : private GraphAccess {
+class VertexContent {
 	public:
 	/**
 	 * construct a vertex content object using the given sample values
-	 * \param g the graph this vertex content will be part of
 	 * \param svs the sample values that this vertex content will contain
 	 * \param sposs the positions corresponding to the sample values
 	 *
@@ -66,7 +67,7 @@ class VertexContent : private GraphAccess {
 	 * The svs array (but not the SampleValues it contains!) may be deleted by
 	 * the caller afterwards.
 	 **/
-	VertexContent (Graph* g, SampleValue**& svs, SamplePos*& sposs) ;
+	VertexContent (SampleValue**& svs, SamplePos*& sposs) ;
 
 	~VertexContent (void) ;
 

@@ -28,7 +28,9 @@
 class BmpOS2FileTest : public CvrStgFileTest {
 	public:
 	BmpOS2FileTest (TestSuite* s) ;
-	~BmpOS2FileTest (void) ;
+
+	void setup (void) ;
+	void cleanup (void) ;
 
 	void testReadWrite (void) ;
 	void testReadEmbedExtract (void) ;
@@ -36,9 +38,9 @@ class BmpOS2FileTest : public CvrStgFileTest {
 	void testPosition (void) ;
 
 	private:
-	std::string *datadir ;
 	BitString *bs1, *bs2, *bs3, *bs4 ;
 	CvrStgFile *f1, *f2, *f3, *f4 ;
+	Globals gl1, gl2, gl3, gl4 ;
 } ;
 
 #endif // ndef SH_BMPOS2FILETEST_H

@@ -24,14 +24,13 @@
 #include "Graph.h"
 #include "Vertex.h"
 
-Vertex::Vertex (Graph* g, VertexLabel l, SamplePos* sposs, VertexContent *vc)
-	: GraphAccess(g)
+Vertex::Vertex (VertexLabel l, SamplePos* sposs, VertexContent *vc)
 {
 	setLabel (l) ;
 	SamplePositions = sposs ;
 	Content = vc ;
 	VertexOccurenceIt = Content->addOccurence (this) ;
-	SampleOccurenceIts = new std::list<SampleOccurence>::iterator[TheGraph->getSamplesPerVertex()] ;
+	SampleOccurenceIts = new std::list<SampleOccurence>::iterator[Globs.TheGraph->getSamplesPerVertex()] ;
 	ShortestEdge = NULL ;
 	valid = true ;
 }
@@ -57,8 +56,8 @@ void Vertex::markDeleted ()
 
 	if (valid) {
 		// decrement neighbour degrees
-		for (unsigned short i = 0 ; i < TheGraph->getSamplesPerVertex() ; i++) {
-			const std::vector<SampleValue*>& oppneighs = TheGraph->SampleValueOppNeighs[getSampleValue(i)] ;
+		for (unsigned short i = 0 ; i < Globs.TheGraph->getSamplesPerVertex() ; i++) {
+			const std::vector<SampleValue*>& oppneighs = Globs.TheGraph->SampleValueOppNeighs[getSampleValue(i)] ;
 			for (unsigned long j = 0 ; j < oppneighs.size() ; j++) {
 				oppneighs[j]->decNumEdges() ;
 			}
@@ -68,8 +67,8 @@ void Vertex::markDeleted ()
 		VertexOccurenceIt = Content->markDeletedFromOccurences (VertexOccurenceIt) ;
 
 		// delete from sample occurences in graph
-		for (unsigned short i = 0 ; i < TheGraph->getSamplesPerVertex() ; i++) {
-			SampleOccurenceIts[i] = TheGraph->markDeletedSampleOccurence (SampleOccurenceIts[i]) ;
+		for (unsigned short i = 0 ; i < Globs.TheGraph->getSamplesPerVertex() ; i++) {
+			SampleOccurenceIts[i] = Globs.TheGraph->markDeletedSampleOccurence (SampleOccurenceIts[i]) ;
 		}
 		valid = false ;
 	}
@@ -83,16 +82,16 @@ void Vertex::unmarkDeleted ()
 
 	if (!valid) {
 		// undelete into sample occurences in graph
-		for (unsigned short i = 0 ; i < TheGraph->getSamplesPerVertex() ; i++) {
-			SampleOccurenceIts[i] = TheGraph->unmarkDeletedSampleOccurence (SampleOccurenceIts[i]) ;
+		for (unsigned short i = 0 ; i < Globs.TheGraph->getSamplesPerVertex() ; i++) {
+			SampleOccurenceIts[i] = Globs.TheGraph->unmarkDeletedSampleOccurence (SampleOccurenceIts[i]) ;
 		}
 
 		// undelete into sample occurences in graph
 		VertexOccurenceIt = Content->unmarkDeletedFromOccurences (VertexOccurenceIt) ;
 
 		// increment neighbour degrees
-		for (unsigned short i = 0 ; i < TheGraph->getSamplesPerVertex() ; i++) {
-			const std::vector<SampleValue*>& oppneighs = TheGraph->SampleValueOppNeighs[getSampleValue(i)] ;
+		for (unsigned short i = 0 ; i < Globs.TheGraph->getSamplesPerVertex() ; i++) {
+			const std::vector<SampleValue*>& oppneighs = Globs.TheGraph->SampleValueOppNeighs[getSampleValue(i)] ;
 			for (unsigned long j = 0 ; j < oppneighs.size() ; j++) {
 				oppneighs[j]->incNumEdges() ;
 			}
@@ -116,7 +115,7 @@ void Vertex::updateShortestEdge ()
 		ShortestEdge = NULL ;
 	}
 	else {
-		EdgeIterator edgeit (TheGraph, this) ;
+		EdgeIterator edgeit (this) ;
 		ShortestEdge = *edgeit ;
 	}
 }
@@ -132,7 +131,7 @@ void Vertex::print (unsigned short spc) const
 
 	std::cerr << space << "Vertex:" << std::endl ;
 	std::cerr << space << " Label: " << getLabel() << std::endl ;
-	for (unsigned short i = 0 ; i < TheGraph->getSamplesPerVertex() ; i++) {
+	for (unsigned short i = 0 ; i < Globs.TheGraph->getSamplesPerVertex() ; i++) {
 		std::cerr << space << " SamplePosition: " << getSamplePos(i) << std::endl ;
 		getSampleValue(i)->print (spc + 1) ;
 	}
@@ -141,7 +140,7 @@ void Vertex::print (unsigned short spc) const
 void Vertex::printEdges() const
 {
 	std::cerr << "edges of vertex with label " << getLabel() << std::endl ;
-	EdgeIterator edgeit (TheGraph, TheGraph->getVertex(getLabel())) ;
+	EdgeIterator edgeit (Globs.TheGraph->getVertex(getLabel())) ;
 	while (*edgeit != NULL) {
 		Edge* e = *edgeit ;
 		std::cerr << "  label of other vertex: " << e->getOtherVertex(this)->getLabel() << std::endl ;

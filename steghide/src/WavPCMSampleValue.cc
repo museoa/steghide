@@ -25,10 +25,10 @@
 #include "WavFile.h"
 #include "WavPCMSampleValue.h"
 
-WavPCMSampleValue::WavPCMSampleValue (const CvrStgFile* f, int v)
-	: SampleValue(f), Value(v)
+WavPCMSampleValue::WavPCMSampleValue (int v)
+	: SampleValue(), Value(v)
 {
-	const WavFile* wavfile = dynamic_cast<const WavFile*> (f) ;
+	const WavFile* wavfile = dynamic_cast<const WavFile*> (Globs.TheCvrStgFile) ;
 	myassert (wavfile != NULL) ;
 	unsigned short samplesize = wavfile->getBitsPerSample() ;
 
@@ -83,7 +83,7 @@ SampleValue *WavPCMSampleValue::getNearestOppositeSampleValue () const
 			n_value = Value + 1 ;
 		}
 	}
-	return ((SampleValue *) new WavPCMSampleValue (getFile(), n_value)) ;
+	return ((SampleValue *) new WavPCMSampleValue (n_value)) ;
 }
 
 UWORD32 WavPCMSampleValue::calcDistance (const SampleValue *s) const

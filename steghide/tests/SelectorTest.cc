@@ -28,15 +28,24 @@
 SelectorTest::SelectorTest (TestSuite* s)
 	: UnitTest ("Selector", s)
 {
+	ADDTESTCATEGORY (SelectorTest, testIsPermutation) ;
+	ADDTESTCATEGORY (SelectorTest, testIsIdentityPermutation) ;
+}
+
+void SelectorTest::setup ()
+{
 	s1 = new Selector (10, "a passphrase") ;
 	s2 = new Selector (50, "another passphrase") ;
 	s3 = new Selector (10000, "a large Selector object") ;
 	s4 = new Selector (128, "a smaller object again") ;
 	sid1 = new Selector (16) ;
 	sid2 = new Selector (1234) ;
+}
 
-	ADDTESTCATEGORY (SelectorTest, testIsPermutation) ;
-	ADDTESTCATEGORY (SelectorTest, testIsIdentityPermutation) ;
+void SelectorTest::cleanup ()
+{
+	delete s1 ; delete s2 ; delete s3 ; delete s4 ;
+	delete sid1 ; delete sid2 ;
 }
 
 void SelectorTest::testIsPermutation ()
@@ -44,18 +53,13 @@ void SelectorTest::testIsPermutation ()
 	addTestResult (genericTestIsPermutation (s1)) ;
 	addTestResult (genericTestIsPermutation (s2)) ;
 	addTestResult (genericTestIsPermutation (s3)) ;
+	addTestResult (genericTestIsPermutation (s4)) ;
 }
 
 void SelectorTest::testIsIdentityPermutation ()
 {
 	addTestResult (genericTestIsIdentityPermutation (sid1)) ;
 	addTestResult (genericTestIsIdentityPermutation (sid2)) ;
-}
-
-SelectorTest::~SelectorTest()
-{
-	delete s1 ; delete s2 ; delete s3 ; delete s4 ;
-	delete sid1 ; delete sid2 ;
 }
 
 bool SelectorTest::genericTestIsPermutation (Selector* s)

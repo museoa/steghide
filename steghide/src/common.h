@@ -76,6 +76,11 @@ typedef UWORD32 SampleKey ;
 #define _(S) gettext (S)
 
 //
+// global variables
+#include "Globals.h"
+extern Globals Globs ;
+
+//
 // every class should (be able to) do assertions
 // (myassert(expr) is more verbose than the standard C assert)
 #include "AssertionFailed.h"

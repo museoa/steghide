@@ -26,7 +26,9 @@
 class WavFileTest : public CvrStgFileTest {
 	public:
 	WavFileTest (TestSuite* s) ;
-	~WavFileTest (void) ;
+
+	void setup (void) ;
+	void cleanup (void) ;
 
 	void testReadWrite (void) ;
 	void testReadEmbedExtract (void) ;
@@ -34,9 +36,9 @@ class WavFileTest : public CvrStgFileTest {
 	void testPosition (void) ;
 
 	private:
-	std::string *datadir ;
 	BitString *bs1, *bs2 ;
 	CvrStgFile *f1, *f2 ;
+	Globals gl1, gl2 ;
 } ;
 
 #endif // ndef SH_BMPWINFILETEST_H

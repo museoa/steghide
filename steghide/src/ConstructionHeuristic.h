@@ -25,8 +25,6 @@
 #include <queue>
 #include <vector>
 
-#include "GraphAccess.h"
-
 class Edge ;
 class Graph ;
 class Matching ;
@@ -44,7 +42,7 @@ class Vertex ;
  * the fact that the vertices in the priority queues are ordered by the length of their
  * shortest edge. This biases the heuristic to choosing shorter edges on average.
  **/
-class ConstructionHeuristic : private GraphAccess {
+class ConstructionHeuristic {
 	public:
 	ConstructionHeuristic (Graph* g, ProgressOutput* po = NULL) ;
 
@@ -71,7 +69,8 @@ class ConstructionHeuristic : private GraphAccess {
 
 	static const unsigned int PriorityQueueRange = 1 ;
 
-	Matching *TheMatching ;
+	Graph* TheGraph ;
+	Matching* TheMatching ;
 
 	/**
 	 * get the Vertex from VerticesDeg1 that is k-nearest to top (with updated degrees and shortest edges)

@@ -30,7 +30,7 @@
 #include "WavPCMSampleValue.h"
 
 SampleValueOppositeNeighbourhood::SampleValueOppositeNeighbourhood (Graph* g, const std::vector<SampleValue*>& svalues)
-	: GraphAccess(g)
+	: TheGraph(g)
 {
 	if (svalues.size() > 0) { // graph contains at least one vertex
 		if (dynamic_cast<BmpRGBSampleValue*> (svalues[0])) {

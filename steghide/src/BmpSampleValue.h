@@ -31,7 +31,6 @@
 class BmpSampleValue : public SampleValue {
 	public:
 	BmpSampleValue (void) ;
-	BmpSampleValue (const CvrStgFile* f) ;
 
 	UWORD32 calcDistance (const SampleValue *s) const ;
 

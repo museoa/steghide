@@ -29,79 +29,99 @@
 BmpWinFileTest::BmpWinFileTest (TestSuite* s)
 	: CvrStgFileTest("BmpWinFile", s)
 {
-	datadir = new std::string (DATADIR) ;
-	bs1 = new BitString (std::string ("this is a test")) ;
-	bs2 = new BitString (std::string ("this is another test - this time a little longer")) ;
-	bs3 = new BitString (std::string ("yet another test which is even longer than the previous test bitstring")) ;
-	bs4 = new BitString (std::string ("the last test")) ;
-	f1 = CvrStgFile::readFile (*datadir + "win3x1_std.bmp") ;
-	f2 = CvrStgFile::readFile (*datadir + "win3x4_std.bmp") ;
-	f3 = CvrStgFile::readFile (*datadir + "win3x8_std.bmp") ;
-	f4 = CvrStgFile::readFile (*datadir + "win3x24_std.bmp") ;
-
 	ADDTESTCATEGORY (BmpWinFileTest, testReadWrite) ;
 	ADDTESTCATEGORY (BmpWinFileTest, testReadEmbedExtract) ;
 	ADDTESTCATEGORY (BmpWinFileTest, testReadEmbedWriteReadExtract) ;
 	ADDTESTCATEGORY (BmpWinFileTest, testPosition) ;
 }
 
-BmpWinFileTest::~BmpWinFileTest()
+void BmpWinFileTest::setup ()
 {
-	delete datadir ;
+	UnitTest::setup() ;
+
+	Globs.reset() ;
+	f1 = CvrStgFile::readFile (std::string(DATADIR) + "win3x1_std.bmp") ;
+	bs1 = new BitString (std::string ("this is a test")) ;
+	gl1 = Globs ;
+
+	Globs.reset() ;
+	f2 = CvrStgFile::readFile (std::string(DATADIR) + "win3x4_std.bmp") ;
+	bs2 = new BitString (std::string ("this is another test - this time a little longer")) ;
+	gl2 = Globs ;
+
+	Globs.reset() ;
+	f3 = CvrStgFile::readFile (std::string(DATADIR) + "win3x8_std.bmp") ;
+	bs3 = new BitString (std::string ("yet another test which is even longer than the previous test bitstring")) ;
+	gl3 = Globs ;
+
+	Globs.reset() ;
+	f4 = CvrStgFile::readFile (std::string(DATADIR) + "win3x24_std.bmp") ;
+	bs4 = new BitString (std::string ("the last test")) ;
+	gl4 = Globs ;
+}
+
+void BmpWinFileTest::cleanup ()
+{
+	UnitTest::cleanup() ;
+
 	delete bs1 ; delete bs2 ; delete bs3 ; delete bs4 ;
 	delete f1 ; delete f2 ; delete f3 ; delete f4 ;
 }
 
 void BmpWinFileTest::testReadWrite()
 {
-	addTestResult (genericTestReadWrite (*datadir + "win3x1_std.bmp")) ;
-	addTestResult (genericTestReadWrite (*datadir + "win3x4_std.bmp")) ;
-	addTestResult (genericTestReadWrite (*datadir + "win3x8_std.bmp")) ;
-	addTestResult (genericTestReadWrite (*datadir + "win3x24_std.bmp")) ;
+	Globs = gl1 ; addTestResult (genericTestReadWrite (std::string(DATADIR) + "win3x1_std.bmp")) ;
+	Globs = gl2 ; addTestResult (genericTestReadWrite (std::string(DATADIR) + "win3x4_std.bmp")) ;
+	Globs = gl3 ; addTestResult (genericTestReadWrite (std::string(DATADIR) + "win3x8_std.bmp")) ;
+	Globs = gl4 ; addTestResult (genericTestReadWrite (std::string(DATADIR) + "win3x24_std.bmp")) ;
 }
 
 void BmpWinFileTest::testReadEmbedExtract()
 {
-	addTestResult (genericTestReadEmbedExtract (*datadir + "win3x1_std.bmp", *bs1)) ;
-	addTestResult (genericTestReadEmbedExtract (*datadir + "win3x4_std.bmp", *bs2)) ;
-	addTestResult (genericTestReadEmbedExtract (*datadir + "win3x8_std.bmp", *bs3)) ;
-	addTestResult (genericTestReadEmbedExtract (*datadir + "win3x24_std.bmp", *bs4)) ;
+	Globs = gl1 ; addTestResult (genericTestReadEmbedExtract (std::string(DATADIR) + "win3x1_std.bmp", *bs1)) ;
+	Globs = gl2 ; addTestResult (genericTestReadEmbedExtract (std::string(DATADIR) + "win3x4_std.bmp", *bs2)) ;
+	Globs = gl3 ; addTestResult (genericTestReadEmbedExtract (std::string(DATADIR) + "win3x8_std.bmp", *bs3)) ;
+	Globs = gl4 ; addTestResult (genericTestReadEmbedExtract (std::string(DATADIR) + "win3x24_std.bmp", *bs4)) ;
 }
 
 void BmpWinFileTest::testReadEmbedWriteReadExtract()
 {
-	addTestResult (genericTestReadEmbedWriteReadExtract (*datadir + "win3x1_std.bmp", *bs2)) ;
-	addTestResult (genericTestReadEmbedWriteReadExtract (*datadir + "win3x4_std.bmp", *bs3)) ;
-	addTestResult (genericTestReadEmbedWriteReadExtract (*datadir + "win3x8_std.bmp", *bs4)) ;
-	addTestResult (genericTestReadEmbedWriteReadExtract (*datadir + "win3x24_std.bmp", *bs1)) ;
+	Globs = gl1 ; addTestResult (genericTestReadEmbedWriteReadExtract (std::string(DATADIR) + "win3x1_std.bmp", *bs2)) ;
+	Globs = gl2 ; addTestResult (genericTestReadEmbedWriteReadExtract (std::string(DATADIR) + "win3x4_std.bmp", *bs3)) ;
+	Globs = gl3 ; addTestResult (genericTestReadEmbedWriteReadExtract (std::string(DATADIR) + "win3x8_std.bmp", *bs4)) ;
+	Globs = gl4 ; addTestResult (genericTestReadEmbedWriteReadExtract (std::string(DATADIR) + "win3x24_std.bmp", *bs1)) ;
 }
 
 void BmpWinFileTest::testPosition()
 {
-	addTestResult (genericTestPosition (f1, 0, new BmpPaletteSampleValue (f1, 1))) ;
-	addTestResult (genericTestPosition (f1, 1, new BmpPaletteSampleValue (f1, 0))) ;
-	addTestResult (genericTestPosition (f1, 143, new BmpPaletteSampleValue (f1, 0))) ;
-	addTestResult (genericTestPosition (f1, 144, new BmpPaletteSampleValue (f1, 1))) ;
-	addTestResult (genericTestPosition (f1, 2303, new BmpPaletteSampleValue (f1, 1))) ;
-	addTestResult (genericTestPosition (f1, 2302, new BmpPaletteSampleValue (f1, 1))) ;
+	Globs = gl1 ;
+	addTestResult (genericTestPosition (f1, 0, new BmpPaletteSampleValue (1))) ;
+	addTestResult (genericTestPosition (f1, 1, new BmpPaletteSampleValue (0))) ;
+	addTestResult (genericTestPosition (f1, 143, new BmpPaletteSampleValue (0))) ;
+	addTestResult (genericTestPosition (f1, 144, new BmpPaletteSampleValue (1))) ;
+	addTestResult (genericTestPosition (f1, 2303, new BmpPaletteSampleValue (1))) ;
+	addTestResult (genericTestPosition (f1, 2302, new BmpPaletteSampleValue (1))) ;
 
-	addTestResult (genericTestPosition (f2, 0, new BmpPaletteSampleValue (f2, 6))) ;
-	addTestResult (genericTestPosition (f2, 20, new BmpPaletteSampleValue (f2, 8))) ;
-	addTestResult (genericTestPosition (f2, 47, new BmpPaletteSampleValue (f2, 3))) ;
-	addTestResult (genericTestPosition (f2, 48, new BmpPaletteSampleValue (f2, 4))) ;
-	addTestResult (genericTestPosition (f2, 673, new BmpPaletteSampleValue (f2, 10))) ;
-	addTestResult (genericTestPosition (f2, 2303, new BmpPaletteSampleValue (f2, 13))) ;
+	Globs = gl2 ;
+	addTestResult (genericTestPosition (f2, 0, new BmpPaletteSampleValue (6))) ;
+	addTestResult (genericTestPosition (f2, 20, new BmpPaletteSampleValue (8))) ;
+	addTestResult (genericTestPosition (f2, 47, new BmpPaletteSampleValue (3))) ;
+	addTestResult (genericTestPosition (f2, 48, new BmpPaletteSampleValue (4))) ;
+	addTestResult (genericTestPosition (f2, 673, new BmpPaletteSampleValue (10))) ;
+	addTestResult (genericTestPosition (f2, 2303, new BmpPaletteSampleValue (13))) ;
 
-	addTestResult (genericTestPosition (f3, 0, new BmpPaletteSampleValue (f3, 81))) ;
-	addTestResult (genericTestPosition (f3, 4, new BmpPaletteSampleValue (f3, 242))) ;
-	addTestResult (genericTestPosition (f3, 47, new BmpPaletteSampleValue (f3, 145))) ;
-	addTestResult (genericTestPosition (f3, 48, new BmpPaletteSampleValue (f3, 35))) ;
-	addTestResult (genericTestPosition (f3, 2302, new BmpPaletteSampleValue (f3, 192))) ;
+	Globs = gl3 ;
+	addTestResult (genericTestPosition (f3, 0, new BmpPaletteSampleValue (81))) ;
+	addTestResult (genericTestPosition (f3, 4, new BmpPaletteSampleValue (242))) ;
+	addTestResult (genericTestPosition (f3, 47, new BmpPaletteSampleValue (145))) ;
+	addTestResult (genericTestPosition (f3, 48, new BmpPaletteSampleValue (35))) ;
+	addTestResult (genericTestPosition (f3, 2302, new BmpPaletteSampleValue (192))) ;
 
-	addTestResult (genericTestPosition (f4, 0, new BmpRGBSampleValue (f4, 81, 105, 16))) ;
-	addTestResult (genericTestPosition (f4, 1, new BmpRGBSampleValue (f4, 110, 151, 26))) ;
-	addTestResult (genericTestPosition (f4, 12, new BmpRGBSampleValue (f4, 159, 160, 37))) ;
-	addTestResult (genericTestPosition (f4, 191, new BmpRGBSampleValue (f4, 127, 68, 96))) ;
-	addTestResult (genericTestPosition (f4, 192, new BmpRGBSampleValue (f4, 69, 132, 161))) ;
-	addTestResult (genericTestPosition (f4, 2303, new BmpRGBSampleValue (f4, 109, 169, 133))) ;
+	Globs = gl4 ;
+	addTestResult (genericTestPosition (f4, 0, new BmpRGBSampleValue (81, 105, 16))) ;
+	addTestResult (genericTestPosition (f4, 1, new BmpRGBSampleValue (110, 151, 26))) ;
+	addTestResult (genericTestPosition (f4, 12, new BmpRGBSampleValue (159, 160, 37))) ;
+	addTestResult (genericTestPosition (f4, 191, new BmpRGBSampleValue (127, 68, 96))) ;
+	addTestResult (genericTestPosition (f4, 192, new BmpRGBSampleValue (69, 132, 161))) ;
+	addTestResult (genericTestPosition (f4, 2303, new BmpRGBSampleValue (109, 169, 133))) ;
 }

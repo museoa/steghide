@@ -37,7 +37,6 @@ class CvrStgFile : public CvrStgObject {
 	static CvrStgFile *readFile (const std::string& fn) ;
 
 	CvrStgFile (void) ;
-	CvrStgFile (BinaryIO *io) ;
 	virtual ~CvrStgFile (void) ;
 
 	virtual void read (BinaryIO *io) ;

@@ -20,15 +20,15 @@
 
 #include "BmpRGBSampleValue.h"
 
-BmpRGBSampleValue::BmpRGBSampleValue (const CvrStgFile* f, BYTE r, BYTE g, BYTE b)
-	: BmpSampleValue(f), Color(r, g, b)
+BmpRGBSampleValue::BmpRGBSampleValue (BYTE r, BYTE g, BYTE b)
+	: Color(r, g, b)
 {
 	SBit = (BIT) ((r & 1) ^ (g & 1) ^ (b & 1)) ;
 	Key = ((unsigned long) r << 16) | ((unsigned long) g << 8) | ((unsigned long) b) ;
 }
 
-BmpRGBSampleValue::BmpRGBSampleValue (const CvrStgFile* f, RGBTriple t)
-	: BmpSampleValue(f), Color(t)
+BmpRGBSampleValue::BmpRGBSampleValue (RGBTriple t)
+	: Color(t)
 {
 	SBit = (BIT) ((t.Red & 1) ^ (t.Green & 1) ^ (t.Blue & 1)) ;
 	Key = ((unsigned long) t.Red << 16) | ((unsigned long) t.Green << 8) | ((unsigned long) t.Blue) ;
@@ -46,7 +46,7 @@ SampleValue *BmpRGBSampleValue::getNearestOppositeSampleValue () const
 	addNOSCandidate (candidates, Color.Red, Color.Green, minus(Color.Blue, 1)) ;
 
 	unsigned int rnd = (unsigned int) RndSrc.getValue (candidates.size()) ;
-	return ((SampleValue*) new BmpRGBSampleValue (getFile(), candidates[rnd])) ;
+	return ((SampleValue*) new BmpRGBSampleValue (candidates[rnd])) ;
 }
 
 void BmpRGBSampleValue::addNOSCandidate (std::vector<RGBTriple>& cands, BYTE r, BYTE g, BYTE b) const

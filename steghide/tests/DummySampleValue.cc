@@ -31,7 +31,7 @@ UWORD32 DummySampleValue::calcDistance (const SampleValue* s) const
 
 bool DummySampleValue::isNeighbour (const SampleValue* s) const
 {
-	DummyFile *f = (DummyFile*) getFile() ;
+	DummyFile *f = (DummyFile*) Globs.TheCvrStgFile ;
 	DummySampleValue *sample = (DummySampleValue*) s ;
 	std::vector<std::vector<bool> >* svam = f->getSampleValueAdjacencyMatrix() ;
 	return (*svam)[Value][sample->getValue()] ;
@@ -54,5 +54,5 @@ SampleValue* DummySampleValue::getNearestOppositeSampleValue (void) const
 			n_value = Value + 1 ;
 		}
 	}
-	return ((SampleValue *) new DummySampleValue (getFile(), n_value)) ;
+	return ((SampleValue *) new DummySampleValue (n_value)) ;
 }

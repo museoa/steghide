@@ -31,6 +31,11 @@ UnitTest::~UnitTest()
 	}
 }
 
+void UnitTest::setup ()
+{
+	GlobsBackup = Globs ;
+}
+
 void UnitTest::run()
 {
 	getSuite()->startUnit (getName()) ;
@@ -49,6 +54,11 @@ void UnitTest::run()
 		getSuite()->endCategory ((*it)->getName()) ;
 	}
 	getSuite()->endUnit (getName()) ;
+}
+
+void UnitTest::cleanup ()
+{
+	Globs = GlobsBackup ;
 }
 
 void UnitTest::addTestCategory (TestCategory* tc)

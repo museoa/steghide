@@ -25,9 +25,7 @@
 
 class JpegSampleValue : public SampleValue {
 	public:
-	JpegSampleValue (void)
-		: SampleValue(NULL) { setRadius (DefaultRadius) ; } ;
-	JpegSampleValue (const CvrStgFile* f, int c) ;
+	JpegSampleValue (int c) ;
 
 	SampleValue* getNearestOppositeSampleValue (void) const ;
 	UWORD32 calcDistance (const SampleValue *s) const ;

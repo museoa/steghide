@@ -29,8 +29,7 @@ class CvrStgFile ;
 
 class WavPCMSampleValue : public SampleValue {
 	public:
-	WavPCMSampleValue (void) : SampleValue(NULL) {} ;
-	WavPCMSampleValue (const CvrStgFile* f, int v) ;
+	WavPCMSampleValue (int v) ;
 
 	SampleValue* getNearestOppositeSampleValue (void) const ;
 	UWORD32 calcDistance (const SampleValue *s) const ;

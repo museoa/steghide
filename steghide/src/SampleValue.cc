@@ -22,11 +22,6 @@
 #include "SampleValue.h"
 #include "CvrStgFile.h"
 
-SampleValue::SampleValue (const CvrStgFile* f)
-{
-	File = f ;
-}
-
 bool SampleValue::isNeighbour (const SampleValue *s) const
 {
 	return (calcDistance (s) <= Radius) ;

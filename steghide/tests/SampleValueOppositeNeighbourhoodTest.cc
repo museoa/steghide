@@ -25,9 +25,12 @@
 SampleValueOppositeNeighbourhoodTest::SampleValueOppositeNeighbourhoodTest (TestSuite* s)
 	: UnitTest ("SampleValueOppositeNeighbourhood", s)
 {
-	SVEmpty = std::vector<SampleValue*> (100) ;
-
 	ADDTESTCATEGORY (SampleValueOppositeNeighbourhoodTest, testQuicksort) ;
+}
+
+void SampleValueOppositeNeighbourhoodTest::setup ()
+{
+	SVEmpty = std::vector<SampleValue*> (100) ;
 }
 
 void SampleValueOppositeNeighbourhoodTest::testQuicksort ()

@@ -29,67 +29,84 @@
 BmpOS2FileTest::BmpOS2FileTest (TestSuite* s)
 	: CvrStgFileTest("BmpOS2File", s)
 {
-	datadir = new std::string (DATADIR) ;
-	bs1 = new BitString (std::string ("a test")) ;
-	bs2 = new BitString (std::string ("another test - this time a little longer")) ;
-	bs3 = new BitString (std::string ("yet another test")) ;
-	bs4 = new BitString (std::string ("last test")) ;
-
-	f1 = CvrStgFile::readFile (*datadir + "os21x1_std.bmp") ;
-	f2 = CvrStgFile::readFile (*datadir + "os21x4_std.bmp") ;
-	f3 = CvrStgFile::readFile (*datadir + "os21x8_std.bmp") ;
-	f4 = CvrStgFile::readFile (*datadir + "os21x24_std.bmp") ;
-
 	ADDTESTCATEGORY (BmpOS2FileTest, testReadWrite) ;
 	ADDTESTCATEGORY (BmpOS2FileTest, testReadEmbedExtract) ;
 	ADDTESTCATEGORY (BmpOS2FileTest, testReadEmbedWriteReadExtract) ;
 	ADDTESTCATEGORY (BmpOS2FileTest, testPosition) ;
 }
 
-BmpOS2FileTest::~BmpOS2FileTest()
+void BmpOS2FileTest::setup ()
 {
-	delete datadir ;
+	UnitTest::setup() ;
+
+	Globs.reset() ;
+	bs1 = new BitString (std::string ("a test")) ;
+	f1 = CvrStgFile::readFile (std::string(DATADIR) + "os21x1_std.bmp") ;
+	gl1 = Globs ;
+
+	Globs.reset() ;
+	bs2 = new BitString (std::string ("another test - this time a little longer")) ;
+	f2 = CvrStgFile::readFile (std::string(DATADIR) + "os21x4_std.bmp") ;
+	gl2 = Globs ;
+
+	Globs.reset() ;
+	bs3 = new BitString (std::string ("yet another test")) ;
+	f3 = CvrStgFile::readFile (std::string(DATADIR) + "os21x8_std.bmp") ;
+	gl3 = Globs ;
+
+	Globs.reset() ;
+	bs4 = new BitString (std::string ("last test")) ;
+	f4 = CvrStgFile::readFile (std::string(DATADIR) + "os21x24_std.bmp") ;
+	gl4 = Globs ;
+}
+
+void BmpOS2FileTest::cleanup ()
+{
+	UnitTest::cleanup() ;
+
 	delete bs1 ; delete bs2 ; delete bs3 ; delete bs4 ;
 	delete f1 ; delete f2 ; delete f3 ; delete f4 ;
 }
 
 void BmpOS2FileTest::testReadWrite (void)
 {
-	addTestResult(genericTestReadWrite(*datadir + "os21x1_std.bmp")) ;
-	addTestResult(genericTestReadWrite(*datadir + "os21x4_std.bmp")) ;
-	addTestResult(genericTestReadWrite(*datadir + "os21x8_std.bmp")) ;
-	addTestResult(genericTestReadWrite(*datadir + "os21x24_std.bmp")) ;
+	Globs = gl1 ; addTestResult(genericTestReadWrite(std::string(DATADIR) + "os21x1_std.bmp")) ;
+	Globs = gl2 ; addTestResult(genericTestReadWrite(std::string(DATADIR) + "os21x4_std.bmp")) ;
+	Globs = gl3 ; addTestResult(genericTestReadWrite(std::string(DATADIR) + "os21x8_std.bmp")) ;
+	Globs = gl4 ; addTestResult(genericTestReadWrite(std::string(DATADIR) + "os21x24_std.bmp")) ;
 }
 
 void BmpOS2FileTest::testReadEmbedExtract (void)
 {
-	addTestResult(genericTestReadEmbedExtract(*datadir + "os21x1_std.bmp", *bs1)) ;
-	addTestResult(genericTestReadEmbedExtract(*datadir + "os21x4_std.bmp", *bs2)) ;
-	addTestResult(genericTestReadEmbedExtract(*datadir + "os21x8_std.bmp", *bs3)) ;
-	addTestResult(genericTestReadEmbedExtract(*datadir + "os21x24_std.bmp", *bs4)) ;
+	Globs = gl1 ; addTestResult(genericTestReadEmbedExtract(std::string(DATADIR) + "os21x1_std.bmp", *bs1)) ;
+	Globs = gl2 ; addTestResult(genericTestReadEmbedExtract(std::string(DATADIR) + "os21x4_std.bmp", *bs2)) ;
+	Globs = gl3 ; addTestResult(genericTestReadEmbedExtract(std::string(DATADIR) + "os21x8_std.bmp", *bs3)) ;
+	Globs = gl4 ; addTestResult(genericTestReadEmbedExtract(std::string(DATADIR) + "os21x24_std.bmp", *bs4)) ;
 }
 
 void BmpOS2FileTest::testReadEmbedWriteReadExtract (void)
 {
-	addTestResult(genericTestReadEmbedWriteReadExtract(*datadir + "os21x1_std.bmp", *bs2)) ;
-	addTestResult(genericTestReadEmbedWriteReadExtract(*datadir + "os21x4_std.bmp", *bs3)) ;
-	addTestResult(genericTestReadEmbedWriteReadExtract(*datadir + "os21x8_std.bmp", *bs4)) ;
-	addTestResult(genericTestReadEmbedWriteReadExtract(*datadir + "os21x24_std.bmp", *bs1)) ;
+	Globs = gl1 ; addTestResult(genericTestReadEmbedWriteReadExtract(std::string(DATADIR) + "os21x1_std.bmp", *bs2)) ;
+	Globs = gl2 ; addTestResult(genericTestReadEmbedWriteReadExtract(std::string(DATADIR) + "os21x4_std.bmp", *bs3)) ;
+	Globs = gl3 ; addTestResult(genericTestReadEmbedWriteReadExtract(std::string(DATADIR) + "os21x8_std.bmp", *bs4)) ;
+	Globs = gl4 ; addTestResult(genericTestReadEmbedWriteReadExtract(std::string(DATADIR) + "os21x24_std.bmp", *bs1)) ;
 }
 
 void BmpOS2FileTest::testPosition()
 {
-	addTestResult (genericTestPosition (f1, 0, new BmpPaletteSampleValue (f1, 0))) ;
-	addTestResult (genericTestPosition (f1, 1, new BmpPaletteSampleValue (f1, 1))) ;
-	addTestResult (genericTestPosition (f1, 2, new BmpPaletteSampleValue (f1, 0))) ;
-	addTestResult (genericTestPosition (f1, 47, new BmpPaletteSampleValue (f1, 1))) ;
-	addTestResult (genericTestPosition (f1, 48, new BmpPaletteSampleValue (f1, 1))) ;
-	addTestResult (genericTestPosition (f1, 2299, new BmpPaletteSampleValue (f1, 0))) ;
-	addTestResult (genericTestPosition (f1, 2303, new BmpPaletteSampleValue (f1, 1))) ;
+	Globs = gl1 ;
+	addTestResult (genericTestPosition (f1, 0, new BmpPaletteSampleValue (0))) ;
+	addTestResult (genericTestPosition (f1, 1, new BmpPaletteSampleValue (1))) ;
+	addTestResult (genericTestPosition (f1, 2, new BmpPaletteSampleValue (0))) ;
+	addTestResult (genericTestPosition (f1, 47, new BmpPaletteSampleValue (1))) ;
+	addTestResult (genericTestPosition (f1, 48, new BmpPaletteSampleValue (1))) ;
+	addTestResult (genericTestPosition (f1, 2299, new BmpPaletteSampleValue (0))) ;
+	addTestResult (genericTestPosition (f1, 2303, new BmpPaletteSampleValue (1))) ;
 
-	addTestResult (genericTestPosition (f2, 0, new BmpPaletteSampleValue (f2, 3))) ;
-	addTestResult (genericTestPosition (f2, 10, new BmpPaletteSampleValue (f2, 1))) ;
-	addTestResult (genericTestPosition (f2, 95, new BmpPaletteSampleValue (f2, 5))) ;
-	addTestResult (genericTestPosition (f2, 96, new BmpPaletteSampleValue (f2, 2))) ;
-	addTestResult (genericTestPosition (f2, 2208, new BmpPaletteSampleValue (f2, 7))) ;
+	Globs = gl2 ;
+	addTestResult (genericTestPosition (f2, 0, new BmpPaletteSampleValue (3))) ;
+	addTestResult (genericTestPosition (f2, 10, new BmpPaletteSampleValue (1))) ;
+	addTestResult (genericTestPosition (f2, 95, new BmpPaletteSampleValue (5))) ;
+	addTestResult (genericTestPosition (f2, 96, new BmpPaletteSampleValue (2))) ;
+	addTestResult (genericTestPosition (f2, 2208, new BmpPaletteSampleValue (7))) ;
 }

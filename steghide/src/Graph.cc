@@ -36,6 +36,8 @@ Graph::Graph (CvrStgFile *cvr, const BitString& emb, Selector& sel)
 	VerboseMessage v (_("creating the graph...")) ;
 	v.printMessage() ;
 
+	Globs.TheGraph = this ;
+
 	File = cvr ;
 	SamplesPerEBit = File->getSamplesPerEBit() ;
 
@@ -119,7 +121,7 @@ void Graph::constructVertices (std::vector<SamplePos*>& sposs, std::vector<Sampl
 
 	for (VertexLabel i = 0 ; i < numvertices ; i++) {
 		// has vertex content already been created ?
-		VertexContent *vc = new VertexContent (this, svalues[i], sposs[i]) ;
+		VertexContent *vc = new VertexContent (svalues[i], sposs[i]) ;
 		sgi::hash_set<VertexContent*,sgi::hash<VertexContent*>,VertexContentsEqual>::iterator res = vc_set.find (vc) ;
 		if (res == vc_set.end()) { // vc has not been found - add it!
 			vc_set.insert (vc) ;
@@ -134,7 +136,7 @@ void Graph::constructVertices (std::vector<SamplePos*>& sposs, std::vector<Sampl
 			vc = *res ;
 		}
 
-		Vertices[i] = new Vertex (this, i, sposs[i], vc) ;
+		Vertices[i] = new Vertex (i, sposs[i], vc) ;
 	}
 
 #ifdef DEBUG

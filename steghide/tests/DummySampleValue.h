@@ -26,8 +26,8 @@
 
 class DummySampleValue : public SampleValue {
 	public:
-	DummySampleValue (const CvrStgFile* f, UWORD16 v)
-		: SampleValue(f), Value(v)
+	DummySampleValue (UWORD16 v)
+		: SampleValue(), Value(v)
 		{ SBit = (v % 2) ; Key = v ; } ;
 
 	UWORD16 getValue (void) const

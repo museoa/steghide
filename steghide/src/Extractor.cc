@@ -36,28 +36,28 @@ Extractor::Extractor ()
 
 void Extractor::extract ()
 {
-	CvrStgFile *stgfile = CvrStgFile::readFile (StegoFileName) ;
+	Globs.TheCvrStgFile = CvrStgFile::readFile (StegoFileName) ;
 	EmbData embdata (EmbData::EXTRACT) ;
 
-	Selector sel (stgfile->getNumSamples(), Args.Passphrase.getValue()) ;
+	Selector sel (Globs.TheCvrStgFile->getNumSamples(), Args.Passphrase.getValue()) ;
 
-	unsigned int sam_ebit = stgfile->getSamplesPerEBit() ;
+	unsigned int sam_ebit = Globs.TheCvrStgFile->getSamplesPerEBit() ;
 	unsigned long ebit_idx = 0 ;
 	while (!embdata.finished()) {
 		unsigned long bitsneeded = embdata.getNumBitsNeeded() ;
-		if (ebit_idx + bitsneeded > stgfile->getNumSamples()) {
-			if (stgfile->is_std()) {
+		if (ebit_idx + bitsneeded > Globs.TheCvrStgFile->getNumSamples()) {
+			if (Globs.TheCvrStgFile->is_std()) {
 				throw SteghideError (_("the stego data from standard input is too short to contain the embedded data (file corruption ?).")) ;
 			}
 			else {
-				throw SteghideError (_("the stego file \"%s\" is too short to contain the embedded data (file corruption ?)."), stgfile->getName().c_str()) ;
+				throw SteghideError (_("the stego file \"%s\" is too short to contain the embedded data (file corruption ?)."), Globs.TheCvrStgFile->getName().c_str()) ;
 			}
 		}
 		BitString bits ;
 		for (unsigned long i = 0 ; i < bitsneeded ; i++, ebit_idx++) {
 			BIT xorresult = 0 ;
 			for (unsigned int j = 0 ; j < sam_ebit ; j++) {
-				xorresult ^= stgfile->getSampleBit (sel[(ebit_idx * sam_ebit) + j]) ;
+				xorresult ^= Globs.TheCvrStgFile->getSampleBit (sel[(ebit_idx * sam_ebit) + j]) ;
 			}
 			bits.append (xorresult) ;
 		}

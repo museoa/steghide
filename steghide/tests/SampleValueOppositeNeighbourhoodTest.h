@@ -34,6 +34,8 @@ class SampleValueOppositeNeighbourhoodTest : public UnitTest {
 	public:
 	SampleValueOppositeNeighbourhoodTest (TestSuite* s) ;
 
+	void setup (void) ;
+
 	void testQuicksort (void) ;
 
 	private:

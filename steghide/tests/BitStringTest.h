@@ -33,7 +33,9 @@
 class BitStringTest : public UnitTest {
 	public:
 	BitStringTest (TestSuite* s) ;
-	~BitStringTest (void) ;
+
+	void setup (void) ;
+	void cleanup (void) ;
 
 	void testBitInputOutput (void) ;
 	void testLength (void) ;

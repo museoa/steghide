@@ -24,12 +24,11 @@
 #include <vector>
 
 #include "common.h"
-#include "GraphAccess.h"
 #include "SampleValue.h"
 
-class SampleValueOppositeNeighbourhood : private GraphAccess {
+class SampleValueOppositeNeighbourhood {
 	public:
-	SampleValueOppositeNeighbourhood (void) {} ;
+	SampleValueOppositeNeighbourhood (void) : TheGraph(NULL) {} ;
 	SampleValueOppositeNeighbourhood (Graph* g, const std::vector<SampleValue*>& svalues) ;
 
 	const std::vector<SampleValue*>& operator[] (const SampleValueLabel lbl) const
@@ -60,6 +59,9 @@ class SampleValueOppositeNeighbourhood : private GraphAccess {
 	} ;
 
 	std::vector<std::vector<SampleValue*> > OppNeighs ;
+
+	/// the underlying Graph object
+	Graph* TheGraph ;
 
 	void calcOppNeighs_generic (const std::vector<SampleValue*> &svalues) ;
 	void calcOppNeighs_rgb (const std::vector<SampleValue*> &svalues) ;

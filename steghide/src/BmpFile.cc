@@ -29,12 +29,6 @@
 #include "BmpRGBSampleValue.h"
 #include "error.h"
 
-BmpFile::BmpFile ()
-	: CvrStgFile()
-{
-	// empty
-}
-
 BmpFile::BmpFile (BinaryIO *io)
 	: CvrStgFile()
 {
@@ -141,11 +135,11 @@ SampleValue *BmpFile::getSampleValue (SamplePos pos) const
 			for (unsigned short i = 0 ; i < bitcount ; i++) {
 				index |= ((bitmap[row][column] & (1 << (firstbit + i))) >> firstbit) ;
 			}
-			retval = (SampleValue*) new BmpPaletteSampleValue (this, index) ;
+			retval = (SampleValue*) new BmpPaletteSampleValue (index) ;
 		break ; }
 
 		case 24: {
-			retval = (SampleValue*) new BmpRGBSampleValue (this, bitmap[row][column + 2], bitmap[row][column + 1], bitmap[row][column]) ;
+			retval = (SampleValue*) new BmpRGBSampleValue (bitmap[row][column + 2], bitmap[row][column + 1], bitmap[row][column]) ;
 		break ; }
 	}
 	return retval ;

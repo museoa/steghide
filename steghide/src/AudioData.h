@@ -150,7 +150,7 @@ template<AUDIOSAMPLETYPE Type, class ValueType, class SampleValueType>
 SampleValue* AudioDataImpl<Type,ValueType,SampleValueType>::getSampleValue (const SamplePos pos) const
 {
 	myassert (pos < Data.size()) ;
-	return ((SampleValue*) new SampleValueType (TheCvrStgFile, Data[pos])) ;
+	return ((SampleValue*) new SampleValueType (Data[pos])) ;
 }
 
 template<AUDIOSAMPLETYPE Type, class ValueType, class SampleValueType>

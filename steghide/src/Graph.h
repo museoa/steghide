@@ -49,8 +49,6 @@ struct VertexContentsEqual ;
  **/
 class Graph {
 	public:
-	Graph (void) {} ;
-
 	/**
 	 * construct a graph
 	 * \param cvr the underlying cover file
@@ -132,7 +130,6 @@ class Graph {
 	//
 	friend class ConstructionHeuristic ;
 	friend class EdgeIterator ;
-	friend class GraphAccess ;
 	friend class SampleValueOppositeNeighbourhood ;
 	friend class Vertex ;
 	friend class VertexContent ;

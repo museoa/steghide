@@ -40,7 +40,7 @@ unsigned long DummyFile::getNumSamples () const
 
 SampleValue* DummyFile::getSampleValue (const SamplePos pos) const
 {
-	return (SampleValue*) (new DummySampleValue (this, Samples[pos])) ;
+	return (SampleValue*) (new DummySampleValue (Samples[pos])) ;
 }
 
 void DummyFile::replaceSample (const SamplePos pos, const SampleValue* s)

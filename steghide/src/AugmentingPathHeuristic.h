@@ -21,7 +21,6 @@
 #ifndef SH_AUGHEUR_H
 #define SH_AUGHEUR_H
 
-#include "GraphAccess.h"
 #include "Vertex.h"
 
 class Edge ;
@@ -32,7 +31,7 @@ class Matching ;
 /**
  * \class AugmentingPathHeuristic
  **/
-class AugmentingPathHeuristic : private GraphAccess {
+class AugmentingPathHeuristic {
 	public:
 	/**
 	 * construct an AugmentingPathHeuristic object
@@ -76,6 +75,7 @@ class AugmentingPathHeuristic : private GraphAccess {
 	bool isVisited (VertexLabel vlbl) const
 		{ return (TimeCounters[vlbl] == TimeCounter) ; } ;
 
+	Graph* TheGraph ;
 	Matching* TheMatching ;
 
 	UWORD32 TimeCounter ;

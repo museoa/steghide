@@ -41,9 +41,16 @@ class SampleValueTest : public UnitTest {
 	 **/
 	bool genericTestDistance (SampleValue* s1, SampleValue* s2, float dist) ;
 
-	// with reflexivity
+	/**
+	 * generic neighbourhood test
+	 * \param s1 a sample value
+	 * \param s2 another sample value
+	 * \param res true iff they are neighbours
+	 * \return true iff calling isNeighbour (with reflexivity) equals res
+	 **/
+	bool genericTestIsNeighbour (SampleValue* s1, SampleValue* s2, bool res) ;
+
 	bool areOpposite (SampleValue* s1, SampleValue* s2) ;
-	bool areNeighbours (SampleValue* s1, SampleValue* s2) ;
 } ;
 
 #endif // ndef SH_SAMPLEVALUETEST_H

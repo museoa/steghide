@@ -29,18 +29,26 @@
 MatchingTest::MatchingTest (TestSuite* s)
 	: UnitTest ("Matching", s)
 {
+	ADDTESTCATEGORY (MatchingTest, testAddRemoveEdge) ;
+}
+
+void MatchingTest::setup ()
+{
+	UnitTest::setup() ;
+
+	Globs.reset() ;
 	std::vector<std::list<UWORD16> > adjlist1 (4) ;
 	adjlist1[0].push_back(1) ; adjlist1[0].push_back(2) ;
 	adjlist1[1].push_back(2) ; adjlist1[1].push_back(3) ;
 	DummyFile::createGraph (adjlist1, &bs1, &f1, &s1) ;
 	g1 = new Graph (f1, *bs1, *s1) ;
 	m1 = new Matching (g1) ;
-	
-	ADDTESTCATEGORY (MatchingTest, testAddRemoveEdge) ;
+	gl1 = Globs ;
 }
 
-MatchingTest::~MatchingTest ()
+void MatchingTest::cleanup ()
 {
+	UnitTest::cleanup() ;
 #if 0
 	// FIXME - causes unittests to crash at end of destructor
 	delete m1 ;
@@ -54,6 +62,8 @@ MatchingTest::~MatchingTest ()
 void MatchingTest::testAddRemoveEdge ()
 {
 	{ // test Matching m1
+		Globs = gl1 ;
+
 		Edge *e1 = new Edge (g1->getVertex(0), 0, g1->getVertex(2), 1) ;
 		m1->addEdge (e1) ;
 		addTestResult (	m1->isMatched((VertexLabel) 0) &&

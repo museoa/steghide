@@ -22,8 +22,8 @@
 #include <clocale>
 
 #include "common.h"
-#include "error.h"
 #include "Session.h"
+#include "SteghideError.h"
 
 #ifdef WIN32 // locale support on Windows
 
@@ -63,6 +63,7 @@ int main (int argc, char *argv[])
 {
 	try {
 		gettext_init() ;
+
 		Args = Arguments (argc, argv) ;
 		Args.parse() ;
 

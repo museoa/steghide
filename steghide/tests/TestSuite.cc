@@ -40,7 +40,9 @@ void TestSuite::run()
 {
 	SuiteOk = true ;
 	for (std::vector<UnitTest*>::iterator it = UnitTests.begin() ; it != UnitTests.end() ; it++) {
+		(*it)->setup() ;
 		(*it)->run() ;
+		(*it)->cleanup() ;
 	}
 }
 

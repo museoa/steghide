@@ -26,7 +26,7 @@
 #include "msg.h"
 
 Matching::Matching (Graph* g, ProgressOutput* po)
-	: GraphAccess(g), PrOut(po)
+	: TheGraph(g), PrOut(po)
 {
 	unsigned long nvertices = TheGraph->getNumVertices() ;
 	for (unsigned long i = 0 ; i < nvertices ; i++) {

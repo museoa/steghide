@@ -29,7 +29,9 @@ class Selector ;
 class SelectorTest : public UnitTest {
 	public:
 	SelectorTest (TestSuite* s) ;
-	~SelectorTest (void) ;
+
+	void setup (void) ;
+	void cleanup (void) ;
 
 	void testIsPermutation (void) ;
 	void testIsIdentityPermutation (void) ;

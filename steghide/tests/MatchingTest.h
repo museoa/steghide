@@ -36,7 +36,9 @@ class Selector ;
 class MatchingTest : public UnitTest {
 	public:
 	MatchingTest (TestSuite* s) ;
-	~MatchingTest (void) ;
+
+	void setup (void) ;
+	void cleanup (void) ;
 
 	void testAddRemoveEdge (void) ;
 
@@ -46,6 +48,7 @@ class MatchingTest : public UnitTest {
 	Selector *s1 ;
 	Graph *g1 ;
 	Matching *m1 ;
+	Globals gl1 ;
 } ;
 
 #endif // ndef SH_MATCHINGTEST_H

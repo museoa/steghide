@@ -27,12 +27,6 @@ BmpSampleValue::BmpSampleValue (void)
 	setRadius (DefaultRadius) ;
 }
 
-BmpSampleValue::BmpSampleValue (const CvrStgFile* f)
-		: SampleValue (f)
-{
-	setRadius (DefaultRadius) ;
-}
-
 UWORD32 BmpSampleValue::calcDistance (const SampleValue *s) const
 {
 	const BmpSampleValue *sample = (const BmpSampleValue*) s ;

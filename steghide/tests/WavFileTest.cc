@@ -26,41 +26,51 @@
 WavFileTest::WavFileTest (TestSuite* s)
 	: CvrStgFileTest("WavFile", s)
 {
-	datadir = new std::string (DATADIR) ;
-	bs1 = new BitString (std::string ("this is a test string for the WavFile")) ;
-	bs2 = new BitString (std::string ("this is another test - this time a little longer, but also for the WavFile unit test")) ;
-	f1 = CvrStgFile::readFile (*datadir + "pcm8_std.wav") ;
-	f2 = CvrStgFile::readFile (*datadir + "pcm16_std.wav") ;
-
 	ADDTESTCATEGORY (WavFileTest, testReadWrite) ;
 	ADDTESTCATEGORY (WavFileTest, testReadEmbedExtract) ;
 	ADDTESTCATEGORY (WavFileTest, testReadEmbedWriteReadExtract) ;
 	// TODO ADDTESTCATEGORY (WavFileTest, testPosition) ;
 }
 
-WavFileTest::~WavFileTest()
+void WavFileTest::setup ()
 {
-	delete datadir ;
+	UnitTest::setup() ;
+
+	Globs.reset() ;
+	f1 = CvrStgFile::readFile (std::string(DATADIR) + "pcm8_std.wav") ;
+	bs1 = new BitString (std::string ("this is a test string for the WavFile")) ;
+	gl1 = Globs ;
+
+	Globs.reset() ;
+	f2 = CvrStgFile::readFile (std::string(DATADIR) + "pcm16_std.wav") ;
+	bs2 = new BitString (std::string ("this is another test - this time a little longer, but also for the WavFile unit test")) ;
+	gl2 = Globs ;
+}
+
+void WavFileTest::cleanup ()
+{
+	UnitTest::cleanup() ;
+
 	delete bs1 ; delete bs2 ;
 	delete f1 ; delete f2 ;
 }
 
 void WavFileTest::testReadWrite()
 {
-	addTestResult (genericTestReadWrite (*datadir + "pcm8_std.wav")) ;
-	addTestResult (genericTestReadWrite (*datadir + "pcm16_std.wav")) ;
+	Globs = gl1 ; addTestResult (genericTestReadWrite (std::string(DATADIR) + "pcm8_std.wav")) ;
+	Globs = gl2 ; addTestResult (genericTestReadWrite (std::string(DATADIR) + "pcm16_std.wav")) ;
 }
 
 void WavFileTest::testReadEmbedExtract()
 {
-	addTestResult (genericTestReadEmbedExtract (*datadir + "pcm8_std.wav", *bs1)) ;
-	addTestResult (genericTestReadEmbedExtract (*datadir + "pcm16_std.wav", *bs2)) ;
+	Globs = gl1 ; addTestResult (genericTestReadEmbedExtract (std::string(DATADIR) + "pcm8_std.wav", *bs1)) ;
+	Globs = gl2 ; addTestResult (genericTestReadEmbedExtract (std::string(DATADIR) + "pcm16_std.wav", *bs2)) ;
 }
 
 void WavFileTest::testReadEmbedWriteReadExtract()
 {
-	addTestResult (genericTestReadEmbedWriteReadExtract (*datadir + "pcm8_std.wav", *bs2)) ;
-	addTestResult (genericTestReadEmbedWriteReadExtract (*datadir + "pcm16_std.wav", *bs1)) ;
+	Globs = gl1 ; addTestResult (genericTestReadEmbedWriteReadExtract (std::string(DATADIR) + "pcm8_std.wav", *bs2)) ;
+	Globs = gl2 ; addTestResult (genericTestReadEmbedWriteReadExtract (std::string(DATADIR) + "pcm16_std.wav", *bs1)) ;
 }
 
 void WavFileTest::testPosition()

@@ -32,12 +32,6 @@
 #include "WavFile.h"
 #include "WavPCMSampleValue.h"
 
-WavFile::WavFile ()
-	: CvrStgFile()
-{
-	// empty
-}
-
 WavFile::WavFile (BinaryIO *io)
 	: CvrStgFile()
 {
@@ -108,7 +102,7 @@ SampleValue *WavFile::getSampleValue (SamplePos pos) const
 	else {
 		value = data_large[pos] ;
 	}
-	return ((SampleValue *) new WavPCMSampleValue (this, value)) ;
+	return ((SampleValue *) new WavPCMSampleValue (value)) ;
 }
 
 unsigned short WavFile::getBitsPerSample() const

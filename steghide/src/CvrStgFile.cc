@@ -32,14 +32,9 @@
 #include "error.h"
 #include "msg.h"
 
-CvrStgFile::CvrStgFile (void)
+CvrStgFile::CvrStgFile ()
 {
-	// empty
-}
-
-CvrStgFile::CvrStgFile (BinaryIO *io)
-{
-	read (io) ;
+	Globs.TheCvrStgFile = this ;
 }
 
 CvrStgFile::~CvrStgFile (void)

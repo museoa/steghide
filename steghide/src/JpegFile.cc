@@ -24,12 +24,6 @@
 #include "jpegbase.h"
 #include "JpegFile.h"
 
-JpegFile::JpegFile ()
-	: CvrStgFile()
-{
-	frame = NULL ;
-}
-
 JpegFile::JpegFile (BinaryIO *io)
 	: CvrStgFile()
 {

@@ -24,6 +24,8 @@
 #include <string>
 #include <vector>
 
+#include "common.h"
+
 #include "Test.h"
 #include "TestCategoryCaller.h"
 // declared here to avoid circulating includes
@@ -38,11 +40,25 @@ class UnitTest : public Test {
 	/**
 	 * \param n name of this unit test (probably the name of the tested class)
 	 **/
-	UnitTest (std::string n, TestSuite* s) : Test(n,s) {} ;
+	UnitTest (std::string n, TestSuite* s) : Test(n,s), GlobsBackup(NULL) {} ;
 
 	~UnitTest (void) ;
 
+	/**
+	 * setup the unit test - called before run
+	 *
+	 * UnitTest::setup will (together with UnitTest::cleanup) save and restore the object
+	 * stored in Globs so they should be called from the corresponding functions in the
+	 * derived object if the derived unit test manipulates the Globs object.
+	 **/
+	virtual void setup (void) ;
+
 	void run (void) ;
+
+	/**
+	 * cleanup the unit test - called after run
+	 **/
+	virtual void cleanup (void) ;
 
 	protected:
 	void addTestCategory (TestCategory *tc) ;
@@ -54,6 +70,9 @@ class UnitTest : public Test {
 
 	private:
 	std::vector<TestCategory*> TestCategories ;
+
+	/// servers as a backup for the Globals object stored in Globs
+	Globals GlobsBackup ;
 } ;
 
 #endif // ndef SH_UNITTEST_H

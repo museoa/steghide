@@ -33,16 +33,35 @@
 VertexContentTest::VertexContentTest (TestSuite* s)
 	: UnitTest("VertexContent", s)
 {
+	ADDTESTCATEGORY (VertexContentTest, testConstruction) ;
+}
+
+void VertexContentTest::setup ()
+{
+	UnitTest::setup() ;
+
+	Globs.reset() ;
 	f1 = CvrStgFile::readFile (std::string(DATADIR) + "win3x8_std.bmp") ;
 	bs1 = new BitString (std::string ("this is another test")) ;
 	s1 = new Selector (bs1->getLength() * f1->getSamplesPerEBit(), std::string ("yet another passphrase")) ;
 	g1 = new Graph (f1, *bs1, *s1) ;
+	gl1 = Globs ;
+}
 
-	ADDTESTCATEGORY (VertexContentTest, testConstruction) ;
+void VertexContentTest::cleanup ()
+{
+	UnitTest::cleanup() ;
+
+	delete g1 ;
+	delete s1 ;
+	delete f1 ;
+	delete bs1 ;
 }
 
 void VertexContentTest::testConstruction (void)
 {
+	Globs = gl1 ;
+
 	{
 		SamplePos sposs[] = { 0, 1 } ;
 		SamplePos dest_sposs[] = { 1, 0 } ;
@@ -80,7 +99,7 @@ bool VertexContentTest::genericTestConstruction (CvrStgFile* f, Graph* g, Sample
 	for (unsigned short k = 0 ; k < g->getSamplesPerVertex() ; k++) {
 		svs[k] = f->getSampleValue(sposs[k]) ;
 	}
-	VertexContent vc (g, svs, sposs) ;
+	VertexContent vc (svs, sposs) ;
 
 	// check
 	bool retval = true ;

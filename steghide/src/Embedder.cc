@@ -37,6 +37,8 @@
 #include "error.h"
 #include "msg.h"
 
+Globals Globs ;
+
 Embedder::Embedder ()
 {
 	// create bitstring to be embedded
@@ -48,20 +50,20 @@ Embedder::Embedder ()
 	ToEmbed = embdata.getBitString() ;
 
 	// read cover-/stego-file
-	TheCvrStgFile = CvrStgFile::readFile (Args.CvrFn.getValue()) ;
+	CvrStgFile::readFile (Args.CvrFn.getValue()) ;
 	
-	if ((ToEmbed.getLength() * TheCvrStgFile->getSamplesPerEBit()) > TheCvrStgFile->getNumSamples()) {
+	if ((ToEmbed.getLength() * Globs.TheCvrStgFile->getSamplesPerEBit()) > Globs.TheCvrStgFile->getNumSamples()) {
 		throw SteghideError (_("the cover file is too short to embed the data.")) ;
 	}
 
 	// create graph
-	Selector sel (TheCvrStgFile->getNumSamples(), Args.Passphrase.getValue()) ;
-	TheGraph = new Graph (TheCvrStgFile, ToEmbed, sel) ;
-	TheGraph->printVerboseInfo() ;
+	Selector sel (Globs.TheCvrStgFile->getNumSamples(), Args.Passphrase.getValue()) ;
+	new Graph (Globs.TheCvrStgFile, ToEmbed, sel) ;
+	Globs.TheGraph->printVerboseInfo() ;
 
 #ifdef DEBUG
 	if (Args.DebugCommand.getValue() == PRINTGRAPH) {
-		TheGraph->print() ;
+		Globs.TheGraph->print() ;
 		exit (EXIT_SUCCESS) ;
 	}
 #endif
@@ -69,8 +71,8 @@ Embedder::Embedder ()
 
 Embedder::~Embedder ()
 {
-	delete TheCvrStgFile ;
-	delete TheGraph ;
+	delete Globs.TheCvrStgFile ;
+	delete Globs.TheGraph ;
 }
 	
 void Embedder::embed ()
@@ -91,8 +93,8 @@ void Embedder::embed ()
 
 	delete M ;
 
-	TheCvrStgFile->transform (Args.StgFn.getValue()) ;
-	TheCvrStgFile->write() ;
+	Globs.TheCvrStgFile->transform (Args.StgFn.getValue()) ;
+	Globs.TheCvrStgFile->write() ;
 }
 
 const Matching* Embedder::calculateMatching ()
@@ -114,7 +116,7 @@ const Matching* Embedder::calculateMatching ()
 #endif
 	Matching* bestmatching = NULL ;
 	for (unsigned int i = 0 ; i < nconstrheur ; i++) {
-		ConstructionHeuristic ch (TheGraph, prout) ;
+		ConstructionHeuristic ch (Globs.TheGraph, prout) ;
 		ch.run() ;
 
 		if ((bestmatching == NULL) || (ch.getMatching()->getCardinality() > bestmatching->getCardinality())) {
@@ -124,7 +126,7 @@ const Matching* Embedder::calculateMatching ()
 			bestmatching = ch.getMatching() ;
 		}
 
-		TheGraph->unmarkDeletedAllVertices() ;
+		Globs.TheGraph->unmarkDeletedAllVertices() ;
 	}
 
 	VerboseMessage vmsg2 (_("best matching after construction heuristic:")) ;
@@ -136,7 +138,7 @@ const Matching* Embedder::calculateMatching ()
 		prout->setUpdateFrequency (1) ;
 	}
 	if (true) {
-		AugmentingPathHeuristic aph (TheGraph, bestmatching, (UWORD32) (TheGraph->getAvgVertexDegree() / 20)) ;
+		AugmentingPathHeuristic aph (Globs.TheGraph, bestmatching, (UWORD32) (Globs.TheGraph->getAvgVertexDegree() / 20)) ;
 		aph.run() ;
 		bestmatching = aph.getMatching() ;
 
@@ -169,8 +171,8 @@ void Embedder::embedEdge (Edge *e)
 	Vertex* v1 = e->getVertex1() ;
 	Vertex* v2 = e->getVertex2() ;
 
-	TheCvrStgFile->replaceSample (e->getSamplePos(v1), e->getReplacingSampleValue (v1)) ;
-	TheCvrStgFile->replaceSample (e->getSamplePos(v2), e->getReplacingSampleValue (v2)) ;
+	Globs.TheCvrStgFile->replaceSample (e->getSamplePos(v1), e->getReplacingSampleValue (v1)) ;
+	Globs.TheCvrStgFile->replaceSample (e->getSamplePos(v2), e->getReplacingSampleValue (v2)) ;
 }
 
 void Embedder::embedExposedVertex (Vertex *v)
@@ -178,7 +180,7 @@ void Embedder::embedExposedVertex (Vertex *v)
 	SamplePos samplepos = 0 ;
 	SampleValue *newsample = NULL ;
 	float mindistance = FLT_MAX ;
-	for (unsigned short i = 0 ; i < TheCvrStgFile->getSamplesPerEBit() ; i++) {
+	for (unsigned short i = 0 ; i < Globs.TheCvrStgFile->getSamplesPerEBit() ; i++) {
 		SampleValue *curold = v->getSampleValue(i) ;
 		SampleValue *curnew = v->getSampleValue(i)->getNearestOppositeSampleValue() ;
 		if (curold->calcDistance (curnew) < mindistance) {
@@ -195,8 +197,8 @@ void Embedder::embedExposedVertex (Vertex *v)
 	printDebug (1, "embedding vertex with label %lu by changing sample position %lu.", v->getLabel(), samplepos) ;
 #endif
 
-	BIT oldbit = TheCvrStgFile->getSampleBit (samplepos) ;
-	TheCvrStgFile->replaceSample (samplepos, newsample) ;
-	myassert (oldbit != TheCvrStgFile->getSampleBit (samplepos)) ;
+	BIT oldbit = Globs.TheCvrStgFile->getSampleBit (samplepos) ;
+	Globs.TheCvrStgFile->replaceSample (samplepos, newsample) ;
+	myassert (oldbit != Globs.TheCvrStgFile->getSampleBit (samplepos)) ;
 	delete newsample ;
 }

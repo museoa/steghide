@@ -23,7 +23,6 @@
 
 #include <list>
 
-#include "GraphAccess.h"
 #include "SampleOccurence.h"
 
 class Edge ;
@@ -42,14 +41,16 @@ class Vertex ;
  * about the current edge. Graph::(un)markDeletedSampleOccurence can invalidate
  * such iterators. It is therefore not a good idea to use EdgeIterators at the same
  * time as the Graph::(un)markDeletedSampleOccurence functionality.
+ *
+ * <b>NOTE:</b> EdgeIterator relies on the Globals object pointed to by the Globs pointer.
+ * This means that it must be set correctly before using any method of an EdgeIterator object.
  **/
-class EdgeIterator : private GraphAccess {
+class EdgeIterator {
 	public:
 	/**
-	 * \param g the graph
 	 * \param v the source vertex
 	 **/
-	EdgeIterator (Graph* g, Vertex *v) ;
+	EdgeIterator (Vertex *v) ;
 
 	/**
 	 * the copy constructor

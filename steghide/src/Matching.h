@@ -24,7 +24,6 @@
 #include <list>
 #include <vector>
 
-#include "GraphAccess.h"
 #include "Vertex.h"
 #include "common.h"
 
@@ -35,7 +34,7 @@ class ProgressOutput ;
  * \class Matching
  * \brief represent a matching on a graph
  **/
-class Matching : private GraphAccess {
+class Matching {
 	public:
 	/**
 	 * create an empty matching that is ready for adding and augmenting
@@ -197,6 +196,9 @@ class Matching : private GraphAccess {
 
 	/// the ProgressOutput object that will print the number of matched vertices (as percentage)
 	ProgressOutput* PrOut ;
+
+	/// the graph underlying this Matching
+	Graph* TheGraph ;
 
 	/**
 	 * set the cardinality (thereby updating PrOut)

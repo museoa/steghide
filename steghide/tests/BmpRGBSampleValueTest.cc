@@ -27,22 +27,35 @@
 BmpRGBSampleValueTest::BmpRGBSampleValueTest (TestSuite* s)
 	: SampleValueTest ("BmpRGBSampleValue", s)
 {
-	f_win = CvrStgFile::readFile (std::string(DATADIR) + "win3x24_std.bmp") ;
-	f_os2 = CvrStgFile::readFile (std::string(DATADIR) + "os21x24_std.bmp") ;
-
-	sv_0_0_0 = new BmpRGBSampleValue (f_win, 0, 0, 0) ;
-	sv_1_1_1 = new BmpRGBSampleValue (f_win, 1, 1, 1) ;
-	sv_0_3_4 = new BmpRGBSampleValue (f_win, 0, 3, 4) ;
-	sv_12_13_14 = new BmpRGBSampleValue (f_win, 12, 13, 14) ;
-	sv_128_128_128 = new BmpRGBSampleValue (f_win, 128, 128, 128) ;
-	sv_210_0_120 = new BmpRGBSampleValue (f_win, 210, 0, 120) ;
-	sv_255_255_255 = new BmpRGBSampleValue (f_win, 255, 255, 255) ;
-
 	ADDTESTCATEGORY (BmpRGBSampleValueTest, testDistance) ;
+	ADDTESTCATEGORY (BmpRGBSampleValueTest, testIsNeighbour) ;
 }
 
-BmpRGBSampleValueTest::~BmpRGBSampleValueTest()
+void BmpRGBSampleValueTest::setup ()
 {
+	UnitTest::setup() ;
+
+	Globs.reset() ;
+	f_win = CvrStgFile::readFile (std::string(DATADIR) + "win3x24_std.bmp") ;
+	sv_0_0_0 = new BmpRGBSampleValue (0, 0, 0) ;
+	sv_1_1_1 = new BmpRGBSampleValue (1, 1, 1) ;
+	sv_0_3_4 = new BmpRGBSampleValue (0, 3, 4) ;
+	sv_10_10_10 = new BmpRGBSampleValue (10, 10, 10) ;
+	sv_12_13_14 = new BmpRGBSampleValue (12, 13, 14) ;
+	sv_128_128_128 = new BmpRGBSampleValue (128, 128, 128) ;
+	sv_210_0_120 = new BmpRGBSampleValue (210, 0, 120) ;
+	sv_255_255_255 = new BmpRGBSampleValue (255, 255, 255) ;
+	gl_win = Globs ;
+
+	Globs.reset() ;
+	f_os2 = CvrStgFile::readFile (std::string(DATADIR) + "os21x24_std.bmp") ;
+	gl_os2 = Globs ;
+}
+
+void BmpRGBSampleValueTest::cleanup ()
+{
+	UnitTest::cleanup() ;
+
 	delete f_win ; delete f_os2 ;
 	delete sv_0_0_0 ;
 	delete sv_1_1_1 ;
@@ -53,12 +66,24 @@ BmpRGBSampleValueTest::~BmpRGBSampleValueTest()
 	delete sv_255_255_255 ;
 }
 
-void BmpRGBSampleValueTest::testDistance()
+void BmpRGBSampleValueTest::testDistance ()
 {
+	Globs = gl_win ;
 	addTestResult (genericTestDistance (sv_0_0_0, sv_0_0_0, 0)) ;
 	addTestResult (genericTestDistance (sv_0_0_0, sv_0_3_4, 25)) ;
 	addTestResult (genericTestDistance (sv_0_3_4, sv_12_13_14, 344)) ;
 	addTestResult (genericTestDistance (sv_1_1_1, sv_128_128_128, 48387)) ;
 	addTestResult (genericTestDistance (sv_210_0_120, sv_12_13_14, 50609)) ;
 	addTestResult (genericTestDistance (sv_0_0_0, sv_255_255_255, 195075)) ;
+}
+
+void BmpRGBSampleValueTest::testIsNeighbour ()
+{
+	Globs = gl_win ;
+	addTestResult (genericTestIsNeighbour (sv_0_0_0, sv_0_3_4, true)) ;
+	addTestResult (genericTestIsNeighbour (sv_0_3_4, sv_12_13_14, true)) ;
+	addTestResult (genericTestIsNeighbour (sv_1_1_1, sv_0_3_4, true)) ;
+	addTestResult (genericTestIsNeighbour (sv_10_10_10, sv_0_3_4, true)) ;
+	addTestResult (genericTestIsNeighbour (sv_128_128_128, sv_255_255_255, false)) ;
+	addTestResult (genericTestIsNeighbour (sv_10_10_10, sv_12_13_14, true)) ;
 }

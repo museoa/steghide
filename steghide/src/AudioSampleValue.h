@@ -43,14 +43,11 @@ enum AUDIOSAMPLETYPE {
 /**
  * \class AudioSampleValue
  * \brief a class representing an audio sample
- *
- * The template parameter T is the type of the sample (e.g. SWORD16
- * for 16-Bit signed audio data).
  **/
 template<AUDIOSAMPLETYPE Type, class ValueType>
 class AudioSampleValue : public SampleValue {
     public:
-    AudioSampleValue (const CvrStgFile* f, ValueType v) ;
+    AudioSampleValue (ValueType v) ;
 
     ValueType getValue (void) const { return Value ; } ;
 
@@ -65,8 +62,8 @@ class AudioSampleValue : public SampleValue {
 } ;
 
 template<AUDIOSAMPLETYPE Type, class ValueType>
-AudioSampleValue<Type,ValueType>::AudioSampleValue (const CvrStgFile* f, ValueType v)
-	: SampleValue(f), Value(v)
+AudioSampleValue<Type,ValueType>::AudioSampleValue (ValueType v)
+	: Value(v)
 {
 	Key = (UWORD32) (v - MinValue) ;
 	SBit = (BIT) (Key % 2) ;
@@ -107,7 +104,7 @@ SampleValue* AudioSampleValue<Type,ValueType>::getNearestOppositeSampleValue (vo
 			newval = Value + 1 ;
 		}
 	}
-	return ((SampleValue *) new AudioSampleValue<Type,ValueType> (getFile(), newval)) ;
+	return ((SampleValue *) new AudioSampleValue<Type,ValueType> (newval)) ;
 }
 
 #endif // ndef SH_AUDIOSAMPLEVALUE_H

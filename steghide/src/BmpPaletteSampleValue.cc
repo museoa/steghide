@@ -22,10 +22,10 @@
 #include "BmpPaletteSampleValue.h"
 #include "ColorPalette.h"
 
-BmpPaletteSampleValue::BmpPaletteSampleValue (const CvrStgFile* f, unsigned char i)
-	: BmpSampleValue(f), Index(i)
+BmpPaletteSampleValue::BmpPaletteSampleValue (unsigned char i)
+	: BmpSampleValue(), Index(i)
 {
-	const BmpFile* bmpfile = dynamic_cast<const BmpFile*> (f) ;
+	const BmpFile* bmpfile = dynamic_cast<const BmpFile*> (Globs.TheCvrStgFile) ;
 	myassert (bmpfile) ;
 	Palette = bmpfile->getPalette() ;
 	SBit = (BIT) (Index & 1) ;
@@ -36,5 +36,5 @@ BmpPaletteSampleValue::BmpPaletteSampleValue (const CvrStgFile* f, unsigned char
 SampleValue* BmpPaletteSampleValue::getNearestOppositeSampleValue () const
 {
 	unsigned int nosv_idx = Palette->getNearest (Index, (getBit() == 1 ? ColorPalette::EVENINDICES : ColorPalette::ODDINDICES)) ;
-	return ((SampleValue*) new BmpPaletteSampleValue (getFile(), nosv_idx)) ;
+	return ((SampleValue*) new BmpPaletteSampleValue (nosv_idx)) ;
 }

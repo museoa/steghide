@@ -25,7 +25,7 @@
 #include "common.h"
 
 ConstructionHeuristic::ConstructionHeuristic (Graph* g, ProgressOutput* po)
-	: GraphAccess(g)
+	: TheGraph(g)
 {
 	unsigned long nvertices = g->getNumVertices() ;
 

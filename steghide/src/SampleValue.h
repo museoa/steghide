@@ -53,11 +53,14 @@ class CvrStgFile ;
  * s1 == s2 implies s1->getBit() == s2->getBit()
  *
  * s1->getDistance(s2) == 0 implies s1->getBit() == s2->getBit()
+ *
+ * <b>NOTE:</b> SampleValue and all derived classes rely on the Globals object
+ * pointed to by the Globs pointer. This means that it must be set correctly
+ * before using any method of a SampleValue (or derived) object.
  **/
 class SampleValue {
 	public:
 	SampleValue (void) {} ;
-	SampleValue (const CvrStgFile* f) ;
 
 	/**
 	 * get the nearest (with the least distance) opposite sample value that can be used in this file
@@ -118,9 +121,6 @@ class SampleValue {
 
 	UWORD32 getRadius (void) const { return Radius ; } ;
 
-	void setFile (CvrStgFile* f) { File = f ; } ;
-	const CvrStgFile* getFile (void) const { return File ; } ;
-
 	void setLabel (unsigned long l) { Label = l ; } ;
 	unsigned long getLabel (void) const { return Label ; } ;
 
@@ -136,7 +136,7 @@ class SampleValue {
 	UWORD32 Key ;
 
 	/// the radius of all sample values - must be set in constructor of derived class using the setRadius method
-	static UWORD32 Radius ;
+	static UWORD32 Radius ; // FIXME - what about unit-tests ? - move this to Globals ??
 
 	/**
 	 * set the static variable Radius either to the value specified by the user or to dr
@@ -149,9 +149,6 @@ class SampleValue {
 	void setRadius (UWORD32 dr) ;
 
 	private:
-	/// the CvrStgFile this sample value belongs to
-	const CvrStgFile* File ; // FIXME - static ?
-
 	unsigned long Label ;
 
 	/// the number of edges that are added to a vertex if this sample value is added to it

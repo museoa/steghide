@@ -33,53 +33,6 @@
 GraphTest::GraphTest (TestSuite* s)
 	: UnitTest ("Graph", s)
 {
-	datadir = new std::string (DATADIR) ;
-
-	f1 = CvrStgFile::readFile (*datadir + "win3x1_std.bmp") ;
-	bs1 = new BitString (std::string ("this BitString will be embedded")) ;
-	s1 = new Selector (bs1->getLength() * f1->getSamplesPerEBit(), std::string ("a passphrase")) ;
-	g1 = new Graph (f1, *bs1, *s1) ;
-
-	f2 = CvrStgFile::readFile (*datadir + "win3x4_std.bmp") ;
-	bs2 = new BitString (std::string ("this is a test")) ;
-	s2 = new Selector (bs2->getLength() * f2->getSamplesPerEBit(), std::string ("another passphrase")) ;
-	g2 = new Graph (f2, *bs2, *s2) ;
-
-	f3 = CvrStgFile::readFile (*datadir + "win3x8_std.bmp") ;
-	bs3 = new BitString (std::string ("this is another test")) ;
-	s3 = new Selector (bs3->getLength() * f3->getSamplesPerEBit(), std::string ("yet another passphrase")) ;
-	g3 = new Graph (f3, *bs3, *s3) ;
-
-	f4 = CvrStgFile::readFile (*datadir + "win3x24_std.bmp") ;
-	bs4 = new BitString (std::string ("this time embedding in RGB pixel data")) ;
-	s4 = new Selector (bs4->getLength() * f4->getSamplesPerEBit(), std::string ("a true-color passphrase ;-)")) ;
-	g4 = new Graph (f4, *bs4, *s4) ;
-
-	f5 = CvrStgFile::readFile (*datadir + "os21x1_std.bmp") ;
-	bs5 = new BitString (std::string ("this BitString will be embedded")) ;
-	s5 = new Selector (bs5->getLength() * f5->getSamplesPerEBit(), std::string ("a passphrase")) ;
-	g5 = new Graph (f5, *bs5, *s5) ;
-
-	f6 = CvrStgFile::readFile (*datadir + "os21x4_std.bmp") ;
-	bs6 = new BitString (std::string ("this is a test")) ;
-	s6 = new Selector (bs6->getLength() * f6->getSamplesPerEBit(), std::string ("another passphrase")) ;
-	g6 = new Graph (f6, *bs6, *s6) ;
-
-	f7 = CvrStgFile::readFile (*datadir + "os21x8_std.bmp") ;
-	bs7 = new BitString (std::string ("this is another test")) ;
-	s7 = new Selector (bs7->getLength() * f7->getSamplesPerEBit(), std::string ("yet another passphrase")) ;
-	g7 = new Graph (f7, *bs7, *s7) ;
-
-	f8 = CvrStgFile::readFile (*datadir + "os21x24_std.bmp") ;
-	bs8 = new BitString (std::string ("this time embedding in RGB pixel data")) ;
-	s8 = new Selector (bs8->getLength() * f8->getSamplesPerEBit(), std::string ("a true-color passphrase ;-)")) ;
-	g8 = new Graph (f8, *bs8, *s8) ;
-
-	f_f = CvrStgFile::readFile (*datadir + "win3x24_std.bmp") ;
-	bs_f = new BitString (std::string ("this time embedding in RGB pixel data")) ;
-	s_f = new Selector (bs_f->getLength() * f_f->getSamplesPerEBit(), std::string ("a true-color passphrase ;-)")) ;
-	g_f = new Graph (f_f, *bs_f, *s_f) ;
-
 	ADDTESTCATEGORY (GraphTest, testVertices) ;
 	ADDTESTCATEGORY (GraphTest, testSampleValues) ;
 	ADDTESTCATEGORY (GraphTest, testVertexContents) ;
@@ -87,9 +40,78 @@ GraphTest::GraphTest (TestSuite* s)
 	ADDTESTCATEGORY (GraphTest, testSampleOccurences) ;
 }
 
-GraphTest::~GraphTest()
+void GraphTest::setup ()
 {
-	delete datadir ;
+	UnitTest::setup() ;
+
+	Globs.reset() ;
+	f1 = CvrStgFile::readFile (std::string(DATADIR) + "win3x1_std.bmp") ;
+	bs1 = new BitString (std::string ("this BitString will be embedded")) ;
+	s1 = new Selector (bs1->getLength() * f1->getSamplesPerEBit(), std::string ("a passphrase")) ;
+	g1 = new Graph (f1, *bs1, *s1) ;
+	gl1 = Globs ;
+
+	Globs.reset() ;
+	f2 = CvrStgFile::readFile (std::string(DATADIR) + "win3x4_std.bmp") ;
+	bs2 = new BitString (std::string ("this is a test")) ;
+	s2 = new Selector (bs2->getLength() * f2->getSamplesPerEBit(), std::string ("another passphrase")) ;
+	g2 = new Graph (f2, *bs2, *s2) ;
+	gl2 = Globs ;
+
+	Globs.reset() ;
+	f3 = CvrStgFile::readFile (std::string(DATADIR) + "win3x8_std.bmp") ;
+	bs3 = new BitString (std::string ("this is another test")) ;
+	s3 = new Selector (bs3->getLength() * f3->getSamplesPerEBit(), std::string ("yet another passphrase")) ;
+	g3 = new Graph (f3, *bs3, *s3) ;
+	gl3 = Globs ;
+
+	Globs.reset() ;
+	f4 = CvrStgFile::readFile (std::string(DATADIR) + "win3x24_std.bmp") ;
+	bs4 = new BitString (std::string ("this time embedding in RGB pixel data")) ;
+	s4 = new Selector (bs4->getLength() * f4->getSamplesPerEBit(), std::string ("a true-color passphrase ;-)")) ;
+	g4 = new Graph (f4, *bs4, *s4) ;
+	gl4 = Globs ;
+
+	Globs.reset() ;
+	f5 = CvrStgFile::readFile (std::string(DATADIR) + "os21x1_std.bmp") ;
+	bs5 = new BitString (std::string ("this BitString will be embedded")) ;
+	s5 = new Selector (bs5->getLength() * f5->getSamplesPerEBit(), std::string ("a passphrase")) ;
+	g5 = new Graph (f5, *bs5, *s5) ;
+	gl5 = Globs ;
+
+	Globs.reset() ;
+	f6 = CvrStgFile::readFile (std::string(DATADIR) + "os21x4_std.bmp") ;
+	bs6 = new BitString (std::string ("this is a test")) ;
+	s6 = new Selector (bs6->getLength() * f6->getSamplesPerEBit(), std::string ("another passphrase")) ;
+	g6 = new Graph (f6, *bs6, *s6) ;
+	gl6 = Globs ;
+
+	Globs.reset() ;
+	f7 = CvrStgFile::readFile (std::string(DATADIR) + "os21x8_std.bmp") ;
+	bs7 = new BitString (std::string ("this is another test")) ;
+	s7 = new Selector (bs7->getLength() * f7->getSamplesPerEBit(), std::string ("yet another passphrase")) ;
+	g7 = new Graph (f7, *bs7, *s7) ;
+	gl7 = Globs ;
+
+	Globs.reset() ;
+	f8 = CvrStgFile::readFile (std::string(DATADIR) + "os21x24_std.bmp") ;
+	bs8 = new BitString (std::string ("this time embedding in RGB pixel data")) ;
+	s8 = new Selector (bs8->getLength() * f8->getSamplesPerEBit(), std::string ("a true-color passphrase ;-)")) ;
+	g8 = new Graph (f8, *bs8, *s8) ;
+	gl8 = Globs ;
+
+	Globs.reset() ;
+	f_f = CvrStgFile::readFile (std::string(DATADIR) + "win3x24_std.bmp") ;
+	bs_f = new BitString (std::string ("this time embedding in RGB pixel data")) ;
+	s_f = new Selector (bs_f->getLength() * f_f->getSamplesPerEBit(), std::string ("a true-color passphrase ;-)")) ;
+	g_f = new Graph (f_f, *bs_f, *s_f) ;
+	gl_f = Globs ;
+}
+
+void GraphTest::cleanup ()
+{
+	UnitTest::cleanup() ;
+
 	delete f1 ; delete bs1 ; delete s1 ; delete g1 ;
 	delete f2 ; delete bs2 ; delete s2 ; delete g2 ;
 	delete f3 ; delete bs3 ; delete s3 ; delete g3 ;
@@ -103,16 +125,17 @@ GraphTest::~GraphTest()
 
 void GraphTest::testVertices()
 {
-	addTestResult (g1->check_Vertices(ArgVerbose)) ;
-	addTestResult (g2->check_Vertices(ArgVerbose)) ;
-	addTestResult (g3->check_Vertices(ArgVerbose)) ;
-	addTestResult (g4->check_Vertices(ArgVerbose)) ;
-	addTestResult (g5->check_Vertices(ArgVerbose)) ;
-	addTestResult (g6->check_Vertices(ArgVerbose)) ;
-	addTestResult (g7->check_Vertices(ArgVerbose)) ;
-	addTestResult (g8->check_Vertices(ArgVerbose)) ;
+	Globs = gl1 ; addTestResult (g1->check_Vertices(ArgVerbose)) ;
+	Globs = gl2 ; addTestResult (g2->check_Vertices(ArgVerbose)) ;
+	Globs = gl3 ; addTestResult (g3->check_Vertices(ArgVerbose)) ;
+	Globs = gl4 ; addTestResult (g4->check_Vertices(ArgVerbose)) ;
+	Globs = gl5 ; addTestResult (g5->check_Vertices(ArgVerbose)) ;
+	Globs = gl6 ; addTestResult (g6->check_Vertices(ArgVerbose)) ;
+	Globs = gl7 ; addTestResult (g7->check_Vertices(ArgVerbose)) ;
+	Globs = gl8 ; addTestResult (g8->check_Vertices(ArgVerbose)) ;
 
 	// violate label consistency
+	Globs = gl_f ;
 	Vertex* tmp = g_f->Vertices[10] ;
 	g_f->Vertices[10] = g_f->Vertices[11] ;
 	g_f->Vertices[11] = tmp ;
@@ -121,56 +144,57 @@ void GraphTest::testVertices()
 
 void GraphTest::testSampleValues()
 {
-	addTestResult (g1->check_SampleValues(ArgVerbose)) ;
-	addTestResult (g2->check_SampleValues(ArgVerbose)) ;
-	addTestResult (g3->check_SampleValues(ArgVerbose)) ;
-	addTestResult (g4->check_SampleValues(ArgVerbose)) ;
-	addTestResult (g5->check_SampleValues(ArgVerbose)) ;
-	addTestResult (g6->check_SampleValues(ArgVerbose)) ;
-	addTestResult (g7->check_SampleValues(ArgVerbose)) ;
-	addTestResult (g8->check_SampleValues(ArgVerbose)) ;
+	Globs = gl1 ; addTestResult (g1->check_SampleValues(ArgVerbose)) ;
+	Globs = gl2 ; addTestResult (g2->check_SampleValues(ArgVerbose)) ;
+	Globs = gl3 ; addTestResult (g3->check_SampleValues(ArgVerbose)) ;
+	Globs = gl4 ; addTestResult (g4->check_SampleValues(ArgVerbose)) ;
+	Globs = gl5 ; addTestResult (g5->check_SampleValues(ArgVerbose)) ;
+	Globs = gl6 ; addTestResult (g6->check_SampleValues(ArgVerbose)) ;
+	Globs = gl7 ; addTestResult (g7->check_SampleValues(ArgVerbose)) ;
+	Globs = gl8 ; addTestResult (g8->check_SampleValues(ArgVerbose)) ;
 
 	// violate uniqueness
+	Globs = gl_f ;
 	g_f->SampleValues[0] = g_f->SampleValues[1] ;
 	addTestResult (!g_f->check_SampleValues()) ;
 }
 
 void GraphTest::testVertexContents()
 {
-	addTestResult (g1->check_VertexContents(ArgVerbose)) ;
-	addTestResult (g2->check_VertexContents(ArgVerbose)) ;
-	addTestResult (g3->check_VertexContents(ArgVerbose)) ;
-	addTestResult (g4->check_VertexContents(ArgVerbose)) ;
-	addTestResult (g5->check_VertexContents(ArgVerbose)) ;
-	addTestResult (g6->check_VertexContents(ArgVerbose)) ;
-	addTestResult (g7->check_VertexContents(ArgVerbose)) ;
-	addTestResult (g8->check_VertexContents(ArgVerbose)) ;
+	Globs = gl1 ; addTestResult (g1->check_VertexContents(ArgVerbose)) ;
+	Globs = gl2 ; addTestResult (g2->check_VertexContents(ArgVerbose)) ;
+	Globs = gl3 ; addTestResult (g3->check_VertexContents(ArgVerbose)) ;
+	Globs = gl4 ; addTestResult (g4->check_VertexContents(ArgVerbose)) ;
+	Globs = gl5 ; addTestResult (g5->check_VertexContents(ArgVerbose)) ;
+	Globs = gl6 ; addTestResult (g6->check_VertexContents(ArgVerbose)) ;
+	Globs = gl7 ; addTestResult (g7->check_VertexContents(ArgVerbose)) ;
+	Globs = gl8 ; addTestResult (g8->check_VertexContents(ArgVerbose)) ;
 
 	// TODO - violate pointer equivalence
 }
 
 void GraphTest::testSampleOccurences()
 {
-	addTestResult (g1->check_SampleOccurences(ArgVerbose)) ;
-	addTestResult (g2->check_SampleOccurences(ArgVerbose)) ;
-	addTestResult (g3->check_SampleOccurences(ArgVerbose)) ;
-	addTestResult (g4->check_SampleOccurences(ArgVerbose)) ;
-	addTestResult (g5->check_SampleOccurences(ArgVerbose)) ;
-	addTestResult (g6->check_SampleOccurences(ArgVerbose)) ;
-	addTestResult (g7->check_SampleOccurences(ArgVerbose)) ;
-	addTestResult (g8->check_SampleOccurences(ArgVerbose)) ;
+	Globs = gl1 ; addTestResult (g1->check_SampleOccurences(ArgVerbose)) ;
+	Globs = gl2 ; addTestResult (g2->check_SampleOccurences(ArgVerbose)) ;
+	Globs = gl3 ; addTestResult (g3->check_SampleOccurences(ArgVerbose)) ;
+	Globs = gl4 ; addTestResult (g4->check_SampleOccurences(ArgVerbose)) ;
+	Globs = gl5 ; addTestResult (g5->check_SampleOccurences(ArgVerbose)) ;
+	Globs = gl6 ; addTestResult (g6->check_SampleOccurences(ArgVerbose)) ;
+	Globs = gl7 ; addTestResult (g7->check_SampleOccurences(ArgVerbose)) ;
+	Globs = gl8 ; addTestResult (g8->check_SampleOccurences(ArgVerbose)) ;
 }
 
 void GraphTest::testSampleValueOppNeighs()
 {
-	addTestResult (g1->SampleValueOppNeighs.check(ArgVerbose)) ;
-	addTestResult (g2->SampleValueOppNeighs.check(ArgVerbose)) ;
-	addTestResult (g3->SampleValueOppNeighs.check(ArgVerbose)) ;
-	addTestResult (g4->SampleValueOppNeighs.check(ArgVerbose)) ;
-	addTestResult (g5->SampleValueOppNeighs.check(ArgVerbose)) ;
-	addTestResult (g6->SampleValueOppNeighs.check(ArgVerbose)) ;
-	addTestResult (g7->SampleValueOppNeighs.check(ArgVerbose)) ;
-	addTestResult (g8->SampleValueOppNeighs.check(ArgVerbose)) ;
+	Globs = gl1 ; addTestResult (g1->SampleValueOppNeighs.check(ArgVerbose)) ;
+	Globs = gl2 ; addTestResult (g2->SampleValueOppNeighs.check(ArgVerbose)) ;
+	Globs = gl3 ; addTestResult (g3->SampleValueOppNeighs.check(ArgVerbose)) ;
+	Globs = gl4 ; addTestResult (g4->SampleValueOppNeighs.check(ArgVerbose)) ;
+	Globs = gl5 ; addTestResult (g5->SampleValueOppNeighs.check(ArgVerbose)) ;
+	Globs = gl6 ; addTestResult (g6->SampleValueOppNeighs.check(ArgVerbose)) ;
+	Globs = gl7 ; addTestResult (g7->SampleValueOppNeighs.check(ArgVerbose)) ;
+	Globs = gl8 ; addTestResult (g8->SampleValueOppNeighs.check(ArgVerbose)) ;
 
 	// TODO - violate sorting
 }

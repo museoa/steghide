@@ -24,6 +24,15 @@
 BitStringTest::BitStringTest (TestSuite* s)
 	: UnitTest ("BitString", s)
 {
+	ADDTESTCATEGORY (BitStringTest, testBitInputOutput) ;
+	ADDTESTCATEGORY (BitStringTest, testLength) ;
+	ADDTESTCATEGORY (BitStringTest, testDatatypeInput) ;
+	ADDTESTCATEGORY (BitStringTest, testDatatypeOutput) ;
+	ADDTESTCATEGORY (BitStringTest, testEquality) ;
+}
+
+void BitStringTest::setup ()
+{
 	bs_0 = new BitString() ;
 	bs_0->append(false) ;
 
@@ -57,15 +66,9 @@ BitStringTest::BitStringTest (TestSuite* s)
 	bs_101011101->append(true) ;
 	bs_101011101->append(false) ;
 	bs_101011101->append(true) ;
-
-	ADDTESTCATEGORY (BitStringTest, testBitInputOutput) ;
-	ADDTESTCATEGORY (BitStringTest, testLength) ;
-	ADDTESTCATEGORY (BitStringTest, testDatatypeInput) ;
-	ADDTESTCATEGORY (BitStringTest, testDatatypeOutput) ;
-	ADDTESTCATEGORY (BitStringTest, testEquality) ;
 }
 
-BitStringTest::~BitStringTest()
+void BitStringTest::cleanup ()
 {
 	delete bs_0 ;
 	delete bs_1 ;

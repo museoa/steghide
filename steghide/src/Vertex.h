@@ -22,7 +22,6 @@
 #define SH_VERTEX_H
 
 #include "common.h"
-#include "GraphAccess.h"
 #include "VertexContent.h"
 
 class Edge ;
@@ -37,17 +36,19 @@ class SampleValue ;
  * A vertex consists of k samples (that is k sample values at k (different) positions in the
  * cover-stego-file), where k is TheCvrStgFile->getNumSamplesPerEBit(). One of these k samples
  * must be changed to an opposite sample to embed the bit that corresponds to this vertex.
+ *
+ * <b>NOTE:</b> Vertex relies on the Globals object pointed to by the Globs pointer.
+ * This means that it must be set correctly before using any method of a Vertex object.
  **/
-class Vertex : private GraphAccess {
+class Vertex {
 	public:
 	/**
 	 * construct a new vertex object
-	 * \param g the graph this vertex will be part of
 	 * \param l the vertex label for this vertex
 	 * \param sposs the array (with length g->getSamplesPerEBit()) of the positions of the samples
 	 * \param vc the corresponding vertex content
 	 **/
-	Vertex (Graph* g, VertexLabel l, SamplePos* sposs, VertexContent* vc) ;
+	Vertex (VertexLabel l, SamplePos* sposs, VertexContent* vc) ;
 
 	/**
 	 * copy constructor

@@ -31,21 +31,14 @@
  **/
 class BmpRGBSampleValue : public BmpSampleValue {
 	public:
-	BmpRGBSampleValue (void)
-		: BmpSampleValue() {} ;
-	BmpRGBSampleValue (const CvrStgFile* f, BYTE r, BYTE g, BYTE b) ;
-	BmpRGBSampleValue (const CvrStgFile* f, RGBTriple t) ;
+	BmpRGBSampleValue (BYTE r, BYTE g, BYTE b) ;
+	BmpRGBSampleValue (RGBTriple t) ;
 
 	SampleValue* getNearestOppositeSampleValue (void) const ;
 
-	BYTE getRed (void) const
-		{ return Color.Red ; } ;
-
-	BYTE getGreen (void) const
-		{ return Color.Green ; } ;
-
-	BYTE getBlue (void) const
-		{ return Color.Blue ; } ;
+	BYTE getRed (void) const { return Color.Red ; } ;
+	BYTE getGreen (void) const { return Color.Green ; } ;
+	BYTE getBlue (void) const { return Color.Blue ; } ;
 
 	private:
 	RGBTriple Color ;

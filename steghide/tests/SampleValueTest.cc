@@ -27,9 +27,9 @@ bool SampleValueTest::areOpposite (SampleValue* s1, SampleValue* s2)
 	return (s1->getBit() != s2->getBit()) ;
 }
 
-bool SampleValueTest::areNeighbours (SampleValue* s1, SampleValue* s2)
+bool SampleValueTest::genericTestIsNeighbour (SampleValue* s1, SampleValue* s2, bool res)
 {
-	return ((s1->isNeighbour(s2) == s2->isNeighbour(s1)) && (s1->isNeighbour(s2))) ;
+	return ((s1->isNeighbour(s2) == s2->isNeighbour(s1)) && (s1->isNeighbour(s2) == res)) ;
 }
 
 bool SampleValueTest::genericTestDistance (SampleValue* s1, SampleValue* s2, float dist)

@@ -33,6 +33,9 @@ class VertexContentTest : public UnitTest {
 	public:
 	VertexContentTest (TestSuite* s) ;
 
+	void setup (void) ;
+	void cleanup (void) ;
+
 	void testConstruction (void) ;
 
 	private:
@@ -40,6 +43,7 @@ class VertexContentTest : public UnitTest {
 	BitString *bs1 ;
 	Selector *s1 ;
 	Graph *g1 ;
+	Globals gl1 ;
 
 	bool genericTestConstruction (CvrStgFile* f, Graph* g, SamplePos* sposs, SamplePos* dest_sposs) ;
 } ;
