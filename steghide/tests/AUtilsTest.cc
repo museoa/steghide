@@ -40,7 +40,7 @@ void AUtilsTest::testLog2 ()
 bool AUtilsTest::genericTestLog2 (int n, double res)
 {
 	// to avoid failing because of numeric problems
-	double tmp = AUtils::log2<int> (n) ;
+	double tmp = log2 (n) ;
 	double lb = res - 0.000001 ;
 	double ub = res + 0.000001 ;
 	return (lb < tmp && tmp < ub) ;

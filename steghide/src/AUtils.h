@@ -22,6 +22,10 @@
 #define SH_AUTILS_H
 
 #include <cmath>
+#ifndef log2
+	// this is in an #ifndef because some cmath implementations #define log2 and some not
+#	define log2(x) (log(x) / log(2.0))
+#endif
 
 /**
  * \class AUtils
@@ -69,11 +73,6 @@ class AUtils {
 	 * compute 2-logarithm of n (rounded up to nearest int), i.e. number of bits needed to store values from {0,...,n-1}
 	 **/
 	template<class T> static T log2_ceil (T n) ;
-
-	/**
-	 * compute 2-logarithm of n
-	 **/
-	template<class IT> static double log2 (IT n) ;
 } ;
 
 template<class T>
@@ -173,12 +172,6 @@ T AUtils::log2_ceil (T n)
 		++retval ;
 	}
 	return retval ;
-}
-
-template<class IT>
-double AUtils::log2 (IT n)
-{
-	return (log((double) n) / (log (2.0))) ;
 }
 
 #endif // ndef SH_AUTILS_H

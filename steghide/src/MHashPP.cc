@@ -54,15 +54,14 @@ const std::vector<BYTE>& MHashPP::end ()
 
 	unsigned int n = getHashSize() ;
 	HashBytes = std::vector<BYTE> (n) ;
-	unsigned char *hash = (unsigned char*) mhash_end (HashD) ;
+	BYTE hash[n] ;
+	mhash_deinit (HashD, hash) ;
 	hashing = false ;
 	for (unsigned int i = 0 ; i < n ; i++) {
 		HashBytes[i] = hash[i] ;
 	}
-	free (hash) ;
 
 	HashBytesValid = true ;
-
 	return HashBytes ;
 }
 

@@ -119,7 +119,7 @@ EmbValue CvrStgFile::getEmbeddedValue (const SamplePos pos) const
 unsigned long CvrStgFile::getCapacity () const
 {
 	float maxnvertices = getNumSamples() / getSamplesPerVertex() ;
-	float maxnbits = maxnvertices * AUtils::log2(getEmbValueModulus()) ;
+	float maxnbits = maxnvertices * log2(getEmbValueModulus()) ;
 	return ((unsigned long) (maxnbits / 8)) ;
 }
 
