@@ -295,7 +295,7 @@ function pBodyEpilogue ($ts_lastupdate)
 	echo "  <tr>\n"; // lower area (lastupdate)
 	echo "   <td id=\"lastupdate\" align=\"center\" valign=\"bottom\">\n" ;
 	echo "    <a href=\"http://validator.w3.org/check/referer\"><img border=\"0\" src=\"images/valid-html401.png\"\n";
-	echo "    alt=\"Valid HTML 4.01!\" height=\"31\" width=\"88\"></a>\n"
+	echo "    alt=\"Valid HTML 4.01!\" height=\"31\" width=\"88\"></a>\n";
 	echo "    <p>\n";
 	echo "    hosted by:<br>\n";
 	include "sflogo.html";
