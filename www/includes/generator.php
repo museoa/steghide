@@ -1,4 +1,5 @@
 <?php
+ini_set("include_path", ".");
 include 'definitions.php';
 
 $ToRoot = "";

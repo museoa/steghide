@@ -1,5 +1,6 @@
 <?php
-include "includes/generator.php";
+ini_set("include_path", "./includes");
+include "generator.php";
 init("development");
 ?>
 <html>
