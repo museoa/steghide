@@ -105,7 +105,7 @@ void Graph::constructVertices (vector<SamplePos*>& sposs, vector<SampleValue**>&
 		hash_set<VertexContent*,hash<VertexContent*>,VertexContentsEqual>::iterator res = vc_set.find (vc) ;
 		if (res == vc_set.end()) { // vc has not been found - add it!
 			vc_set.insert (vc) ;
-			for (unsigned short j = 0 ; j < SamplesPerEBit ; i++) {
+			for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
 				SampleValue *sv = vc->getSampleValue(j) ;
 				SampleValueLabel svlbl = sv->getLabel() ;
 				VertexContents[svlbl].push_back (vc) ;
