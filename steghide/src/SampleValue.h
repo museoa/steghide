@@ -83,6 +83,11 @@ class SampleValue {
 	virtual UWORD32 calcDistance (const SampleValue *s) const = 0 ;
 
 	/**
+	 * return a short name uniquely identifying this sample value
+	 **/
+	virtual std::string getName (void) const = 0 ;
+
+	/**
 	 * is the sample value s a neighbour of this sample value ?
 	 * \return true iff this and s are neighbours
 	 *

@@ -64,3 +64,10 @@ UWORD32 JpegSampleValue::calcDistance (const SampleValue *s) const
 	int d = DctCoeff - sample->DctCoeff ;
 	return ((d >= 0) ? ((UWORD32) d) : ((UWORD32) -d)) ;
 }
+
+std::string JpegSampleValue::getName (void) const
+{
+	char buf[128] ;
+	sprintf (buf, "%d", DctCoeff) ;
+	return std::string (buf) ;
+}

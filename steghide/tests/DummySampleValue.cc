@@ -56,3 +56,10 @@ SampleValue* DummySampleValue::getNearestOppositeSampleValue (void) const
 	}
 	return ((SampleValue *) new DummySampleValue (n_value)) ;
 }
+
+std::string DummySampleValue::getName (void) const
+{
+	char buf[128] ;
+	sprintf (buf, "%d", Value) ;
+	return std::string (buf) ;
+}

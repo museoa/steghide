@@ -42,6 +42,7 @@ GraphTest::GraphTest (TestSuite* s)
 
 void GraphTest::setup ()
 {
+	// FIXME - do this tests with other files too (maybe the same situation in other unit tests)
 	UnitTest::setup() ;
 
 	Globs.reset() ;

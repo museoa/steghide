@@ -29,12 +29,13 @@ class JpegSampleValue : public SampleValue {
 
 	SampleValue* getNearestOppositeSampleValue (void) const ;
 	UWORD32 calcDistance (const SampleValue *s) const ;
+	std::string getName (void) const ;
 
-	int getDctCoeff (void) const
+	SWORD16 getDctCoeff (void) const
 		{ return DctCoeff ; } ;
 
 	private:
-	int DctCoeff ;
+	SWORD16 DctCoeff ;
 } ;
 
 #endif // ndef SH_JPEGSAMPLE_H

@@ -120,8 +120,10 @@ class Graph {
 	 **/
 	void print (void) const ;
 
-	void print_gml (std::ostream& out, unsigned int recdepth) const ;
-	void printVertex_gml (std::ostream& out, Vertex* v, unsigned int recdepth, std::vector<bool>& printed) const ;
+	void print_gml (std::ostream& out) const ;
+	void printVertex_gml (std::ostream& out, Vertex* v, unsigned int recdepth, std::vector<bool>& nodeprinted, std::vector<bool>& edgesprinted, bool start = true) const ;
+	void printPrologue_gml (std::ostream& out) const ;
+	void printEpilogue_gml (std::ostream& out) const ;
 
 	void print_Vertices (unsigned short spc = 0) const ;
 #endif

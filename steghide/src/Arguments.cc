@@ -76,6 +76,7 @@ void Arguments::parse ()
 		if (parse_EmbedEmbFn(curarg)) continue ;
 		if (parse_Encryption(curarg)) continue ;
 		if (parse_Radius(curarg)) continue ;
+		if (parse_Algorithm(curarg)) continue ;
 		if (parse_Goal(curarg)) continue ;
 		if (parse_Force(curarg)) continue ;
 		if (parse_Verbosity(curarg)) continue ;
@@ -560,6 +561,37 @@ bool Arguments::parse_Radius (ArgIt& curarg)
 	return found ;
 }
 
+bool Arguments::parse_Algorithm (ArgIt& curarg)
+{
+	bool found = false ;
+
+	if (*curarg == "-a" || *curarg == "--algorithm") {
+		if (Command.getValue() != EMBED) {
+			throw ArgError (_("the argument \"%s\" can only be used with the \"embed\" command."), curarg->c_str()) ;
+		}
+
+		if (Goal.is_set()) {
+			throw ArgError (_("the algorithm argument can be used only once.")) ;
+		}
+
+		if (++curarg == TheArguments.end()) {
+			throw ArgError (_("the \"%s\" argument must be followed by a number between 0 and %d."), (curarg - 1)->c_str(), Max_Algorithm) ;
+		}
+
+		unsigned int tmp ;
+		sscanf (curarg->c_str(), "%u", &tmp) ;
+		if (tmp > Max_Algorithm) {
+			throw ArgError (_("the \"%s\" argument must be followed by a number between 0 and %d."), (curarg - 1)->c_str(), Max_Algorithm) ;
+		}
+		Algorithm.setValue (tmp) ;
+
+		found = true ;
+		curarg++ ;
+	}
+
+	return found ;
+}
+
 bool Arguments::parse_Goal (ArgIt& curarg)
 {
 	bool found = false ;
@@ -579,6 +611,9 @@ bool Arguments::parse_Goal (ArgIt& curarg)
 
 		float tmp = 0 ;
 		sscanf (curarg->c_str(), "%f", &tmp) ;
+		if (tmp < 0 || tmp > 100) {
+			throw ArgError (_("the \"%s\" argument must be followed by a number between 0 and 100."), (curarg - 1)->c_str()) ;
+		}
 		Goal.setValue (tmp) ;
 
 		found = true ;
@@ -661,27 +696,44 @@ bool Arguments::parse_Debug (ArgIt& curarg)
 		found = true ;
 		curarg++ ;
 	}
-	if (*curarg == "--printgmlgraph") {
+	else if (*curarg == "--printgmlgraph") {
 		if (DebugCommand.is_set()) {
 			throw SteghideError (_("you cannot use more than one debug command at a time.")) ;
 		}
 
 		DebugCommand.setValue (PRINTGMLGRAPH) ;
+
+		found = true ;
+		curarg++ ;
+	}
+	else if (*curarg == "--printgmlvertex") {
+		if (DebugCommand.is_set()) {
+			throw SteghideError (_("you cannot use more than one debug command at a time.")) ;
+		}
+
+		DebugCommand.setValue (PRINTGMLVERTEX) ;
 		curarg++ ;
 
 		int tmp = 0 ;
 		sscanf (curarg->c_str(), "%d", &tmp) ;
 		GmlGraphRecDepth.setValue (tmp) ;
+		curarg++ ;
+		sscanf (curarg->c_str(), "%d", &tmp) ;
+		GmlStartVertex.setValue (tmp) ;
 
 		found = true ;
 		curarg++ ;
 	}
-	else if (*curarg == "--printfreqs") {
+	else if (*curarg == "--printstats") {
 		if (DebugCommand.is_set()) {
 			throw SteghideError (_("you cannot use more than one debug command at a time.")) ;
 		}
 
-		DebugCommand.setValue (PRINTSTATS) ;
+		if (Verbosity.is_set()) {
+			throw ArgError (_("the \"%s\" argument cannot be used here because the verbosity has already been set."), curarg->c_str()) ;
+		}
+
+		Verbosity.setValue (STATS) ;
 
 		found = true ;
 		++curarg ;
@@ -820,6 +872,7 @@ void Arguments::setDefaults (void)
 	Force.setValue (Default_Force, false) ;
 	Verbosity.setValue (Default_Verbosity, false) ;
 	Radius.setValue (Default_Radius, false) ;
+	Algorithm.setValue (Default_Algorithm, false) ;
 	Goal.setValue (Default_Goal, false) ;
 #ifdef DEBUG
 	DebugCommand.setValue (Default_DebugCommand, false) ;
@@ -827,6 +880,7 @@ void Arguments::setDefaults (void)
 	PriorityQueueRange.setValue (Default_PriorityQueueRange, false) ;
 	NConstrHeur.setValue (Default_NConstrHeur, false) ;
 	GmlGraphRecDepth.setValue (Default_GmlGraphRecDepth, false) ;
+	GmlStartVertex.setValue (Default_GmlStartVertex, false) ;
 #endif
 }
 

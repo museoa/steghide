@@ -175,11 +175,7 @@ Matching& Matching::augment (const std::vector<Edge*> &path)
 
 void Matching::printVerboseInfo (void) const
 {
-#ifdef DEBUG
-	if (Args.Verbosity.getValue() == VERBOSE || Args.DebugCommand.getValue() == PRINTSTATS) {
-#else
-	if (Args.Verbosity.getValue() == VERBOSE) {
-#endif
+	if (Args.Verbosity.getValue() == VERBOSE || Args.Verbosity.getValue() == STATS) {
 		VerboseMessage vmsg8 (_("size of the matching: %lu"), getCardinality()) ;
 		vmsg8.printMessage() ;
 		unsigned long expvertices = TheGraph->getNumVertices() - (2 * getCardinality()) ;
@@ -195,9 +191,9 @@ void Matching::printVerboseInfo (void) const
 		vmsg10.printMessage() ;
 
 #ifdef DEBUG
-		if (Args.DebugCommand.getValue() == PRINTSTATS) {
-			printf ("%lu:%.1f:",
-				getCardinality(), // number of matched edges
+		if (Args.Verbosity.getValue() == STATS) {
+			printf ("%.4f:%.1f:",
+				1.0 - (((float) (getCardinality() * 2)) / ((float) TheGraph->getNumVertices())),  // percentage of unmatched vertices
 				((float) sumweights / (float) getCardinality()) // average edge weight
 	   			) ;
 		}

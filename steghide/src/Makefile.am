@@ -10,7 +10,7 @@ EncryptionAlgorithm.h EncryptionMode.h Extractor.h Graph.h \
 JpegFile.h JpegSampleValue.h MCryptPP.h MHashKeyGen.h MHashPP.h Matching.h \
 MatchingAlgorithm.h ProgressOutput.h PseudoRandomSource.h RGBTriple.h RandomSource.h \
 SampleOccurence.h SampleValue.h SampleValueOppositeNeighbourhood.h Selector.h \
-Session.h SteghideError.h Terminal.h Vertex.h VertexContent.h WavChunk.h \
+Session.h SteghideError.h Terminal.h Utils.h Vertex.h VertexContent.h WavChunk.h \
 WavChunkHeader.h WavChunkUnused.h WavFile.h WavFormatChunk.h \
 WavPCMSampleValue.h common.h error.h msg.h wrapper_hash_map.h wrapper_hash_set.h
 steghide_SOURCES = \
@@ -22,7 +22,7 @@ EmbData.cc Embedder.cc EncryptionAlgorithm.cc EncryptionMode.cc Extractor.cc \
 Graph.cc JpegFile.cc JpegSampleValue.cc MCryptPP.cc MHashKeyGen.cc MHashPP.cc \
 MatchingAlgorithm.cc Matching.cc ProgressOutput.cc PseudoRandomSource.cc RGBTriple.cc \
 RandomSource.cc SampleValue.cc SampleValueOppositeNeighbourhood.cc Selector.cc \
-Session.cc SteghideError.cc Terminal.cc Vertex.cc VertexContent.cc WavChunk.cc \
+Session.cc SteghideError.cc Terminal.cc Utils.cc Vertex.cc VertexContent.cc WavChunk.cc \
 WavChunkHeader.cc WavChunkUnused.cc WavFile.cc WavFormatChunk.cc \
 WavPCMSampleValue.cc error.cc main.cc msg.cc
 localedir = $(datadir)/locale

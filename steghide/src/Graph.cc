@@ -141,7 +141,7 @@ void Graph::constructVertices (std::vector<SamplePos*>& sposs, std::vector<Sampl
 	}
 
 #ifdef DEBUG
-	if (Args.DebugCommand.getValue() == PRINTSTATS) {
+	if (Args.Verbosity.getValue() == STATS) {
 		NumVertexContents = vc_set.size() ;
 	}
 #endif
@@ -221,11 +221,7 @@ float Graph::getAvgVertexDegree () const
 
 void Graph::printVerboseInfo()
 {
-#ifdef DEBUG
-	if (Args.Verbosity.getValue() == VERBOSE || Args.DebugCommand.getValue() == PRINTSTATS) {
-#else
-	if (Args.Verbosity.getValue() == VERBOSE) {
-#endif
+	if (Args.Verbosity.getValue() == VERBOSE || Args.Verbosity.getValue() == STATS) {
 		unsigned long sumdeg = 0 ;
 		unsigned long mindeg = ULONG_MAX ;
 		unsigned long maxdeg = 0 ;
@@ -244,7 +240,7 @@ void Graph::printVerboseInfo()
 		myassert (sumdeg % 2 == 0) ;
 
 #ifdef DEBUG
-		if (Args.DebugCommand.getValue() == PRINTSTATS) {
+		if (Args.Verbosity.getValue() == STATS) {
 			printf ("%lu:%lu:%lu:%lu:%lu:%.1f:%lu:",
 					(unsigned long) SampleValues.size(),	// number of distinct sample values
 					(unsigned long) Vertices.size(),	// number of vertices
@@ -518,60 +514,93 @@ void Graph::print (void) const
 	}
 }
 
-void Graph::print_gml (std::ostream& out, unsigned int recdepth) const
+void Graph::print_gml (std::ostream& out) const
 {
-	out << "graph [" << std::endl ;
-	out << "    directed 0" << std::endl ;
-
+	printPrologue_gml(out) ;
 	srand ((unsigned int) time (NULL)) ;
-	std::vector<bool> printed (Vertices.size()) ;
+	std::vector<bool> nodeprinted (Vertices.size()) ;
+	std::vector<bool> edgesprinted (Vertices.size()) ;
 	for (unsigned int i = 0 ; i < Vertices.size() ; i++) {
-		if (!printed[i]) {
-			printVertex_gml (out, Vertices[i], recdepth, printed) ;
-		}
+		printVertex_gml (out, Vertices[i], 1, nodeprinted, edgesprinted, false) ;
 	}
-
-	out << "]" << std::endl ;
+	printEpilogue_gml(out) ;
 }
 
-void Graph::printVertex_gml (std::ostream& out, Vertex* vstart, unsigned int recdepth, std::vector<bool>& printed) const
+void Graph::printVertex_gml (std::ostream& out, Vertex* vstart, unsigned int recdepth, std::vector<bool>& nodeprinted, std::vector<bool>& edgesprinted, bool start) const
 {
-	const float width = 1200.0 ;
+	const float width = 1300.0 ;
 	const float height = 1000.0 ;
 
-	printed[vstart->getLabel()] = true ;
-
-	out << "    node [" << std::endl ;
-	out << "        id " << vstart->getLabel() << std::endl ;
-	out << "        label \"" << vstart->getLabel() << "\"" << std::endl ;
-	out << "        graphics [" << std::endl ;
-	out << "            x " << (width * (rand() / (RAND_MAX + 1.0))) << std::endl ;
-	out << "            y " << (height * (rand() / (RAND_MAX + 1.0))) << std::endl ;
-	out << "            w 10.0" << std::endl ;
-	out << "            h 10.0" << std::endl ;
-	out << "            type \"rectangle\"" << std::endl ;
-	out << "            width 1.0" << std::endl ;
-	out << "        ]" << std::endl ;
-	out << "    ]" << std::endl ;
+	if (!nodeprinted[vstart->getLabel()]) {
+		out << "    node [" << std::endl ;
+		out << "        id " << vstart->getLabel() << std::endl ;
+		std::string vlabel = "" ;
+		for (unsigned short i = 0 ; i < getSamplesPerVertex() ; i++) {
+			vlabel += vstart->getSampleValue(i)->getName() ;
+			if (i != getSamplesPerVertex() - 1) {
+				vlabel += "/" ;
+			}
+		}
+		out << "        label \"" << vlabel << "\"" << std::endl ;
+		out << "        graphics [" << std::endl ;
+		out << "            x " << (width * (rand() / (RAND_MAX + 1.0))) << std::endl ;
+		out << "            y " << (height * (rand() / (RAND_MAX + 1.0))) << std::endl ;
+		out << "            w 10.0" << std::endl ;
+		out << "            h 10.0" << std::endl ;
+		out << "            type \"rectangle\"" << std::endl ;
+		out << "            width 1.0" << std::endl ;
+		if (start) {
+			out << "            fill \"#00FF00\"" << std::endl ;
+		}
+		out << "        ]" << std::endl ;
+		out << "    ]" << std::endl ;
+	}
+	nodeprinted[vstart->getLabel()] = true ;
 
 	if (recdepth > 0) {
 		EdgeIterator eit (vstart) ;
 		while (!eit.isFinished()) {
 			Edge* e = *eit ;
 			Vertex* vnext = e->getOtherVertex(vstart) ;
-			delete e ;
 
-			out << "    edge [" << std::endl ;
-			out << "        source " << vstart->getLabel() << std::endl ;
-			out << "        target " << vnext->getLabel() << std::endl ;
-			out << "    ]" << std::endl ;
-			if (!printed[vnext->getLabel()]) {
-				printVertex_gml (out, vnext, recdepth - 1, printed) ;
+			if (!edgesprinted[vstart->getLabel()] && !edgesprinted[vnext->getLabel()]) {
+				out << "    edge [" << std::endl ;
+				out << "        source " << e->getVertex1()->getLabel() << std::endl ;
+				out << "        target " << e->getVertex2()->getLabel() << std::endl ;
+				out << "        label \"" ;
+				out << e->getVertex1()->getSampleValue(e->getIndex1())->getName() << "/" ;
+				out << e->getVertex2()->getSampleValue(e->getIndex2())->getName() << "\"" << std::endl ;
+				out << "    ]" << std::endl ;
 			}
 
+			delete e ;
+			++eit ;
+		}
+
+		edgesprinted[vstart->getLabel()] = true ;
+
+		eit.reset() ;
+		while (!eit.isFinished()) {
+			Edge* e = *eit ;
+			Vertex* vnext = e->getOtherVertex(vstart) ;
+
+			printVertex_gml (out, vnext, recdepth - 1, nodeprinted, edgesprinted, false) ;
+
+			delete e ;
 			++eit ;
 		}
 	}
+}
+
+void Graph::printPrologue_gml (std::ostream& out) const
+{
+	out << "graph [" << std::endl ;
+	out << "    directed 0" << std::endl ;
+}
+
+void Graph::printEpilogue_gml (std::ostream& out) const
+{
+	out << "]" << std::endl ;
 }
 
 void Graph::print_Vertices (unsigned short spc) const

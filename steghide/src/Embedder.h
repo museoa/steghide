@@ -27,6 +27,7 @@ class Edge ;
 class CvrStgFile ;
 class Graph ;
 class Matching ;
+class ProgressOutput ;
 class Vertex ;
 
 class Embedder {
@@ -45,7 +46,7 @@ class Embedder {
 	/**
 	 * do the matching algorithms
 	 **/
-	const Matching* calculateMatching () ;
+	const Matching* calculateMatching (ProgressOutput* prout) ;
 
 	/**
 	 * embed the two bits represented by the two vertices adjacent to e

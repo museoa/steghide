@@ -61,6 +61,8 @@ void ConstructionHeuristic::run ()
 	if (Args.PriorityQueueRange.is_set()) {
 		pqr = Args.PriorityQueueRange.getValue() ;
 	}
+	unsigned long numDegG = 0 ;
+	unsigned long numDeg1 = 0 ;
 #endif
 
 	while ((TheMatching->getCardinality() < CardinalityGoal) && (!VerticesDegG.empty() || !VerticesDeg1.empty())) {
@@ -75,6 +77,7 @@ void ConstructionHeuristic::run ()
 #ifdef DEBUG
 			if (v != NULL) {
 				printDebug (5, "ConstructionHeuristic: vertex %lu has been chosen from VerticesDeg1.", v->getLabel()) ;
+				numDeg1++ ;
 			}
 #endif
 		}
@@ -83,6 +86,7 @@ void ConstructionHeuristic::run ()
 #ifdef DEBUG
 			if (v != NULL) {
 				printDebug (5, "ConstructionHeuristic: vertex %lu has been chosen from VerticesDegG.", v->getLabel()) ;
+				numDegG++ ;
 			}
 #endif
 		}
@@ -91,6 +95,12 @@ void ConstructionHeuristic::run ()
 			insertInMatching (v->getShortestEdge()) ;
 		}
 	}
+
+#ifdef DEBUG
+	if (Args.Verbosity.getValue() == STATS) {
+		printf ("%.4f:", ((float) numDeg1) / ((float) (numDeg1 + numDegG))) ; // rate of appliances of Deg1-rule
+	}
+#endif
 }
 
 void ConstructionHeuristic::insertInMatching (Edge *e)

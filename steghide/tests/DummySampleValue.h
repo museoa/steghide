@@ -45,6 +45,8 @@ class DummySampleValue : public SampleValue {
 
 	SampleValue* getNearestOppositeSampleValue (void) const ;
 
+	std::string getName (void) const ;
+
 	private:
 	UWORD16 Value ;
 } ;

@@ -169,6 +169,8 @@ void Session::printHelp ()
 		"   -e none               do not encrypt data before embedding\n"
 		" -r, --radius            specify the neighbourhood-radius\n"
 		"   -r <r>                use the real number <r> as radius\n"
+		" -a, --algorithm         choose matching algorithm\n"
+		"   -a <n>                where <n> is in 0 fastest...3 most secure\n"
 		" -g, --goal              specify a goal for the matching algorithms\n"
 		"   -g <p>                stop search when <p> percent are reached\n"
 		" -K, --nochecksum        do not embed crc32 checksum of embedded data\n"

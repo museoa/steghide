@@ -35,6 +35,7 @@ class BmpRGBSampleValue : public BmpSampleValue {
 	BmpRGBSampleValue (RGBTriple t) ;
 
 	SampleValue* getNearestOppositeSampleValue (void) const ;
+	std::string getName (void) const ;
 
 	BYTE getRed (void) const { return Color.Red ; } ;
 	BYTE getGreen (void) const { return Color.Green ; } ;

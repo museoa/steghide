@@ -127,8 +127,7 @@ Warning::Warning (const char *msgfmt, ...)
 
 void Warning::printMessage () const
 {
-	if (Args.Verbosity.getValue() == NORMAL ||
-		Args.Verbosity.getValue() == VERBOSE) {
+	if (Args.Verbosity.getValue() != QUIET) {
 		std::cerr << "steghide: " << _("warning:") << " " << getMessage() << std::endl ;
 	}
 }

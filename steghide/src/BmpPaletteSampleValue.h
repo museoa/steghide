@@ -34,6 +34,7 @@ class BmpPaletteSampleValue : public BmpSampleValue {
 	BmpPaletteSampleValue (BYTE i) ;
 
 	SampleValue* getNearestOppositeSampleValue (void) const ;
+	std::string getName (void) const ;
 
 	BYTE getIndex (void) const { return Index ; } ;
 	BYTE getRed (void) const { return (*Palette)[Index].Red ; } ;

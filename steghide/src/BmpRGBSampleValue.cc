@@ -57,6 +57,13 @@ void BmpRGBSampleValue::addNOSCandidate (std::vector<RGBTriple>& cands, BYTE r, 
 	}
 }
 
+std::string BmpRGBSampleValue::getName () const
+{
+	char buf[128] ;
+	sprintf (buf, "r%ug%ub%u", getRed(), getGreen(), getBlue()) ;
+	return std::string (buf) ;
+}
+
 BYTE BmpRGBSampleValue::minus (BYTE a, BYTE b) const
 {
 	BYTE retval = 0 ;

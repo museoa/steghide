@@ -70,6 +70,7 @@ class Arguments {
 	ArgEncAlgo		EncAlgo ;
 	ArgEncMode		EncMode ;
 	ArgULong		Radius ;
+	ArgUInt			Algorithm ;
 	ArgFloat		Goal ;
 	ArgBool			Force ;
 	ArgVerbosity	Verbosity ;
@@ -80,7 +81,13 @@ class Arguments {
 	ArgUInt			PriorityQueueRange ;
 	ArgUInt			NConstrHeur ;
 	ArgUInt			GmlGraphRecDepth ;
+	ArgUInt			GmlStartVertex ;
 #endif
+
+	static const unsigned int Algorithm_None = 0 ;
+	static const unsigned int Algorithm_CHOnly = 1 ;
+	static const unsigned int Algorithm_BoundedAPH = 2 ;
+	static const unsigned int Algorithm_UnboundedAPH = 3 ;
 
 	private:
 	typedef std::vector<std::string>::const_iterator ArgIt ;
@@ -95,6 +102,8 @@ class Arguments {
 	static const bool		Default_Force = false ;
 	static const VERBOSITY	Default_Verbosity = NORMAL ;
 	static const unsigned long	Default_Radius = 0 ; // there is no default radius for all file formats
+	static const unsigned int	Default_Algorithm = Algorithm_BoundedAPH ; // FIXME - really use BoundedAPH ?
+	static const unsigned int	Max_Algorithm = 3 ;
 	static const float		Default_Goal = 100.0 ;
 #ifdef DEBUG
 	static const DEBUGCOMMAND	Default_DebugCommand = NONE ;
@@ -102,6 +111,7 @@ class Arguments {
 	static const unsigned int	Default_PriorityQueueRange = 0 ; // is never used
 	static const unsigned int	Default_NConstrHeur = 0 ; // is never used
 	static const unsigned int	Default_GmlGraphRecDepth = 0 ;
+	static const unsigned int	Default_GmlStartVertex = 0 ;
 #endif
 
 	/**
@@ -127,6 +137,7 @@ class Arguments {
 	bool parse_EmbedEmbFn (ArgIt& curarg) ;
 	bool parse_Encryption (ArgIt& curarg) ;
 	bool parse_Radius (ArgIt& curarg) ;
+	bool parse_Algorithm (ArgIt& curarg) ;
 	bool parse_Goal (ArgIt& curarg) ;
 	bool parse_Force (ArgIt& curarg) ;
 	bool parse_Verbosity (ArgIt& curarg) ;

@@ -33,6 +33,7 @@ class WavPCMSampleValue : public SampleValue {
 
 	SampleValue* getNearestOppositeSampleValue (void) const ;
 	UWORD32 calcDistance (const SampleValue *s) const ;
+	std::string getName (void) const ;
 
 	int getValue (void) const
 		{ return Value ; } ;

@@ -79,9 +79,16 @@ Embedder::Embedder ()
 		Globs.TheGraph->print() ;
 		exit (EXIT_SUCCESS) ;
 	}
-
-	if (Args.DebugCommand.getValue() == PRINTGMLGRAPH) {
-		Globs.TheGraph->print_gml (std::cout, Args.GmlGraphRecDepth.getValue()) ;
+	else if (Args.DebugCommand.getValue() == PRINTGMLGRAPH) {
+		Globs.TheGraph->print_gml (std::cout) ;
+		exit (EXIT_SUCCESS) ;
+	}
+	else if (Args.DebugCommand.getValue() == PRINTGMLVERTEX) {
+		std::vector<bool> nodeprinted (Globs.TheGraph->getNumVertices()) ;
+		std::vector<bool> edgesprinted (Globs.TheGraph->getNumVertices()) ;
+		Globs.TheGraph->printPrologue_gml(std::cout) ;
+		Globs.TheGraph->printVertex_gml (std::cout, Globs.TheGraph->getVertex(Args.GmlStartVertex.getValue()), Args.GmlGraphRecDepth.getValue(), nodeprinted, edgesprinted) ;
+		Globs.TheGraph->printEpilogue_gml(std::cout) ;
 		exit (EXIT_SUCCESS) ;
 	}
 #endif
@@ -95,7 +102,12 @@ Embedder::~Embedder ()
 	
 void Embedder::embed ()
 {
-	const Matching* M = calculateMatching() ;
+	ProgressOutput* prout = NULL ;
+	if (Args.Verbosity.getValue() == NORMAL) {
+		prout = new ProgressOutput () ;
+	}
+
+	const Matching* M = calculateMatching (prout) ;
 
 	// embed matched edges
 	const std::list<Edge*> medges = M->getEdges() ;
@@ -115,61 +127,58 @@ void Embedder::embed ()
 	Globs.TheCvrStgFile->write() ;
 }
 
-const Matching* Embedder::calculateMatching ()
+const Matching* Embedder::calculateMatching (ProgressOutput* prout)
 {
-	VerboseMessage vmsg1 (_("calculating the matching...")) ;
-	vmsg1.printMessage() ;
-
-	ProgressOutput* prout = NULL ;
-	if (Args.Verbosity.getValue() == NORMAL) {
-		prout = new ProgressOutput () ;
-	}
-
-	// do construction heuristic (maybe more than once)
-	unsigned int nconstrheur = Default_NConstrHeur ;
-#ifdef DEBUG
-	if (Args.NConstrHeur.is_set()) {
-		nconstrheur = Args.NConstrHeur.getValue() ;
-	}
-#endif
 	Matching* bestmatching = NULL ;
-	for (unsigned int i = 0 ; i < nconstrheur ; i++) {
-		// create an empty matching for the construction heuristic to start with
-		Matching* thismatching = new Matching (Globs.TheGraph, prout) ;
 
-		ConstructionHeuristic ch (Globs.TheGraph, thismatching, Args.Goal.getValue()) ;
-		ch.run() ;
-
-		if ((bestmatching == NULL) || (thismatching->getCardinality() > bestmatching->getCardinality())) {
-			if (bestmatching != NULL) {
-				delete bestmatching ;
-			}
-			bestmatching = thismatching ;
-		}
-		else {
-			delete thismatching ;
-		}
+	if (Args.Algorithm.getValue() == Arguments::Algorithm_None) {
+		bestmatching = new Matching (Globs.TheGraph) ;
 	}
+	else {
+		VerboseMessage vmsg1 (_("calculating the matching...")) ;
+		vmsg1.printMessage() ;
 
-	VerboseMessage vmsg2 (_("best matching after construction heuristic:")) ;
-	vmsg2.printMessage() ;
-	bestmatching->printVerboseInfo() ;
-
-	if (true) {
-#if 0
-		AugmentingPathHeuristic aph (Globs.TheGraph, bestmatching, Args.Goal.getValue(), (UWORD32) (Globs.TheGraph->getAvgVertexDegree() / 20)) ;
-		aph.run() ;
-		bestmatching = aph.getMatching() ;
-
-		VerboseMessage vmsg3 (_("best matching after bounded augmenting path heuristic:")) ;
-		vmsg3.printMessage() ;
-		bestmatching->printVerboseInfo() ;
+		// do construction heuristic (maybe more than once)
+		unsigned int nconstrheur = Default_NConstrHeur ;
+#ifdef DEBUG
+		if (Args.NConstrHeur.is_set()) {
+			nconstrheur = Args.NConstrHeur.getValue() ;
+		}
 #endif
-		AugmentingPathHeuristic aph (Globs.TheGraph, bestmatching, Args.Goal.getValue()) ;
+		for (unsigned int i = 0 ; i < nconstrheur ; i++) {
+			// create an empty matching for the construction heuristic to start with
+			Matching* thismatching = new Matching (Globs.TheGraph, prout) ;
 
-		// do unbounded augmenting path heuristic
-		if (true) {
-			aph.reset() ;
+			ConstructionHeuristic ch (Globs.TheGraph, thismatching, Args.Goal.getValue()) ;
+			ch.run() ;
+
+			if ((bestmatching == NULL) || (thismatching->getCardinality() > bestmatching->getCardinality())) {
+				if (bestmatching != NULL) {
+					delete bestmatching ;
+				}
+				bestmatching = thismatching ;
+			}
+			else {
+				delete thismatching ;
+			}
+		}
+
+		VerboseMessage vmsg2 (_("best matching after construction heuristic:")) ;
+		vmsg2.printMessage() ;
+		bestmatching->printVerboseInfo() ;
+
+		if (Args.Algorithm.getValue() == Arguments::Algorithm_BoundedAPH) {
+			AugmentingPathHeuristic aph (Globs.TheGraph, bestmatching, Args.Goal.getValue(), (UWORD32) (Globs.TheGraph->getAvgVertexDegree() / 20)) ;
+			aph.run() ;
+			bestmatching = aph.getMatching() ;
+
+			VerboseMessage vmsg3 (_("best matching after bounded augmenting path heuristic:")) ;
+			vmsg3.printMessage() ;
+			bestmatching->printVerboseInfo() ;
+
+		}
+		else if (Args.Algorithm.getValue() == Arguments::Algorithm_UnboundedAPH) {
+			AugmentingPathHeuristic aph (Globs.TheGraph, bestmatching, Args.Goal.getValue()) ;
 			aph.run() ;
 			bestmatching = aph.getMatching() ;
 
@@ -177,11 +186,14 @@ const Matching* Embedder::calculateMatching ()
 			vmsg4.printMessage() ;
 			bestmatching->printVerboseInfo() ;
 		}
-	}
+		else {
+			myassert (Args.Algorithm.getValue() == Arguments::Algorithm_CHOnly) ;
+		}
 
-	if (prout) {
-		prout->update (((float) (2 * bestmatching->getCardinality())) / ((float) Globs.TheGraph->getNumVertices()), true) ;
-		delete prout ;
+		if (prout) {
+			prout->update (((float) (2 * bestmatching->getCardinality())) / ((float) Globs.TheGraph->getNumVertices()), true) ;
+			delete prout ;
+		}
 	}
 
 	return bestmatching ;

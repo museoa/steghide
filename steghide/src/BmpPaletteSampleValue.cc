@@ -38,3 +38,10 @@ SampleValue* BmpPaletteSampleValue::getNearestOppositeSampleValue () const
 	unsigned int nosv_idx = Palette->getNearest (Index, (getBit() == 1 ? ColorPalette::EVENINDICES : ColorPalette::ODDINDICES)) ;
 	return ((SampleValue*) new BmpPaletteSampleValue (nosv_idx)) ;
 }
+
+std::string BmpPaletteSampleValue::getName () const
+{
+	char buf[128] ;
+	sprintf (buf, "i%ur%ug%ub%u", getIndex(), getRed(), getGreen(), getBlue()) ;
+	return std::string (buf) ;
+}

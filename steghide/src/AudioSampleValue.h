@@ -53,6 +53,7 @@ class AudioSampleValue : public SampleValue {
 
 	SampleValue* getNearestOppositeSampleValue (void) const ;
 	UWORD32 calcDistance (const SampleValue* s) const ;
+	std::string getName (void) const ;
 
 	private:
 	ValueType Value ;
@@ -103,6 +104,14 @@ SampleValue* AudioSampleValue<Type,ValueType>::getNearestOppositeSampleValue (vo
 		}
 	}
 	return ((SampleValue *) new AudioSampleValue<Type,ValueType> (newval)) ;
+}
+
+template<AUDIOSAMPLETYPE Type, class ValueType>
+std::string AudioSampleValue<Type,ValueType>::getName (void) const
+{
+	char buf[128] ;
+	sprintf (buf, "%ld", (long) Value) ;
+	return std::string (buf) ;
 }
 
 #endif // ndef SH_AUDIOSAMPLEVALUE_H
