@@ -32,16 +32,7 @@ made available to the public under the GPL. For more information, see the
 <?php pBoxEnd(); ?>
 
 <?php pBoxHead("News:"); ?>
-<!-- take news from http://sourceforge.net/export/projnews.php?group_id=15895&limit=3&flat=1&show_summaries=1 -->
-<b>Sept. 30, 2003: steghide 0.5.1beta released!</b><br>
-I have released a beta version for the upcoming 0.5.1 release. It is intended for testing
-purposes. If you find a bug, please <a href="mailto:<shetzl@chello.at>">tell me</a>. You
-can download steghide 0.5.1beta from the
-<a href="http://www.sourceforge.net/projects/steghide">sourceforge project page</a>.
-The package for MS Windows is not yet released. I will create and upload it in the next few days.<br>
-If you download the source code and compile steghide yourself, please do not forget to
-run "make check" after running "make" to execute a bunch of unit and system tests.
-<p>
+<?php include "includes/news.html"?>
 <?php pBoxEnd(); ?>
 
 <?php pBoxHead("Dependencies:"); ?>
