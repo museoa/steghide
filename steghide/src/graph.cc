@@ -41,6 +41,12 @@ Graph::Graph (CvrStgFile *f, vector<SamplePos*>& sposs)
 	constructSamples (sposs, svalues) ;
 	constructVertices (sposs, svalues, vc_set) ;
 	constructEdges (vc_set) ;
+
+#if 0
+	if (!SValueOppNeighs.check()) {
+		cerr << "SampleValueOppositeNeighbourhood check failed." << endl ;
+	}
+#endif
 }
 
 void Graph::constructSamples (const vector<SamplePos*>& sposs,

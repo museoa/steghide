@@ -64,6 +64,13 @@ class SampleValueOppositeNeighbourhood : private GraphAccess {
 	 * return the smallest integer that is >= x
 	 **/
 	int roundup (float x) ;
+
+#ifdef DEBUG
+	public:
+	bool check (void) const ;
+	bool check_soundness (void) const ;
+	bool check_completeness (void) const ;
+#endif
 } ;
 
 #endif // ndef SH_SVALUEOPPNEIGHS_H

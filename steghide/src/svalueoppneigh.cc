@@ -117,6 +117,7 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_rgb (const vector<SampleVal
 	// fill OppNeighs data structure
 	OppNeighs = vector<vector<SampleValue*> > (numsvs) ;
 	unsigned long numsv0 = svalues0.size() ;
+
 	for (unsigned long i = 0 ; i < numsv0 ; i++) {
 		// find all opposite neighbours of svalues0[i] (in the 3^3 cubes around samplesvalues0[i])
 		short start_red = (svalues0[i]->getRed() / cubelen) - 1, end_red = start_red + 2 ;
@@ -128,15 +129,14 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_rgb (const vector<SampleVal
 		if (end_red >= numcubes) end_red = numcubes - 1 ;
 		if (end_green >= numcubes) end_green = numcubes - 1 ;
 		if (end_blue >= numcubes) end_blue = numcubes - 1 ;
-		SampleValue* thissv = svalues[0] ;
-		SampleValueLabel thissv_label = svalues0[i]->getLabel() ;
+		SampleValue* thissv = svalues0[i] ;
+		SampleValueLabel thissv_label = thissv->getLabel() ;
 
 		for (short i_red = start_red ; i_red <= end_red ; i_red++) {
 			for (short i_green = start_green ; i_green <= end_green ; i_green++) {
 				for (short i_blue = start_blue ; i_blue <= end_blue ; i_blue++) {
 					const vector<BmpRGBSampleValue*> &thiscube = cubes[i_red][i_green][i_blue] ;
-					unsigned int thiscube_size = thiscube.size() ;
-					for (unsigned int j = 0 ; j < thiscube_size ; j++) {
+					for (unsigned int j = 0 ; j < thiscube.size() ; j++) {
 						if (svalues0[i]->isNeighbour (thiscube[j])) {
 							OppNeighs[thissv_label].push_back (thiscube[j]) ;
 							OppNeighs[thiscube[j]->getLabel()].push_back (thissv) ;
@@ -211,3 +211,84 @@ int SampleValueOppositeNeighbourhood::roundup (float x)
 	}
 	return retval ;
 }
+
+#ifdef DEBUG
+bool SampleValueOppositeNeighbourhood::check (void) const
+{
+	bool retval = true ;
+
+	retval = check_soundness() && retval ;
+	retval = check_completeness() && retval ;
+
+	return retval ;
+}
+
+bool SampleValueOppositeNeighbourhood::check_soundness (void) const
+{
+	bool err_nonopp = false ;
+	bool err_nonneigh = false ;
+
+	cerr << "checking SampleValueOppositeNeighbourhood: sample values are opposite neighbours" << endl ;
+	unsigned long numsvs = TheGraph->getNumSampleValues() ;
+	for (SampleValueLabel srclbl = 0 ; srclbl < numsvs ; srclbl++) {
+		SampleValue* srcsv = TheGraph->getSampleValue(srclbl) ;
+		const vector<SampleValue*> &oppneighs = OppNeighs[srclbl] ;
+		for (vector<SampleValue*>::const_iterator destsv = oppneighs.begin() ; destsv != oppneighs.end() ; destsv++) {
+			if (srcsv->getBit() == (*destsv)->getBit()) {
+				err_nonopp = true ;
+			}
+
+			if (!srcsv->isNeighbour(*destsv)) {
+				err_nonneigh = true ;
+			}
+		}
+	}
+
+	if (err_nonopp) {
+		cerr << "FAILED: SampleOppositeNeighbourhood contains a non-opposite sample value" << endl ;
+	}
+	if (err_nonneigh) {
+		cerr << "FAILED: SampleValueOppositeNeighbourhood contains a non-neighbour value" << endl ;
+	}
+
+	return !(err_nonopp || err_nonneigh) ;
+}
+
+bool SampleValueOppositeNeighbourhood::check_completeness (void) const
+{
+	bool err = false ;
+
+	cerr << "checking SampleValueOppositeNeighbourhood: all oppneighs are in this list" << endl ;
+	unsigned long numsvs = TheGraph->getNumSampleValues() ;
+	for (unsigned long i = 0 ; i < numsvs ; i++) {
+		SampleValue *sv1 = TheGraph->getSampleValue(i) ;
+		for (unsigned long j = 0 ; j < numsvs ; j++) {
+			SampleValue *sv2 = TheGraph->getSampleValue(j) ;
+			if (sv1->getBit() != sv2->getBit()) {
+				// they are opposite...
+				if (sv1->isNeighbour (sv2)) {
+					// ...and they are neighbours => there must be an entry in SampleOppositeNeighbourhood
+					assert (sv2->isNeighbour (sv1)) ;
+					const vector<SampleValue*> &oppneighs = OppNeighs[i] ;
+					bool found = false ;
+					for (vector<SampleValue*>::const_iterator k = oppneighs.begin() ; k != oppneighs.end() ; k++) {
+						if ((*k)->getLabel() == j) {
+							found = true ;
+						}
+					}
+					if (!found) {
+						err = true ;
+					}
+				}
+			}
+		}
+	}
+
+	if (err) {
+		cerr << "FAILED: SampleOppositeNeighbourhood does not contain all opposite neighbours" << endl ;
+	}
+
+	return !err ;
+}
+
+#endif

@@ -36,8 +36,8 @@ class ConstructionHeuristic : private GraphAccess {
 	private:
 	class LongerShortestEdge : public binary_function<Vertex*,Vertex*,bool> {
 		public:
-		bool operator() (Vertex *v1, Vertex *v2)
-			{ assert(v1->getDegree() > 0) ; assert(v2->getDegree) > 0) ; return (v1->getShortestEdge()->getWeight() > v2->getShortestEdge()->getWeight()) ; } ;
+		bool operator() (const Vertex *v1, const Vertex *v2) 
+			{ return (v1->getShortestEdge()->getWeight() > v2->getShortestEdge()->getWeight()) ; } ;
 	} ;
 
 	static const unsigned int PriorityQueueRange = 1 ;

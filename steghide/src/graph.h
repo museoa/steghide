@@ -91,25 +91,11 @@ class Graph {
 
 	void unmarkDeletedAllVertices (void) ;
 
+	unsigned long getNumSampleValues (void) const
+		{ return SampleValues.size() ; } ;
+
 	SampleValue* getSampleValue (const SampleValueLabel l) const
 		{ return SampleValues[l] ; } ;
-
-#if 0
-	/**
-	 * get the label of an opposite neighbour of a given sample value
-	 * \param svl the label of the sample value whose neighbour should be returned
-	 * \param i the index of the opposite neighbour in all opposite neighbours of svl
-	 * \return the i-th opposite neighbour of the sample value represented by svl
-	 **/
-	SampleValueLabel getOppNeighLabel (SampleValueLabel svl, unsigned long i) const
-		{ return SValueOppNeighs[svl][i] ; } ;
-
-	SampleValue *getOppNeigh (SampleValueLabel svl, unsigned long i) const
-		{ return SampleValues[SValueOppNeighs[svl][i]] ; } ;
-
-	SampleValue *getOppNeigh (SampleValue* sv, unsigned long i) const
-		{ return SValueOppNeighs[sv][i] ; } ;
-#endif
 
 	/**
 	 * get the number of opposite neighbours of a given sample value
