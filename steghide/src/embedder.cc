@@ -47,6 +47,10 @@ Embedder::Embedder ()
 	// read cover-/stego-file
 	TheCvrStgFile = CvrStgFile::readFile (Args.CvrFn.getValue()) ;
 	
+	if ((ToEmbed.getLength() * TheCvrStgFile->getSamplesPerEBit()) > TheCvrStgFile->getNumSamples()) {
+		throw SteghideError (_("the cover file is too short to embed the data.")) ;
+	}
+
 	// create graph
 	TheGraph = new Graph (TheCvrStgFile, ToEmbed) ;
 	TheGraph->printVerboseInfo() ;
@@ -67,12 +71,6 @@ Embedder::~Embedder ()
 	
 void Embedder::embed ()
 {
-	unsigned long n = ToEmbed.getLength() ;
-
-	if ((n * TheCvrStgFile->getSamplesPerEBit()) > TheCvrStgFile->getNumSamples()) {
-		throw SteghideError (_("the cover file is too short to embed the data.")) ;
-	}
-
 	const Matching* M = calculateMatching() ;
 
 	// embed matched edges

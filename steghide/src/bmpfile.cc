@@ -164,14 +164,18 @@ void BmpFile::calcRCB (SamplePos pos, unsigned long *row, unsigned long *column,
 		unsigned short bytespersample = bitcount / 8 ;
 		
 		*column = pos * bytespersample ;
-		myassert (*column < (width * bytespersample)) ;
-		
 		*firstbit = 0 ;
+
+		myassert (*column < (width * bytespersample)) ;
 	}
 	else {
 		unsigned short samplesperbyte = 8 / bitcount ;
 
 		*column = pos / samplesperbyte ;
+		*firstbit = (pos % samplesperbyte) * bitcount ;
+
+		myassert (*firstbit < 8) ;
+
 		unsigned long bytesperline = 0 ;
 		if ((width % samplesperbyte) == 0) {
 			bytesperline = width / samplesperbyte ;
@@ -180,9 +184,6 @@ void BmpFile::calcRCB (SamplePos pos, unsigned long *row, unsigned long *column,
 			bytesperline = (width / samplesperbyte) + 1 ;
 		}
 		myassert (*column < bytesperline) ;
-
-		*firstbit = (pos % samplesperbyte) * bitcount ;
-		myassert (*firstbit < 8) ;
 	}
 }
 

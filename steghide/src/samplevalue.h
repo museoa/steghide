@@ -142,7 +142,7 @@ class SampleValue {
 #endif
 
 	protected:
-	// FIXME - SBit, Key speed vs. memory footprint !?
+	// FIXME - time/memory: use SBit, Key ?
 
 	/// the bit that is embedded in this sample value - must be set in constructor of derived class
 	BIT SBit ;

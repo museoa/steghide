@@ -102,7 +102,7 @@ class Graph {
 	 * contains pointers to all vertex contents - VertexContents[l] contains a pointer
 	 * to a VertexContent object iff the sample value with label l is part of this vertex content.
 	 **/
-	// FIXME - ?? use std::vector instead of std::list - performance in time/memory ??
+	// FIXME - time/memory ?? use std::vector instead of std::list ??
 	std::vector<std::list<VertexContent*> > VertexContents ;
 
 	/**
