@@ -125,24 +125,21 @@ void Arguments::parse_Command (ArgIt& curarg)
 	DebugMode = false ;
 	if (*curarg == "debug") {
 		DebugMode = true ;
-		curarg++ ;
+		++curarg ;
 	}
 #endif
 
 	if (*curarg == "embed" || *curarg == "--embed") {
 		Command.setValue (EMBED) ;
 		setDefaults () ;
-		++curarg ;
 	}
 	else if (*curarg == "extract" || *curarg == "--extract") {
 		Command.setValue (EXTRACT) ;
 		setDefaults () ;
-		++curarg ;
 	}
 	else if (*curarg == "capacity" || *curarg == "--capacity") {
 		Command.setValue (CAPACITY) ;
 		setDefaults() ;
-		++curarg ;
 	}
 	else if (*curarg == "encinfo" || *curarg == "--encinfo") {
 		Command.setValue (ENCINFO) ;
@@ -171,6 +168,8 @@ void Arguments::parse_Command (ArgIt& curarg)
 	else {
 		throw ArgError (_("unknown command \"%s\"."), curarg->c_str()) ;
 	}
+
+	++curarg ;
 }
 
 bool Arguments::parse_EmbFn (ArgIt& curarg)
