@@ -215,6 +215,8 @@ int SampleValueOppositeNeighbourhood::roundup (float x)
 	return retval ;
 }
 
+// FIXME - check if sorted!!
+
 bool SampleValueOppositeNeighbourhood::check (void) const
 {
 	return check_soundness() && check_completeness() ;

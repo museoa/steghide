@@ -79,6 +79,15 @@ class Graph {
 
 	void printVerboseInfo (void) ;
 
+	/// check the integrity of the data structures - only used for debugging and testing
+	bool check (void) const ;
+	/// check the integrity of the Vertices data structure - only used for debugging and testing
+	bool check_Vertices (void) const ;
+	/// check the integrity of the SampleValues data structure - only used for debugging and testing
+	bool check_SampleValues (void) const ;
+	/// check the integrity of the VertexContents data structure - only used for debugging and testing
+	bool check_VertexContents (void) const ;
+
 	private:
 	//
 	// friend-declarations
@@ -98,15 +107,15 @@ class Graph {
 	/// contains the list of (unique) sample values - SampleValues[l] is the sample value with label l
 	std::vector<SampleValue*> SampleValues ;
 
-	/// SampleValueOppNeighs[l] is the vector of opposite neighbours of the sample value with label l
-	SampleValueOppositeNeighbourhood SampleValueOppNeighs ;
-
 	/**
 	 * contains pointers to all vertex contents - VertexContents[l] contains a pointer
 	 * to a VertexContent object iff the sample value with label l is part of this vertex content.
 	 **/
 	// FIXME - time/memory ?? use std::vector instead of std::list ??
 	std::vector<std::list<VertexContent*> > VertexContents ;
+
+	/// SampleValueOppNeighs[l] is the vector of opposite neighbours of the sample value with label l
+	SampleValueOppositeNeighbourhood SampleValueOppNeighs ;
 
 	/**
 	 * SampleOccurences[l] contains all occurences of the sample value with label l
@@ -155,6 +164,10 @@ class Graph {
 
 	CvrStgFile *File ;
 	unsigned short SamplesPerEBit ;
+
+	bool check_VertexContents_soundness (void) const ;
+	bool check_VertexContents_completeness (void) const ;
+	bool check_VertexContents_pointerequiv (void) const ;
 
 #ifdef DEBUG
 	unsigned long NumVertexContents ;

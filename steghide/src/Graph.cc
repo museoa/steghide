@@ -96,7 +96,7 @@ void Graph::constructSamples (const std::vector<SamplePos*>& sposs,
 		}
 	}
 
-	// move the sgi::hash_set SampleValues_set into the std::vector SampleValues, set sample labels
+	// move the hash_set SampleValues_set into the vector SampleValues, set sample labels
 	SampleValues = std::vector<SampleValue*> (SampleValues_set.size()) ;
 	unsigned long label = 0 ;
 	for (sgi::hash_set<SampleValue*,sgi::hash<SampleValue*>,SampleValuesEqual>::const_iterator i = SampleValues_set.begin() ; i != SampleValues_set.end() ; i++) {
@@ -142,8 +142,6 @@ void Graph::constructVertices (std::vector<SamplePos*>& sposs, std::vector<Sampl
 		NumVertexContents = vc_set.size() ;
 	}
 #endif
-
-	return ;
 }
 
 void Graph::constructEdges (const sgi::hash_set<VertexContent*,sgi::hash<VertexContent*>,VertexContentsEqual>& vc_set)
@@ -263,6 +261,115 @@ void Graph::printVerboseInfo()
 		vmsg6.printMessage() ;
 	}
 }
+
+bool Graph::check() const
+{
+	bool retval = true ;
+
+	retval = retval && check_SampleValues() ;
+	retval = retval && SampleValueOppNeighs.check() ;
+
+	return retval ;
+}
+
+bool Graph::check_Vertices() const
+{
+	bool label_consistency = true ;
+	for (unsigned long i = 0 ; i < Vertices.size() ; i++) {
+		label_consistency = label_consistency && (Vertices[i]->getLabel() == i) ;
+	}
+	return label_consistency ;
+}
+
+bool Graph::check_SampleValues() const
+{
+	unsigned long n = SampleValues.size() ;
+
+	bool label_consistency = true ;
+	for (unsigned long i = 0 ; i < n ; i++) {
+		label_consistency = label_consistency && (SampleValues[i]->getLabel() == i) ;
+	}
+
+	bool sv_uniqueness = true ;
+	for (unsigned long i = 0 ; i < n ; i++) {
+		for (unsigned long j = 0 ; j < n ; j++) {
+			if (i != j) {
+				sv_uniqueness = sv_uniqueness && (*(SampleValues[i]) != *(SampleValues[j])) ;
+			}
+		}
+	}
+
+	return (label_consistency && sv_uniqueness) ;
+}
+
+bool Graph::check_VertexContents() const
+{
+	return ((VertexContents.size() == SampleValues.size()) &&
+			check_VertexContents_soundness() &&
+			check_VertexContents_completeness() &&
+			check_VertexContents_pointerequiv()) ;
+}
+
+bool Graph::check_VertexContents_soundness() const
+{
+	bool soundness = true ;
+
+	// check for all sample value labels lbl that every vertex content
+	// in VertexContents[lbl] contains a sample with the label lbl
+	for (unsigned long lbl = 0 ; lbl < VertexContents.size() ; lbl++) {
+		for (std::list<VertexContent*>::const_iterator vcit = VertexContents[lbl].begin() ; vcit != VertexContents[lbl].end() ; vcit++) {
+			bool found = false ;
+			for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
+				if ((*vcit)->getSampleValue(j)->getLabel() == lbl) {
+					found = true ;
+				}
+			}
+			soundness = soundness && found ;
+		}
+	}
+
+	return soundness ;
+}
+
+bool Graph::check_VertexContents_completeness() const
+{
+	bool completeness = true ;
+
+	// check that every vertex content (as taken from Vertices) can be reached
+	// in every row of VertexContents that is indexed with one of its sample values
+	for (std::vector<Vertex*>::const_iterator i = Vertices.begin() ; i != Vertices.end() ; i++) {
+		VertexContent *vc = (*i)->getContent() ;
+		for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
+			SampleValueLabel lbl = vc->getSampleValue(j)->getLabel() ;
+			bool found = false ;
+			for (std::list<VertexContent*>::const_iterator k = VertexContents[lbl].begin() ; k != VertexContents[lbl].end() ; k++) {
+				if ((*k) == vc) {
+					found = true ;
+				}
+			}
+			completeness = completeness && found ;
+		}
+	}
+
+	return completeness ;
+}
+
+bool Graph::check_VertexContents_pointerequiv() const
+{
+	bool pointerequiv = true ;
+
+	for (std::vector<Vertex*>::const_iterator vit = Vertices.begin() ; vit != Vertices.end() ; vit++) {
+		VertexContent *vc = (*vit)->getContent() ;
+		for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
+			SampleValue* s = vc->getSampleValue(j) ;
+			SampleValueLabel lbl = s->getLabel() ;
+			pointerequiv = pointerequiv && (SampleValues[lbl] == s) ;
+		}
+	}
+
+	return pointerequiv ;
+}
+
 
 #ifdef DEBUG
 void Graph::print (void) const
@@ -390,52 +497,6 @@ bool Graph::check_sizes (void) const
 	return retval ;
 }
 
-bool Graph::check_samples (void) const
-{
-	bool retval = true ;
-	
-	unsigned long n = SampleValues.size() ;
-
-	std::cerr << "checking sample values: index - label consistency" << std::endl ;
-	for (unsigned long i = 0 ; i < n ; i++) {
-		SampleValueLabel l = SampleValues[i]->getLabel() ;
-		if (l != i) {
-			retval = false ;
-			std::cerr << "FAILED: wrong sample label" << std::endl ;
-			break ;
-		}
-	}
-
-	std::cerr << "checking sample values: uniqueness of samples" << std::endl ;
-	for (unsigned long i = 0 ; i < n ; i++) {
-		for (unsigned long j = 0 ; j < n ; j++) {
-			if (i != j) {
-				if (SampleValues[i]->getKey() == SampleValues[j]->getKey()) {
-					retval = false ;
-					std::cerr << "FAILED: duplicate sample in SampleValues[" << i << "] and SampleValues[" << j << "]" << std::endl ;
-				}
-			}
-		}
-	}
-
-	return retval ;
-}
-
-bool Graph::check_vertices (void) const
-{
-	bool retval = true ;
-	std::cerr << "checking Vertices: index - label consistency" << std::endl ;
-	for (unsigned long i = 0 ; i < Vertices.size() ; i++) {
-		VertexLabel l = Vertices[i]->getLabel() ;
-		if (l != i) {
-			retval = false ;
-			std::cerr << "FAILED: wrong vertex label" << std::endl ;
-			break ;
-		}
-	}
-	return retval ;
-}
-
 bool Graph::check_degrees (void) const
 {
 	bool retval = true ;
@@ -458,47 +519,6 @@ bool Graph::check_degrees (void) const
 	return retval ;
 }
 
-// FIXME - needs Vertex::getContent().... !?
-bool Graph::check_vertexcontents (void) const
-{
-	bool retval = true ;
-#if 0
-
-	std::cerr << "checking VertexContents: vcontent sample labels are pointer equivalent to those in Samples" << std::endl ;
-	for (std::vector<Vertex*>::const_iterator i = Vertices.begin() ; i != Vertices.end() ; i++) {
-		VertexContent *vcontent = (*i)->getContent() ;
-		for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
-			SampleValueLabel lbl = vcontent->getSampleValueLabel (j) ;
-			SampleValue *s = (*i)->getSample (j) ;
-			if (SampleValues[lbl] != s) { // pointer equivalence
-				retval = false ;
-				std::cerr << "FAILED: vertex and it's content not consistent" << std::endl ;
-				break ;
-			}
-		}
-	}
-
-	std::cerr << "checking VertexContents: each vertex content of a std::vector can be reached from all sample labels in VertexContents" << std::endl ;
-	for (std::vector<Vertex*>::const_iterator i = Vertices.begin() ; i != Vertices.end() ; i++) {
-		VertexContent *vcontent = (*i)->getContent() ;
-		for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
-			SampleValueLabel lbl = vcontent->getSampleValueLabel (j) ;
-			bool found = false ;	// it should be possible to reach vcontent from all sample labels
-			for (std::list<VertexContent*>::const_iterator k = VertexContents[lbl].begin() ; k != VertexContents[lbl].end() ; k++) {
-				if ((*k) == vcontent) {
-					found = true ;
-				}
-			}
-			if (!found) {
-				retval = false ;
-				std::cerr << "FAILED: vertex content can not be reached" << std::endl ;
-			}
-		}
-	}
-
-#endif
-	return retval ;
-}
 
 bool Graph::check_SampleOccurences (void) const
 {

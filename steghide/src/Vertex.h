@@ -111,6 +111,17 @@ class Vertex : private GraphAccess {
 	void setSampleOccurenceIt (unsigned short i, std::list<SampleOccurence>::iterator it)
 		{ SampleOccurenceIts[i] = it ; }
 
+	/**
+	 * get the vertex content of this vertex
+	 *
+	 * This function should only be used if access to the VertexContent object itself
+	 * is really necessary (which is not the case very often). To get e.g. the
+	 * SampleValue from the Content object, v->getSampleValue(i) should be used, not
+	 * v->getContent()->getSampleValue(i).
+	 **/
+	VertexContent* getContent (void) const
+		{ return Content ; } ;
+
 #ifdef DEBUG
 	void print (unsigned short spc = 0) const ;
 	void printEdges (void) const ;
