@@ -40,6 +40,25 @@ Matching::Matching (Graph* g)
 	Cardinality = 0 ;
 }
 
+bool Matching::includesEdge (const Edge* e) const
+{
+	Vertex* v1 = e->getVertex1() ;
+	Vertex* v2 = e->getVertex2() ;
+	bool v1ok = false, v2ok = false ;
+
+	if (VertexInformation[v1->getLabel()].isMatched()) {
+		if (*(VertexInformation[v1->getLabel()].getMatchingEdge()) == *e) {
+			v1ok = true ;
+		}
+	}
+	if (VertexInformation[v2->getLabel()].isMatched()) {
+		if (*(VertexInformation[v2->getLabel()].getMatchingEdge()) == *e) {
+			v2ok = true ;
+		}
+	}
+	return (v1ok && v2ok) ;
+}
+
 Matching& Matching::addEdge (Edge *e)
 {
 	VertexLabel vlbl1 = e->getVertex1()->getLabel() ;
@@ -122,7 +141,7 @@ Matching& Matching::augment (const std::vector<Edge*> &path)
 	VertexInformation[e->getVertex2()->getLabel()].setMatched (find (MatchingEdges.begin(), MatchingEdges.end(), e)) ;
 
 	Cardinality++ ;
-		
+
 	return *this ;
 }
 

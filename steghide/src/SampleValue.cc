@@ -43,7 +43,7 @@ void SampleValue::print (unsigned short spc) const
 	space[spc] = '\0' ;
 	std::cerr << space << "SampleValue:" << std::endl ;
 	std::cerr << space << " Label: " << getLabel() << std::endl ;
-	std::cerr << space << " Key: " << getKey() << std::endl ;
+	std::cerr << space << " Key(hex): " << std::hex << getKey() << std::dec << std::endl ;
 	std::cerr << space << " Bit: " << getBit() << std::endl ;
 }
 #endif

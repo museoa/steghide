@@ -62,6 +62,12 @@ class Matching : private GraphAccess {
 		{ return VertexInformation[v->getLabel()].getMatchingEdge() ; } ;
 
 	/**
+	 * does this matching include the edge e ?
+	 * \return true iff the edge e is element of this matching
+	 **/
+	bool includesEdge (const Edge* e) const ;
+
+	/**
 	 * get the cardinality (the number of matched edges)
 	 **/
 	unsigned long getCardinality (void) const

@@ -59,32 +59,48 @@ void AugmentingPathHeuristic::run ()
 
 std::vector<Edge*>* AugmentingPathHeuristic::searchAugmentingPath (Vertex *v0)
 {
-	TimeCounter++ ;
+	printDebug (3, "searching augmenting path for vertex with label %lu", v0->getLabel()) ;
 
+	TimeCounter++ ;
+	bool addMatchedEdge = true ;
 	std::vector<Edge*>* path = new std::vector<Edge*>() ;
 	Edge *e = NULL ;
 
 	while ((e = getNextEdge(v0)) != NULL) {
 		pushOnPath (path, e) ;
+		myassert (path->size() == 1) ;
 		Vertex *w = e->getOtherVertex (v0) ;
 
+		if (TheMatching->isExposed(w)) {
+			return path ;
+		}
+		// add matched edge
+		markVisited (w) ;
+		e = TheMatching->getMatchingEdge (w) ; // w is matched (because not exposed)
+		Vertex *w_next = e->getOtherVertex (w) ;
+		pushOnPath (path, e) ;
+		myassert (path->size() % 2 == 0) ;
+
 		while (!path->empty()) {
-			if (TheMatching->isExposed(w)) {
-				return path ;
-			}
-
-			// w is matched
-			markVisited (w) ;
-			e = TheMatching->getMatchingEdge (w) ;
-			Vertex *w_next = e->getOtherVertex (w) ;
-			pushOnPath (path, e) ;
-
 			Edge* e_next = getNextEdge (w_next) ;
-			if (e_next != NULL) {
+			if (e_next != NULL) { // found next edge
 				pushOnPath (path, e_next) ;
+				myassert (path->size() % 2 == 1) ;
 				w = e_next->getOtherVertex (w_next) ;
+
+				if (TheMatching->isExposed(w)) {
+					return path ;
+				}
+				// add matched edge
+				markVisited (w) ;
+				e = TheMatching->getMatchingEdge (w) ; // w is matched (because not exposed)
+				w_next = e->getOtherVertex (w) ;
+				pushOnPath (path, e) ;
+				myassert (path->size() % 2 == 0) ;
 			}
-			else {
+			else { // could not find next edge
+				printDebug (4, "could not find next edge from vertex with label %lu", w_next->getLabel()) ;
+
 				VertexOnPath[e->getVertex1()->getLabel()] = false ;
 				VertexOnPath[e->getVertex2()->getLabel()] = false ;
 				
@@ -94,8 +110,30 @@ std::vector<Edge*>* AugmentingPathHeuristic::searchAugmentingPath (Vertex *v0)
 
 				// unmatched edge: pop from path and delete (has been created only for path)
 				Edge *delme = path->back() ;
+				if (TheMatching->includesEdge(delme)) {
+					std::cerr << "I'm about to delete the following matched edge:" << std::endl ;
+					delme->print(1) ;
+				}
+				myassert (!TheMatching->includesEdge(delme)) ;
 				path->pop_back() ;
-				// FIXME do this - delete delme ;
+				delete delme ;
+
+				// set w,e,w_next to complete backtracking step
+				if (!path->empty()) {
+					e = path->back() ;
+					Edge* before_e = (*path)[path->size() - 2] ;
+					if (before_e->contains (e->getVertex1())) {
+						w = e->getVertex1() ;
+						w_next = e->getVertex2() ;
+					}
+					else if (before_e->contains (e->getVertex2())) {
+						w = e->getVertex2() ;
+						w_next = e->getVertex1() ;
+					}
+					else {
+						myassert(0) ;
+					}
+				}
 			}
 		}
 	}
@@ -105,6 +143,7 @@ std::vector<Edge*>* AugmentingPathHeuristic::searchAugmentingPath (Vertex *v0)
 
 void AugmentingPathHeuristic::pushOnPath (std::vector<Edge*>* path, Edge* e)
 {
+	printDebug (4, "pushing edge on path: %lu - %lu", e->getVertex1()->getLabel(), e->getVertex2()->getLabel()) ;
 	path->push_back (e) ;
 	VertexOnPath[e->getVertex1()->getLabel()] = true ;
 	VertexOnPath[e->getVertex2()->getLabel()] = true ;

@@ -38,6 +38,20 @@ Edge::Edge (Vertex *v1, unsigned short idx1, Vertex *v2, unsigned short idx2, fl
 	myassert (v1->getLabel() != v2->getLabel()) ;
 }
 
+bool Edge::operator== (const Edge& e) const
+{
+	bool eq1 = false, eq2 = false ;
+	if ((*Vertex1 == *(e.Vertex1)) && (*Vertex2 == *(e.Vertex2)) &&
+		(Index1 == e.Index1) && (Index2 == e.Index2) && (Weight == e.Weight)) {
+		eq1 = true ;
+	}
+	if ((*Vertex1 == *(e.Vertex2)) && (*Vertex2 == *(e.Vertex1)) &&
+		(Index1 == e.Index2) && (Index2 == e.Index1) && (Weight == e.Weight)) {
+		eq2 = true ;
+	}
+	return (eq1 || eq2) ;
+}
+
 void Edge::swap (void)
 {
 	Vertex* v_tmp = Vertex1 ;
