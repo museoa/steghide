@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2003-09-30 14:32+0200\n"
+"POT-Creation-Date: 2003-09-30 14:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -478,18 +478,18 @@ msgid ""
 "files."
 msgstr ""
 
-#: src/EmbData.cc:89
+#: src/EmbData.cc:91
 msgid "could not extract any data with that passphrase!"
 msgstr ""
 
-#: src/EmbData.cc:105
+#: src/EmbData.cc:107
 #, c-format
 msgid ""
 "attempting to read an embedding of version %d but steghide %s only supports "
 "embeddings of version %d."
 msgstr ""
 
-#: src/EmbData.cc:135
+#: src/EmbData.cc:137
 msgid ""
 "The embedded data is encrypted but steghide has been compiled without "
 "encryption\n"
@@ -498,7 +498,7 @@ msgid ""
 "(http://mcrypt.sourceforge.net/) and recompile steghide."
 msgstr ""
 
-#: src/EmbData.cc:224
+#: src/EmbData.cc:226
 msgid "the embedded data has an invalid length."
 msgstr ""
 

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
-"POT-Creation-Date: 2003-09-30 14:32+0200\n"
+"POT-Creation-Date: 2003-09-30 14:41+0200\n"
 "PO-Revision-Date: 2003-09-29 14:09+0200\n"
 "Last-Translator: Stefan Hetzl <shetzl@chello.at>\n"
 "Language-Team: Deutsch\n"
@@ -550,11 +550,11 @@ msgstr ""
 "Eingabedatei konnte nicht gelesen werden. Steghide wurd ohne Unterstützung "
 "für jpeg-Dateien kompiliert."
 
-#: src/EmbData.cc:89
+#: src/EmbData.cc:91
 msgid "could not extract any data with that passphrase!"
 msgstr "Mit diesem Passwort konnten keine Daten extrahiert werden!"
 
-#: src/EmbData.cc:105
+#: src/EmbData.cc:107
 #, c-format
 msgid ""
 "attempting to read an embedding of version %d but steghide %s only supports "
@@ -563,7 +563,7 @@ msgstr ""
 "versuche Einbettung der version %d zu lesen, aber steghide %s unterstützt "
 "nur Einbettungen der version %d."
 
-#: src/EmbData.cc:135
+#: src/EmbData.cc:137
 msgid ""
 "The embedded data is encrypted but steghide has been compiled without "
 "encryption\n"
@@ -577,7 +577,7 @@ msgstr ""
 "und\n"
 "steghide erneut kompilieren."
 
-#: src/EmbData.cc:224
+#: src/EmbData.cc:226
 msgid "the embedded data has an invalid length."
 msgstr "Die eingebetteten Daten haben eine ungültige Länge."
 

@@ -48,6 +48,27 @@ LCIDENTRY LCIDTable[] = {
 	{ 0x0c07, "de" },	// Austria
 	{ 0x1007, "de" },	// Luxembourg
 	{ 0x1407, "de" },	// Liechtenstein
+	// spanish
+	{ 0x040a, "es" },	// Spain - Traditional
+	{ 0x080a, "es" },	// Mexico
+	{ 0x0c0a, "es" },	// Spain - Modern Sort
+	{ 0x100a, "es" },	// Guatemala
+	{ 0x140a, "es" },	// Costa Rica
+	{ 0x180a, "es" },	// Panama
+	{ 0x1c0a, "es" },	// Dominican Republic
+	{ 0x200a, "es" },	// Venezuela
+	{ 0x240a, "es" },	// Colombia
+	{ 0x280a, "es" },	// Peru
+	{ 0x2c0a, "es" },	// Argentinia
+	{ 0x300a, "es" },	// Ecuador
+	{ 0x340a, "es" },	// Chile
+	{ 0x380a, "es" },	// Uruguay
+	{ 0x3c0a, "es" },	// Paraguay
+	{ 0x400a, "es" },	// Bolivia
+	{ 0x440a, "es" },	// El Salvador
+	{ 0x480a, "es" },	// Honduras
+	{ 0x4c0a, "es" },	// Nicaragua
+	{ 0x500a, "es" },	// Puerto Rico
 	// end of LCIDTable
 	{ 0x0000, "__" }
 } ;
