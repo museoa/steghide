@@ -21,6 +21,7 @@
 #ifndef SH_PROGRESSOUTPUT_H
 #define SH_PROGRESSOUTPUT_H
 
+#include <cstdarg>
 #include <ctime>
 #include <string>
 

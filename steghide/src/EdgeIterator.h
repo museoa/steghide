@@ -82,7 +82,7 @@ class EdgeIterator {
 	/**
 	 * set this iterator to next edge
 	 **/
-	EdgeIterator& operator++ (void) ;
+	void operator++ (void) ;
 
 	/**
 	 * set this iterator to first (shortest) edge of vertex v

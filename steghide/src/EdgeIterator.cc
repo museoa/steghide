@@ -59,7 +59,7 @@ EdgeIterator::~EdgeIterator ()
 }
 
 // FIXME - speed improvement if no switch is used - instead a virtual function a derived classes ?
-EdgeIterator& EdgeIterator::operator++ ()
+void EdgeIterator::operator++ ()
 {
 	myassert (!Finished) ;
 
@@ -107,8 +107,6 @@ EdgeIterator& EdgeIterator::operator++ ()
 	if (!Finished) {
 		CurrentEdge.set2 (SampleOccurenceIt->getVertex(), SampleOccurenceIt->getIndex()) ;
 	}
-
-	return *this ;
 }
 
 void EdgeIterator::reset (ITERATIONMODE m)
