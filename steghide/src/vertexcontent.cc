@@ -86,12 +86,12 @@ bool VertexContent::operator== (const VertexContent& vc) const
 
 unsigned long VertexContent::getDegree (void) const
 {
-	assert (hasOccurences()) ;
+	myassert (hasOccurences()) ;
 	unsigned long retval = 0 ;
 	for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
 		retval += SampleValues[i]->getNumEdges() ;
 	}
-	assert (SelfDegree <= retval) ;
+	myassert (SelfDegree <= retval) ;
 	retval -= SelfDegree ;
 	return retval ;
 }
@@ -113,7 +113,7 @@ std::list<Vertex*>::iterator VertexContent::unmarkDeletedFromOccurences (std::li
 size_t VertexContent::getHash (void) const
 {
 	size_t retval = 0 ;
-	for (unsigned short i = 0 ; i < TheGraph->getSamplesPerVertex() ; i++) {
+	for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
 		size_t newval = 0 ;
 		size_t key = SampleValues[i]->getKey() ;
 		switch (i) {
@@ -176,7 +176,7 @@ bool VertexContentsEqual::operator() (const VertexContent *vc1, const VertexCont
 //
 // struct hash<VertexContent*>
 //
-size_t sgi::hash<VertexContent*>::operator() (const VertexContent *vc) const
+size_t sgi::hash<VertexContent*>::operator() (const VertexContent* vc) const
 {
 	return vc->getHash() ;
 }

@@ -67,7 +67,7 @@ JpegHuffmanTable::Class JpegHuffmanTable::getClass ()
 
 		default:
 		{
-			assert (0) ;
+			myassert (0) ;
 			break ;
 		}
 	}
@@ -82,7 +82,7 @@ unsigned int JpegHuffmanTable::getDestId ()
 
 void JpegHuffmanTable::reset (std::vector<unsigned int> b, std::vector<unsigned int> hv)
 {
-	assert (b.size() == 16) ;
+	myassert (b.size() == 16) ;
 
 	setLength (2 + 1 + b.size() + hv.size()) ;
 
@@ -93,55 +93,55 @@ void JpegHuffmanTable::reset (std::vector<unsigned int> b, std::vector<unsigned 
 
 unsigned int JpegHuffmanTable::getHuffSize (unsigned int i)
 {
-	assert (i < huffsize.size()) ;
+	myassert (i < huffsize.size()) ;
 	return huffsize[i] ;
 }
 
 unsigned int JpegHuffmanTable::getHuffCode (unsigned int i)
 {
-	assert (i < huffcode.size()) ;
+	myassert (i < huffcode.size()) ;
 	return huffcode[i] ;
 }
 
 unsigned int JpegHuffmanTable::getBits (unsigned int l)
 {
-	assert (1 <= l && l <= Len_bits) ;
+	myassert (1 <= l && l <= Len_bits) ;
 	return bits[l - 1] ;
 }
 
 unsigned int JpegHuffmanTable::getHuffVal (unsigned int i)
 {
-	assert (i < huffval.size()) ;
+	myassert (i < huffval.size()) ;
 	return huffval[i] ;
 }
 
 int JpegHuffmanTable::getMinCode (unsigned int l)
 {
-	assert (1 <= l && l <= mincode.size()) ;
+	myassert (1 <= l && l <= mincode.size()) ;
 	return mincode[l - 1] ;
 }
 
 int JpegHuffmanTable::getMaxCode (unsigned int l)
 {
-	assert (1 <= l && l <= maxcode.size()) ;
+	myassert (1 <= l && l <= maxcode.size()) ;
 	return maxcode[l - 1] ;
 }
 
 int JpegHuffmanTable::getValPtr (unsigned int l)
 {
-	assert (1 <= l && l <= valptr.size()) ;
+	myassert (1 <= l && l <= valptr.size()) ;
 	return valptr[l - 1] ;
 }
 
 unsigned int JpegHuffmanTable::getEHuffCode (unsigned int v)
 {
-	assert (v < ehuffcode.size()) ;
+	myassert (v < ehuffcode.size()) ;
 	return ehuffcode[v] ;
 }
 
 unsigned int JpegHuffmanTable::getEHuffSize (unsigned int v)
 {
-	assert (v < ehuffsize.size()) ;
+	myassert (v < ehuffsize.size()) ;
 	return ehuffsize[v] ;
 }
 

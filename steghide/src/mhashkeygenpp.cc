@@ -52,7 +52,7 @@ MHashKeyGenpp::~MHashKeyGenpp ()
 
 std::vector<unsigned char> MHashKeyGenpp::createKey (std::string password)
 {
-	// FIXME - assert (ready) ;
+	// FIXME - myassert (ready) ;
 
 	char *passwd = (char *) s_malloc (password.size() + 1) ;
 	strcpy (passwd, password.c_str()) ;
@@ -91,7 +91,7 @@ void MHashKeyGenpp::setHashAlgorithm (hashid hashalgo)
 
 void MHashKeyGenpp::setHashAlgorithms (std::vector<hashid> hashalgos)
 {
-	assert (hashalgos.size() <= 2) ;
+	myassert (hashalgos.size() <= 2) ;
 	for (unsigned int i = 0 ; i < hashalgos.size() ; i++) {
 		AlgorithmData.hash_algorithm[i] = hashalgos[i] ;
 	}

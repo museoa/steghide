@@ -18,6 +18,7 @@
  *
  */
 
+#include <cstring>
 #include <iostream>
 #include <string>
 
@@ -35,470 +36,55 @@
 // the global Arguments object
 Arguments Args ;
 
-Arguments::Arguments (void)
+Arguments::Arguments (int argc, char* argv[])
 {
-	// empty
-}
+	bool delete_next = false ;
+	for (int i = 1 ; i < argc ; ++i) {
+		TheArguments.push_back (std::string(argv[i])) ;
 
-Arguments::Arguments (int argc, char *argv[])
-{
-	Arguments () ;
-	parse (argc, argv) ;
-}
-
-void Arguments::parse (int argc, char *argv[])
-{
-	// if there are no arguments -> show help
-	if (argc == 1) {
-		Command.setValue (SHOWHELP) ;
-		return ;
-	}
-
-	int i = 1 ;	// the i-th argument is evaluated
-
-#ifdef DEBUG
-	bool debugmode = false ;
-	if (std::string (argv[i]) == "debug") {
-		debugmode = true ;
-		i++ ;
-	}
-#endif
-
-	if (std::string (argv[i]) == "embed" || std::string (argv[i]) == "--embed") {
-		Command.setValue (EMBED) ;
-		setDefaults () ;
-		i++ ;
-	}
-	else if (std::string (argv[i]) == "extract" || std::string (argv[i]) == "--extract") {
-		Command.setValue (EXTRACT) ;
-		setDefaults () ;
-		i++ ;
-	}
-	else if (std::string (argv[i]) == "capacity" || std::string (argv[i]) == "--capacity") {
-		Command.setValue (CAPACITY) ;
-		setDefaults() ;
-		i++ ;
-	}
-	else if (std::string (argv[i]) == "encinfo" || std::string (argv[i]) == "--encinfo") {
-		Command.setValue (ENCINFO) ;
-		if (argc > 2) {
-			throw ArgError (_("you cannot use arguments with the \"encinfo\" command.")) ;
-		}
-		return ;
-	}
-	else if (std::string (argv[i]) == "version" || std::string (argv[i]) == "--version") {
-		Command.setValue (SHOWVERSION) ;
-		if (argc > 2) {
-			throw ArgError (_("you cannot use arguments with the \"version\" command.")) ;
-		}
-		return ;
-	}
-	else if (std::string (argv[i]) == "license" || std::string (argv[i]) == "--license") {
-		Command.setValue (SHOWLICENSE) ;
-		if (argc > 2) {
-			throw ArgError (_("you cannot use arguments with the \"license\" command.")) ;
-		}
-		return ;
-	}
-	else if (std::string (argv[i]) == "help" || std::string (argv[i]) == "--help") {
-		Command.setValue (SHOWHELP) ;
-		if (argc > 2) {
-			throw ArgError (_("you cannot use arguments with the \"help\" command.")) ;
-		}
-		return ;
-	}
-#ifdef DEBUG
-	else if (debugmode && (std::string (argv[i]) == "test")) {
-		steghide_test_all () ;
-		exit (EXIT_SUCCESS) ;
-	}
-#endif
-	else {
-		throw ArgError (_("unknown command \"%s\"."), argv[i]) ;
-	}
-
-	// parse rest of arguments
-	for ( ; i < argc; i++) {
-		if (std::string (argv[i]) == "-p" || std::string (argv[i]) == "--passphrase") {
-			if (Command.getValue() == CAPACITY) {
-				throw ArgError (_("the \"%s\" argument cannot be used with the \"capacity\" command."), argv[i]) ;
-			}
-
-			if (Passphrase.is_set()) {
-				throw ArgError (_("the passphrase argument can be used only once.")) ;
-			}
-
-			if (++i == argc) {
-				throw ArgError (_("the \"%s\" argument must be followed by the passphrase."), argv[i - 1]) ;
-			}
-
-			if (strlen (argv[i]) > PassphraseMaxLen) {
-				throw SteghideError (_("the maximum length of the passphrase is %d characters."), PassphraseMaxLen) ;
-			}
-			Passphrase.setValue (argv[i]) ;
-
+		if (delete_next) {
 			// overwrite passphrase in argv in order to avoid that it can be read with the ps command
 			unsigned int len = strlen(argv[i]) ;
 			for (unsigned int j = 0 ; j < len ; j++) {
 				argv[i][j] = ' ' ;
 			}
+			delete_next = false ;
 		}
 
-		else if (std::string (argv[i]) == "-e" || std::string (argv[i]) == "--encryption") {
-			if (Command.getValue() != EMBED) {
-				throw ArgError (_("the argument \"%s\" can only be used with the \"embed\" command."), argv[i]) ;
-			}
-
-			if (EncAlgo.is_set() || EncMode.is_set()) {
-				throw ArgError (_("the encryption argument can be used only once.")) ;
-			}
-
-			if (++i == argc) {
-				throw ArgError (_("the \"%s\" argument must be followed by encryption information."), argv[i - 1]) ;
-			}
-
-			std::string s1, s2 ;
-			if (argv[i][0] == '-') {
-				throw ArgError (_("the \"%s\" argument must be followed by encryption information."), argv[i - 1]) ;
-			}
-			else {
-				s1 = std::string (argv[i]) ;
-				if (i + 1 == argc) {
-					s2 = "" ;
-				}
-				else {
-					if (argv[i + 1][0] == '-') {
-						s2 = "" ;
-					}
-					else {
-						s2 = std::string (argv[i + 1]) ;
-						i++ ;
-					}
-				}
-			}
-
-			if (s1 == "none" && s2 == "") {
-				EncAlgo.setValue (s1) ;
-			}
-#ifdef USE_LIBMCRYPT
-			else {
-				bool s1_isalgo = false, s1_ismode = false ;
-				bool s2_isalgo = false, s2_ismode = false ;
-
-				if (s1 != "") {
-					s1_isalgo = EncryptionAlgorithm::isValidStringRep (s1) ;
-					s1_ismode = EncryptionMode::isValidStringRep (s1) ;
-
-					assert (!(s1_isalgo && s1_ismode)) ;
-					if (!(s1_isalgo || s1_ismode)) {
-						throw SteghideError (_("\"%s\" is neither an algorithm nor a mode supported by libmcrypt."), s1.c_str()) ;
-					}
-				}
-				if (s2 != "") {
-					s2_isalgo = EncryptionAlgorithm::isValidStringRep (s2) ;
-					s2_ismode = EncryptionMode::isValidStringRep (s2) ;
-
-					assert (!(s2_isalgo && s2_ismode)) ;
-					if (!(s2_isalgo || s2_ismode)) {
-						throw SteghideError (_("\"%s\" is neither an algorithm nor a mode supported by libmcrypt."), s2.c_str()) ;
-					}
-				}
-
-				if (s1_isalgo && s2_isalgo) {
-					throw SteghideError (_("\"%s\" and \"%s\" are both libmcrypt algorithms. please specify only one."), s1.c_str(), s2.c_str()) ;
-				}
-				if (s1_ismode && s2_ismode) {
-					throw SteghideError (_("\"%s\" and \"%s\" are both libmcrypt modes. please specify only one."), s1.c_str(), s2.c_str()) ;
-				}
-
-				if (s1_isalgo) {
-					EncAlgo.setValue (s1) ;
-				}
-				if (s1_ismode) {
-					EncMode.setValue (s1) ;
-				}
-				if (s2_isalgo) {
-					EncAlgo.setValue (s2) ;
-				}
-				if (s2_ismode) {
-					EncMode.setValue (s2) ;
-				}
-
-				if (!MCryptpp::AlgoSupportsMode (EncAlgo.getValue(), EncMode.getValue())) {
-					throw SteghideError (_("the encryption algorithm \"%s\" can not be used with the mode \"%s\"."),
-						EncAlgo.getValue().getStringRep().c_str(), EncAlgo.getValue().getStringRep().c_str()) ;
-				}
-			}
-#else
-			else {
-				throw SteghideError (_("steghide has been compiled without support for encryption.")) ;
-			}
-#endif // def USE_LIBMCRYPT
+		if (std::string(argv[i]) == "-p" || std::string(argv[i]) == "--passphrase") {
+			delete_next = true ;
 		}
+	}
+}
 
-		else if (std::string (argv[i]) == "-k" || std::string (argv[i]) == "--checksum") {
-			if (Command.getValue() != EMBED) {
-				throw ArgError (_("the argument \"%s\" can only be used with the \"embed\" command."), argv[i]) ;
-			}
+void Arguments::parse ()
+{
+	// if there are no arguments -> show help
+	if (TheArguments.empty()) {
+		Command.setValue (SHOWHELP) ;
+		return ;
+	}
 
-			if (Checksum.is_set()) {
-				throw ArgError (_("the checksum argument can be used only once.")) ;
-			}
+	ArgIt curarg = TheArguments.begin() ;
 
-			Checksum.setValue (true) ;
-		}
+	parse_Command (curarg) ;
 
-		else if (std::string (argv[i]) == "-K" || std::string (argv[i]) == "--nochecksum") {
-			if (Command.getValue() != EMBED) {
-				throw ArgError (_("the argument \"%s\" can only be used with the \"embed\" command."), argv[i]) ;
-			}
+	// parse rest of arguments
+	while (curarg != TheArguments.end()) {
+		if (parse_EmbFn(curarg)) continue ;
+		if (parse_ExtFn(curarg)) continue ;
+		if (parse_CvrFn(curarg)) continue ;
+		if (parse_StgFn(curarg)) continue ;
+		if (parse_Passphrase(curarg)) continue ;
+		if (parse_Checksum(curarg)) continue ;
+		if (parse_EmbedEmbFn(curarg)) continue ;
+		if (parse_Encryption(curarg)) continue ;
+		if (parse_Radius(curarg)) continue ;
+		if (parse_Force(curarg)) continue ;
+		if (parse_Verbosity(curarg)) continue ;
+		if (parse_Debug(curarg)) continue ;
 
-			if (Checksum.is_set()) {
-				throw ArgError (_("the checksum argument can be used only once.")) ;
-			}
-
-			Checksum.setValue (false) ;
-		}
-
-		else if (std::string (argv[i]) == "-n" || std::string (argv[i]) == "--embedname") {
-			if (Command.getValue() != EMBED) {
-				throw ArgError (_("the argument \"%s\" can only be used with the \"embed\" command."), argv[i]) ;
-			}
-
-			if (EmbedEmbFn.is_set()) {
-				throw ArgError (_("the file name embedding argument can be used only once.")) ;
-			}
-
-			EmbedEmbFn.setValue (true) ;
-		}
-
-		else if (std::string (argv[i]) == "-N" || std::string (argv[i]) == "--dontembedname") {
-			if (Command.getValue() != EMBED) {
-				throw ArgError (_("the argument \"%s\" can only be used with the \"embed\" command."), argv[i]) ;
-			}
-
-			if (EmbedEmbFn.is_set()) {
-				throw ArgError (_("the file name embedding argument can be used only once.")) ;
-			}
-
-			EmbedEmbFn.setValue (false) ;
-		}
-
-		else if (std::string (argv[i]) == "-cf" || std::string (argv[i]) == "--coverfile") {
-			if (Command.getValue() == EXTRACT) {
-				throw ArgError (_("the argument \"%s\" can not be used with the \"extract\" command."), argv[i]) ;
-			}
-
-			if (CvrFn.is_set()) {
-				throw ArgError (_("the cover file name argument can be used only once.")) ;
-			}
-
-			if (++i == argc) {
-				throw ArgError (_("the \"%s\" argument must be followed by the cover file name."), argv[i - 1]) ;
-			}
-
-			if (std::string (argv[i]) == "-") {
-				CvrFn.setValue ("") ;
-			}
-			else {
-				CvrFn.setValue (argv[i]) ;
-			}
-		}
-
-		else if (std::string (argv[i]) == "-sf" || std::string (argv[i]) == "--stegofile") {
-			if (Command.getValue() == CAPACITY) {
-				throw ArgError (_("the \"%s\" argument can not be used with the \"capacity\" command."), argv[i]) ;
-			}
-
-			if (StgFn.is_set()) {
-				throw ArgError (_("the stego file name argument can be used only once.")) ;
-			}
-
-			if (++i == argc) {
-				throw ArgError (_("the \"%s\" argument must be followed by the stego file name."), argv[i - 1]) ;
-			}
-
-			if (std::string (argv[i]) == "-") {
-				StgFn.setValue ("") ;
-			}
-			else {
-				StgFn.setValue (argv[i]) ;
-			}
-		}
-
-		else if (std::string (argv[i]) == "-ef" || std::string (argv[i]) == "--embedfile") {
-			if (Command.getValue() != EMBED) {
-				throw ArgError (_("the argument \"%s\" can only be used with the \"embed\" command."), argv[i]) ;
-			}
-
-			if (EmbFn.is_set()) {
-				throw ArgError (_("the embed file name argument can be used only once.")) ;
-			}
-
-			if (++i == argc) {
-				throw ArgError (_("the \"%s\" argument must be followed by the embed file name."), argv[i - 1]) ;
-			}
-
-			if (std::string (argv[i]) == "-") {
-				EmbFn.setValue ("") ;
-			}
-			else {
-				EmbFn.setValue (argv[i]) ;
-			}
-		}
-
-		else if (std::string (argv[i]) == "-xf" || std::string (argv[i]) == "--extractfile") {
-			if (Command.getValue() != EXTRACT) {
-				throw ArgError (_("argument \"%s\" can only be used with the \"extract\" command."), argv[i]) ;
-			}
-
-			if (ExtFn.is_set()) {
-				throw ArgError (_("the plain file name argument can be used only once.")) ;
-			}
-
-			if (++i == argc) {
-				throw ArgError (_("the \"%s\" argument must be followed by the plain file name."), argv[i - 1]) ;
-			}
-
-			if (std::string (argv[i]) == "-") {
-				ExtFn.setValue ("") ;
-			}
-			else {
-				ExtFn.setValue (argv[i]) ;
-			}
-		}
-		
-		else if (std::string (argv[i]) == "-r" || std::string (argv[i]) == "--radius") {
-			if (Command.getValue() != EMBED) {
-				throw ArgError (_("the argument \"%s\" can only be used with the \"embed\" command."), argv[i]) ;
-			}
-
-			if (Radius.is_set()) {
-				throw ArgError (_("the radius argument can be used only once.")) ;
-			}
-
-			if (++i == argc) {
-				throw ArgError (_("the \"%s\" argument must be followed by the neighbourhood radius."), argv[i - 1]) ;
-			}
-
-			float tmp = 0.0 ;
-			sscanf (argv[i], "%f", &tmp) ;
-			Radius.setValue (tmp) ;
-		}
-
-		else if (std::string (argv[i]) == "-f" || std::string (argv[i]) == "--force") {
-			if (Command.getValue() == CAPACITY) {
-				throw ArgError (_("the \"%s\" argument can not be used with the \"capacity\" command."), argv[i]) ;
-			}
-
-			if (Force.is_set()) {
-				throw ArgError (_("the force argument can be used only once.")) ;
-			}
-
-			Force.setValue (true);
-		}
-
-		else if (std::string (argv[i]) == "-q" || std::string (argv[i]) == "--quiet") {
-			if (Command.getValue() == CAPACITY) {
-				throw ArgError (_("the \"%s\" argument can not be used with the \"capacity\" command."), argv[i]) ;
-			}
-
-			if (Verbosity.is_set()) {
-				throw ArgError (_("the \"%s\" argument cannot be used here because the verbosity has already been set."), argv[i]) ;
-			}
-
-			Verbosity.setValue (QUIET) ;
-		}
-
-		else if (std::string (argv[i]) == "-v" || std::string (argv[i]) == "--verbose") {
-			if (Command.getValue() == CAPACITY) {
-				throw ArgError (_("the \"%s\" argument can not be used with the \"capacity\" command."), argv[i]) ;
-			}
-
-			if (Verbosity.is_set()) {
-				throw ArgError (_("the \"%s\" argument cannot be used here because the verbosity has already been set."), argv[i]) ;
-			}
-
-			Verbosity.setValue (VERBOSE) ;
-		}
-		
-#ifdef DEBUG
-		else if (debugmode) {
-			if (std::string (argv[i]) == "--printgraph") {
-				if (DebugCommand.is_set()) {
-					throw SteghideError (_("you cannot use more than one debug command at a time.")) ;
-				}
-
-				DebugCommand.setValue (PRINTGRAPH) ;
-			}
-
-			else if (std::string (argv[i]) == "--printstats")  {
-				if (DebugCommand.is_set()) {
-					throw SteghideError (_("you cannot use more than one debug command at a time.")) ;
-				}
-
-				DebugCommand.setValue (PRINTSTATS) ;
-			}
-
-			else if (std::string (argv[i]) == "--debuglevel") {
-				if (DebugLevel.is_set()) {
-					throw ArgError (_("the priority queue range argument can be used only once.")) ;
-				}
-
-				if (++i == argc) {
-					throw ArgError (_("the \"%s\" argument must be followed by the debug level."), argv[i - 1]) ;
-				}
-
-				unsigned int tmp = 0 ;
-				sscanf (argv[i], "%u", &tmp) ;
-				DebugLevel.setValue (tmp) ;
-			}
-
-			else if (std::string (argv[i]) == "--priorityqueuerange") {
-				if (Command.getValue() != EMBED) {
-					throw ArgError (_("argument \"%s\" can only be used with the \"embed\" command."), argv[i]) ;
-				}
-
-				if (PriorityQueueRange.is_set()) {
-					throw ArgError (_("the priority queue range argument can be used only once.")) ;
-				}
-
-				if (++i == argc) {
-					throw ArgError (_("the \"%s\" argument must be followed by the priority queue range."), argv[i - 1]) ;
-				}
-
-				unsigned int tmp = 0 ;
-				sscanf (argv[i], "%u", &tmp) ;
-				PriorityQueueRange.setValue (tmp) ;
-			}
-
-			else if (std::string (argv[i]) == "--nconstrheur") {
-				if (Command.getValue() != EMBED) {
-					throw ArgError (_("argument \"%s\" can only be used with the \"embed\" command."), argv[i]) ;
-				}
-
-				if (NConstrHeur.is_set()) {
-					throw ArgError (_("the number construction heuristic argument can be used only once.")) ;
-				}
-
-				if (++i == argc) {
-					throw ArgError (_("the \"%s\" argument must be followed by the number of times the construction heuristic should be run."), argv[i - 1]) ;
-				}
-
-				unsigned int tmp = 0 ;
-				sscanf (argv[i], "%u", &tmp) ;
-				NConstrHeur.setValue (tmp) ;
-			}
-
-			else {
-				throw ArgError (_("unknown argument \"%s\"."), argv[i]) ;
-			}
-		}
-#endif
-		
-		else {
-			throw ArgError (_("unknown argument \"%s\"."), argv[i]) ;
-		}
+		throw ArgError (_("unknown argument \"%s\"."), curarg->c_str()) ;
 	}
 
 	// (command-specific) argument post-processing 
@@ -536,6 +122,564 @@ void Arguments::parse (int argc, char *argv[])
 	}
 }
 
+void Arguments::parse_Command (ArgIt& curarg)
+{
+#ifdef DEBUG
+	DebugMode = false ;
+	if (*curarg == "debug") {
+		DebugMode = true ;
+		curarg++ ;
+	}
+#endif
+
+	if (*curarg == "embed" || *curarg == "--embed") {
+		Command.setValue (EMBED) ;
+		setDefaults () ;
+		++curarg ;
+	}
+	else if (*curarg == "extract" || *curarg == "--extract") {
+		Command.setValue (EXTRACT) ;
+		setDefaults () ;
+		++curarg ;
+	}
+	else if (*curarg == "capacity" || *curarg == "--capacity") {
+		Command.setValue (CAPACITY) ;
+		setDefaults() ;
+		++curarg ;
+	}
+	else if (*curarg == "encinfo" || *curarg == "--encinfo") {
+		Command.setValue (ENCINFO) ;
+		if (TheArguments.size() > 1) {
+			throw ArgError (_("you cannot use arguments with the \"encinfo\" command.")) ;
+		}
+	}
+	else if (*curarg == "version" || *curarg == "--version") {
+		Command.setValue (SHOWVERSION) ;
+		if (TheArguments.size() > 1) {
+			throw ArgError (_("you cannot use arguments with the \"version\" command.")) ;
+		}
+	}
+	else if (*curarg == "license" || *curarg == "--license") {
+		Command.setValue (SHOWLICENSE) ;
+		if (TheArguments.size() > 1) {
+			throw ArgError (_("you cannot use arguments with the \"license\" command.")) ;
+		}
+	}
+	else if (*curarg == "help" || *curarg == "--help") {
+		Command.setValue (SHOWHELP) ;
+		if (TheArguments.size() > 1) {
+			throw ArgError (_("you cannot use arguments with the \"help\" command.")) ;
+		}
+	}
+#ifdef DEBUG
+	else if (DebugMode && (*curarg == "test")) {
+		steghide_test_all () ;
+		exit (EXIT_SUCCESS) ;
+	}
+#endif
+	else {
+		throw ArgError (_("unknown command \"%s\"."), curarg->c_str()) ;
+	}
+}
+
+bool Arguments::parse_EmbFn (ArgIt& curarg)
+{
+	bool found = false ;
+
+	if (*curarg == "-ef" || *curarg == "--embedfile") {
+		if (Command.getValue() != EMBED) {
+			throw ArgError (_("the argument \"%s\" can only be used with the \"embed\" command."), curarg->c_str()) ;
+		}
+
+		if (EmbFn.is_set()) {
+			throw ArgError (_("the embed file name argument can be used only once.")) ;
+		}
+
+		if (++curarg == TheArguments.end()) {
+			throw ArgError (_("the \"%s\" argument must be followed by the embed file name."), (curarg - 1)->c_str()) ;
+		}
+
+		if (*curarg == "-") {
+			EmbFn.setValue ("") ;
+		}
+		else {
+			EmbFn.setValue (*curarg) ;
+		}
+
+		found = true ;
+		curarg++ ;
+	}
+
+	return found ;
+}
+
+bool Arguments::parse_ExtFn (ArgIt& curarg)
+{
+	bool found = false ;
+
+	if (*curarg == "-xf" || *curarg == "--extractfile") {
+		if (Command.getValue() != EXTRACT) {
+			throw ArgError (_("argument \"%s\" can only be used with the \"extract\" command."), curarg->c_str()) ;
+		}
+
+		if (ExtFn.is_set()) {
+			throw ArgError (_("the extract file name argument can be used only once.")) ;
+		}
+
+		if (++curarg == TheArguments.end()) {
+			throw ArgError (_("the \"%s\" argument must be followed by the plain file name."), (curarg - 1)->c_str()) ;
+		}
+
+		if (*curarg == "-") {
+			ExtFn.setValue ("") ;
+		}
+		else {
+			ExtFn.setValue (*curarg) ;
+		}
+
+		found = true ;
+		curarg++ ;
+	}
+
+	return found ;
+}
+
+bool Arguments::parse_CvrFn (ArgIt& curarg)
+{
+	bool found = false ;
+
+	if (*curarg == "-cf" || *curarg == "--coverfile") {
+		if (Command.getValue() == EXTRACT) {
+			throw ArgError (_("the argument \"%s\" can not be used with the \"extract\" command."), curarg->c_str()) ;
+		}
+
+		if (CvrFn.is_set()) {
+			throw ArgError (_("the cover file name argument can be used only once.")) ;
+		}
+
+		if (++curarg == TheArguments.end()) {
+			throw ArgError (_("the \"%s\" argument must be followed by the cover file name."), (curarg - 1)->c_str()) ;
+		}
+
+		if (*curarg == "-") {
+			CvrFn.setValue ("") ;
+		}
+		else {
+			CvrFn.setValue (*curarg) ;
+		}
+
+		found = true ;
+		curarg++ ;
+	}
+
+	return found ;
+}
+
+bool Arguments::parse_StgFn (ArgIt& curarg)
+{
+	bool found = false ;
+
+	if (*curarg == "-sf" || *curarg == "--stegofile") {
+		if (Command.getValue() == CAPACITY) {
+			throw ArgError (_("the \"%s\" argument can not be used with the \"capacity\" command."), curarg->c_str()) ;
+		}
+
+		if (StgFn.is_set()) {
+			throw ArgError (_("the stego file name argument can be used only once.")) ;
+		}
+
+		if (++curarg == TheArguments.end()) {
+			throw ArgError (_("the \"%s\" argument must be followed by the stego file name."), (curarg - 1)->c_str()) ;
+		}
+
+		if (*curarg == "-") {
+			StgFn.setValue ("") ;
+		}
+		else {
+			StgFn.setValue (*curarg) ;
+		}
+
+		found = true ;
+		curarg++ ;
+	}
+
+	return found ;
+}
+
+bool Arguments::parse_Passphrase (ArgIt& curarg)
+{
+	bool found = false ;
+
+	if (*curarg == "-p" || *curarg == "--passphrase") {
+		if (Command.getValue() == CAPACITY) {
+			throw ArgError (_("the \"%s\" argument cannot be used with the \"capacity\" command."), curarg->c_str()) ;
+		}
+
+		if (Passphrase.is_set()) {
+			throw ArgError (_("the passphrase argument can be used only once.")) ;
+		}
+
+		if (++curarg == TheArguments.end()) {
+			throw ArgError (_("the \"%s\" argument must be followed by the passphrase."), (curarg - 1)->c_str());
+		}
+
+		Passphrase.setValue (*curarg) ;
+
+		found = true ;
+		curarg++ ;
+	}
+
+	return found ;
+}
+
+bool Arguments::parse_Checksum (ArgIt& curarg)
+{
+	bool found = false ;
+
+	if (*curarg == "-k" || *curarg == "--checksum") {
+		if (Command.getValue() != EMBED) {
+			throw ArgError (_("the argument \"%s\" can only be used with the \"embed\" command."), curarg->c_str()) ;
+		}
+
+		if (Checksum.is_set()) {
+			throw ArgError (_("the checksum argument can be used only once.")) ;
+		}
+
+		Checksum.setValue (true) ;
+
+		found = true ;
+		curarg++ ;
+	}
+	else if (*curarg == "-K" || *curarg == "--nochecksum") {
+		if (Command.getValue() != EMBED) {
+			throw ArgError (_("the argument \"%s\" can only be used with the \"embed\" command."), curarg->c_str()) ;
+		}
+
+		if (Checksum.is_set()) {
+			throw ArgError (_("the checksum argument can be used only once.")) ;
+		}
+
+		Checksum.setValue (false) ;
+
+		found = true ;
+		curarg++ ;
+	}
+
+	return found ;
+}
+
+bool Arguments::parse_EmbedEmbFn (ArgIt& curarg)
+{
+	bool found = false ;
+
+	if (*curarg == "-n" || *curarg == "--embedname") {
+		if (Command.getValue() != EMBED) {
+			throw ArgError (_("the argument \"%s\" can only be used with the \"embed\" command."), curarg->c_str()) ;
+		}
+
+		if (EmbedEmbFn.is_set()) {
+			throw ArgError (_("the file name embedding argument can be used only once.")) ;
+		}
+
+		EmbedEmbFn.setValue (true) ;
+
+		found = true ;
+		curarg++ ;
+	}
+	else if (*curarg == "-N" || *curarg == "--dontembedname") {
+		if (Command.getValue() != EMBED) {
+			throw ArgError (_("the argument \"%s\" can only be used with the \"embed\" command."), curarg->c_str()) ;
+		}
+
+		if (EmbedEmbFn.is_set()) {
+			throw ArgError (_("the file name embedding argument can be used only once.")) ;
+		}
+
+		EmbedEmbFn.setValue (false) ;
+
+		found = true ;
+		curarg++ ;
+	}
+
+	return found ;
+}
+
+bool Arguments::parse_Encryption (ArgIt& curarg)
+{
+	bool found = false ;
+
+	if (*curarg == "-e" || *curarg == "--encryption") {
+		if (Command.getValue() != EMBED) {
+			throw ArgError (_("the argument \"%s\" can only be used with the \"embed\" command."), curarg->c_str()) ;
+		}
+
+		if (EncAlgo.is_set() || EncMode.is_set()) {
+			throw ArgError (_("the encryption argument can be used only once.")) ;
+		}
+
+		if (++curarg == TheArguments.end()) {
+			throw ArgError (_("the \"%s\" argument must be followed by encryption information."), (curarg - 1)->c_str()) ;
+		}
+
+		std::string s1, s2 ;
+		if ((*curarg)[0] == '-') {
+			throw ArgError (_("the \"%s\" argument must be followed by encryption information."), (curarg - 1)->c_str()) ;
+		}
+		else {
+			s1 = *curarg ;
+			if (curarg + 1 == TheArguments.end()) {
+				s2 = "" ;
+			}
+			else {
+				if ((*(curarg + 1))[0] == '-') {
+					s2 = "" ;
+				}
+				else {
+					++curarg ; // set to second encryption specifier
+					s2 = *curarg ;
+				}
+			}
+		}
+
+		if (s1 == "none" && s2 == "") {
+			EncAlgo.setValue (s1) ;
+		}
+#ifdef USE_LIBMCRYPT
+		else {
+			bool s1_isalgo = false, s1_ismode = false ;
+			bool s2_isalgo = false, s2_ismode = false ;
+
+			if (s1 != "") {
+				s1_isalgo = EncryptionAlgorithm::isValidStringRep (s1) ;
+				s1_ismode = EncryptionMode::isValidStringRep (s1) ;
+
+				myassert (!(s1_isalgo && s1_ismode)) ;
+				if (!(s1_isalgo || s1_ismode)) {
+					throw SteghideError (_("\"%s\" is neither an algorithm nor a mode supported by libmcrypt."), s1.c_str()) ;
+				}
+			}
+			if (s2 != "") {
+				s2_isalgo = EncryptionAlgorithm::isValidStringRep (s2) ;
+				s2_ismode = EncryptionMode::isValidStringRep (s2) ;
+
+				myassert (!(s2_isalgo && s2_ismode)) ;
+				if (!(s2_isalgo || s2_ismode)) {
+					throw SteghideError (_("\"%s\" is neither an algorithm nor a mode supported by libmcrypt."), s2.c_str()) ;
+				}
+			}
+
+			if (s1_isalgo && s2_isalgo) {
+				throw SteghideError (_("\"%s\" and \"%s\" are both libmcrypt algorithms. please specify only one."), s1.c_str(), s2.c_str()) ;
+			}
+			if (s1_ismode && s2_ismode) {
+				throw SteghideError (_("\"%s\" and \"%s\" are both libmcrypt modes. please specify only one."), s1.c_str(), s2.c_str()) ;
+			}
+
+			if (s1_isalgo) {
+				EncAlgo.setValue (s1) ;
+			}
+			if (s1_ismode) {
+				EncMode.setValue (s1) ;
+			}
+			if (s2_isalgo) {
+				EncAlgo.setValue (s2) ;
+			}
+			if (s2_ismode) {
+				EncMode.setValue (s2) ;
+			}
+
+			if (!MCryptpp::AlgoSupportsMode (EncAlgo.getValue(), EncMode.getValue())) {
+				throw SteghideError (_("the encryption algorithm \"%s\" can not be used with the mode \"%s\"."),
+					EncAlgo.getValue().getStringRep().c_str(), EncAlgo.getValue().getStringRep().c_str()) ;
+			}
+		}
+#else
+		else {
+			throw SteghideError (_("steghide has been compiled without support for encryption.")) ;
+		}
+#endif // def USE_LIBMCRYPT
+
+		found = true ;
+		curarg++ ;
+	}
+
+	return found ;
+}
+
+bool Arguments::parse_Radius (ArgIt& curarg)
+{
+	bool found = false ;
+
+	if (*curarg == "-r" || *curarg == "--radius") {
+		if (Command.getValue() != EMBED) {
+			throw ArgError (_("the argument \"%s\" can only be used with the \"embed\" command."), curarg->c_str()) ;
+		}
+
+		if (Radius.is_set()) {
+			throw ArgError (_("the radius argument can be used only once.")) ;
+		}
+
+		if (++curarg == TheArguments.end()) {
+			throw ArgError (_("the \"%s\" argument must be followed by the neighbourhood radius."), (curarg - 1)->c_str()) ;
+		}
+
+		float tmp = 0.0 ;
+		sscanf (curarg->c_str(), "%f", &tmp) ;
+		Radius.setValue (tmp) ;
+
+		found = true ;
+		curarg++ ;
+	}
+
+	return found ;
+}
+
+bool Arguments::parse_Force (ArgIt& curarg)
+{
+	bool found = false ;
+
+	if (*curarg == "-f" || *curarg == "--force") {
+		if (Command.getValue() == CAPACITY) {
+			throw ArgError (_("the \"%s\" argument can not be used with the \"capacity\" command."), curarg->c_str()) ;
+		}
+
+		if (Force.is_set()) {
+			throw ArgError (_("the force argument can be used only once.")) ;
+		}
+
+		Force.setValue (true);
+
+		found = true ;
+		curarg++ ;
+	}
+
+	return found ;
+}
+
+bool Arguments::parse_Verbosity (ArgIt& curarg)
+{
+	bool found = false ;
+
+	if (*curarg == "-q" || *curarg == "--quiet") {
+		found = true ;
+
+		if (Command.getValue() == CAPACITY) {
+			throw ArgError (_("the \"%s\" argument can not be used with the \"capacity\" command."), curarg->c_str()) ;
+		}
+
+		if (Verbosity.is_set()) {
+			throw ArgError (_("the \"%s\" argument cannot be used here because the verbosity has already been set."), curarg->c_str()) ;
+		}
+
+		Verbosity.setValue (QUIET) ;
+		curarg++ ;
+	}
+	else if (*curarg == "-v" || *curarg == "--verbose") {
+		found = true ;
+
+		if (Command.getValue() == CAPACITY) {
+			throw ArgError (_("the \"%s\" argument can not be used with the \"capacity\" command."), curarg->c_str()) ;
+		}
+
+		if (Verbosity.is_set()) {
+			throw ArgError (_("the \"%s\" argument cannot be used here because the verbosity has already been set."), curarg->c_str()) ;
+		}
+
+		Verbosity.setValue (VERBOSE) ;
+		curarg++ ;
+	}
+
+	return found ;
+}
+
+#ifdef DEBUG
+bool Arguments::parse_Debug (ArgIt& curarg)
+{
+	bool found = false ;
+
+	if (DebugMode) {
+		if (*curarg == "--printgraph") {
+			if (DebugCommand.is_set()) {
+				throw SteghideError (_("you cannot use more than one debug command at a time.")) ;
+			}
+
+			DebugCommand.setValue (PRINTGRAPH) ;
+
+			found = true ;
+			curarg++ ;
+		}
+		else if (*curarg == "--printstats")  {
+			if (DebugCommand.is_set()) {
+				throw SteghideError (_("you cannot use more than one debug command at a time.")) ;
+			}
+
+			DebugCommand.setValue (PRINTSTATS) ;
+
+			found = true ;
+			++curarg ;
+		}
+		else if (*curarg == "--debuglevel") {
+			if (DebugLevel.is_set()) {
+				throw ArgError (_("the debug level argument can be used only once.")) ;
+			}
+
+			if (++curarg == TheArguments.end()) {
+				throw ArgError (_("the \"%s\" argument must be followed by the debug level."), (curarg - 1)->c_str()) ;
+			}
+
+			unsigned int tmp = 0 ;
+			sscanf (curarg->c_str(), "%u", &tmp) ;
+			DebugLevel.setValue (tmp) ;
+
+			found = true ;
+			++curarg ;
+		}
+		else if (*curarg == "--priorityqueuerange") {
+			if (Command.getValue() != EMBED) {
+				throw ArgError (_("argument \"%s\" can only be used with the \"embed\" command."), curarg->c_str()) ;
+			}
+
+			if (PriorityQueueRange.is_set()) {
+				throw ArgError (_("the priority queue range argument can be used only once.")) ;
+			}
+
+			if (++curarg == TheArguments.end()) {
+				throw ArgError (_("the \"%s\" argument must be followed by the priority queue range."), (curarg - 1)->c_str()) ;
+			}
+
+			unsigned int tmp = 0 ;
+			sscanf (curarg->c_str(), "%u", &tmp) ;
+			PriorityQueueRange.setValue (tmp) ;
+
+			found = true ;
+			++curarg ;
+		}
+		else if (*curarg == "--nconstrheur") {
+			if (Command.getValue() != EMBED) {
+				throw ArgError (_("argument \"%s\" can only be used with the \"embed\" command."), curarg->c_str()) ;
+			}
+
+			if (NConstrHeur.is_set()) {
+				throw ArgError (_("the number construction heuristic argument can be used only once.")) ;
+			}
+
+			if (++curarg == TheArguments.end()) {
+				throw ArgError (_("the \"%s\" argument must be followed by the number of times the construction heuristic should be run."), (curarg - 1)->c_str()) ;
+			}
+
+			unsigned int tmp = 0 ;
+			sscanf (curarg->c_str(), "%u", &tmp) ;
+			NConstrHeur.setValue (tmp) ;
+
+			found = true ;
+			++curarg ;
+		}
+	}
+
+	return found ;
+}
+#endif
+
 std::string Arguments::getPassphrase (bool doublecheck)
 {
     int c = EOF ;
@@ -572,16 +716,16 @@ std::string Arguments::getPassphrase (bool doublecheck)
 	return s1 ;
 }
 
-bool Arguments::stdin_isused ()
+bool Arguments::stdin_isused () const
 {
 	bool retval = false ;
-	if (Command.getValue() == EMBED &&
-		(EmbFn.getValue() == "" ||
-		 CvrFn.getValue() == "")) {
+	if (Command.getValue() == EMBED && (EmbFn.getValue() == "" || CvrFn.getValue() == "")) {
 		retval = true ;
 	}
-	if (Command.getValue() == EXTRACT &&
-		StgFn.getValue() == "") {
+	else if (Command.getValue() == EXTRACT && StgFn.getValue() == "") {
+		retval = true ;
+	}
+	else if (Command.getValue() == CAPACITY && CvrFn.getValue() == "") {
 		retval = true ;
 	}
 	return retval ;
@@ -589,7 +733,7 @@ bool Arguments::stdin_isused ()
 
 void Arguments::setDefaults (void)
 {
-	assert (Command.is_set()) ;
+	myassert (Command.is_set()) ;
 
 	EmbFn.setValue ("", false) ;
 	CvrFn.setValue ("", false) ;

@@ -30,11 +30,11 @@
  **/
 class AugmentingPathHeuristic : private GraphAccess {
 	public:
-	AugmentingPathHeuristic (Graph *g, Matching *m) ;
+	AugmentingPathHeuristic (Graph* g, Matching* m) ;
 
 	void run (void) ;
 
-	Matching *getMatching (void) const
+	Matching* getMatching (void) const
 		{ return TheMatching ; } ;
 
 	private:
@@ -57,7 +57,7 @@ class AugmentingPathHeuristic : private GraphAccess {
 	bool isVisited (Vertex *v)
 		{ return (TimeCounters[v->getLabel()] == TimeCounter) ; } ;
 
-	Matching *TheMatching ;
+	Matching* TheMatching ;
 
 	UWORD32 TimeCounter ;
 	std::vector<UWORD32> TimeCounters ;

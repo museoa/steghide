@@ -72,17 +72,17 @@ unsigned long AuFile::getNumSamples () const
 	return data.size() ;
 }
 
-void AuFile::replaceSample (SamplePos pos, SampleValue *s)
+void AuFile::replaceSample (const SamplePos pos, const SampleValue* s)
 {
-	AuSampleValue *sample = dynamic_cast<AuSampleValue*> (s) ;
-	assert (sample != NULL) ;
-	assert (pos < getNumSamples()) ;
+	const AuSampleValue* sample = dynamic_cast<const AuSampleValue*> (s) ;
+	myassert (sample != NULL) ;
+	myassert (pos < getNumSamples()) ;
 	data[pos] = sample->getValue() ;
 }
 
 SampleValue *AuFile::getSampleValue (SamplePos pos) const
 {
-	assert (pos < getNumSamples()) ;
+	myassert (pos < getNumSamples()) ;
 	return ((SampleValue *) new AuSampleValue (this, data[pos])) ;
 }
 

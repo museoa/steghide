@@ -21,7 +21,7 @@
 #include "augheur.h"
 #include "common.h"
 
-AugmentingPathHeuristic::AugmentingPathHeuristic (Graph *g, Matching *m)
+AugmentingPathHeuristic::AugmentingPathHeuristic (Graph* g, Matching* m)
 	: GraphAccess(g)
 {
 	TheMatching = m ;
@@ -40,6 +40,7 @@ AugmentingPathHeuristic::AugmentingPathHeuristic (Graph *g, Matching *m)
 
 void AugmentingPathHeuristic::run ()
 {
+	// FIXME - ? as reference
 	const std::list<Vertex*> ExposedVertices = TheMatching->getExposedVertices() ;
 	for (std::list<Vertex*>::const_iterator expv = ExposedVertices.begin() ; expv != ExposedVertices.end() ; expv++) {
 		if (TheMatching->isExposed (*expv)) {
@@ -84,7 +85,7 @@ std::vector<Edge*>* AugmentingPathHeuristic::searchAugmentingPath (Vertex *v0)
 				VertexOnPath[e->getVertex2()->getLabel()] = false ;
 				
 				// matched edge: pop from path
-				assert (path->back() == e) ;
+				myassert (path->back() == e) ;
 				path->pop_back() ;
 
 				// unmatched edge: pop from path and delete (has been created only for path)

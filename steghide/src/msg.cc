@@ -18,7 +18,6 @@
  *
  */
 
-#include <cassert>
 #include <cstdarg>
 #include <cstdio>
 #include <iostream>
@@ -33,7 +32,7 @@
 //
 MessageBase::MessageBase ()
 {
-	setMessage (_("__no_message_defined__")) ;
+	setMessage (std::string(_("__no_message_defined__"))) ;
 }
 
 MessageBase::MessageBase (std::string msg)
@@ -47,16 +46,6 @@ MessageBase::MessageBase (const char *msgfmt, ...)
 	va_start (ap, msgfmt) ;
 	setMessage (msgfmt, ap) ;
 	va_end (ap) ;
-}
-
-std::string MessageBase::getMessage () const
-{
-	return message ;
-}
-
-void MessageBase::setMessage (std::string msg)
-{
-	message = msg ;
 }
 
 void MessageBase::setMessage (const char *msgfmt, ...)
@@ -192,14 +181,14 @@ Question::Question (const char *msgfmt, ...)
 
 void Question::printMessage () const
 {
-	assert (!Args.stdin_isused()) ;
+	myassert (!Args.stdin_isused()) ;
 
 	std::cerr << getMessage() << " (" << yeschar << "/" << nochar << ") " ;
 }
 
 bool Question::getAnswer ()
 {
-	assert (!Args.stdin_isused()) ;
+	myassert (!Args.stdin_isused()) ;
 
 	Terminal term ;
 	term.SingleKeyOn() ;

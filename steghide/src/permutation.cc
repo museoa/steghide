@@ -41,7 +41,7 @@ Permutation& Permutation::operator++ ()
 {
 	do {
 		CurArg++ ;
-		assert (CurArg <= MaxArg) ;
+		myassert (CurArg <= MaxArg) ;
 
 		unsigned long x = lower (CurArg) ;
 		unsigned long y = higher (CurArg) ;
@@ -93,7 +93,7 @@ void Permutation::reset()
 		else {
 			CurArg++ ;
 		}
-		assert (CurArg <= MaxArg) ;
+		myassert (CurArg <= MaxArg) ;
 
 		unsigned long x = lower (CurArg) ;
 		unsigned long y = higher (CurArg) ;
@@ -109,7 +109,7 @@ void Permutation::reset()
 
 void Permutation::setWidth (unsigned long w)
 {
-	assert (w > 0) ;
+	myassert (w > 0) ;
 	Width = w ;
 
 	NBits = 1 ;
@@ -123,8 +123,8 @@ void Permutation::setWidth (unsigned long w)
 		NBits++ ;
 	}
 
-	assert (NBits % 2 == 0) ;
-	assert (NBits <= 32) ;
+	myassert (NBits % 2 == 0) ;
+	myassert (NBits <= 32) ;
 
 	Mask = 0 ;
 	for (unsigned short i = 0 ; i < (NBits / 2) ; i++) {
@@ -145,7 +145,7 @@ void Permutation::setKey (std::string pp)
 	hash << pp << endhash ;
 	BitString hashbits = hash.getHashBits() ;
 
-	assert (hashbits.getLength() == 128) ;
+	myassert (hashbits.getLength() == 128) ;
 	Key1 = hashbits.getValue (0, 32) ;
 	Key2 = hashbits.getValue (32, 32) ;
 	Key3 = hashbits.getValue (64, 32) ;
@@ -159,13 +159,13 @@ unsigned long Permutation::keyhash (unsigned long key, unsigned long arg)
 	for (unsigned short i = 0 ; i < 32 ; i += 8) {
 		hash << (unsigned char) ((key >> i) & 0xFF) ;
 	}
-	assert (arg <= 0xFFFF) ;
+	myassert (arg <= 0xFFFF) ;
 	for (unsigned short i = 0 ; i < (NBits / 2) ; i+= 8) {
 		hash << (unsigned char) ((arg >> i) & 0xFF) ;
 	}
 	hash << endhash ;
 	std::vector<unsigned char> hashbytes = hash.getHashBytes() ;
-	assert (hashbytes.size() == 16) ;
+	myassert (hashbytes.size() == 16) ;
 
 	// compose a 16 bit return value from the 128 bit md5 hash
 	unsigned long retval = 0 ;
@@ -177,6 +177,6 @@ unsigned long Permutation::keyhash (unsigned long key, unsigned long arg)
 		retval ^= hashbytes[i] ;
 	}
 
-	assert (retval <= 0xFFFF) ;
+	myassert (retval <= 0xFFFF) ;
 	return retval ;
 }

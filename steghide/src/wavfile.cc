@@ -82,10 +82,10 @@ unsigned long WavFile::getNumSamples() const
 	return retval ;
 }
 
-void WavFile::replaceSample (SamplePos pos, SampleValue *s)
+void WavFile::replaceSample (const SamplePos pos, const SampleValue* s)
 {
-	WavPCMSampleValue *sample = dynamic_cast<WavPCMSampleValue*> (s) ;
-	assert (sample != NULL) ;
+	const WavPCMSampleValue* sample = dynamic_cast<const WavPCMSampleValue*> (s) ;
+	myassert (sample != NULL) ;
 	if (FormatChunk->getBitsPerSample() <= 8) {
 		data_small[pos] = (unsigned char) sample->getValue() ;
 	}

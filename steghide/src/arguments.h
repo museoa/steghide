@@ -22,26 +22,48 @@
 #define SH_ARGUMENTS_H
 
 #include <string>
+#include <vector>
 
 #include "arg.h"
 class EncryptionAlgorithm ;
 class EncryptionMode ;
 
+/**
+ * \class Arguments
+ * \brief parsing and data representation of command-line arguments
+ **/
 class Arguments {
 	public:
+	Arguments (void) {} ;
+
+	/**
+	 * initialize this Arguments object with argc and argv
+	 **/
+	Arguments (int argc, char *argv[]) ;
+
+	/**
+	 * parse Argc and Argv filling the Arg* member variable for later access
+	 **/
+	void parse (void) ;
+
+	/**
+	 * is standard input used ? - according to the given arguments
+	 **/
+	bool stdin_isused (void) const ;
+
 	ArgCommand		Command ;
 	ArgString		EmbFn ;
+	ArgString		ExtFn ;
 	ArgString		CvrFn ;
+	ArgString		StgFn ;
+	ArgString		Passphrase ;
 	ArgBool			Checksum ;
 	ArgBool			EmbedEmbFn ;
-	ArgString		ExtFn ;
-	ArgString		Passphrase ;
-	ArgString		StgFn ;
-	ArgBool			Force ;
-	ArgVerbosity	Verbosity ;
-	ArgFloat		Radius ;
 	ArgEncAlgo		EncAlgo ;
 	ArgEncMode		EncMode ;
+	ArgFloat		Radius ;
+	ArgBool			Force ;
+	ArgVerbosity	Verbosity ;
 #ifdef DEBUG
 	ArgDebugCommand	DebugCommand ;
 	ArgUInt			DebugLevel ;
@@ -49,14 +71,9 @@ class Arguments {
 	ArgUInt			NConstrHeur ;
 #endif
 
-	Arguments (void) ;
-	Arguments (int argc, char *argv[]) ;
-
-	void parse (int argc, char *argv[]) ;
-
-	bool stdin_isused (void) ;
-
 	private:
+	typedef std::vector<std::string>::const_iterator ArgIt ;
+
 	static const EncryptionAlgorithm Default_EncAlgo ;
 	static const EncryptionMode Default_EncMode ;
 	static const bool		Default_Checksum = true ;
@@ -71,10 +88,40 @@ class Arguments {
 	static const unsigned int	Default_NConstrHeur = 0 ; // is never used
 #endif
 
-	static const unsigned int	PassphraseMaxLen = 255 ;
+	/**
+	 * parse the command
+	 *
+	 * Note: parse_Command is the only parse_* function that requires curarg to be a command.
+	 * (because the command is the only argument with a fixed position).
+	 **/
+	void parse_Command (ArgIt& curarg) ;
+
+	/**
+	 * test if curarg points to an emb filename argument and if yes: parse it
+	 * \return true iff one or more arguments have been parsed
+	 **/
+	bool parse_EmbFn (ArgIt& curarg) ;
+
+	bool parse_ExtFn (ArgIt& curarg) ;
+	bool parse_CvrFn (ArgIt& curarg) ;
+	bool parse_StgFn (ArgIt& curarg) ;
+	bool parse_Passphrase (ArgIt& curarg) ;
+	bool parse_Checksum (ArgIt& curarg) ;
+	bool parse_EmbedEmbFn (ArgIt& curarg) ;
+	bool parse_Encryption (ArgIt& curarg) ;
+	bool parse_Radius (ArgIt& curarg) ;
+	bool parse_Force (ArgIt& curarg) ;
+	bool parse_Verbosity (ArgIt& curarg) ;
+#ifdef DEBUG
+	bool parse_Debug (ArgIt& curarg) ;
+#endif
 
 	std::string getPassphrase (bool doublecheck = false) ;
 	void setDefaults (void) ;
+
+	std::vector<std::string> TheArguments ;
+	/// true iff the first argument was "debug"
+	bool DebugMode ;
 } ;
 
 // gcc does not support the export keyword

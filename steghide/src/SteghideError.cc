@@ -19,26 +19,28 @@
  */
 
 #include "common.h"
-#include "samplevalue.h"
-#include "cvrstgfile.h"
+#include "SteghideError.h"
 
-void SampleValue::decNumEdges ()
+SteghideError::SteghideError (void)
+	: MessageBase(_("error, exiting. (no error message defined)"))
 {
-	myassert (NumEdges > 0) ;
-	NumEdges-- ;
 }
 
-#ifdef DEBUG
-void SampleValue::print (unsigned short spc) const
+SteghideError::SteghideError(std::string msg)
+	: MessageBase(msg)
 {
-	char* space = new char[spc + 1] ;
-	for (unsigned short i = 0 ; i < spc ; i++) {
-		space[i] = ' ' ;
-	}
-	space[spc] = '\0' ;
-	std::cerr << space << "SampleValue:" << std::endl ;
-	std::cerr << space << " Label: " << getLabel() << std::endl ;
-	std::cerr << space << " Key: " << getKey() << std::endl ;
-	std::cerr << space << " Bit: " << getBit() << std::endl ;
 }
-#endif
+
+SteghideError::SteghideError (const char *msgfmt, ...)
+	: MessageBase()
+{
+	va_list ap ;
+	va_start (ap, msgfmt) ;
+	setMessage (vcompose (msgfmt, ap)) ;
+	va_end (ap) ;
+}
+
+void SteghideError::printMessage () const
+{
+	std::cerr << "steghide: " << getMessage() << std::endl ;
+}

@@ -93,7 +93,7 @@ void Embedder::embed ()
 	TheCvrStgFile->write() ;
 }
 
-const Matching *Embedder::calculateMatching ()
+const Matching* Embedder::calculateMatching ()
 {
 	VerboseMessage vmsg1 (_("calculating the matching...")) ;
 	vmsg1.printMessage() ;
@@ -175,6 +175,6 @@ void Embedder::embedExposedVertex (Vertex *v)
 
 	Bit oldbit = TheCvrStgFile->getSampleBit (samplepos) ;
 	TheCvrStgFile->replaceSample (samplepos, newsample) ;
-	assert (oldbit != TheCvrStgFile->getSampleBit (samplepos)) ;
+	myassert (oldbit != TheCvrStgFile->getSampleBit (samplepos)) ;
 	delete newsample ;
 }

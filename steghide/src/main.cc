@@ -61,8 +61,9 @@ static void gettext_init (void) ;
 int main (int argc, char *argv[])
 {
 	try {
-		gettext_init () ;
-		Args.parse (argc, argv) ;
+		gettext_init() ;
+		Args = Arguments (argc, argv) ;
+		Args.parse() ;
 
 		Session s ;
 		s.run() ;

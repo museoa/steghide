@@ -50,7 +50,7 @@ void MHashpp::init (hashid id)
 
 const std::vector<BYTE>& MHashpp::end ()
 {
-	assert (hashing) ;
+	myassert (hashing) ;
 
 	unsigned int n = getHashSize() ;
 	HashBytes = std::vector<unsigned char> (n) ;
@@ -68,21 +68,21 @@ const std::vector<BYTE>& MHashpp::end ()
 
 unsigned int MHashpp::getHashSize (void)
 {
-	assert (hashing) ;
+	myassert (hashing) ;
 	return ((unsigned int) mhash_get_block_size (mhash_get_mhash_algo (HashD))) ;
 }
 
 MHashpp& MHashpp::operator<< (std::string v)
 {
-	assert (hashing) ;
+	myassert (hashing) ;
 	mhash (HashD, v.data(), v.size()) ;
 	return *this ;
 }
 
 MHashpp& MHashpp::operator<< (BitString v)
 {
-	assert (hashing) ;
-	assert (v.getLength() % 8 == 0) ;
+	myassert (hashing) ;
+	myassert (v.getLength() % 8 == 0) ;
 
 	unsigned long n = v.getLength() / 8 ;
 	for (unsigned int i = 0 ; i < n ; i++) {
@@ -94,7 +94,7 @@ MHashpp& MHashpp::operator<< (BitString v)
 
 MHashpp& MHashpp::operator<< (unsigned char v)
 {
-	assert (hashing) ;
+	myassert (hashing) ;
 	mhash (HashD, &v, 1) ;
 	return *this ;
 }
@@ -107,7 +107,7 @@ MHashpp& MHashpp::operator<< (MHashppCommand c)
 		break ;
 
 		default:
-		assert (0) ;
+		myassert (0) ;
 		break ;
 	}
 	return *this ;
@@ -115,7 +115,7 @@ MHashpp& MHashpp::operator<< (MHashppCommand c)
 
 std::string MHashpp::getAlgorithmName ()
 {
-	assert (hashing) ;
+	myassert (hashing) ;
 	return getAlgorithmName (mhash_get_mhash_algo (HashD)) ;
 }
 
@@ -135,12 +135,12 @@ std::string MHashpp::getAlgorithmName (hashid id)
 
 BitString MHashpp::getHashBits ()
 {
-	assert (HashBytesValid) ;
+	myassert (HashBytesValid) ;
 	return BitString (HashBytes) ;
 }
 
 const std::vector<BYTE>& MHashpp::getHashBytes()
 {
-	assert (HashBytesValid) ;
+	myassert (HashBytesValid) ;
 	return HashBytes ;
 }

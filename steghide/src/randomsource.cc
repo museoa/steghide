@@ -109,7 +109,7 @@ bool RandomSource::getBool()
 unsigned long RandomSource::getValue (unsigned long n)
 {
 	const unsigned long ceilvalue = 0x1000000UL ;
-	assert (n < ceilvalue) ;
+	myassert (n < ceilvalue) ;
 	unsigned long value = ((unsigned long) (getByte() << 16)) |
 						  ((unsigned long) (getByte() << 8)) |
 						  ((unsigned long) getByte()) ;

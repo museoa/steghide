@@ -31,7 +31,11 @@ extern CvrStgFile* TheCvrStgFile ;
 
 class CvrStgFile : public CvrStgObject {
 	public:
-	static CvrStgFile *readFile (std::string fn) ;
+	/**
+	 * this function reads the file with name fn and returns
+	 * a *File object of the correct type casted to CvrStgFile.
+	 **/
+	static CvrStgFile *readFile (const std::string& fn) ;
 
 	CvrStgFile (void) ;
 	CvrStgFile (BinaryIO *io) ;
@@ -39,12 +43,12 @@ class CvrStgFile : public CvrStgObject {
 
 	virtual void read (BinaryIO *io) ;
 	virtual void write (void) ;
-	void transform (std::string fn) ;
+	void transform (const std::string& fn) ;
 
 	/**
 	 * get the name of this cvrstgfile
 	 **/
-	std::string getName (void) const
+	const std::string& getName (void) const
 		{ return getBinIO()->getName() ; } ;
 
 	/**
@@ -63,29 +67,24 @@ class CvrStgFile : public CvrStgObject {
 	 *
 	 * This is equivalent to getSample(pos)->getBit().
 	 **/
-	Bit getSampleBit (SamplePos pos) ;
+	Bit getSampleBit (const SamplePos pos) const ;
 
 	protected:
-	void setBinIO (BinaryIO *io)
+	void setBinIO (BinaryIO* io)
 		{ BinIO = io ; } ;
 
-	BinaryIO *getBinIO (void) const
+	BinaryIO* getBinIO (void) const
 		{ return BinIO ; } ;
 
 	private:
+	enum FILEFORMAT { UNKNOWN, BMP, WAV, AU, JPEG } ;
+
 	/**
 	 * guesses the file format by looking at the first few bytes
 	 **/
-	static int guessff (BinaryIO *io) ;
+	static FILEFORMAT guessff (BinaryIO *io) ;
 
-	BinaryIO *BinIO ;
+	BinaryIO* BinIO ;
 } ;
-
-/* constants that indicate the cover file format */
-#define FF_UNKNOWN	0
-#define FF_BMP		1
-#define FF_WAV		2
-#define FF_AU		3
-#define FF_JPEG		4
 
 #endif /* ndef SH_CVRSTGFILE_H */

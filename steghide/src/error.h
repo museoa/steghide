@@ -25,16 +25,7 @@
 #include <string>
 
 #include "binaryio.h"
-#include "msg.h"
-
-class SteghideError : public MessageBase {
-	public:
-	SteghideError (void) ;
-	SteghideError (std::string msg) ;
-	SteghideError (const char *msgfmt, ...) ;
-
-	virtual void printMessage (void) const ;	
-} ;
+#include "SteghideError.h"
 
 class ArgError : public SteghideError {
 	public:

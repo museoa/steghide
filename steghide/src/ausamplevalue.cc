@@ -58,7 +58,7 @@ SampleValue *AuSampleValue::getNearestOppositeSampleValue() const
 float AuSampleValue::calcDistance (const SampleValue *s) const
 {
 	const AuSampleValue* sample = dynamic_cast<const AuSampleValue*> (s) ;
-	assert (sample != NULL) ;
+	myassert (sample != NULL) ;
 	return (fabs (((float) Value) - ((float) sample->getValue()))) ;
 }
 

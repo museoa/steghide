@@ -62,7 +62,7 @@ void Session::run ()
 		break ; }
 
 		default: {
-			assert (0) ;
+			myassert (0) ;
 		break ; }
 	}
 }

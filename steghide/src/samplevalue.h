@@ -18,7 +18,6 @@
  *
  */
 
-// FIXME - check name of these ifdefs in bmpsamplevalue.h,etc.
 #ifndef SH_SAMPLEVALUE_H
 #define SH_SAMPLEVALUE_H
 
@@ -34,7 +33,7 @@ class CvrStgFile ;
  * \class SampleValue
  * \brief the value of a sample in a CvrStgFile
  *
- * This is the abstract base class for all AuSampleValueValue, BmpSampleValueValue, etc. classes
+ * This is the abstract base class for all AuSampleValue, BmpSampleValue, etc. classes
  *
  * For two sample values s1 and s2:
  *
@@ -66,7 +65,7 @@ class SampleValue {
 	 * is the sample value s a neighbour of this sample value ?
 	 * \return true iff this and s are neighbours
 	 **/
-	virtual bool isNeighbour (const SampleValue *s) const = 0 ;
+	virtual bool isNeighbour (const SampleValue* s) const = 0 ;
 
 	/**
 	 * get the nearest (with the least distance) opposite sample value that can be used in this file
@@ -82,7 +81,7 @@ class SampleValue {
 	virtual SampleValue* getNearestOppositeSampleValue (void) const = 0 ;
 
 	/**
-	 * calculate the distance between the sample value s and this
+	 * calculate the distance between the sample value s and this sample value
 	 * \param s a sample value of the same type as this
 	 * \return the distance
 	 **/
@@ -144,6 +143,8 @@ class SampleValue {
 #endif
 
 	protected:
+	// FIXME - SBit, Key speed vs. memory footprint !?
+
 	/// the bit that is embedded in this sample value - must be set in constructor of derived class
 	Bit SBit ;
 
@@ -151,7 +152,7 @@ class SampleValue {
 	unsigned long Key ;
 
 	private:
-	const CvrStgFile* File ;
+	const CvrStgFile* File ; // FIXME - use something similar to graph access
 	unsigned long Label ;
 
 	/// the number of edges that are added to a vertex if this sample value is added to it

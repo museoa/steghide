@@ -84,14 +84,14 @@ void CvrStgFile::write (void)
 	}
 }
 
-void CvrStgFile::transform (std::string stgfn)
+void CvrStgFile::transform (const std::string& stgfn)
 {
 	delete getBinIO() ;
 	setBinIO (new BinaryIO (stgfn, BinaryIO::WRITE)) ;
 }
 
 // FIXME - implement this in ...File to save some time - include tests: implementation in ...File is equivalent to getSample(pos)-> getBit()
-Bit CvrStgFile::getSampleBit (SamplePos pos)
+Bit CvrStgFile::getSampleBit (const SamplePos pos) const
 {
 	SampleValue* sv = getSampleValue(pos) ;
 	Bit retval = sv->getBit() ;
@@ -99,20 +99,20 @@ Bit CvrStgFile::getSampleBit (SamplePos pos)
 	return retval ;
 }
 
-int CvrStgFile::guessff (BinaryIO *io)
+CvrStgFile::FILEFORMAT CvrStgFile::guessff (BinaryIO *io)
 {
 	char buf[4] = { '\0', '\0', '\0', '\0' } ;
-	int retval = FF_UNKNOWN ;
+	FILEFORMAT retval = UNKNOWN ;
 	
 	for (unsigned int i = 0 ; i < 2 ; i++) {
 		buf[i] = (char) io->read8() ;
 	}
 
 	if (strncmp ("BM", buf, 2) == 0) {
-		retval = FF_BMP ;
+		retval = BMP ;
 	}
 	else if ((unsigned char) buf[0] == 0xFF && (unsigned char) buf[1] == 0xD8) {
-		retval = FF_JPEG ;
+		retval = JPEG ;
 	}
 	else {
 		for (unsigned int i = 2 ; i < 4 ; i++) {
@@ -120,44 +120,44 @@ int CvrStgFile::guessff (BinaryIO *io)
 		}
 
 		if (strncmp (".snd", buf, 4) == 0) {
-			retval = FF_AU ;
+			retval = AU ;
 		}
 		else if (strncmp ("RIFF", buf, 4) == 0) {
-			retval = FF_WAV ;
+			retval = WAV ;
 		}
 	}
 
 	return retval ;
 }
 
-CvrStgFile *CvrStgFile::readFile (std::string fn)
+CvrStgFile* CvrStgFile::readFile (const std::string& fn)
 {
 	BinaryIO *BinIO = new BinaryIO (fn, BinaryIO::READ) ;
 
 	CvrStgFile *file = NULL ;
 	switch (guessff (BinIO)) {
-		case FF_UNKNOWN: {
+		case UNKNOWN: {
 			throw UnSupFileFormat (BinIO) ;	
 		break ; }
 
-		case FF_BMP: {
+		case BMP: {
 			file = new BmpFile (BinIO) ;
 		break ; }
 
-		case FF_WAV: {
+		case WAV: {
 			file = new WavFile (BinIO) ;
 		break ; }
 
-		case FF_AU: {
+		case AU: {
 			file = new AuFile (BinIO) ;
 		break ; }
 
-		case FF_JPEG: {
+		case JPEG: {
 			file = new JpegFile (BinIO) ;
 		break ; }
 
 		default: {
-			assert (0) ;
+			myassert(0) ;
 		break ; }
 	}
 

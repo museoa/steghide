@@ -35,7 +35,7 @@ class Matching : private GraphAccess {
 	 * create an empty matching that is ready for adding and augmenting
 	 * \param g the underlying graph
 	 **/
-	Matching (Graph *g) ;
+	Matching (Graph* g) ;
 	
 	/**
 	 * returns true iff the vertex v is matched in this matching.

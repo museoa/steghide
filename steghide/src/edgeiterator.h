@@ -42,9 +42,10 @@
 class EdgeIterator : private GraphAccess {
 	public:
 	/**
+	 * \param g the graph
 	 * \param v the source vertex
 	 **/
-	EdgeIterator (Graph *g, Vertex *v) ;
+	EdgeIterator (Graph* g, Vertex *v) ;
 
 	/**
 	 * the copy constructor

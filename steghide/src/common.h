@@ -23,9 +23,6 @@
 
 // this file contains some definitions that are/can be used throughout the whole program
 
-// the program name
-#define PROGNAME "steghide"
-
 // include config.h
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -36,7 +33,9 @@
 #define _(S) gettext (S)
 
 // every class should (be able to) do assertions
-#include <cassert>
+// (myassert(expr) is more verbose than the standard C assert)
+#include "AssertionFailed.h"
+#define myassert(expr)		(void) ((expr) ? 0 : throw AssertionFailed (__FILE__, __LINE__)) ;
 
 // every class can have debugging output
 extern void printDebug (unsigned int level, const char *msgfmt, ...) ;
@@ -64,6 +63,7 @@ typedef unsigned short	UWORD16 ;
 typedef unsigned char	BYTE ;
 #endif
 
+// FIXME - define Bit as something needing less memory
 typedef int Bit ;
 typedef UWORD32 SamplePos ;
 typedef UWORD32 VertexLabel ;

@@ -30,7 +30,8 @@ class SampleValue ;
  * \brief an object that can hold embedded data
  *
  * This abstract base class provides an interface for every class that is able
- * to hold embedded data.
+ * to hold embedded data. Something that can hold embedded data is essentially
+ * though of as an array of samples.
  *
  * Definitions:
  * Embedded Bit...a bit to be embedded (one bit in the original or extracted embfile)
@@ -50,7 +51,7 @@ class CvrStgObject {
 	 *
 	 * The derived class should check the condition(s) given above in its Implementation of this function.
 	 **/
-	virtual void replaceSample (SamplePos pos, SampleValue *s) = 0 ;
+	virtual void replaceSample (const SamplePos pos, const SampleValue* s) = 0 ;
 
 	/**
 	 * get the sample at position pos
@@ -60,7 +61,7 @@ class CvrStgObject {
 	 * The sample object is created in this function and should be deleted by the caller.
 	 * The derived class should check the condition(s) given above in its Implementation of this function.
 	 **/
-	virtual SampleValue* getSampleValue (SamplePos pos) const = 0 ;
+	virtual SampleValue* getSampleValue (const SamplePos pos) const = 0 ;
 } ;
 
 #endif //ndef SH_CVRSTGOBJECT_H

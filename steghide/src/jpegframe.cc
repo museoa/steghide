@@ -55,21 +55,21 @@ JpegFrame::~JpegFrame ()
 
 JpegFrameHeader *JpegFrame::getFrameHeader ()
 {
-	assert (framehdr) ;
+	myassert (framehdr) ;
 	return framehdr ;
 }
 
 JpegHuffmanTable *JpegFrame::getDCTable (unsigned char ds)
 {
-	assert (ds < 4) ;
-	assert (DCTables[ds]) ;
+	myassert (ds < 4) ;
+	myassert (DCTables[ds]) ;
 	return DCTables[ds] ;
 }
 
 JpegHuffmanTable *JpegFrame::getACTable (unsigned char ds)
 {
-	assert (ds < 4) ;
-	assert (ACTables[ds]) ;
+	myassert (ds < 4) ;
+	myassert (ACTables[ds]) ;
 	return ACTables[ds] ;
 }
 

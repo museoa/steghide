@@ -29,9 +29,11 @@ class GraphAccess {
 	GraphAccess (Graph* g) ;
 
 	protected:
-	// FIXME - these two should be static
-	Graph* TheGraph ;
-	unsigned short SamplesPerVertex ;
+	static Graph* TheGraph ;
+	static unsigned short SamplesPerVertex ;
+
+	private:
+	static bool is_set ;
 } ;
 
 #endif // ndef SH_GRAPHACCESS_H

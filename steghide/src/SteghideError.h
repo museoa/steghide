@@ -18,27 +18,18 @@
  *
  */
 
-#include "common.h"
-#include "samplevalue.h"
-#include "cvrstgfile.h"
+#ifndef SH_STEGHIDEERROR_H
+#define SH_STEGHIDEERROR_H
 
-void SampleValue::decNumEdges ()
-{
-	myassert (NumEdges > 0) ;
-	NumEdges-- ;
-}
+#include "msg.h"
 
-#ifdef DEBUG
-void SampleValue::print (unsigned short spc) const
-{
-	char* space = new char[spc + 1] ;
-	for (unsigned short i = 0 ; i < spc ; i++) {
-		space[i] = ' ' ;
-	}
-	space[spc] = '\0' ;
-	std::cerr << space << "SampleValue:" << std::endl ;
-	std::cerr << space << " Label: " << getLabel() << std::endl ;
-	std::cerr << space << " Key: " << getKey() << std::endl ;
-	std::cerr << space << " Bit: " << getBit() << std::endl ;
-}
-#endif
+class SteghideError : public MessageBase {
+	public:
+	SteghideError (void) ;
+	SteghideError (std::string msg) ;
+	SteghideError (const char *msgfmt, ...) ;
+
+	virtual void printMessage (void) const ;	
+} ;
+
+#endif // ndef SH_STEGHIDEERROR_H

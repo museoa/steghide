@@ -50,7 +50,7 @@ BmpSampleValue::BmpSampleValue (const CvrStgFile* f)
 bool BmpSampleValue::isNeighbour (const SampleValue *s) const
 {
 	const BmpSampleValue *sample = dynamic_cast<const BmpSampleValue*> (s) ;
-	assert (sample != NULL) ;
+	myassert (sample != NULL) ;
 	int dr = (int) getRed() - (int) sample->getRed() ;
 	int dg = (int) getGreen() - (int) sample->getGreen() ;
 	int db = (int) getBlue() - (int) sample->getBlue() ;
@@ -60,7 +60,7 @@ bool BmpSampleValue::isNeighbour (const SampleValue *s) const
 float BmpSampleValue::calcDistance (const SampleValue *s) const
 {
 	const BmpSampleValue *sample = dynamic_cast<const BmpSampleValue*> (s) ;
-	assert (sample != NULL) ;
+	myassert (sample != NULL) ;
 	float dr = (float) getRed() - (float) sample->getRed() ;
 	float dg = (float) getGreen() - (float) sample->getGreen() ;
 	float db = (float) getBlue() - (float) sample->getBlue() ;
@@ -89,7 +89,7 @@ BmpPaletteSampleValue::BmpPaletteSampleValue (const CvrStgFile* f, unsigned char
 	: BmpSampleValue(f), Index(i)
 {
 	const BmpFile* bmpfile = dynamic_cast<const BmpFile*> (f) ;
-	assert (bmpfile != NULL) ;
+	myassert (bmpfile != NULL) ;
 	Palette = bmpfile->getPalette() ;
 	SBit = (Bit) (Index & 1) ;
 	Key = ((unsigned long) getIndex() << 24) | ((unsigned long) getRed() << 16) |

@@ -72,7 +72,7 @@ BitString& BitString::clear()
 
 BitString& BitString::append (Bit v)
 {
-	assert (v == 0 || v == 1) ;
+	myassert (v == 0 || v == 1) ;
 	_append (v) ;
 	return *this ;
 }
@@ -143,7 +143,7 @@ BitString& BitString::append (const std::string &v)
 
 Bit BitString::operator[] (unsigned long i) const
 {
-	assert (i < length) ;
+	myassert (i < length) ;
 	return ((data[BYTEPOS(i)] >> BITPOS(i)) & 1) ;
 }
 
@@ -158,7 +158,7 @@ BitString BitString::getBits (unsigned long s, unsigned long e) const
 
 unsigned long BitString::getValue (unsigned long s, unsigned int l) const
 {
-	assert (l <= 32) ;
+	myassert (l <= 32) ;
 	unsigned long retval = 0 ;
 	for (unsigned long i = s ; i < s + l ; i++) {
 		retval = retval << 1 ;
@@ -169,13 +169,13 @@ unsigned long BitString::getValue (unsigned long s, unsigned int l) const
 
 std::vector<unsigned char> BitString::getBytes() const
 {
-	assert (length % 8 == 0) ;
+	myassert (length % 8 == 0) ;
 	return data ; // FIXME - ? std::vector as reference
 }
 
 BitString& BitString::pad (unsigned long mult, Bit v)
 {
-	assert (v == 0 || v == 1) ;
+	myassert (v == 0 || v == 1) ;
 	while (length % mult != 0) {
 		_append (v) ;
 	}

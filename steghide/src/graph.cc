@@ -152,7 +152,7 @@ void Graph::constructVertices (std::vector<SamplePos*>& sposs, std::vector<Sampl
 void Graph::constructEdges (const sgi::hash_set<VertexContent*,sgi::hash<VertexContent*>,VertexContentsEqual>& vc_set)
 {
 	// create SampleValueOppositeNeighbourhood
-	SValueOppNeighs = SampleValueOppositeNeighbourhood (this, SampleValues) ;
+	SampleValueOppNeighs = SampleValueOppositeNeighbourhood (this, SampleValues) ;
 
 	// fill SampleOccurences
 	SampleOccurences = std::vector<std::list<SampleOccurence> > (SampleValues.size()) ;
@@ -169,15 +169,14 @@ void Graph::constructEdges (const sgi::hash_set<VertexContent*,sgi::hash<VertexC
 	// compute NumEdges for all sample values
 	for (SampleValueLabel lbl = 0 ; lbl < SampleValues.size() ; lbl++) {
 		unsigned long numedges = 0 ;
-		unsigned long noppneighs = SValueOppNeighs[lbl].size() ;
+		unsigned long noppneighs = SampleValueOppNeighs[lbl].size() ;
 		for (unsigned long i = 0 ; i < noppneighs ; i++) {
 			// FIXME - .size() needs linear time!
-			numedges += SampleOccurences[SValueOppNeighs[lbl][i]->getLabel()].size() ;
+			numedges += SampleOccurences[SampleValueOppNeighs[lbl][i]->getLabel()].size() ;
 		}
 		SampleValues[lbl]->setNumEdges (numedges) ;
 	}
 }
-
 
 Graph::~Graph()
 {
@@ -234,7 +233,7 @@ void Graph::printVerboseInfo()
 			}
 		}
 		float avgdeg = ((float) sumdeg / (float) Vertices.size()) ;
-		assert (sumdeg % 2 == 0) ;
+		myassert (sumdeg % 2 == 0) ;
 
 #ifdef DEBUG
 		if (Args.DebugCommand.getValue() == PRINTSTATS) {
@@ -275,7 +274,7 @@ void Graph::print (void) const
 	for (std::vector<Vertex*>::const_iterator i = Vertices.begin() ; i != Vertices.end() ; i++) {
 		sumdeg += (*i)->getDegree() ;
 	}
-	assert (sumdeg % 2 == 0) ;
+	myassert (sumdeg % 2 == 0) ;
 	std::cout << Vertices.size() << " " << (sumdeg / 2) << " U" << std::endl ;
 
 	for (unsigned long i = 0 ; i < Vertices.size() ; i++) {
@@ -360,7 +359,7 @@ unsigned long Graph::check_degree (Vertex *v) const
 	unsigned long degree = 0 ;
 	for (unsigned short i = 0 ; i < SamplesPerEBit ; i++) {
 		SampleValue *srcsample = v->getSampleValue(i) ;
-		const std::vector<SampleValue*> oppneighs = SValueOppNeighs[srcsample] ;
+		const std::vector<SampleValue*> oppneighs = SampleValueOppNeighs[srcsample] ;
 		for (std::vector<SampleValue*>::const_iterator it = oppneighs.begin() ; it != oppneighs.end() ; it++) {
 			degree += SampleOccurences[(*it)->getLabel()].size() ;
 		}
@@ -468,7 +467,7 @@ bool Graph::check_sampleoppositeneighbourhood (void) const
 
 	std::cerr << "checking SampleValueOppositeNeighbourhood: sample values are opposite" << std::endl ;
 	for (SampleValueLabel srclbl = 0 ; srclbl < SampleValues.size() ; srclbl++) {
-		const std::vector<SampleValue*> &oppneighs = SValueOppNeighs[srclbl] ;
+		const std::vector<SampleValue*> &oppneighs = SampleValueOppNeighs[srclbl] ;
 		for (std::vector<SampleValue*>::const_iterator destsv = oppneighs.begin() ; destsv != oppneighs.end() ; destsv++) {
 			Bit srcbit = SampleValues[srclbl]->getBit() ;
 			Bit destbit = (*destsv)->getBit() ;
@@ -489,8 +488,8 @@ bool Graph::check_sampleoppositeneighbourhood (void) const
 				// they are opposite...
 				if (SampleValues[i]->isNeighbour (SampleValues[j])) {
 					// ...and they are neighbours => there must be an entry in SampleOppositeNeighbourhood
-					assert (SampleValues[j]->isNeighbour (SampleValues[i])) ;
-					const std::vector<SampleValue*> &oppneighs = SValueOppNeighs[i] ;
+					myassert (SampleValues[j]->isNeighbour (SampleValues[i])) ;
+					const std::vector<SampleValue*> &oppneighs = SampleValueOppNeighs[i] ;
 					bool found = false ;
 					for (std::vector<SampleValue*>::const_iterator k = oppneighs.begin() ; k != oppneighs.end() ; k++) {
 						if ((*k)->getLabel() == j) {

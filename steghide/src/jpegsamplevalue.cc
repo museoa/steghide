@@ -58,7 +58,7 @@ SampleValue *JpegSampleValue::getNearestOppositeSampleValue() const
 float JpegSampleValue::calcDistance (const SampleValue *s) const
 {
 	const JpegSampleValue *sample = dynamic_cast<const JpegSampleValue*> (s) ;
-	assert (sample != NULL) ;
+	myassert (sample != NULL) ;
 	return (fabs (((float) DctCoeff) - ((float) sample->getDctCoeff()))) ;
 }
 

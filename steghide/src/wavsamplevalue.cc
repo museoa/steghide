@@ -31,7 +31,7 @@ WavPCMSampleValue::WavPCMSampleValue (const CvrStgFile* f, int v)
 	: SampleValue(f), Value(v)
 {
 	const WavFile* wavfile = dynamic_cast<const WavFile*> (f) ;
-	assert (wavfile != NULL) ;
+	myassert (wavfile != NULL) ;
 	unsigned short samplesize = wavfile->getBitsPerSample() ;
 
 	int maxvalue = 1 ;
@@ -60,8 +60,8 @@ WavPCMSampleValue::WavPCMSampleValue (const CvrStgFile* f, int v)
 
 	MaxValue = maxvalue ;
 	MinValue = minvalue ;
-	assert (MinValue <= Value) ;
-	assert (Value <= MaxValue) ;
+	myassert (MinValue <= Value) ;
+	myassert (Value <= MaxValue) ;
 
 	SBit = (Bit) (Value & 1) ;
 	Key = (unsigned long) Value ;
@@ -98,7 +98,7 @@ SampleValue *WavPCMSampleValue::getNearestOppositeSampleValue () const
 float WavPCMSampleValue::calcDistance (const SampleValue *s) const
 {
 	const WavPCMSampleValue *sample = dynamic_cast<const WavPCMSampleValue*> (s) ;
-	assert (sample != NULL) ;
+	myassert (sample != NULL) ;
 	return (fabs ((float) Value - (float) sample->getValue())) ;
 }
 

@@ -28,11 +28,15 @@ class MessageBase {
 	public:
 	MessageBase (void) ;
 	MessageBase (std::string msg) ;
-	MessageBase (const char *msgfmt, ...) ;
+	MessageBase (const char* msgfmt, ...) ;
 	virtual ~MessageBase() {} ;
 
-	std::string getMessage (void) const ;
-	void setMessage (std::string msg) ;
+	const std::string& getMessage (void) const
+		{ return Message ; } ;
+
+	void setMessage (std::string msg)
+		{ Message = msg ; } ;
+
 	void setMessage (const char *msgfmt, ...) ;
 	virtual void printMessage (void) const = 0 ;
 
@@ -43,7 +47,7 @@ class MessageBase {
 	std::string vcompose (const char *msgfmt, va_list ap) const ;
 
 	private:
-	std::string message ;
+	std::string Message ;
 } ;
 
 class Message : public MessageBase {

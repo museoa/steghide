@@ -22,23 +22,18 @@
 #include "graph.h"
 #include "graphaccess.h"
 
-GraphAccess::GraphAccess (Graph *g)
+GraphAccess::GraphAccess (Graph* g)
 {
-	// FIXME - should be static to save memory
-#if 0
-	if (TheGraph == NULL) {
+	if (!is_set) {
 		TheGraph = g ;
-		SamplesPerVertex = TheGraph->getSamplesPerVertex() ;
+		SamplesPerVertex = g->getSamplesPerVertex() ;
+		is_set = true ;
 	}
 	else {
-		assert (TheGraph == g) ;
+		myassert (TheGraph == g) ;
 	}
-#endif
-	TheGraph = g ;
-	SamplesPerVertex = TheGraph->getSamplesPerVertex() ;
 }
 
-#if 0
 Graph* GraphAccess::TheGraph = NULL ;
 unsigned short GraphAccess::SamplesPerVertex = 0 ;
-#endif
+bool GraphAccess::is_set = false ;

@@ -98,7 +98,7 @@ std::vector<std::vector <unsigned long> > JpegEntropyCoded::getFreqs ()
 	}
 
 	unsigned long unitstart = 0 ;
-	assert (dctcoeffs.size() % 64 == 0) ;
+	myassert (dctcoeffs.size() % 64 == 0) ;
 	while (unitstart < dctcoeffs.size()) {
 		for (unsigned int comp = 0 ; comp < p_framehdr->getNumComponents() ; comp++) {
 			for (unsigned int du = 0 ; du < dataunits[comp] ; du++) {
@@ -139,9 +139,9 @@ JpegMarker JpegEntropyCoded::getTerminatingMarker ()
 
 void JpegEntropyCoded::read (BinaryIO *io)
 {
-	assert (readbyte == 0) ;
-	assert (readbytecontains == 0) ;
-	assert (termmarker == 0x00) ;
+	myassert (readbyte == 0) ;
+	myassert (readbytecontains == 0) ;
+	myassert (termmarker == 0x00) ;
 
 	JpegScan *p_scan = (JpegScan *) getParent() ;
 	JpegScanHeader *p_scanhdr = (JpegScanHeader *) p_scan->getScanHeader() ;
@@ -217,8 +217,8 @@ void JpegEntropyCoded::read (BinaryIO *io)
 
 void JpegEntropyCoded::write (BinaryIO *io)
 {
-	assert (writebyte == 0) ;
-	assert (writebytecontains == 0) ;
+	myassert (writebyte == 0) ;
+	myassert (writebytecontains == 0) ;
 
 	// init
 	JpegScan *p_scan = (JpegScan *) getParent() ;
@@ -239,7 +239,7 @@ void JpegEntropyCoded::write (BinaryIO *io)
 
 	// write
 	unsigned long unitstart = 0 ;
-	assert (dctcoeffs.size() % 64 == 0) ;
+	myassert (dctcoeffs.size() % 64 == 0) ;
 	while (unitstart < dctcoeffs.size()) {
 		for (unsigned int comp = 0 ; comp < p_framehdr->getNumComponents() ; comp++) {
 			for (unsigned int du = 0 ; du < dataunits[comp] ; du++) {
@@ -289,17 +289,17 @@ unsigned long JpegEntropyCoded::getNumSamples() const
 	return ((unsigned long) dctcoeffs.size()) ;
 }
 
-void JpegEntropyCoded::replaceSample (SamplePos pos, SampleValue *s)
+void JpegEntropyCoded::replaceSample (const SamplePos pos, const SampleValue* s)
 {
-	assert (pos < dctcoeffs.size()) ;
-	JpegSampleValue *sample = dynamic_cast<JpegSampleValue*> (s) ;
-	assert (sample != NULL) ;
+	myassert (pos < dctcoeffs.size()) ;
+	const JpegSampleValue* sample = dynamic_cast<const JpegSampleValue*> (s) ;
+	myassert (sample != NULL) ;
 	dctcoeffs[pos] = sample->getDctCoeff() ;
 }
 
 SampleValue *JpegEntropyCoded::getSampleValue (SamplePos pos) const
 {
-	assert (pos < dctcoeffs.size()) ;
+	myassert (pos < dctcoeffs.size()) ;
 	JpegScan *p_scan = (JpegScan *) getParent() ;
 	JpegFrame *p_frame = (JpegFrame *) p_scan->getParent() ;
 	JpegFile *p_file = p_frame->getFile() ;
@@ -314,12 +314,12 @@ unsigned char JpegEntropyCoded::decode (BinaryIO *io, JpegHuffmanTable *ht)
 	while (code > ht->getMaxCode(len)) {
 		len++ ;
 		code = (code << 1) | readbit (io) ;
-		assert (len <= 16) ;
+		myassert (len <= 16) ;
 	}
 
 	unsigned int j = ht->getValPtr (len) ;
 	int mc = ht->getMinCode (len) ;
-	assert (code >= mc) ;
+	myassert (code >= mc) ;
 	j += code - mc ;
 	return ht->getHuffVal(j) ;
 }
@@ -358,7 +358,7 @@ int JpegEntropyCoded::extend (int val, unsigned char t)
 
 unsigned int JpegEntropyCoded::csize (int ac)
 {
-	assert (ac != 0) ;
+	myassert (ac != 0) ;
 	if (ac < 0) {
 		ac = -ac ;
 	}
@@ -402,8 +402,8 @@ void JpegEntropyCoded::writebits (BinaryIO *io, unsigned long v, unsigned int n)
 
 void JpegEntropyCoded::writebit (BinaryIO *io, int bit)
 {
-	assert (bit == 0 || bit == 1) ;
-	assert (writebytecontains < 8) ;
+	myassert (bit == 0 || bit == 1) ;
+	myassert (writebytecontains < 8) ;
 
 	writebyte = writebyte << 1 ;
 	writebyte = writebyte | bit ;

@@ -21,7 +21,7 @@
 #include "constrheur.h"
 #include "randomsource.h"
 
-ConstructionHeuristic::ConstructionHeuristic (Graph *g)
+ConstructionHeuristic::ConstructionHeuristic (Graph* g)
 	: GraphAccess(g)
 {
 	unsigned long nvertices = g->getNumVertices() ;
@@ -35,11 +35,11 @@ ConstructionHeuristic::ConstructionHeuristic (Graph *g)
 		v->updateShortestEdge() ;
 		if (v->getDegree() != 0) {
 			if (v->getDegree() == 1) {
-				assert (v->getShortestEdge() != NULL) ;
+				myassert (v->getShortestEdge() != NULL) ;
 				VerticesDeg1.push (v) ;
 			}
 			else {
-				assert (v->getShortestEdge() != NULL) ;
+				myassert (v->getShortestEdge() != NULL) ;
 				VerticesDegG.push (v) ;
 			}
 		}
@@ -94,9 +94,9 @@ void ConstructionHeuristic::insertInMatching (Edge *e)
 void ConstructionHeuristic::checkNeighboursDeg1 (Vertex *v)
 {
 	for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
-		const std::vector<SampleValue*> oppneighs = TheGraph->getOppNeighs(v->getSampleValue(i)) ;
+		const std::vector<SampleValue*>& oppneighs = TheGraph->SampleValueOppNeighs[v->getSampleValue(i)] ;
 		for (std::vector<SampleValue*>::const_iterator it = oppneighs.begin() ; it != oppneighs.end() ; it++) {
-			const std::list<VertexContent*> vcontents = TheGraph->getVertexContents(*it) ;
+			const std::list<VertexContent*> vcontents = TheGraph->VertexContents[(*it)->getLabel()] ;
 			for (std::list<VertexContent*>::const_iterator jt = vcontents.begin() ; jt != vcontents.end() ; jt++) {
 				if ((*jt)->hasOccurences()) {
 					if ((*jt)->getDegree() == 1) {
@@ -121,7 +121,7 @@ Vertex* ConstructionHeuristic::findVertexDegG (unsigned int k)
 
 	// get the vertex that is the k-nearest to top (with updated len of shortest edge) and has degree > 1
 	do {
-		assert (!VerticesDegG.empty()) ;
+		myassert (!VerticesDegG.empty()) ;
 		v = VerticesDegG.top() ;
 		VerticesDegG.pop() ;
 
@@ -138,18 +138,18 @@ Vertex* ConstructionHeuristic::findVertexDegG (unsigned int k)
 					usethisvertex = true ;
 				}
 				else {
-					assert (topk.size() < k - 1) ;
+					myassert (topk.size() < k - 1) ;
 					topk.push_back (v) ;
 				}
 			}
 			else {
-				assert (v->getShortestEdge()->getWeight() > weight_before) ;	// weight can only rise
+				myassert (v->getShortestEdge()->getWeight() > weight_before) ;	// weight can only rise
 				VerticesDegG.push (v) ; // push v into a position that is further away from top
 			}
 		}
 
 		if (k != 1 && VerticesDegG.empty()) { // there were less than k valid vertices in VerticesDegree1
-			assert (!usethisvertex) ;
+			myassert (!usethisvertex) ;
 			unsigned int nfound = topk.size() ;
 			if (nfound > 0) {
 				usethisvertex = true ;
@@ -172,7 +172,7 @@ Vertex *ConstructionHeuristic::findVertexDeg1 (unsigned int k)
 
 	// get the vertex that is the k-nearest to top and still has degree 1
 	do {
-		assert (!VerticesDeg1.empty()) ;
+		myassert (!VerticesDeg1.empty()) ;
 		v = VerticesDeg1.top() ;
 		VerticesDeg1.pop() ;
 
@@ -189,7 +189,7 @@ Vertex *ConstructionHeuristic::findVertexDeg1 (unsigned int k)
 		}
 
 		if (k != 1 && VerticesDeg1.empty()) {	// there were less than k vertices with degree 1 in VerticesDegree1
-			assert (!usethisvertex) ;
+			myassert (!usethisvertex) ;
 			unsigned int nfound = topk.size() ;
 			if (nfound > 0) {
 				usethisvertex = true ;

@@ -44,7 +44,7 @@ unsigned int ColorPalette::getSize () const
 
 const RGBTriple& ColorPalette::getEntry (unsigned int i) const
 {
-	assert (i < getSize()) ;
+	myassert (i < getSize()) ;
 	return RGBTriples[i] ;
 }
 
@@ -55,36 +55,36 @@ void ColorPalette::setEntry (unsigned int i, const RGBTriple& rgb)
 
 unsigned char ColorPalette::getRed (unsigned int i) const
 {
-	assert (i < getSize()) ;
+	myassert (i < getSize()) ;
 	return RGBTriples[i].Red ;
 }
 
 unsigned char ColorPalette::getGreen (unsigned int i) const
 {
-	assert (i < getSize()) ;
+	myassert (i < getSize()) ;
 	return RGBTriples[i].Green ;
 }
 
 unsigned char ColorPalette::getBlue (unsigned int i) const
 {
-	assert (i < getSize()) ;
+	myassert (i < getSize()) ;
 	return RGBTriples[i].Blue ;
 }
 
 void ColorPalette::setRed (unsigned int i, unsigned char r)
 {
-	assert (i < getSize()) ;
+	myassert (i < getSize()) ;
 	RGBTriples[i].Red = r ;
 }
 
 void ColorPalette::setGreen (unsigned int i, unsigned char g)
 {
-	assert (i < getSize()) ;
+	myassert (i < getSize()) ;
 	RGBTriples[i].Green = g ;
 }
 
 void ColorPalette::setBlue (unsigned int i, unsigned char b)
 {
-	assert (i < getSize()) ;
+	myassert (i < getSize()) ;
 	RGBTriples[i].Blue = b ;
 }

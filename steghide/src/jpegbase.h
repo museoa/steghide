@@ -252,7 +252,7 @@ class JpegContainer : public JpegObject, public CvrStgObject {
 	void write (BinaryIO *io) ;
 
 	unsigned long getNumSamples (void) const ;
-	void replaceSample (SamplePos pos, SampleValue *s) ;
+	void replaceSample (const SamplePos pos, const SampleValue* s) ;
 	SampleValue* getSampleValue (SamplePos pos) const ;
 
 	protected:

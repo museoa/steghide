@@ -18,27 +18,34 @@
  *
  */
 
-#include "common.h"
-#include "samplevalue.h"
-#include "cvrstgfile.h"
+#include <cstring>
+#include "AssertionFailed.h"
 
-void SampleValue::decNumEdges ()
+void AssertionFailed::printMessage () const
 {
-	myassert (NumEdges > 0) ;
-	NumEdges-- ;
+	SteghideError::printMessage() ;
+	printf (_("This means that you have found a bug. Please let me (shetzl@chello.at)\n"
+		"know this if you have a way to reproduce the error.\n"
+		"Steghide has to exit now. Sorry.\n")) ;
 }
 
-#ifdef DEBUG
-void SampleValue::print (unsigned short spc) const
+char* AssertionFailed::stripDir (const char *fn)
 {
-	char* space = new char[spc + 1] ;
-	for (unsigned short i = 0 ; i < spc ; i++) {
-		space[i] = ' ' ;
-	}
-	space[spc] = '\0' ;
-	std::cerr << space << "SampleValue:" << std::endl ;
-	std::cerr << space << " Label: " << getLabel() << std::endl ;
-	std::cerr << space << " Key: " << getKey() << std::endl ;
-	std::cerr << space << " Bit: " << getBit() << std::endl ;
+    int i = 0, j = 0, start = 0, end = 0 ;
+
+    end = i = strlen (fn) - 1 ;
+    while ((i >= 0) && (fn[i] != '\\') && (fn[i] != '/')) {
+        i-- ;
+    }
+    start = i + 1 ;
+
+    char* retval = (char *) malloc (end - start + 2) ;
+
+    j = 0 ;
+    for (i = start ; i <= end ; i++, j++) {
+        retval[j] = fn [i] ;
+    }
+    retval[j] = '\0' ;
+
+    return retval ;
 }
-#endif

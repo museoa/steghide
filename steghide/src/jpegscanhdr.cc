@@ -76,20 +76,20 @@ void JpegScanHeader::write (BinaryIO *io)
 
 unsigned char JpegScanHeader::getNumComponents ()
 {
-	assert (isread) ;
+	myassert (isread) ;
 	return numcomponents ;
 }
 
 unsigned char JpegScanHeader::getDCDestSpec (unsigned char c)
 {
-	assert (isread) ;
-	assert (c < getNumComponents()) ;
+	myassert (isread) ;
+	myassert (c < getNumComponents()) ;
 	return components[c].DCTable ;
 }
 
 unsigned char JpegScanHeader::getACDestSpec (unsigned char c)
 {
-	assert (isread) ;
-	assert (c < getNumComponents()) ;
+	myassert (isread) ;
+	myassert (c < getNumComponents()) ;
 	return components[c].ACTable ;
 }

@@ -69,7 +69,7 @@ unsigned long JpegFile::getNumSamples() const
 	return frame->getNumSamples() ;
 }
 
-void JpegFile::replaceSample (SamplePos pos, SampleValue *s)
+void JpegFile::replaceSample (const SamplePos pos, const SampleValue* s)
 {
 	frame->replaceSample (pos, s) ;
 }

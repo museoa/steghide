@@ -125,6 +125,7 @@ class BitString {
 	/**
 	 * pad this BitString with the value in v
 	 * \param mult this BitString is padded until size is a multiple of mult (given in bits)
+	 * \param v the value this BitString should be padded with
 	 **/
 	BitString& pad (unsigned long mult, Bit v) ;
 

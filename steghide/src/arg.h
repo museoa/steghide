@@ -27,15 +27,19 @@
 
 template<class T> class Arg {
 	public:
-	Arg (void) ;
+	Arg (void) : set(false) {} ;
 	Arg (T v, bool setbyuser = true) ;
 
-	T getValue (void) ;
-	void setValue (T v, bool setbyuser = true) ;
-	bool is_set (void) ;
+	T getValue (void) const
+		{ return Value ; } ;
 
-	protected:
-	T value ;
+	void setValue (T v, bool setbyuser = true) ;
+
+	bool is_set (void) const
+		{ return set ; } ;
+
+	private:
+	T Value ;
 	bool set ;
 } ;
 

@@ -21,7 +21,7 @@
 #include "matching.h"
 #include "msg.h"
 
-Matching::Matching (Graph *g)
+Matching::Matching (Graph* g)
 	: GraphAccess(g)
 {
 	unsigned long nvertices = TheGraph->getNumVertices() ;
@@ -42,8 +42,8 @@ Matching& Matching::addEdge (Edge *e)
 	VertexLabel vlbl1 = e->getVertex1()->getLabel() ;
 	VertexLabel vlbl2 = e->getVertex2()->getLabel() ;
 
-	assert (VertexInformation[vlbl1].isExposed()) ;
-	assert (VertexInformation[vlbl2].isExposed()) ;
+	myassert (VertexInformation[vlbl1].isExposed()) ;
+	myassert (VertexInformation[vlbl2].isExposed()) ;
 	std::list<Edge*>::iterator edgeit = MatchingEdges.insert (MatchingEdges.end(), e) ;
 
 	ExposedVertices.erase (VertexInformation[vlbl1].getExposedIterator()) ;
@@ -58,7 +58,7 @@ Matching& Matching::addEdge (Edge *e)
 
 Matching& Matching::augment (const std::vector<Edge*> &path)
 {
-	assert (path.size() % 2 == 1) ;
+	myassert (path.size() % 2 == 1) ;
 	bool e_was_matched = false ;
 	Edge *e = NULL ;
 	Edge *e_before = NULL ;
@@ -77,7 +77,7 @@ Matching& Matching::augment (const std::vector<Edge*> &path)
 			if (e->getVertex1() != e_before->getVertex2()) {
 				e->swap() ;
 			}
-			assert (e->getVertex1() == e_before->getVertex2()) ;
+			myassert (e->getVertex1() == e_before->getVertex2()) ;
 		}
 
 		// make changes in VertexInformation, ExposedVertices and MatchingEdges
@@ -262,7 +262,7 @@ bool Matching::check_ValidAugPath (const std::vector<Edge*>& path) const
 		}
 	}
 
-	assert (vertices.size() - 1 == path.size()) ;
+	myassert (vertices.size() - 1 == path.size()) ;
 
 	// check that path has no loop
 	bool hasloop = false ;

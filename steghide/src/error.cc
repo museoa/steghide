@@ -27,36 +27,10 @@
 #include "error.h"
 
 //
-// class SteghideError
-//
-SteghideError::SteghideError (void)
-	: MessageBase(_("error, exiting. (no error message defined)"))
-{
-}
-
-SteghideError::SteghideError(std::string msg)
-	: MessageBase(msg)
-{
-}
-
-SteghideError::SteghideError (const char *msgfmt, ...)
-	: MessageBase()
-{
-	va_list ap ;
-	va_start (ap, msgfmt) ;
-	setMessage (vcompose (msgfmt, ap)) ;
-	va_end (ap) ;
-}
-
-void SteghideError::printMessage () const
-{
-	std::cerr << "steghide: " << getMessage() << std::endl ;
-}
-
-//
 // class ArgError
 //
 ArgError::ArgError (const char* msgfmt, ...)
+	: SteghideError()
 {
 	va_list ap ;
 	va_start (ap, msgfmt) ,
@@ -187,5 +161,5 @@ void NotImplementedError::printMessage () const
 	SteghideError::printMessage() ;
 	printf (_("This feature is not implemented (yet). Please let me (shetzl@chello.at) know\n"
 		"this to increase the chance that this will be implemented in the near future.\n"
-		"Steghide will exit now.\n")) ;
+		"Steghide has to exit now. Sorry.\n")) ;
 }

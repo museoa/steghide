@@ -24,16 +24,21 @@
 #include "common.h"
 #include "error.h"
 
-BinaryIO::BinaryIO (void)
+void BinaryIO::init ()
 {
 	setName ("") ;
 	setStream (NULL) ;
 	set_open (false) ;
 }
 
-BinaryIO::BinaryIO (std::string fn, MODE m)
+BinaryIO::BinaryIO (void)
 {
-	BinaryIO () ;
+	init() ;
+}
+
+BinaryIO::BinaryIO (const std::string& fn, MODE m)
+{
+	init() ;
 	open (fn, m) ;
 }
 
@@ -44,57 +49,7 @@ BinaryIO::~BinaryIO (void)
 	}
 }
 
-FILE *BinaryIO::getStream (void)
-{
-	return stream ;
-}
-
-void BinaryIO::setStream (FILE *s)
-{
-	stream = s ;
-}
-
-std::string BinaryIO::getName (void)
-{
-	return filename ;
-}
-
-void BinaryIO::setName (std::string fn)
-{
-	filename = fn ;
-}
-
-bool BinaryIO::is_open (void)
-{
-	return fileopen ;
-}
-
-void BinaryIO::set_open (bool fo)
-{
-	fileopen = fo ;
-}
-
-bool BinaryIO::is_std (void)
-{
-	return (getName() == "") ;
-}
-
-BinaryIO::MODE BinaryIO::getMode (void)
-{
-	return mode ;
-}
-
-void BinaryIO::setMode (BinaryIO::MODE m)
-{
-	mode = m ;
-}
-
-unsigned long BinaryIO::getPos (void) const
-{
-	return ftell (stream) ;
-}
-
-bool BinaryIO::Fileexists (std::string fn)
+bool BinaryIO::Fileexists (const std::string& fn) const
 {
 	bool retval = false ;
 	FILE *fd = fopen (fn.c_str(), "r") ;
@@ -105,7 +60,7 @@ bool BinaryIO::Fileexists (std::string fn)
 	return retval ;
 }
 
-void BinaryIO::checkForce (std::string fn)
+void BinaryIO::checkForce (const std::string& fn) const
 {
 	if (!Args.Force.getValue()) {
 		if (Fileexists (fn)) {
@@ -123,7 +78,7 @@ void BinaryIO::checkForce (std::string fn)
 	}
 }
 
-void BinaryIO::open (std::string fn, MODE m)
+void BinaryIO::open (const std::string& fn, MODE m)
 {
 	if (fn == "") {
 		switch (m) {
@@ -136,7 +91,7 @@ void BinaryIO::open (std::string fn, MODE m)
 			break ; }
 
 			default: {
-				assert (0) ;
+				myassert (0) ;
 			break ; }
 		}
 	}
@@ -153,6 +108,10 @@ void BinaryIO::open (std::string fn, MODE m)
 				checkForce (fn) ;
 				cmode = "wb" ;
 			break ; }
+
+			default: {
+				myassert(0) ;
+			break ; }
 		}
 
 		if ((s = fopen (fn.c_str(), cmode)) == NULL) {
@@ -166,7 +125,7 @@ void BinaryIO::open (std::string fn, MODE m)
 	set_open (true) ;
 }
 
-bool BinaryIO::eof (void)
+bool BinaryIO::eof (void) const
 {
 	// FIXME - is there another way to do this ?
 	int c = fgetc (getStream()) ;
@@ -177,6 +136,8 @@ bool BinaryIO::eof (void)
 
 void BinaryIO::close (void)
 {
+	myassert (is_open()) ;
+
 	if (getName() != "") {
 		if (fclose (getStream()) == EOF) {
 			throw SteghideError (_("could not close the file \"%s\"."), getName().c_str()) ;
@@ -190,21 +151,21 @@ void BinaryIO::close (void)
 
 BYTE BinaryIO::read8 (void)
 {
-	assert (getMode() == READ) ;
-	assert (is_open()) ;
+	myassert (getMode() == READ) ;
+	myassert (is_open()) ;
 
 	int c = EOF ;
 	if ((c = fgetc (getStream())) == EOF) {
 		throw BinaryInputError (getName(), getStream()) ;
 	}
 
-	return (unsigned char) c ;
+	return (BYTE) c ;
 }
 
 UWORD16 BinaryIO::read16_le (void)
 {
-	assert (getMode() == READ) ;
-	assert (is_open()) ;
+	myassert (getMode() == READ) ;
+	myassert (is_open()) ;
 
 	int bytes[2] ;
 	for (int i = 0 ; i < 2 ; i++) {
@@ -218,8 +179,8 @@ UWORD16 BinaryIO::read16_le (void)
 
 UWORD16 BinaryIO::read16_be (void)
 {
-	assert (getMode() == READ) ;
-	assert (is_open()) ;
+	myassert (getMode() == READ) ;
+	myassert (is_open()) ;
 
 	int bytes[2] ;
 	for (int i = 0 ; i < 2 ; i++) {
@@ -233,8 +194,8 @@ UWORD16 BinaryIO::read16_be (void)
 
 UWORD32 BinaryIO::read32_le (void)
 {
-	assert (getMode() == READ) ;
-	assert (is_open()) ;
+	myassert (getMode() == READ) ;
+	myassert (is_open()) ;
 
 	int bytes[4] ;
 	for (int i = 0 ; i < 4 ; i++) {
@@ -248,8 +209,8 @@ UWORD32 BinaryIO::read32_le (void)
 
 UWORD32 BinaryIO::read32_be (void)
 {
-	assert (getMode() == READ) ;
-	assert (is_open()) ;
+	myassert (getMode() == READ) ;
+	myassert (is_open()) ;
 
 	int bytes[4] ;
 	for (int i = 0 ; i < 4 ; i++) {
@@ -263,9 +224,9 @@ UWORD32 BinaryIO::read32_be (void)
 
 UWORD32 BinaryIO::read_le (unsigned short n)
 {
-	assert (getMode() == READ) ;
-	assert (is_open()) ;
-	assert (n <= 4) ;
+	myassert (getMode() == READ) ;
+	myassert (is_open()) ;
+	myassert (n <= 4) ;
 
 	UWORD32 retval = 0 ;
 	for (unsigned short i = 0 ; i < n ; i++) {
@@ -273,7 +234,7 @@ UWORD32 BinaryIO::read_le (unsigned short n)
 		if ((byte = fgetc (getStream())) == EOF) {
 			throw BinaryInputError (getName(), getStream()) ;
 		}
-		retval |= ((byte & 0xFF) << (8 * i)) ;
+		retval |= (((BYTE) byte) << (8 * i)) ;
 	}
 
 	return retval ;
@@ -291,8 +252,8 @@ std::string BinaryIO::readstring (unsigned int len)
 
 void BinaryIO::write8 (BYTE val)
 {
-	assert (getMode() == WRITE) ;
-	assert (is_open()) ;
+	myassert (getMode() == WRITE) ;
+	myassert (is_open()) ;
 
 	if (fputc ((int) val, getStream()) == EOF) {
 		throw BinaryOutputError (getName()) ;
@@ -301,8 +262,8 @@ void BinaryIO::write8 (BYTE val)
 
 void BinaryIO::write16_le (UWORD16 val)
 {
-	assert (getMode() == WRITE) ;
-	assert (is_open()) ;
+	myassert (getMode() == WRITE) ;
+	myassert (is_open()) ;
 	
 	for (int i = 0 ; i <= 1 ; i++) {
 		if (fputc ((val >> (8 * i)) & 0xFF, getStream()) == EOF) {
@@ -313,8 +274,8 @@ void BinaryIO::write16_le (UWORD16 val)
 
 void BinaryIO::write16_be (UWORD16 val)
 {
-	assert (getMode() == WRITE) ;
-	assert (is_open()) ;
+	myassert (getMode() == WRITE) ;
+	myassert (is_open()) ;
 
 	for (int i = 1 ; i >= 0 ; i--) {
 		if (fputc ((val >> (8 * i)) & 0xFF, getStream()) == EOF) {
@@ -325,8 +286,8 @@ void BinaryIO::write16_be (UWORD16 val)
 
 void BinaryIO::write32_le (UWORD32 val)
 {
-	assert (getMode() == WRITE) ;
-	assert (is_open()) ;
+	myassert (getMode() == WRITE) ;
+	myassert (is_open()) ;
 
 	for (int i = 0 ; i <= 3 ; i++) {
 		if (fputc ((val >> (8 * i)) & 0xFF, getStream()) == EOF) {
@@ -337,8 +298,8 @@ void BinaryIO::write32_le (UWORD32 val)
 
 void BinaryIO::write32_be (UWORD32 val)
 {
-	assert (getMode() == WRITE) ;
-	assert (is_open()) ;
+	myassert (getMode() == WRITE) ;
+	myassert (is_open()) ;
 
 	for (int i = 3 ; i >= 0 ; i--) {
 		if (fputc ((val >> (8 * i)) & 0xFF, getStream()) == EOF) {
@@ -349,9 +310,9 @@ void BinaryIO::write32_be (UWORD32 val)
 
 void BinaryIO::write_le (UWORD32 val, unsigned short n)
 {
-	assert (getMode() == WRITE) ;
-	assert (is_open()) ;
-	assert (n <= 4) ;
+	myassert (getMode() == WRITE) ;
+	myassert (is_open()) ;
+	myassert (n <= 4) ;
 
 	for (short i = 0 ; i < n ; i++) {
 		if (fputc ((val >> (8 * i)) & 0xFF, getStream()) == EOF) {
@@ -360,7 +321,7 @@ void BinaryIO::write_le (UWORD32 val, unsigned short n)
 	}
 }
 
-void BinaryIO::writestring (std::string s)
+void BinaryIO::writestring (const std::string& s)
 {
 	if (fputs (s.c_str(), getStream()) == EOF) {
 		throw BinaryOutputError (getName()) ;

@@ -36,7 +36,12 @@
 
 /**
  * \class Graph
- * \brief a graph constructed from a cover-file and a message to be embedded
+ * \brief a graph constructed from a cover file and a message to be embedded
+ *
+ * This class provides a purely graph-theoretic interface to any other class.
+ * Some classes however need access to the internal (steganographic) representation,
+ * for example: Vertex, EdgeIterator,... . These are declared as friends of Graph here and
+ * thus have direct access to the private data structures.
  **/
 class Graph {
 	public:
@@ -47,7 +52,78 @@ class Graph {
 	 * \param cvr the underlying cover file
 	 * \param emb the bitstring to be embedded
 	 **/
-	Graph (CvrStgFile *cvr, const BitString &emb) ;
+	Graph (CvrStgFile* cvr, const BitString& emb) ;
+
+	/**
+	 * destructor
+	 **/
+	~Graph (void) ;
+
+	/**
+	 * get the number of vertices in this graph
+	 **/
+	unsigned long getNumVertices (void) const
+		{ return Vertices.size() ; } ;
+
+	/**
+	 * get a vertex
+	 * \param l the vertex label (index) of the vertex to be returned (must be < getNumVertices())
+	 * \return the vertex with label l
+	 **/
+	Vertex* getVertex (VertexLabel l) const
+		{ return Vertices[l] ; } ;
+
+	void unmarkDeletedAllVertices (void) ;
+
+	void printVerboseInfo (void) ;
+
+	private:
+	//
+	// friend-declarations
+	// Note: private members of Graph that are declared before this point
+	//       should not be used by friends.
+	//
+	friend class ConstructionHeuristic ;
+	friend class EdgeIterator ;
+	friend class GraphAccess ;
+	friend class SampleValueOppositeNeighbourhood ;
+	friend class Vertex ;
+
+	/// contains the vertices in this graph - Vertices[l] is the vertex with label l
+	std::vector<Vertex*> Vertices ;
+
+	/// contains the list of (unique) sample values - SampleValues[l] is the sample value with label l
+	std::vector<SampleValue*> SampleValues ;
+
+	/// SampleValueOppNeighs[l] is the vector of opposite neighbours of the sample value with label l
+	SampleValueOppositeNeighbourhood SampleValueOppNeighs ;
+
+	/**
+	 * contains pointers to all vertex contents - VertexContents[l] contains a pointer
+	 * to a VertexContent object iff the sample value with label l is part of this vertex content.
+	 **/
+	// FIXME - ?? use std::vector instead of std::list - performance in time/memory ??
+	std::vector<std::list<VertexContent*> > VertexContents ;
+
+	/**
+	 * SampleOccurences[l] contains all occurences of the sample value with label l
+	 **/
+	std::vector<std::list<SampleOccurence> > SampleOccurences ;
+
+	/// contains those sample occurences that have been deleted from SampleOccurences
+	std::vector<std::list<SampleOccurence> > DeletedSampleOccurences ;
+
+	unsigned short getSamplesPerVertex (void) const
+		{ return SamplesPerEBit ; } ;
+
+	std::list<SampleOccurence>::iterator markDeletedSampleOccurence (std::list<SampleOccurence>::iterator it) ;
+	std::list<SampleOccurence>::iterator unmarkDeletedSampleOccurence (std::list<SampleOccurence>::iterator it) ;
+
+	//
+	// end of friend-declarations
+	// Note: private members of Graph that are declared beyond this point should
+	//       not be used by friends.
+	//
 
 	/**
 	 * construct sample-related data structures
@@ -73,86 +149,6 @@ class Graph {
 	 * provides: SValueOppNeighs, SampleOccurences, VertexContents (degrees), Vertices (SampleOccurenceIts)
 	 **/
 	void constructEdges (const sgi::hash_set<VertexContent*,sgi::hash<VertexContent*>,VertexContentsEqual>& vc_set) ;
-
-	~Graph (void) ;
-
-	/**
-	 * get the number of vertices in this graph
-	 **/
-	unsigned long getNumVertices (void) const
-		{ return Vertices.size() ; } ;
-
-	/**
-	 * get a vertex
-	 * \param i the vertex label (index) of the vertex to be returned (must be < getNumVertices())
-	 * \return the i-th vertex
-	 **/
-	Vertex* getVertex (VertexLabel l) const
-		{ return Vertices[l] ; } ;
-
-	void unmarkDeletedAllVertices (void) ;
-
-	unsigned long getNumSampleValues (void) const
-		{ return SampleValues.size() ; } ;
-
-	SampleValue* getSampleValue (const SampleValueLabel l) const
-		{ return SampleValues[l] ; } ;
-
-	/**
-	 * get the number of opposite neighbours of a given sample value
-	 **/
-	unsigned long getNumOppNeighs (const SampleValue* sv) const
-		{ return SValueOppNeighs[sv].size() ; } ;
-
-	const std::vector<SampleValue*>& getOppNeighs (const SampleValue *sv) const
-		{ return SValueOppNeighs[sv] ; } ;
-
-	const std::list<VertexContent*>& getVertexContents (const SampleValue *sv) const
-		{ return VertexContents[sv->getLabel()] ; } ;
-
-	/**
-	 * get the number of occurences of a given sample value
-	 **/
-	unsigned long getNumSampleOccurences (SampleValueLabel svl) const
-		{ return SampleOccurences[svl].size() ; } ;
-
-	unsigned long getNumSampleOccurences (SampleValue *sv) const
-		{ return SampleOccurences[sv->getLabel()].size() ; } ;
-
-	const std::list<SampleOccurence>& getSampleOccurences (const SampleValue *sv) const
-		{ return SampleOccurences[sv->getLabel()] ; } ;
-
-	std::list<SampleOccurence>::iterator markDeletedSampleOccurence (std::list<SampleOccurence>::iterator it) ;
-	std::list<SampleOccurence>::iterator unmarkDeletedSampleOccurence (std::list<SampleOccurence>::iterator it) ;
-
-	void undeleteAllVertices (void) ;
-
-	void printVerboseInfo (void) ;
-
-	unsigned short getSamplesPerVertex (void) const
-		{ return SamplesPerEBit ; } ;
-
-	private:
-	/// contains the vertices in this graph - Vertices[i] is the vertex with label i
-	std::vector<Vertex*> Vertices ;
-
-	/// contains the unique sample std::list - SampleValues[i] is the sample value with label i
-	std::vector<SampleValue*> SampleValues ;
-
-	SampleValueOppositeNeighbourhood SValueOppNeighs ;
-
-	/**
-	 * contains the unique vertex contents - the size of the std::vector is the number of unique samples (indexed by sample labels)
-	 * for a sample label lbl the std::list UniqueVertexContents[lbl] contains all UniqueVertextContent objects that contain
-	 * the sample described by lbl.
-	 * The main purpose of this data structure is to hold the vertex degrees.
-	 **/
-	std::vector<std::list<VertexContent*> > VertexContents ; // FIXME - ?? use std::vector instead of std::list - performance in time/memory ??
-
-	std::vector<std::list<SampleOccurence> > SampleOccurences ;
-
-	/// contains those sample occurences that have been deleted from SampleOccurences
-	std::vector<std::list<SampleOccurence> > DeletedSampleOccurences ;
 
 	CvrStgFile *File ;
 	unsigned short SamplesPerEBit ;

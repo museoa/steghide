@@ -79,20 +79,20 @@ void JpegFrameHeader::write (BinaryIO *io)
 
 unsigned char JpegFrameHeader::getNumComponents (void)
 {
-	assert (isread) ;
+	myassert (isread) ;
 	return numcomponents ;
 }
 
 unsigned char JpegFrameHeader::getHorizSampling (unsigned char c)
 {
-	assert (isread) ;
-	assert (c < getNumComponents()) ;
+	myassert (isread) ;
+	myassert (c < getNumComponents()) ;
 	return components[c].horizsampling ;
 }
 
 unsigned char JpegFrameHeader::getVertSampling (unsigned char c)
 {
-	assert (isread) ;
-	assert (c < getNumComponents()) ;
+	myassert (isread) ;
+	myassert (c < getNumComponents()) ;
 	return components[c].vertsampling ;
 }

@@ -25,7 +25,7 @@
 Edge::Edge (Vertex *v1, unsigned short idx1, Vertex *v2, unsigned short idx2)
 	: Vertex1(v1), Index1(idx1), Vertex2(v2), Index2(idx2)
 {
-	assert (v1->getLabel() != v2->getLabel()) ;
+	myassert (v1->getLabel() != v2->getLabel()) ;
 	SampleValue *sv1 = v1->getSampleValue(idx1) ;
 	SampleValue *sv2 = v2->getSampleValue(idx2) ;
 	Weight = sv1->calcDistance(sv2) ;
@@ -34,7 +34,7 @@ Edge::Edge (Vertex *v1, unsigned short idx1, Vertex *v2, unsigned short idx2)
 Edge::Edge (Vertex *v1, unsigned short idx1, Vertex *v2, unsigned short idx2, float w)
 	: Vertex1(v1), Index1(idx1), Vertex2(v2), Index2(idx2), Weight(w)
 {
-	assert (v1->getLabel() != v2->getLabel()) ;
+	myassert (v1->getLabel() != v2->getLabel()) ;
 }
 
 void Edge::swap (void)
@@ -63,7 +63,7 @@ Vertex *Edge::getOtherVertex (const Vertex *v) const
 		retval = Vertex1 ;
 	}
 	else {
-		assert (0) ;
+		myassert (0) ;
 	}
 	return retval ;
 }
@@ -78,7 +78,7 @@ SamplePos Edge::getSamplePos (Vertex *v) const
 		retval = Vertex2->getSamplePos (Index2) ;
 	}
 	else {
-		assert (0) ;
+		myassert (0) ;
 	}
 	return retval ;
 }
@@ -93,7 +93,7 @@ SampleValue *Edge::getOriginalSampleValue (Vertex *v) const
 		index = Index2 ;
 	}
 	else {
-		assert (0) ;
+		myassert (0) ;
 	}
 	return v->getSampleValue (index) ;
 }
@@ -108,7 +108,7 @@ SampleValue *Edge::getReplacingSampleValue (Vertex *v) const
 		retval = Vertex1->getSampleValue (Index1) ;
 	}
 	else {
-		assert (0) ;
+		myassert (0) ;
 	}
 	return retval ;
 }

@@ -38,7 +38,7 @@ Vertex::Vertex (const Vertex& v)
 {
 	// the copy constructor should never be called because
 	// Vertex Occurences in corresponding VertexContent would be inconsistent
-	assert (0) ;
+	myassert (0) ;
 }
 
 Vertex::~Vertex ()
@@ -54,7 +54,7 @@ void Vertex::markDeleted ()
 	if (valid) {
 		// decrement neighbour degrees
 		for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
-			const std::vector<SampleValue*> oppneighs = TheGraph->getOppNeighs(getSampleValue(i)) ;
+			const std::vector<SampleValue*>& oppneighs = TheGraph->SampleValueOppNeighs[getSampleValue(i)] ;
 			for (unsigned long j = 0 ; j < oppneighs.size() ; j++) {
 				oppneighs[j]->decNumEdges() ;
 			}
@@ -86,7 +86,7 @@ void Vertex::unmarkDeleted ()
 
 		// increment neighbour degrees
 		for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
-			const std::vector<SampleValue*> oppneighs = TheGraph->getOppNeighs(getSampleValue(i)) ;
+			const std::vector<SampleValue*>& oppneighs = TheGraph->SampleValueOppNeighs[getSampleValue(i)] ;
 			for (unsigned long j = 0 ; j < oppneighs.size() ; j++) {
 				oppneighs[j]->incNumEdges() ;
 			}

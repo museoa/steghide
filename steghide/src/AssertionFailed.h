@@ -18,27 +18,21 @@
  *
  */
 
+#ifndef SH_ASSERTIONFAILED_H
+#define SH_ASSERTIONFAILED_H
+
 #include "common.h"
-#include "samplevalue.h"
-#include "cvrstgfile.h"
+#include "SteghideError.h"
 
-void SampleValue::decNumEdges ()
-{
-	myassert (NumEdges > 0) ;
-	NumEdges-- ;
-}
+class AssertionFailed : public SteghideError {
+	public:
+	AssertionFailed (const char* fn, unsigned int l)
+		: SteghideError(_("assertion failed in %s at line number %d."), stripDir(fn), l) {} ;
 
-#ifdef DEBUG
-void SampleValue::print (unsigned short spc) const
-{
-	char* space = new char[spc + 1] ;
-	for (unsigned short i = 0 ; i < spc ; i++) {
-		space[i] = ' ' ;
-	}
-	space[spc] = '\0' ;
-	std::cerr << space << "SampleValue:" << std::endl ;
-	std::cerr << space << " Label: " << getLabel() << std::endl ;
-	std::cerr << space << " Key: " << getKey() << std::endl ;
-	std::cerr << space << " Bit: " << getBit() << std::endl ;
-}
-#endif
+	void printMessage (void) const ;
+
+	private:
+	char* stripDir (const char* fn) ;
+} ;
+
+#endif // ndef SH_ASSERTION_FAILED

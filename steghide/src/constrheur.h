@@ -26,7 +26,7 @@
 
 class ConstructionHeuristic : private GraphAccess {
 	public:
-	ConstructionHeuristic (Graph *g) ;
+	ConstructionHeuristic (Graph* g) ;
 
 	void run (void) ;
 

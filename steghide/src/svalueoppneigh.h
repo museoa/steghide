@@ -30,7 +30,7 @@
 class SampleValueOppositeNeighbourhood : private GraphAccess {
 	public:
 	SampleValueOppositeNeighbourhood (void) {} ;
-	SampleValueOppositeNeighbourhood (Graph *g, const std::vector<SampleValue*> &svalues) ;
+	SampleValueOppositeNeighbourhood (Graph* g, const std::vector<SampleValue*>& svalues) ;
 
 	const std::vector<SampleValue*>& operator[] (const SampleValueLabel lbl) const
 		{ return OppNeighs[lbl] ; } ;

@@ -39,7 +39,7 @@ JpegObject::JpegObject (JpegObject *p)
 
 JpegObject *JpegObject::getParent () const
 {
-	assert (parent) ;
+	myassert (parent) ;
 	return parent ;
 }
 
@@ -61,8 +61,8 @@ void JpegObject::splitByte (unsigned char byte, unsigned char *high, unsigned ch
 
 unsigned char JpegObject::mergeByte (unsigned char high, unsigned char low)
 {
-	assert (high <= 15) ;
-	assert (low <= 15) ;
+	myassert (high <= 15) ;
+	myassert (low <= 15) ;
 
 	return ((high << 4) | low) ;
 }
@@ -104,7 +104,7 @@ void JpegElement::write (BinaryIO *io)
 
 JpegMarker JpegElement::getMarker ()
 {
-	assert (marker_isset) ;
+	myassert (marker_isset) ;
 	return marker ;
 }
 
@@ -152,7 +152,7 @@ void JpegSegment::write (BinaryIO *io)
 
 unsigned int JpegSegment::getLength (void)
 {
-	assert (length_isset) ;
+	myassert (length_isset) ;
 	return length ;
 }
 
@@ -228,10 +228,11 @@ unsigned long JpegContainer::getNumSamples () const
 	return sum ;
 }
 
-void JpegContainer::replaceSample (SamplePos pos, SampleValue *s)
+void JpegContainer::replaceSample (const SamplePos pos, const SampleValue* s)
 {
-	CvrStgObject *cso = calcCvrStgObject (&pos) ;
-	cso->replaceSample (pos, s) ;
+	SamplePos mypos = pos ;
+	CvrStgObject *cso = calcCvrStgObject (&mypos) ;
+	cso->replaceSample (mypos, s) ;
 }
 
 SampleValue *JpegContainer::getSampleValue (SamplePos pos) const
@@ -247,7 +248,7 @@ CvrStgObject *JpegContainer::calcCvrStgObject (SamplePos *pos) const
 	while (*pos >= curNumSamples) {
 		*pos -= curNumSamples ;
 		i++ ;
-		assert (i != cvrstgobjs.end()) ;
+		myassert (i != cvrstgobjs.end()) ;
 		curNumSamples = (*i)->getNumSamples() ;
 	}
 	return *i ;

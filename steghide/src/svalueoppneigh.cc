@@ -28,7 +28,7 @@
 #include "svalueoppneigh.h"
 #include "wavsamplevalue.h"
 
-SampleValueOppositeNeighbourhood::SampleValueOppositeNeighbourhood (Graph *g, const std::vector<SampleValue*> &svalues)
+SampleValueOppositeNeighbourhood::SampleValueOppositeNeighbourhood (Graph* g, const std::vector<SampleValue*>& svalues)
 	: GraphAccess(g)
 {
 	if (svalues.size() > 0) { // graph contains at least one vertex
@@ -76,7 +76,7 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_generic (const std::vector<
 
 	// sort OppNeighs data structure
 	for (unsigned long lbl = 0 ; lbl < numsvs ; lbl++) {
-		sort (OppNeighs[lbl].begin(), OppNeighs[lbl].end(), SmallerDistance(TheGraph->getSampleValue(lbl))) ;
+		sort (OppNeighs[lbl].begin(), OppNeighs[lbl].end(), SmallerDistance(TheGraph->SampleValues[lbl])) ;
 	}
 }
 
@@ -102,7 +102,7 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_rgb (const std::vector<Samp
 	// fill svalues0 and cubes
 	for (unsigned long l = 0 ; l < numsvs ; l++) {
 		BmpRGBSampleValue *s = dynamic_cast<BmpRGBSampleValue*> (svalues[l]) ;
-		assert (s != NULL) ;
+		myassert (s != NULL) ;
 		if (s->getBit() == 0) {
 			svalues0.push_back (s) ;
 		}
@@ -149,7 +149,7 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_rgb (const std::vector<Samp
 
 	// sort OppNeighs data structure
 	for (unsigned long lbl = 0 ; lbl < numsvs ; lbl++) {
-		sort (OppNeighs[lbl].begin(), OppNeighs[lbl].end(), SmallerDistance(TheGraph->getSampleValue(lbl))) ;
+		sort (OppNeighs[lbl].begin(), OppNeighs[lbl].end(), SmallerDistance(TheGraph->SampleValues[lbl])) ;
 	}
 }
 
@@ -165,7 +165,7 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_wav (const std::vector<Samp
 
 	for (unsigned long l = 0 ; l < n ; l++) {
 		WavPCMSampleValue *s = dynamic_cast<WavPCMSampleValue*> (svalues[l]) ;
-		assert (s != NULL) ;
+		myassert (s != NULL) ;
 		if (s->getBit() == 0) {
 			svalues0.push_back (s) ;
 		}
@@ -198,7 +198,7 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_wav (const std::vector<Samp
 
 	// FIXME - don't use generic sort (!)
 	for (unsigned long lbl = 0 ; lbl < n ; lbl++) {
-		sort (OppNeighs[lbl].begin(), OppNeighs[lbl].end(), SmallerDistance(TheGraph->getSampleValue(lbl))) ;
+		sort (OppNeighs[lbl].begin(), OppNeighs[lbl].end(), SmallerDistance(TheGraph->SampleValues[lbl])) ;
 	}
 }
 
@@ -232,9 +232,9 @@ bool SampleValueOppositeNeighbourhood::check_soundness (void) const
 	bool err_nonneigh = false ;
 
 	std::cerr << "checking SampleValueOppositeNeighbourhood: sample values are opposite neighbours" << std::endl ;
-	unsigned long numsvs = TheGraph->getNumSampleValues() ;
+	unsigned long numsvs = TheGraph->SampleValues.size() ;
 	for (SampleValueLabel srclbl = 0 ; srclbl < numsvs ; srclbl++) {
-		SampleValue* srcsv = TheGraph->getSampleValue(srclbl) ;
+		SampleValue* srcsv = TheGraph->SampleValues[srclbl] ;
 		const std::vector<SampleValue*> &oppneighs = OppNeighs[srclbl] ;
 		for (std::vector<SampleValue*>::const_iterator destsv = oppneighs.begin() ; destsv != oppneighs.end() ; destsv++) {
 			if (srcsv->getBit() == (*destsv)->getBit()) {
@@ -262,16 +262,16 @@ bool SampleValueOppositeNeighbourhood::check_completeness (void) const
 	bool err = false ;
 
 	std::cerr << "checking SampleValueOppositeNeighbourhood: all oppneighs are in this std::list" << std::endl ;
-	unsigned long numsvs = TheGraph->getNumSampleValues() ;
+	unsigned long numsvs = TheGraph->SampleValues.size() ;
 	for (unsigned long i = 0 ; i < numsvs ; i++) {
-		SampleValue *sv1 = TheGraph->getSampleValue(i) ;
+		SampleValue *sv1 = TheGraph->SampleValues[i] ;
 		for (unsigned long j = 0 ; j < numsvs ; j++) {
-			SampleValue *sv2 = TheGraph->getSampleValue(j) ;
+			SampleValue *sv2 = TheGraph->SampleValues[j] ;
 			if (sv1->getBit() != sv2->getBit()) {
 				// they are opposite...
 				if (sv1->isNeighbour (sv2)) {
 					// ...and they are neighbours => there must be an entry in SampleOppositeNeighbourhood
-					assert (sv2->isNeighbour (sv1)) ;
+					myassert (sv2->isNeighbour (sv1)) ;
 					const std::vector<SampleValue*> &oppneighs = OppNeighs[i] ;
 					bool found = false ;
 					for (std::vector<SampleValue*>::const_iterator k = oppneighs.begin() ; k != oppneighs.end() ; k++) {

@@ -18,6 +18,7 @@
  *
  */
 
+#include "common.h"
 #include "encmode.h"
 
 EncryptionMode::EncryptionMode ()
@@ -76,7 +77,7 @@ std::string EncryptionMode::translate (EncryptionMode::IRep irep)
 			found = true ;
 		}
 	}
-	assert (found) ;
+	myassert (found) ;
 	return retval ;
 }
 
@@ -90,7 +91,7 @@ EncryptionMode::IRep EncryptionMode::translate (std::string srep)
 			found = true ;
 		}
 	}
-	assert (found) ;
+	myassert (found) ;
 	return retval ;
 }
 

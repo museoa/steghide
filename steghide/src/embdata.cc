@@ -46,27 +46,27 @@ EmbData::EmbData (MODE m, std::string fn)
 		break ; }
 
 		default: {
-			assert (0) ;
+			myassert (0) ;
 		break ; }
 	}
 }
 
 bool EmbData::finished ()
 {
-	assert (Mode == EXTRACT) ;
+	myassert (Mode == EXTRACT) ;
 	return (State == END) ;
 }
 
 unsigned long EmbData::getNumBitsNeeded ()
 {
-	assert (Mode == EXTRACT) ;
+	myassert (Mode == EXTRACT) ;
 	return NumBitsNeeded ;
 }
 
 void EmbData::addBits (BitString bits)
 {
-	assert (Mode == EXTRACT) ;
-	assert (bits.getLength() == NumBitsNeeded) ;
+	myassert (Mode == EXTRACT) ;
+	myassert (bits.getLength() == NumBitsNeeded) ;
 
 	switch (State) {
 		case READCRYPT: {
@@ -97,7 +97,7 @@ void EmbData::addBits (BitString bits)
 #ifdef USE_LIBMCRYPT
 			NumBitsNeeded = MCryptpp::getEncryptedSize (EncAlgo, EncMode, NEmbBits) ;
 #else
-			assert (EncAlgo.getIntegerRep() == EncryptionAlgorithm::NONE) ;
+			myassert (EncAlgo.getIntegerRep() == EncryptionAlgorithm::NONE) ;
 			NumBitsNeeded = NEmbBits ;
 #endif
 			State = READENCRYPTED ;
@@ -153,14 +153,14 @@ void EmbData::addBits (BitString bits)
 			}
 			else {
 				// write extracted data to file with embedded file name
-				assert (Args.ExtFn.getValue() == "") ;
+				myassert (Args.ExtFn.getValue() == "") ;
 				if (lenoffilename == 0) {
 					throw SteghideError (_("please specify a file name for the extracted data (there is no name embedded in the stego file).")) ;
 				}
 				FileName = filename ;
 			}
 
-			assert ((NEmbBits - pos) % 8 == 0) ;
+			myassert ((NEmbBits - pos) % 8 == 0) ;
 
 			unsigned long extdatalen = (NEmbBits - pos) / 8 ;
 			Data.clear() ;
@@ -196,7 +196,7 @@ void EmbData::addBits (BitString bits)
 
 		case END:
 		default: {
-			assert (0) ;
+			myassert (0) ;
 		break ; }
 	}
 }
@@ -243,7 +243,7 @@ bool EmbData::getChecksum (void) const
 
 void EmbData::read ()
 {
-	assert (Mode == EMBED) ;
+	myassert (Mode == EMBED) ;
 
 	BinaryIO io (FileName, BinaryIO::READ) ;
 	while (!io.eof()) {
@@ -254,7 +254,7 @@ void EmbData::read ()
 
 void EmbData::write ()
 {
-	assert (Mode == EXTRACT) ;
+	myassert (Mode == EXTRACT) ;
 
 	BinaryIO io (FileName, BinaryIO::WRITE) ;
 	for (std::vector<unsigned char>::iterator i = Data.begin() ; i != Data.end() ; i++) {
@@ -265,7 +265,7 @@ void EmbData::write ()
 
 BitString EmbData::getBitString ()
 {
-	assert (Mode == EMBED) ;
+	myassert (Mode == EMBED) ;
 
 	BitString main ;
 	
@@ -310,7 +310,7 @@ BitString EmbData::getBitString ()
 		main = crypto.encrypt (main, Args.Passphrase.getValue()) ;
 	}
 #else
-	assert (EncAlgo.getIntegerRep() == EncryptionAlgorithm::NONE) ;
+	myassert (EncAlgo.getIntegerRep() == EncryptionAlgorithm::NONE) ;
 #endif
 
 	return hdr.append(main) ;

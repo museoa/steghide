@@ -18,6 +18,7 @@
  *
  */
 
+#include "common.h"
 #include "encalgo.h"
 
 EncryptionAlgorithm::EncryptionAlgorithm ()
@@ -76,7 +77,7 @@ std::string EncryptionAlgorithm::translate (EncryptionAlgorithm::IRep irep)
 			found = true ;
 		}
 	}
-	assert (found) ;
+	myassert (found) ;
 	return retval ;
 }
 
@@ -90,7 +91,7 @@ EncryptionAlgorithm::IRep EncryptionAlgorithm::translate (std::string srep)
 			found = true ;
 		}
 	}
-	assert (found) ;
+	myassert (found) ;
 	return retval ;
 }
 

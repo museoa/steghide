@@ -110,7 +110,7 @@ namespace NAMESPACE_SGI
 {
 
 struct sgi::hash<VertexContent*> {
-	size_t operator() (const VertexContent *vc) const ;
+	size_t operator() (const VertexContent* vc) const ;
 } ;
 
 }

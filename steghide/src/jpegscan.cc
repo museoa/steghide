@@ -62,7 +62,7 @@ JpegMarker JpegScan::getTerminatingMarker ()
 
 JpegScanHeader *JpegScan::getScanHeader ()
 {
-	assert (scanhdr) ;
+	myassert (scanhdr) ;
 	return scanhdr ;
 }
 

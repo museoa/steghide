@@ -36,7 +36,7 @@ class AuFile : public CvrStgFile {
 	void write (void) ;
 
 	unsigned long getNumSamples (void) const ;
-	void replaceSample (SamplePos pos, SampleValue *s) ;
+	void replaceSample (const SamplePos pos, const SampleValue* s) ;
 	SampleValue* getSampleValue (SamplePos pos) const ;
 	unsigned int getSamplesPerEBit (void) const ;
 

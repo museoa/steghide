@@ -84,7 +84,7 @@ unsigned long BmpFile::getNumSamples() const
 	return retval ;
 }
 
-void BmpFile::replaceSample (SamplePos pos, SampleValue *s)
+void BmpFile::replaceSample (const SamplePos pos, const SampleValue* s)
 {
 	unsigned long row = 0, column = 0 ;
 	unsigned short firstbit = 0 ;
@@ -93,8 +93,8 @@ void BmpFile::replaceSample (SamplePos pos, SampleValue *s)
 	unsigned short bitcount = getBitCount() ;
 	switch (bitcount) {
 		case 1: case 4: case 8: {
-			BmpPaletteSampleValue* sample = dynamic_cast<BmpPaletteSampleValue*> (s) ;
-			assert (sample != NULL) ;
+			const BmpPaletteSampleValue* sample = dynamic_cast<const BmpPaletteSampleValue*> (s) ;
+			myassert (sample != NULL) ;
 
 			for (unsigned short i = 0 ; i < bitcount ; i++) {
 				bitmap[row][column] = bitmap[row][column] & (~(1 << (firstbit + i))) ;
@@ -103,8 +103,8 @@ void BmpFile::replaceSample (SamplePos pos, SampleValue *s)
 		break ; }
 
 		case 24: {
-			BmpRGBSampleValue* sample = dynamic_cast<BmpRGBSampleValue*> (s) ;
-			assert (sample != NULL) ;
+			const BmpRGBSampleValue* sample = dynamic_cast<const BmpRGBSampleValue*> (s) ;
+			myassert (sample != NULL) ;
 
 			bitmap[row][column] = sample->getRed() ;
 			bitmap[row][column + 1] = sample->getGreen() ;
@@ -157,14 +157,14 @@ void BmpFile::calcRCB (SamplePos pos, unsigned long *row, unsigned long *column,
 	unsigned long width = getWidth(), height = getHeight(), bitcount = getBitCount() ;
 
 	*row = pos / width ;
-	assert (*row < height) ;
+	myassert (*row < height) ;
 
 	pos = pos % width ;	// now searching for pos in a single row
 	if (bitcount >= 8) {
 		unsigned short bytespersample = bitcount / 8 ;
 		
 		*column = pos * bytespersample ;
-		assert (*column < (width * bytespersample)) ;
+		myassert (*column < (width * bytespersample)) ;
 		
 		*firstbit = 0 ;
 	}
@@ -179,10 +179,10 @@ void BmpFile::calcRCB (SamplePos pos, unsigned long *row, unsigned long *column,
 		else {
 			bytesperline = (width / samplesperbyte) + 1 ;
 		}
-		assert (*column < bytesperline) ;
+		myassert (*column < bytesperline) ;
 
 		*firstbit = (pos % samplesperbyte) * bitcount ;
-		assert (*firstbit < 8) ;
+		myassert (*firstbit < 8) ;
 	}
 }
 
@@ -198,7 +198,7 @@ unsigned short BmpFile::getBitCount() const
 			retval = bmch.bcBitCount ;
 		break ; }
 	}
-	assert (retval == 1 || retval == 4 || retval == 8 || retval == 24) ;
+	myassert (retval == 1 || retval == 4 || retval == 8 || retval == 24) ;
 	return retval ;
 }
 
@@ -235,8 +235,8 @@ unsigned long BmpFile::getHeight() const
 
 ColorPalette *BmpFile::getPalette() const
 {
-	assert (getBitCount() != 24) ;
-	assert (Palette != NULL) ;
+	myassert (getBitCount() != 24) ;
+	myassert (Palette != NULL) ;
 	return Palette ;
 }
 
@@ -301,7 +301,7 @@ void BmpFile::bmpwin_readheaders ()
 	bmih.biWidth = getBinIO()->read32_le () ;
 	bmih.biHeight = getBinIO()->read32_le () ;
 	bmih.biPlanes = getBinIO()->read16_le () ;
-	assert (bmih.biPlanes == 1) ;
+	myassert (bmih.biPlanes == 1) ;
 	bmih.biBitCount = getBinIO()->read16_le () ;
 	if ((bmih.biBitCount != 1) && (bmih.biBitCount != 4) && (bmih.biBitCount != 8) && (bmih.biBitCount != 24)) {
 		if (getBinIO()->is_std()) {
@@ -352,7 +352,7 @@ void BmpFile::bmpwin_readheaders ()
 			break ; }
 
 			default: {
-				assert (0) ;
+				myassert (0) ;
 			break ; }
 		}
 		if (bmih.biClrUsed != 0) {
@@ -378,9 +378,9 @@ void BmpFile::bmpos2_readheaders ()
 	bmch.bcWidth = getBinIO()->read16_le () ;
 	bmch.bcHeight = getBinIO()->read16_le () ;
 	bmch.bcPlanes = getBinIO()->read16_le () ;
-	assert (bmch.bcPlanes == 1) ;
+	myassert (bmch.bcPlanes == 1) ;
 	bmch.bcBitCount = getBinIO()->read16_le () ;
-	assert ((bmch.bcBitCount == 1) ||
+	myassert ((bmch.bcBitCount == 1) ||
 			(bmch.bcBitCount == 4) ||
 			(bmch.bcBitCount == 8) || 
 			(bmch.bcBitCount == 24)) ;
@@ -411,7 +411,7 @@ void BmpFile::bmpos2_readheaders ()
 			break ; }
 
 			default: {
-				assert (0) ;
+				myassert (0) ;
 			break ; }
 		}
 
@@ -444,7 +444,7 @@ void BmpFile::writeheaders ()
 			break ; }
 
 			default: {
-				assert (0) ;
+				myassert (0) ;
 			break ; }
 		}
 	}
@@ -527,7 +527,7 @@ long BmpFile::calcLinelength ()
 		break ; }
 		
 		default: {
-			assert (0) ;
+			myassert (0) ;
 		break ; }
 	}
 
@@ -604,7 +604,7 @@ void BmpFile::writedata ()
 		}
 
 		for (long line = height - 1 ; line >= 0 ; line--) {
-			assert (bitmap[line].size() == (unsigned long) linelength) ;
+			myassert (bitmap[line].size() == (unsigned long) linelength) ;
 			for (long posinline = 0 ; posinline < linelength ; posinline++) {
 				getBinIO()->write8 (bitmap[line][posinline]) ;
 			}

@@ -81,7 +81,7 @@ BitString MCryptpp::encrypt (BitString p, std::string pp)
 
 BitString MCryptpp::decrypt (BitString c, std::string pp)
 {
-	assert (c.getLength() % (8 * mcrypt_enc_get_block_size (MCryptD)) == 0) ;
+	myassert (c.getLength() % (8 * mcrypt_enc_get_block_size (MCryptD)) == 0) ;
 	std::vector<unsigned char> plaintext = _decrypt (c.getBytes(), pp) ;
 	return BitString (plaintext) ;
 }
@@ -122,7 +122,7 @@ std::vector<unsigned char> MCryptpp::_encrypt (std::vector<unsigned char> p, std
 
 	// copy plaintext
 	unsigned int plntextlen = p.size() ;
-	assert (plntextlen % mcrypt_enc_get_block_size (MCryptD) == 0) ;
+	myassert (plntextlen % mcrypt_enc_get_block_size (MCryptD) == 0) ;
 	unsigned char *plntext = (unsigned char *) s_malloc (plntextlen) ;
 	for (unsigned int i = 0 ; i < plntextlen ; i++) {
 		plntext[i] = p[i] ;
@@ -188,7 +188,7 @@ std::vector<unsigned char> MCryptpp::_decrypt (std::vector<unsigned char> c, std
 
 	// copy ciphertext
 	unsigned long ciphertextlen = c.size() - cstart ;
-	assert (ciphertextlen % mcrypt_enc_get_block_size (MCryptD) == 0) ;
+	myassert (ciphertextlen % mcrypt_enc_get_block_size (MCryptD) == 0) ;
 	unsigned char *ciphertext = (unsigned char *) s_malloc (ciphertextlen) ;
 	for (unsigned int i = 0 ; i < ciphertextlen ; i++) {
 		ciphertext[i] = c[cstart + i] ;
@@ -220,14 +220,14 @@ std::vector<unsigned char> MCryptpp::_decrypt (std::vector<unsigned char> c, std
 
 EncryptionAlgorithm MCryptpp::getAlgorithm () const
 {
-	assert (ModuleOpen) ;
+	myassert (ModuleOpen) ;
 	char *name = mcrypt_enc_get_algorithms_name (MCryptD) ;
 	return EncryptionAlgorithm (name) ;
 }
 
 EncryptionMode MCryptpp::getMode () const
 {
-	assert (ModuleOpen) ;
+	myassert (ModuleOpen) ;
 	char *name = mcrypt_enc_get_modes_name (MCryptD) ;
 	return EncryptionMode (name) ;
 }
