@@ -6,11 +6,12 @@ file by replacing some of the least significant bits of the cover file with bits
 of the secret message. After that, the secret message is imperceptible and can
 only be extracted with the correct passphrase.
 
-The current version of steghide is 0.4.2.
+The current version of steghide is 0.4.3.
 Features:
 support for bmp, wav and au files
 encryption of plain data before embedding (blowfish encryption algorithm)
 pseudo-random distribution of hidden bits in stego file
+embedding of a crc32 checksum of the plain data
 
 Steganography :
 ===============
@@ -21,7 +22,7 @@ large) cover file and embedding the (rather short) secret message into this
 file. The result is a innocuous looking file (the stego file) that contains
 the secret message.
 If you want to know more about steganography take a look at
-http://www.jjtc.com/stegdoc/index2.html
+http://steghide.sourceforge.net/steganography.html
 
 Compilation and Installation :
 ==============================
@@ -45,8 +46,8 @@ Linux / Unix :
 3) make install
 
 For more information see the generic installation instructions in the file
-INSTALL that came with the distribution. Tarballs, RPM packages and debian
-binary packages are available from the steghide website at:
+INSTALL that came with the distribution. Tarballs and RPM packages are available
+from the steghide website at:
 http://steghide.sourceforge.net/index.html
  
 Windows :

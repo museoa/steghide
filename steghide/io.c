@@ -1,6 +1,6 @@
 /*
- * steghide 0.4.2 - a steganography program
- * Copyright (C) 2001 Stefan Hetzl <shetzl@teleweb.at>
+ * steghide 0.4.3 - a steganography program
+ * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -210,60 +210,6 @@ void deassemble_plndata (PLNFILE *plnfile)
 		strcpy (plnfile->filename, plnfilename) ;
 	}
 
-#if 0
-	nbytes_plnfilename = bufgetbyte (plnfile->plnbuflhead, pos++) ;
-	if (nbytes_plnfilename == 0) {
-		/* no file name embedded in stego file */
-		if (args.plnfn.value == NULL) {
-			/* no -pf argument was given on command line */
-			exit_err ("please specify a name for the plain file (there is none embedded in the stego file).") ;
-		}
-		else {
-			if (strcmp (args.plnfn.value, "-") == 0) {
-				/* a -pf - argument was given on command line */
-				plnfile->filename = NULL ;
-			}
-			else {
-				/* a name for the plain file has been specified on the command line */
-				plnfile->filename = s_malloc (strlen (args.plnfn.value) + 1) ;
-				strcpy (plnfile->filename, args.plnfn.value) ;
-
-				sthdr.plnfilename = s_malloc (strlen (args.plnfn.value) + 1) ;
-				strcpy (sthdr.plnfilename, args.plnfn.value) ;
-			}
-		}
-	}
-	else {
-		for (i = 0 ; i < nbytes_plnfilename ; i++) {
-			plnfilename[i] = (char) bufgetbyte (plnfile->plnbuflhead, pos++) ;
-		}
-		plnfilename[i] = '\0' ;
-
-		if (args.plnfn.value == NULL) {
-			/* no -pf argument was given on command line */
-			plnfile->filename = s_malloc (strlen (plnfilename) + 1) ;
-			strcpy (plnfile->filename, plnfilename) ;
-
-			sthdr.plnfilename = s_malloc (i + 1) ;
-			strcpy (sthdr.plnfilename, plnfilename) ;
-		}
-		else {
-			if (strcmp (args.plnfn.value, "-") == 0) {
-				/* a -pf - argument was given on command line */
-				plnfile->filename = NULL ;
-			}
-			else {
-				/* a name for the plain file has been specified on the command line */
-				plnfile->filename = s_malloc (strlen (args.plnfn.value) + 1) ;
-				strcpy (plnfile->filename, args.plnfn.value) ;
-
-				sthdr.plnfilename = s_malloc (strlen (args.plnfn.value) + 1) ;
-				strcpy (sthdr.plnfilename, args.plnfn.value) ;
-			}
-		}
-	}
-#endif
-
 	if (sthdr.checksum == CHECKSUM_CRC32) {
 		uc_crc32 = s_malloc (4) ;
 		uc_crc32[0] = (unsigned char) bufgetbyte (plnfile->plnbuflhead, pos++) ;
@@ -277,7 +223,10 @@ void deassemble_plndata (PLNFILE *plnfile)
 	plnfile->plnbuflhead = tmp ;
 
 	if (sthdr.checksum == CHECKSUM_CRC32) {
-		if (!checkcrc32 (plnfile, uc_crc32)) {
+		if (checkcrc32 (plnfile, uc_crc32)) {
+			pverbose ("crc32 checksum test ok.") ;
+		}
+		else {
 			pwarn ("crc32 checksum failed! extracted data is probably corrupted.") ;
 		}
 	}
@@ -423,8 +372,7 @@ void writestgfile (CVRFILE *stgfile)
 		if (!args.force.value) {
 			/* check if file already exists */
 			if (fileexists (stgfile->filename)) {
-				/* FIXME - wieso bei std verwendung kein pquestion ? */
-				if ((args.cvrfn.value == NULL) || ((args.plnfn.value == NULL) || (strcmp (args.plnfn.value, "-") == 0))) {
+				if ((args.cvrfn.value == NULL) || (args.plnfn.value == NULL)) {
 					exit_err ("file \"%s\" does already exist.", stgfile->filename) ;
 				}
 				else {

@@ -1,15 +1,14 @@
 These are things that I plan to implement in the future:
 (in no particular order)
 
-* checksum for plain data (libmhash)
+* compress plain data before embedding (zlib, libbzip2?)
 
-* compress plain data before embedding (zlib)
+* preserve color/sample frequencies to prevent detection by color frequency
+  based statistical tests
 
-* preserve color/sample frequencies to prevent detection by color frequency based statistical tests
+* support for other file formats (jpeg, gif, mp3, png)
 
-* support for other file formats (mp3, gif, jpeg, png)
-
-* switch to en/disable embedding of plain file name
+* use permutation as distribution function
 
 * gui frontend (this should not really be in the steghide TODO because I want
   to keep possible frontends separate from the steghide code)

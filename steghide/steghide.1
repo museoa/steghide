@@ -1,5 +1,5 @@
-.\" Steghide 0.4.2 man page
-.TH steghide 1 "26 Nov 2001"
+.\" Steghide 0.4.3 man page
+.TH steghide 1 "8 Jan 2002"
 .SH NAME
 steghide \- a steganography program
 .SH SYNOPSIS
@@ -20,9 +20,13 @@ The bmp, wav and au file formats are supported by steghide. You can use a file
 of any of these formats as cover/stego file. There are no restrictions on the
 format of the plain file.
 
-The plain data can be encrypted before embedding. The encryption algorithm
+The plain data is encrypted before embedding. The encryption algorithm
 blowfish is used together with the hash algorithm MD5 (to create a key for
 blowfish from the passphrase).
+
+Together with the plain data the name of the original plain file and a crc32
+checksum of the plain file is embedded in the stego file. The crc32 checksum
+is used to verify the integrity of the embedded message during extraction.
 
 .SH COMMANDS
 In this section the commands for steghide are listed. The first argument must
@@ -132,13 +136,38 @@ is equal to the default.
 Note that the cnsti method is less secure so you should not use it.
 
 .TP
+.B "-k, --checksum"
+Embed a crc32 checksum of the plain file in the stego file. This is the
+default.
+
+.TP
+.B "-K, --nochecksum"
+Do not embed a crc32 checksum. You can use this if the plain data already
+contains some type of checksum or if you do not want to embed those extra
+32 bits needed for the crc32 checksum for whatever reason.
+
+The -k and -K arguments can only be used with the embed command.
+
+.TP
+.B "-n, --embedplainname"
+Embed the name of the original plain file with the plain data. This is the
+default. The embedded plain file name is used by the extract command to save
+the plain data.
+
+.TP
+.B "-N, --notembedplainname"
+Do not embed the name of the original plain file.
+
+The -n and -N arguments can only be used with the embed command.
+
+.TP
 .B "-v, --verbose"
 Display detailed information about the status of the embedding or extracting
 process.
 
 .TP
 .B "-q, --quiet"
-Supress messages and non-critical warnings.
+Supress information messages.
 
 .TP
 .B "-f, --force"

@@ -1,6 +1,6 @@
 /*
- * steghide 0.4.2 - a steganography program
- * Copyright (C) 2001 Stefan Hetzl <shetzl@teleweb.at>
+ * steghide 0.4.3 - a steganography program
+ * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -43,23 +43,6 @@ ARGS args ;
 /* how to embed the stego header */
 unsigned int sthdr_dmtd = 0 ;
 DMTDINFO sthdr_dmtdinfo ;
-
-#if 0
-int args.action.value = 0 ;
-int args.sthdrencryption.value = 0 ;
-char *args.passphrase.value = NULL ;
-char *args.cvrfn.value = NULL ;
-char *args.stgfn.value = NULL ;
-char *args.plnfn.value = NULL ;
-int args.force.value = 0 ;
-int args_quiet = 0 ;
-int args_verbose = 0 ;
-
-/* indicates which arguments have already been parsed */
-int arggiven_method = 0 ;
-int arggiven_dmtdmaxilen = 0 ;
-int arggiven_passphrase = 0 ;
-#endif
 
 static void parsearguments (int argc, char *argv[]) ;
 static void args_setdefaults (void) ;
@@ -240,7 +223,7 @@ static void parsearguments (int argc, char* argv[])
 			}
 
 			if (args.encryption.is_set) {
-				exit_err ("the encryption argument can be used only once. type \"%s --help\" for help.", argv[i], argv[0]) ;
+				exit_err ("the encryption argument can be used only once. type \"%s --help\" for help.", argv[0]) ;
 			}
 			else {
 				args.encryption.is_set = 1 ;
@@ -251,7 +234,7 @@ static void parsearguments (int argc, char* argv[])
 
 		else if ((strncmp (argv[i], "-h\0", 3) == 0) || (strncmp (argv[i], "--sthdrencryption\0", 18) == 0)) {
 			if (args.sthdrencryption.is_set) {
-				exit_err ("the stego header encryption argument can be used only once. type \"%s --help\" for help.", argv[i], argv[0]) ;
+				exit_err ("the stego header encryption argument can be used only once. type \"%s --help\" for help.", argv[0]) ;
 			}
 			else {
 				args.sthdrencryption.is_set = 1 ;
@@ -262,7 +245,7 @@ static void parsearguments (int argc, char* argv[])
 
 		else if ((strncmp (argv[i], "-H\0", 3) == 0) || (strncmp (argv[i], "--nosthdrencryption\0", 20) == 0)) {
 			if (args.sthdrencryption.is_set) {
-				exit_err ("the stego header encryption argument can be used only once. type \"%s --help\" for help.", argv[i], argv[0]) ;
+				exit_err ("the stego header encryption argument can be used only once. type \"%s --help\" for help.", argv[0]) ;
 			}
 			else {
 				args.sthdrencryption.is_set = 1 ;
@@ -272,6 +255,10 @@ static void parsearguments (int argc, char* argv[])
 		}
 
 		else if ((strncmp (argv[i], "-k\0", 3) == 0) || (strncmp (argv[i], "--checksum\0", 11) == 0)) {
+			if (args.action.value != ARGS_ACTION_EMBED) {
+				exit_err ("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help.", argv[i], argv[0]) ;
+			}
+
 			if (args.checksum.is_set) {
 				exit_err ("the checksum argument can be used only once. type \"%s --help\" for help.", argv[0]) ;
 			}
@@ -283,6 +270,10 @@ static void parsearguments (int argc, char* argv[])
 		}
 
 		else if ((strncmp (argv[i], "-K\0", 3) == 0) || (strncmp (argv[i], "--nochecksum\0", 13) == 0)) {
+			if (args.action.value != ARGS_ACTION_EMBED) {
+				exit_err ("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help.", argv[i], argv[0]) ;
+			}
+
 			if (args.checksum.is_set) {
 				exit_err ("the checksum argument can be used only once. type \"%s --help\" for help.", argv[0]) ;
 			}
@@ -294,6 +285,10 @@ static void parsearguments (int argc, char* argv[])
 		}
 
 		else if ((strncmp (argv[i], "-n\0", 3) == 0) || (strncmp (argv[i], "--embedplainname\0", 17) == 0)) {
+			if (args.action.value != ARGS_ACTION_EMBED) {
+				exit_err ("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help.", argv[i], argv[0]) ;
+			}
+
 			if (args.embedplnfn.is_set) {
 				exit_err ("the plain file name embedding argument can be used only once. type \"%s --help\" for help.", argv[0]) ;
 			}
@@ -305,6 +300,10 @@ static void parsearguments (int argc, char* argv[])
 		}
 
 		else if ((strncmp (argv[i], "-N\0", 3) == 0) || (strncmp (argv[i], "--notembedplainname\0", 20) == 0)) {
+			if (args.action.value != ARGS_ACTION_EMBED) {
+				exit_err ("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help.", argv[i], argv[0]) ;
+			}
+
 			if (args.embedplnfn.is_set) {
 				exit_err ("the plain file name embedding argument can be used only once. type \"%s --help\" for help.", argv[0]) ;
 			}
@@ -402,18 +401,6 @@ static void parsearguments (int argc, char* argv[])
 				args.plnfn.value = s_malloc (strlen (argv[i]) + 1) ;
 				strcpy (args.plnfn.value, argv[i]) ;
 			}
-
-#if 0
-			if (strcmp (argv[i], "-") == 0) {
-				sthdr.plnfilename = NULL ;
-			}
-			else {
-				sthdr.plnfilename = s_malloc (strlen (argv[i]) + 1) ;
-				strcpy (sthdr.plnfilename, argv[i]) ;
-			}
-			args.plnfn.value = s_malloc (strlen (argv[i]) + 1) ;
-			strcpy (args.plnfn.value, argv[i]) ;
-#endif
 		}
 
 		else if ((strncmp (argv[i], "-f\0", 3) == 0) || (strncmp (argv[i], "--force\0", 8) == 0)) {
@@ -468,11 +455,7 @@ static void parsearguments (int argc, char* argv[])
 		}
 	}
 
-#if 0
-	if (args.plnfn.value == NULL) {
-		sthdr.plnfilename = NULL ;
-	}
-#endif
+	return ;
 }
 
 static void args_setdefaults (void)
@@ -578,7 +561,7 @@ static void fillsthdr (unsigned long nbytescvrbuf, unsigned long nbytesplain, un
 	}
 
 	/* compression is not yet implemented but included
-	   to enable 0.4.2 to read not compressed post 0.4.2 files */
+	   to enable 0.4.3 to read not compressed post 0.4.3 files */
 	sthdr.compression = COMPR_NONE ;
 
 	if (args.checksum.value) {
@@ -591,14 +574,14 @@ static void fillsthdr (unsigned long nbytescvrbuf, unsigned long nbytesplain, un
 
 static void version (void)
 {
-	printf ("steghide version 0.4.2\n") ;
+	printf ("steghide version 0.4.3\n") ;
 
 	return ;
 }
 
 static void usage (void)
 {
-	printf ("steghide version 0.4.2\n\n") ;
+	printf ("steghide version 0.4.3\n\n") ;
 
 	printf ("the first argument must be one of the following:\n") ;
 	printf (" embed, --embed          embed plain data in cover data\n") ;
@@ -632,7 +615,7 @@ static void usage (void)
 	printf (" -h, --sthdrencryption   encrypt stego header before embedding (default)\n") ;
 	printf (" -H, --nosthdrencryption do not encrypt stego header before embedding\n") ;
 	printf (" -f, --force             overwrite existing files\n") ;
-	printf (" -q, --quiet             suppress messages and warnings\n") ;
+	printf (" -q, --quiet             suppress information messages\n") ;
 	printf (" -v, --verbose           display detailed information\n") ;
 
 	printf ("\nIf a <filename> is \"-\", stdin or stdout is used.\n\n") ;
@@ -648,7 +631,7 @@ static void usage (void)
 
 static void license ()
 {
- 	printf ("Copyright (C) 2001 Stefan Hetzl <shetzl@teleweb.at>\n\n") ;
+ 	printf ("Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>\n\n") ;
 
  	printf ("This program is free software; you can redistribute it and/or\n") ;
  	printf ("modify it under the terms of the GNU General Public License\n") ;
@@ -739,19 +722,9 @@ static void extractfile (char *stgfilename, char *plnfilename)
 
 static void cleanup (void)
 {
-#if 0
-	if (args.cvrfn.value != NULL) {
-		free (args.cvrfn.value) ;
-	}
-#endif
 	if (args.plnfn.value != NULL) {
 		free (args.plnfn.value) ;
 	}
-#if 0
-	if (args.stgfn.value != NULL) {
-		free (args.stgfn.value) ;
-	}
-#endif
 	if (args.passphrase.value != NULL) {
 		free (args.passphrase.value) ;
 	}

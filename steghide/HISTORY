@@ -1,3 +1,13 @@
+steghide 0.4.3 :
+================
+
+* support for crc32 checksum of the plain data
+
+* switch to enable/disable embedding of plain file name
+
+* rewrite of some parts
+
+
 steghide 0.4.2 :
 ================
 
