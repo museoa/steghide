@@ -23,10 +23,10 @@
 
 #include "common.h"
 #include "wavfile.h"
-#include "wavsample.h"
+#include "wavsamplevalue.h"
 
-WavPCMSample::WavPCMSample (CvrStgFile *f, int v)
-	: CvrStgSample(f), Value(v)
+WavPCMSampleValue::WavPCMSampleValue (CvrStgFile *f, int v)
+	: SampleValue(f), Value(v)
 {
 	WavFile *wavfile = dynamic_cast<WavFile*> (f) ;
 	assert (wavfile != NULL) ;
@@ -64,26 +64,14 @@ WavPCMSample::WavPCMSample (CvrStgFile *f, int v)
 	SBit = (Bit) (Value & 1) ;
 	Key = (unsigned long) Value ;
 }
+// FIXME - ? derive WavPCMsmallSampleValue and WavPCMlargeSampleValue from WavPCMSampleValueValue
 
-bool WavPCMSample::isNeighbour (CvrStgSample *s) const
+bool WavPCMSampleValue::isNeighbour (SampleValue *s) const
 {
 	return (calcDistance (s) <= Radius) ;
 }
 
-list<CvrStgSample*> *WavPCMSample::getOppositeNeighbours() const
-{
-	// FIXME - in this function it is assumed that Radius is 1.0
-	list<CvrStgSample*> *retval = new list<CvrStgSample*> ;
-	if (Value != MinValue) {
-		retval->push_back ((CvrStgSample *) new WavPCMSample (getFile(), Value - 1)) ;
-	}
-	if (Value != MaxValue) {
-		retval->push_back ((CvrStgSample *) new WavPCMSample (getFile(), Value + 1)) ;
-	}
-	return retval ;
-}
-	
-CvrStgSample *WavPCMSample::getNearestOppositeSample() const
+SampleValue *WavPCMSampleValue::getNearestOppositeSampleValue () const
 {
 	int n_value = 0 ;
 	if (Value == MinValue) {
@@ -100,19 +88,31 @@ CvrStgSample *WavPCMSample::getNearestOppositeSample() const
 			n_value = Value + 1 ;
 		}
 	}
-	return ((CvrStgSample *) new WavPCMSample (getFile(), n_value)) ;
+	return ((SampleValue *) new WavPCMSampleValue (getFile(), n_value)) ;
 }
 
-float WavPCMSample::calcDistance (CvrStgSample *s) const
+float WavPCMSampleValue::calcDistance (SampleValue *s) const
 {
-	WavPCMSample *sample = dynamic_cast<WavPCMSample*> (s) ;
+	WavPCMSampleValue *sample = dynamic_cast<WavPCMSampleValue*> (s) ;
 	assert (sample != NULL) ;
 	return (abs ((float) Value - (float) sample->getValue())) ;
 }
 
-int WavPCMSample::getValue() const
+int WavPCMSampleValue::getValue() const
 {
 	return Value ;
 }
 
-float WavPCMSample::Radius = 1.0 ;
+float WavPCMSampleValue::getRadius () const
+{
+	float retval ;
+	if (Args.Radius.is_set()) {
+		retval = Args.Radius.getValue() ;
+	}
+	else {
+		retval = DefaultRadius ;
+	}
+	return retval ;
+}
+
+float WavPCMSampleValue::Radius = WavPCMSampleValue::DefaultRadius ;

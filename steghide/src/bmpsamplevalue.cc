@@ -23,46 +23,38 @@
 #include <cstdlib>
 
 #include "bmpfile.h"
-#include "bmpsample.h"
+#include "bmpsamplevalue.h"
 #include "common.h"
 
 //
-// class BmpSample
+// class BmpSampleValue
 //
-BmpSample::BmpSample (void)
-		: CvrStgSample()
+BmpSampleValue::BmpSampleValue (void)
+		: SampleValue()
 {
 	if (Radius == 0.0) {
 		setRadius() ;
 	}
 }
 
-BmpSample::BmpSample (CvrStgFile *f)
-		: CvrStgSample (f)
+BmpSampleValue::BmpSampleValue (CvrStgFile *f)
+		: SampleValue (f)
 {
 	if (Radius == 0.0) {
 		setRadius() ;
 	}
 }
 
-void BmpSample::setRadius (void)
+void BmpSampleValue::setRadius (void)
 {
-#ifdef DEBUG
-	if (Args.Radius.is_set()) {
-		Radius = Args.Radius.getValue() ;
-	}
-	else {
-		Radius = DefaultRadius ;
-	}
-#else
-	Radius = DefaultRadius ;
-#endif
+	Radius = getRadius() ;
 	RadiusSquared = Radius * Radius ;
 }
 
-bool BmpSample::isNeighbour (CvrStgSample *s) const
+bool BmpSampleValue::isNeighbour (SampleValue *s) const
 {
-	BmpSample *sample = dynamic_cast<BmpSample*> (s) ;
+	assert (s != NULL) ; // FIXME - delme
+	BmpSampleValue *sample = dynamic_cast<BmpSampleValue*> (s) ;
 	assert (sample != NULL) ;
 	int dr = (int) getRed() - (int) sample->getRed() ;
 	int dg = (int) getGreen() - (int) sample->getGreen() ;
@@ -70,9 +62,9 @@ bool BmpSample::isNeighbour (CvrStgSample *s) const
 	return ((dr*dr + dg*dg + db*db) <= RadiusSquared) ;
 }
 
-float BmpSample::calcDistance (CvrStgSample *s) const
+float BmpSampleValue::calcDistance (SampleValue *s) const
 {
-	BmpSample *sample = dynamic_cast<BmpSample*> (s) ;
+	BmpSampleValue *sample = dynamic_cast<BmpSampleValue*> (s) ;
 	assert (sample != NULL) ;
 	float dr = (float) getRed() - (float) sample->getRed() ;
 	float dg = (float) getGreen() - (float) sample->getGreen() ;
@@ -80,14 +72,26 @@ float BmpSample::calcDistance (CvrStgSample *s) const
 	return (sqrt (dr*dr + dg*dg + db*db)) ;
 }
 
-float BmpSample::Radius = 0.0 ;
-float BmpSample::RadiusSquared = 0.0 ;
+float BmpSampleValue::getRadius () const
+{
+	float retval ;
+	if (Args.Radius.is_set()) {
+		retval = Args.Radius.getValue() ;
+	}
+	else {
+		retval = DefaultRadius ;
+	}
+	return retval ;
+}
+
+float BmpSampleValue::Radius = 0.0 ;
+float BmpSampleValue::RadiusSquared = 0.0 ;
 
 //
-// class BmpPaletteSample
+// class BmpPaletteSampleValue
 //
-BmpPaletteSample::BmpPaletteSample (CvrStgFile *f, unsigned char i)
-	: BmpSample(f), Index(i)
+BmpPaletteSampleValue::BmpPaletteSampleValue (CvrStgFile *f, unsigned char i)
+	: BmpSampleValue(f), Index(i)
 {
 	BmpFile *bmpfile = dynamic_cast<BmpFile*> (f) ;
 	assert (bmpfile != NULL) ;
@@ -97,9 +101,11 @@ BmpPaletteSample::BmpPaletteSample (CvrStgFile *f, unsigned char i)
 		  ((unsigned long) getGreen() << 8) | ((unsigned long) getBlue()) ;
 }
 
-list<CvrStgSample*> *BmpPaletteSample::getOppositeNeighbours() const
+#if 0
+use this algorithms as general algo to compute SampleValueOppNeighbours
+list<SampleValue*> *BmpPaletteSampleValue::getOppositeNeighbours() const
 {
-	list<CvrStgSample*> *retval = new list<CvrStgSample*> ;
+	list<SampleValue*> *retval = new list<SampleValue*> ;
 	RGBTriple thistriple = Palette->getEntry (Index) ;
 	unsigned int n = Palette->getSize() ;
 
@@ -107,14 +113,15 @@ list<CvrStgSample*> *BmpPaletteSample::getOppositeNeighbours() const
 	for (unsigned int i = ((getBit() == 1) ? 0 : 1) ; i < n ; i += 2) {
 		RGBTriple pon = Palette->getEntry (i) ;
 		if (thistriple.calcDistance (pon) <= Radius) {
-			retval->push_back ((CvrStgSample *) new BmpPaletteSample (getFile(), i)) ;
+			retval->push_back ((SampleValue *) new BmpPaletteSampleValue (getFile(), i)) ;
 		}
 	}
 
 	return retval ;
 }
+#endif
 
-CvrStgSample *BmpPaletteSample::getNearestOppositeSample() const
+SampleValue *BmpPaletteSampleValue::getNearestOppositeSampleValue () const
 {
 	RGBTriple thistriple = Palette->getEntry (Index) ;
 
@@ -130,55 +137,48 @@ CvrStgSample *BmpPaletteSample::getNearestOppositeSample() const
 		}
 	}
 
-	return ((CvrStgSample *) new BmpPaletteSample (getFile(), idx_nearest)) ;
+	return ((SampleValue *) new BmpPaletteSampleValue (getFile(), idx_nearest)) ;
 }
 
-unsigned char BmpPaletteSample::getIndex() const
+unsigned char BmpPaletteSampleValue::getIndex() const
 {
 	return Index ;
 }
 
-unsigned char BmpPaletteSample::getRed() const
+unsigned char BmpPaletteSampleValue::getRed() const
 {
 	return Palette->getEntry(Index).Red ;
 }
 
-unsigned char BmpPaletteSample::getGreen() const
+unsigned char BmpPaletteSampleValue::getGreen() const
 {
 	return Palette->getEntry(Index).Green ;
 }
 
-unsigned char BmpPaletteSample::getBlue() const
+unsigned char BmpPaletteSampleValue::getBlue() const
 {
 	return Palette->getEntry(Index).Blue ;
 }
 
 //
-// class BmpRGBSample
+// class BmpRGBSampleValue
 //
-vector<BmpRGBSample::RGBVector> BmpRGBSample::OppNeighDeltas = vector<BmpRGBSample::RGBVector>() ;
-
-BmpRGBSample::BmpRGBSample (CvrStgFile *f, unsigned char r, unsigned char g, unsigned char b)
-	: BmpSample(f), Color(r, g, b)
+BmpRGBSampleValue::BmpRGBSampleValue (CvrStgFile *f, unsigned char r, unsigned char g, unsigned char b)
+	: BmpSampleValue(f), Color(r, g, b)
 {
 	SBit = (Bit) ((r & 1) ^ (g & 1) ^ (b & 1)) ;
 	Key = ((unsigned long) r << 16) | ((unsigned long) g << 8) | ((unsigned long) b) ;
-	if (OppNeighDeltas.size() == 0) {	// OppNeighDeltas are not calculated yet
-		calcOppNeighDeltas() ;
-	}
 }
 
-BmpRGBSample::BmpRGBSample (CvrStgFile *f, RGBTriple t)
-	: BmpSample(f), Color(t)
+BmpRGBSampleValue::BmpRGBSampleValue (CvrStgFile *f, RGBTriple t)
+	: BmpSampleValue(f), Color(t)
 {
 	SBit = (Bit) ((t.Red & 1) ^ (t.Green & 1) ^ (t.Blue & 1)) ;
 	Key = ((unsigned long) t.Red << 16) | ((unsigned long) t.Green << 8) | ((unsigned long) t.Blue) ;
-	if (OppNeighDeltas.size() == 0) {	// OppNeighDeltas are not calculated yet
-		calcOppNeighDeltas() ;
-	}
 }
 
-void BmpRGBSample::calcOppNeighDeltas()
+#if 0
+void BmpRGBSampleValue::calcOppNeighDeltas()
 {
 	// FIXME - ev. mit bool currgbisopp arbeiten - af = !af bei jeder veränderung
 	const int scmc = (int) ceil ((double) Radius) ;
@@ -200,9 +200,9 @@ void BmpRGBSample::calcOppNeighDeltas()
 	}
 }
 
-list<CvrStgSample*> *BmpRGBSample::getOppositeNeighbours() const
+list<SampleValue*> *BmpRGBSampleValue::getOppositeNeighbours() const
 {
-	list<CvrStgSample*> *retval = new list<CvrStgSample*> ;
+	list<SampleValue*> *retval = new list<SampleValue*> ;
 
 	const int scmc = (int) ceil ((double) Radius) ; // single component maximum change
 
@@ -210,7 +210,7 @@ list<CvrStgSample*> *BmpRGBSample::getOppositeNeighbours() const
 		((int) Color.Green - scmc >= 0) && ((int) Color.Green + scmc <= 255) &&
 		((int) Color.Blue - scmc >= 0) && ((int) Color.Blue + scmc <= 255)) {
 		for (vector<RGBVector>::iterator i = OppNeighDeltas.begin() ; i != OppNeighDeltas.end() ; i++) {
-			retval->push_back ((CvrStgSample *) new BmpRGBSample (getFile(), (unsigned char) ((int) Color.Red + i->Red),
+			retval->push_back ((SampleValue *) new BmpRGBSampleValue (getFile(), (unsigned char) ((int) Color.Red + i->Red),
 				(unsigned char) ((int) Color.Green + i->Green), (unsigned char) ((int) Color.Blue + i->Blue))) ;
 		}
 	}
@@ -220,15 +220,16 @@ list<CvrStgSample*> *BmpRGBSample::getOppositeNeighbours() const
 			int g = (int) Color.Green + i->Green ;
 			int b = (int) Color.Blue + i->Blue ;
 			if ((r >= 0) && (r <= 255) && (g >= 0) && (g <= 255) && (b >= 0) && b <= 255) {
-				retval->push_back ((CvrStgSample *) new BmpRGBSample (getFile(), (unsigned char) r, (unsigned char) g, (unsigned char) b)) ;
+				retval->push_back ((SampleValue *) new BmpRGBSampleValue (getFile(), (unsigned char) r, (unsigned char) g, (unsigned char) b)) ;
 			}
 		}
 	}
 
 	return retval ;
 }
+#endif
 
-CvrStgSample *BmpRGBSample::getNearestOppositeSample() const
+SampleValue *BmpRGBSampleValue::getNearestOppositeSampleValue () const
 {
 	vector<RGBTriple> candidates ;
 
@@ -240,10 +241,10 @@ CvrStgSample *BmpRGBSample::getNearestOppositeSample() const
 	addNOSCandidate (candidates, Color.Red, Color.Green, minus(Color.Blue, 1)) ;
 
 	unsigned int rnd = (unsigned int) RndSrc.getValue (candidates.size()) ;
-	return ((CvrStgSample*) new BmpRGBSample (getFile(), candidates[rnd])) ;
+	return ((SampleValue*) new BmpRGBSampleValue (getFile(), candidates[rnd])) ;
 }
 
-void BmpRGBSample::addNOSCandidate (vector<RGBTriple>& cands, unsigned char r, unsigned char g, unsigned char b) const
+void BmpRGBSampleValue::addNOSCandidate (vector<RGBTriple>& cands, unsigned char r, unsigned char g, unsigned char b) const
 {
 	RGBTriple cand (r, g, b) ;
 	if (cand != Color) {
@@ -251,22 +252,22 @@ void BmpRGBSample::addNOSCandidate (vector<RGBTriple>& cands, unsigned char r, u
 	}
 }
 
-unsigned char BmpRGBSample::getRed() const
+unsigned char BmpRGBSampleValue::getRed() const
 {
 	return Color.Red ;
 }
 
-unsigned char BmpRGBSample::getGreen() const
+unsigned char BmpRGBSampleValue::getGreen() const
 {
 	return Color.Green ;
 }
 
-unsigned char BmpRGBSample::getBlue() const
+unsigned char BmpRGBSampleValue::getBlue() const
 {
 	return Color.Blue ;
 }
 
-unsigned char BmpRGBSample::minus (unsigned char a, unsigned char b) const
+unsigned char BmpRGBSampleValue::minus (unsigned char a, unsigned char b) const
 {
 	unsigned char retval = 0 ;
 	if (a > b) {
@@ -275,7 +276,7 @@ unsigned char BmpRGBSample::minus (unsigned char a, unsigned char b) const
 	return retval ;
 }
 
-unsigned char BmpRGBSample::plus (unsigned char a, unsigned char b) const
+unsigned char BmpRGBSampleValue::plus (unsigned char a, unsigned char b) const
 {
 	unsigned int sum = a + b ;
 	return ((sum <= 255) ? sum : 255) ;

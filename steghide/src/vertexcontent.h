@@ -54,8 +54,8 @@ class VertexContent {
 	 **/
 	void decDegree (void) ;
 
-	SampleLabel getSampleLabel (unsigned short n) const ;
-	const vector<SampleLabel> &getSampleLabels (void) const ;
+	SampleValueLabel getSampleValueLabel (unsigned short n) const ;
+	const vector<SampleValueLabel> &getSampleValueLabels (void) const ;
 
 	/**
 	 * add a vertex to the vertex occurences of this vertex content
@@ -76,7 +76,7 @@ class VertexContent {
 	void deleteFromOccurences (list<Vertex*>::iterator it) ;
 	
 	private:
-	vector<unsigned long> SampleLabels ;
+	vector<unsigned long> SampleValueLabels ;
 	list<Vertex*> Occurences ;
 	unsigned long Degree ;
 } ;

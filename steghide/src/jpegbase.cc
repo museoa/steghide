@@ -228,13 +228,13 @@ unsigned long JpegContainer::getNumSamples ()
 	return sum ;
 }
 
-void JpegContainer::replaceSample (SamplePos pos, CvrStgSample *s)
+void JpegContainer::replaceSample (SamplePos pos, SampleValue *s)
 {
 	CvrStgObject *cso = calcCvrStgObject (&pos) ;
 	cso->replaceSample (pos, s) ;
 }
 
-CvrStgSample *JpegContainer::getSample (SamplePos pos)
+SampleValue *JpegContainer::getSample (SamplePos pos)
 {
 	CvrStgObject *cso = calcCvrStgObject (&pos) ;
 	return cso->getSample (pos) ;

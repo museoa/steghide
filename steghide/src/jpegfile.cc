@@ -69,7 +69,7 @@ unsigned long JpegFile::getNumSamples()
 	return frame->getNumSamples() ;
 }
 
-void JpegFile::replaceSample (SamplePos pos, CvrStgSample *s)
+void JpegFile::replaceSample (SamplePos pos, SampleValue *s)
 {
 	frame->replaceSample (pos, s) ;
 }
@@ -79,7 +79,7 @@ unsigned int JpegFile::getSamplesPerEBit()
 	return 2 ;
 }
 
-CvrStgSample *JpegFile::getSample (SamplePos pos)
+SampleValue *JpegFile::getSample (SamplePos pos)
 {
 	return frame->getSample(pos) ;
 }

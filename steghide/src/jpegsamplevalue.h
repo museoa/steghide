@@ -18,36 +18,31 @@
  *
  */
 
-#ifndef SH_JPEGFILE_H
-#define SH_JPEGFILE_H
+#ifndef SH_JPEGSAMPLE_H
+#define SH_JPEGSAMPLE_H
 
-#include <vector>
+#include "samplevalue.h"
+#include "common.h"
 
-#include "binaryio.h"
-#include "cvrstgfile.h"
-#include "jpegframe.h"
-
-/**
- * \class JpegFile
- * \brief a cover/stego file in jpeg, i.e. jfif format
- **/
-class JpegFile : public CvrStgFile {
+class JpegSampleValue : public SampleValue {
 	public:
-	JpegFile (void) ;
-	JpegFile (BinaryIO *io) ;
-	~JpegFile (void) ;
+	JpegSampleValue (void)
+		: SampleValue(NULL) {} ;
+	JpegSampleValue (CvrStgFile *f, int c) ;
 
-	void read (BinaryIO *io) ;
-	void write (void) ;
+	bool isNeighbour (SampleValue *s) const ;
+	SampleValue* getNearestOppositeSampleValue (void) const ;
+	float calcDistance (SampleValue *s) const ;
 
-	unsigned long getNumSamples (void) ;
-	void replaceSample (SamplePos pos, SampleValue *s) ;
-	SampleValue* getSample (SamplePos pos) ;
-	unsigned int getSamplesPerEBit (void) ;
+	float getRadius (void) const ;
+
+	int getDctCoeff (void) const ;
 
 	private:
-	/// the frame of the jpeg file
-	JpegFrame *frame ;
+	static const float DefaultRadius = 1.0 ;
+	static float Radius ;
+
+	int DctCoeff ;
 } ;
 
-#endif // ndef SH_JPEGFILE_H
+#endif // ndef SH_JPEGSAMPLE_H

@@ -25,7 +25,7 @@
 
 #include "binaryio.h"
 #include "cvrstgobject.h"
-#include "cvrstgsample.h"
+#include "samplevalue.h"
 
 class CvrStgFile : public CvrStgObject {
 	public:

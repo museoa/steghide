@@ -22,36 +22,28 @@
 #include <cmath>
 
 #include "common.h"
-#include "jpegsample.h"
+#include "jpegsamplevalue.h"
 
-JpegSample::JpegSample (CvrStgFile *f, int c)
-	: CvrStgSample(f), DctCoeff (c)
+JpegSampleValue::JpegSampleValue (CvrStgFile *f, int c)
+	: SampleValue(f), DctCoeff (c)
 {
 	int dctcoeff = ((DctCoeff >= 0) ? DctCoeff : -DctCoeff) ;
 	SBit = (Bit) (dctcoeff % 2) ;
 	Key = (unsigned long) DctCoeff ;
 }
 
-int JpegSample::getDctCoeff() const
+int JpegSampleValue::getDctCoeff() const
 {
 	return DctCoeff ;
 }
 
-bool JpegSample::isNeighbour (CvrStgSample *s) const
+bool JpegSampleValue::isNeighbour (SampleValue *s) const
 {
 	return (calcDistance (s) <= Radius) ;
 }
 
-list<CvrStgSample*> *JpegSample::getOppositeNeighbours() const
-{
-	list<CvrStgSample*> *retval = new list<CvrStgSample*> ;
-	retval->push_back ((CvrStgSample *) new JpegSample (getFile(), DctCoeff - 1)) ;
-	retval->push_back ((CvrStgSample *) new JpegSample (getFile(), DctCoeff + 1)) ;
-	return retval ;
-}
-
 // FIXME - it is assumed that the maximum and the minimum values are never touched (also in getOppositeNeighbours)
-CvrStgSample *JpegSample::getNearestOppositeSample() const
+SampleValue *JpegSampleValue::getNearestOppositeSampleValue() const
 {
 	int n_coeff = 0 ;
 	if (RndSrc.getBool()) {
@@ -60,15 +52,20 @@ CvrStgSample *JpegSample::getNearestOppositeSample() const
 	else {
 		n_coeff = DctCoeff + 1 ;
 	}
-	return ((CvrStgSample *) new JpegSample (getFile(), n_coeff)) ;
+	return ((SampleValue *) new JpegSampleValue (getFile(), n_coeff)) ;
 }
 
 // FIXME - for jpeg samples: implement a bias towards zero in calcDistance and getNearestOppositeSample ?
-float JpegSample::calcDistance (CvrStgSample *s) const
+float JpegSampleValue::calcDistance (SampleValue *s) const
 {
-	JpegSample *sample = dynamic_cast<JpegSample*> (s) ;
+	JpegSampleValue *sample = dynamic_cast<JpegSampleValue*> (s) ;
 	assert (sample != NULL) ;
 	return (abs (((float) DctCoeff) - ((float) sample->getDctCoeff()))) ;
 }
 
-float JpegSample::Radius = 1.0 ;
+float JpegSampleValue::getRadius () const
+{
+	return Radius ;
+}
+
+float JpegSampleValue::Radius = JpegSampleValue::DefaultRadius ;

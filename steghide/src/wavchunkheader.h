@@ -18,36 +18,27 @@
  *
  */
 
-#ifndef SH_JPEGFILE_H
-#define SH_JPEGFILE_H
-
-#include <vector>
+#ifndef SH_WAVCHUNKHEADER_H
+#define SH_WAVCHUNKHEADER_H
 
 #include "binaryio.h"
-#include "cvrstgfile.h"
-#include "jpegframe.h"
+#include "common.h"
 
-/**
- * \class JpegFile
- * \brief a cover/stego file in jpeg, i.e. jfif format
- **/
-class JpegFile : public CvrStgFile {
+class WavChunkHeader {
 	public:
-	JpegFile (void) ;
-	JpegFile (BinaryIO *io) ;
-	~JpegFile (void) ;
+	WavChunkHeader (void) {} ;
+	WavChunkHeader (char *id, WORD32 len) ;
+	WavChunkHeader (BinaryIO *io) ;
 
 	void read (BinaryIO *io) ;
-	void write (void) ;
+	void write (BinaryIO *io) const ;
 
-	unsigned long getNumSamples (void) ;
-	void replaceSample (SamplePos pos, SampleValue *s) ;
-	SampleValue* getSample (SamplePos pos) ;
-	unsigned int getSamplesPerEBit (void) ;
+	WORD32 getChunkLength (void) const { return ChunkLength ; } ;
+	const char *getChunkId (void) const { return ChunkId ; } ;
 
 	private:
-	/// the frame of the jpeg file
-	JpegFrame *frame ;
+	char ChunkId[4] ;
+	WORD32 ChunkLength ;
 } ;
 
-#endif // ndef SH_JPEGFILE_H
+#endif // ndef SH_WAVCHUNKHEADER_H

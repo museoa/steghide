@@ -106,7 +106,7 @@ void Embedder::calculate (CvrStgFile *csf, const BitString &e)
 void Embedder::embedVertex (CvrStgFile *csf, Vertex *v)
 {
 	SamplePos samplepos = 0 ;
-	CvrStgSample *newsample = NULL ;
+	SampleValue *newsample = NULL ;
 	if (v->isMatched()) {
 		Edge *e = v->getMatchingEdge() ;
 		samplepos = e->getSamplePos (v) ;
@@ -114,9 +114,10 @@ void Embedder::embedVertex (CvrStgFile *csf, Vertex *v)
 	}
 	else {
 		// choose a random sample (of those that are in the vertex) to embed data
+		// FIXME - the sample with the nearest NearestOppositeSample() should be chosen
 		unsigned short rnd = RndSrc.getValue (csf->getSamplesPerEBit()) ;
 		samplepos = v->getSamplePos (rnd) ;
-		newsample = v->getSample(rnd)->getNearestOppositeSample() ;
+		newsample = v->getSample(rnd)->getNearestOppositeSampleValue() ;
 	}
 
 	Bit oldbit = csf->getSampleBit (samplepos) ;

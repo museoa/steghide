@@ -24,6 +24,7 @@
 #include <queue>
 #include <vector>
 
+#include "bmpsamplevalue.h"
 #include "common.h"
 #include "cvrstgfile.h"
 #include "graph.h"
@@ -61,18 +62,18 @@ void Graph::addVertex (const vector<SamplePos> &poss)
 	Vertex *v = new Vertex (CurVertexLabel, SamplesPerEBit) ;
 
 	for (vector<SamplePos>::const_iterator i = poss.begin() ; i != poss.end() ; i++) {
-		CvrStgSample *sample = File->getSample (*i) ;
+		SampleValue *sv = File->getSample (*i) ;
 
-		hash_set<CvrStgSample*,hash<CvrStgSample*>,SamplesEqual>::iterator j = Samples_set.find (sample) ;
-		if (j == Samples_set.end()) { // sample has not been found - add it !
-			Samples_set.insert (sample) ;
+		hash_set<SampleValue*,hash<SampleValue*>,SampleValuesEqual>::iterator j = SampleValues_set.find (sv) ;
+		if (j == SampleValues_set.end()) { // sample has not been found - add it !
+			SampleValues_set.insert (sv) ;
 		}
-		else { // sample is already in Samples_map
-			delete sample ;
-			sample = *j ;
+		else { // sample value is already in SampleValues_map
+			delete sv ;
+			sv = *j ;
 		} 
 
-		v->addSample (*i, sample) ;
+		v->addSample (*i, sv) ;
 	}
 
 	Vertices.push_back (v) ;
@@ -83,45 +84,16 @@ void Graph::finishAdding()
 {
 	// move the hash_set Samples_set into the vector Samples, set sample labels
 	// needs: filled Sample_set
-	Samples = vector<CvrStgSample*> (Samples_set.size()) ;
+	SampleValues = vector<SampleValue*> (SampleValues_set.size()) ;
 	unsigned long label = 0 ;
-	for (hash_set<CvrStgSample*,hash<CvrStgSample*>,SamplesEqual>::const_iterator i = Samples_set.begin() ; i != Samples_set.end() ; i++) {
-		Samples[label] = *i ;
-		Samples[label]->setLabel (label) ;
+	for (hash_set<SampleValue*,hash<SampleValue*>,SampleValuesEqual>::const_iterator i = SampleValues_set.begin() ; i != SampleValues_set.end() ; i++) {
+		SampleValues[label] = *i ;
+		SampleValues[label]->setLabel (label) ;
 		label++ ;
 	}
+	SampleValues_set.clear() ;
 
-	// partition the samples into those with getBit()==1 and those with getBit()==0
-	unsigned long nsamples = Samples.size() ;
-	vector<CvrStgSample*> Samples0 = vector<CvrStgSample*>() ;
-	vector<CvrStgSample*> Samples1 = vector<CvrStgSample*>() ;
-	Samples0.reserve (nsamples / 2) ;
-	Samples1.reserve (nsamples / 2) ;
-	for (unsigned long label = 0 ; label < nsamples ; label++) {
-		if (Samples[label]->getBit()) {
-			Samples1.push_back (Samples[label]) ;
-		}
-		else {
-			Samples0.push_back (Samples[label]) ;
-		}
-	}
-
-	// create the SampleOppositeNeighbourhood data structure
-	SampleOppositeNeighbourhood = vector<vector<SampleLabel> > (nsamples) ;
-	unsigned long nsamples0 = Samples0.size() ;
-	unsigned long nsamples1 = Samples1.size() ;
-	for (unsigned long i0 = 0 ; i0 < nsamples0 ; i0++) {
-		for (unsigned long i1 = 0 ; i1 < nsamples1 ; i1++) {
-			if (Samples0[i0]->isNeighbour(Samples1[i1])) {
-				unsigned long label0 = Samples0[i0]->getLabel() ;
-				unsigned long label1 = Samples1[i1]->getLabel() ;
-				SampleOppositeNeighbourhood[label0].push_back (label1) ;
-				SampleOppositeNeighbourhood[label1].push_back (label0) ;
-			}
-		}
-	}
-	
-	Samples_set.clear() ;
+	SValueOppNeighs = SampleValueOppositeNeighbourhood (SampleValues) ;
 }
 
 unsigned long Graph::absdiff (unsigned long a, unsigned long b)
@@ -152,8 +124,8 @@ void Graph::updateShortestEdge (Vertex *v1)
 		unsigned long min_weight = ULONG_MAX ;
 
 		for (unsigned short i = 0 ; i < SamplesPerEBit ; i++) {
-			const vector<SampleLabel> &oppneighbours = SampleOppositeNeighbourhood[v1->getSample(i)->getLabel()] ;
-			for (vector<SampleLabel>::const_iterator j = oppneighbours.begin() ; j != oppneighbours.end() ; j++) {
+			const vector<SampleValueLabel> &oppneighbours = SValueOppNeighs[v1->getSample(i)->getLabel()] ;
+			for (vector<SampleValueLabel>::const_iterator j = oppneighbours.begin() ; j != oppneighbours.end() ; j++) {
 				// search the nearest samples to v1->getSamplePos(i)
 				map<SamplePos,pair<Vertex*,unsigned short> >::iterator upbound = SampleOccurences[(*j)].upper_bound (v1->getSamplePos(i)) ;
 				map<SamplePos,pair<Vertex*,unsigned short> >::iterator lowbound = upbound ;
@@ -257,17 +229,17 @@ void Graph::insertInMatching (vector<Edge*> *m, Edge *e)
 	}
 
 	// get all opposite neighbour samples of these two vertices
-	vector<SampleLabel> oppneighbours ;	// duplicates are necessary(!)
+	vector<SampleValueLabel> oppneighbours ;	// duplicates are necessary(!)
 	for (unsigned short i = 0 ; i < SamplesPerEBit ; i++) {
 		// FIXME - rewrite this! - don't use copy - use references
-		vector<SampleLabel> tmp = SampleOppositeNeighbourhood[v1->getSample(i)->getLabel()] ; // copy for Vertex1
+		vector<SampleValueLabel> tmp = SValueOppNeighs[v1->getSample(i)->getLabel()] ; // copy for Vertex1
 		copy (tmp.begin(), tmp.end(), back_inserter(oppneighbours)) ;
-		tmp = SampleOppositeNeighbourhood[v2->getSample(i)->getLabel()] ;	// copy for Vertex2
+		tmp = SValueOppNeighs[v2->getSample(i)->getLabel()] ;	// copy for Vertex2
 		copy (tmp.begin(), tmp.end(), back_inserter(oppneighbours)) ;
 	}
 
 	// for all neighbour samples decrement the degree of all vertex contents
-	for (vector<SampleLabel>::iterator i = oppneighbours.begin() ; i != oppneighbours.end() ; i++) {
+	for (vector<SampleValueLabel>::iterator i = oppneighbours.begin() ; i != oppneighbours.end() ; i++) {
 		for (list<VertexContent*>::iterator j = VertexContents[(*i)].begin() ; j != VertexContents[(*i)].end() ; j++) {
 			(*j)->decDegree() ;
 			if ((*j)->getDegree() == 1) {
@@ -293,7 +265,7 @@ void Graph::printVOutputVertices()
 #else
 	if (Args.Verbosity.getValue() == VERBOSE) {
 #endif
-		VerboseMessage vmsg1 (_("number of distinct samples: %lu"), Samples.size()) ;
+		VerboseMessage vmsg1 (_("number of distinct sample values: %lu"), SampleValues.size()) ;
 		vmsg1.printMessage() ;
 
 		VerboseMessage vmsg2 (_("number of vertices: %lu"), Vertices.size()) ;
@@ -302,7 +274,7 @@ void Graph::printVOutputVertices()
 #ifdef DEBUG
 		if (Args.DebugCommand.getValue() == PRINTSTATS) {
 			printf ("%lu:%lu:",
-					(unsigned long) Samples.size(),	// number of distinct samples
+					(unsigned long) SampleValues.size(),	// number of distinct sample values
 					(unsigned long) Vertices.size()	// number of vertices
 				   ) ;
 		}
@@ -440,14 +412,14 @@ void Graph::calcMatching()
 void Graph::setupConstrHeuristic()
 {
 	// initializations
-	SampleOccurences = vector<map<SamplePos,pair<Vertex*,unsigned short> > > (Samples.size()) ;
-	VertexContents = vector<list<VertexContent*> > (Samples.size()) ;
+	SampleOccurences = vector<map<SamplePos,pair<Vertex*,unsigned short> > > (SampleValues.size()) ;
+	VertexContents = vector<list<VertexContent*> > (SampleValues.size()) ;
 
 	// create the (hash_)set of (unique) vertex contents and set vertex contents in vertices
 	// needs: filled Vertices
 	hash_set<VertexContent*,hash<VertexContent*>,VertexContentsEqual> vc_set ;
 	for (vector<Vertex*>::iterator i = Vertices.begin() ; i != Vertices.end() ; i++) {
-		vector<SampleLabel> samplelabels (SamplesPerEBit) ;
+		vector<SampleValueLabel> samplelabels (SamplesPerEBit) ;
 		for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
 			samplelabels[j] = (*i)->getSample(j)->getLabel() ;
 		}
@@ -480,13 +452,13 @@ void Graph::setupConstrHeuristic()
 	for (hash_set<VertexContent*,hash<VertexContent*>,VertexContentsEqual>::iterator i = vc_set.begin() ; i != vc_set.end() ; i++) {
 		unsigned long degree = 0 ;
 		for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
-			const vector<SampleLabel> &oppneighbours = SampleOppositeNeighbourhood[(*i)->getSampleLabel(j)] ;
-			for (vector<SampleLabel>::const_iterator k = oppneighbours.begin() ; k != oppneighbours.end() ; k++) {
+			const vector<SampleValueLabel> &oppneighbours = SValueOppNeighs[(*i)->getSampleValueLabel(j)] ;
+			for (vector<SampleValueLabel>::const_iterator k = oppneighbours.begin() ; k != oppneighbours.end() ; k++) {
 				degree += SampleOccurences[*k].size() ;
 
 				// no loops
 				for (unsigned short l = 0 ; l < SamplesPerEBit ; l++) {
-					if (*k == (*i)->getSampleLabel(l)) {
+					if (*k == (*i)->getSampleValueLabel(l)) {
 						degree-- ;
 					}
 				}
@@ -496,7 +468,7 @@ void Graph::setupConstrHeuristic()
 		(*i)->setDegree (degree) ;
 
 		for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
-			VertexContents[(*i)->getSampleLabel(j)].insert (VertexContents[(*i)->getSampleLabel(j)].end(), *i) ;
+			VertexContents[(*i)->getSampleValueLabel(j)].insert (VertexContents[(*i)->getSampleValueLabel(j)].end(), *i) ;
 		}
 	}
 
@@ -676,11 +648,11 @@ void Graph::print (void) const
 		cout << Vertices[i]->getDegree() << " " << (i + 1) << " 0 0" << endl ;
 
 		for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
-			CvrStgSample *srcsample = Vertices[i]->getSample(j) ;
+			SampleValue *srcsample = Vertices[i]->getSample(j) ;
 			for (unsigned long k = 0 ; k != Vertices.size() ; k++) {
 				if (i != k) { // no loops
 					for (unsigned short l = 0 ; l < SamplesPerEBit ; l++) {
-						CvrStgSample *destsample = Vertices[k]->getSample(l) ;
+						SampleValue *destsample = Vertices[k]->getSample(l) ;
 						if ((srcsample->isNeighbour(destsample)) && (srcsample->getBit() != destsample->getBit())) { // is opposite neighbour
 							cout << (k + 1) << " 0" << endl ;
 						}
@@ -749,12 +721,12 @@ unsigned long Graph::check_degree (Vertex *v) const
 {
 	unsigned long degree = 0 ;
 	for (unsigned short i = 0 ; i < SamplesPerEBit ; i++) {
-		CvrStgSample *srcsample = v->getSample(i) ;
+		SampleValue *srcsample = v->getSample(i) ;
 		for (vector<Vertex*>::const_iterator j = Vertices.begin() ; j != Vertices.end() ; j++) {
 			if ((*j)->getLabel() != v->getLabel()) { // no loops
 				if (!(*j)->isMatched()) { // only umatched vertices
 					for (unsigned short k = 0 ; k < SamplesPerEBit ; k++) {
-						CvrStgSample *destsample = (*j)->getSample(k) ;
+						SampleValue *destsample = (*j)->getSample(k) ;
 						if ((srcsample->isNeighbour(destsample)) && (srcsample->getBit() != destsample->getBit())) { // is opposite neighbour
 							degree++ ;
 						}
@@ -781,11 +753,13 @@ bool Graph::check_ds (void) const
 	return retval ;
 }
 
+// FIXME - wo wird verwendet, dass jeder vertexcontents weiß welche knoten zu ihm gehören ??
+
 bool Graph::check_sizes (void) const
 {
 	cerr << "checking sizes" << endl ;
-	unsigned long n = Samples.size() ;
-	bool retval = ((n == SampleOppositeNeighbourhood.size()) && (n == VertexContents.size()) && (n == SampleOccurences.size())) ;
+	unsigned long n = SampleValues.size() ;
+	bool retval = ((n == VertexContents.size()) && (n == SampleOccurences.size())) ;
 	if (!retval) {
 		cerr << "FAILED: sizes don't match" << endl ;
 	}
@@ -796,11 +770,11 @@ bool Graph::check_samples (void) const
 {
 	bool retval = true ;
 	
-	unsigned long n = Samples.size() ;
+	unsigned long n = SampleValues.size() ;
 
-	cerr << "checking Samples: index - label consistency" << endl ;
+	cerr << "checking sample values: index - label consistency" << endl ;
 	for (unsigned long i = 0 ; i < n ; i++) {
-		SampleLabel l = Samples[i]->getLabel() ;
+		SampleValueLabel l = SampleValues[i]->getLabel() ;
 		if (l != i) {
 			retval = false ;
 			cerr << "FAILED: wrong sample label" << endl ;
@@ -808,13 +782,13 @@ bool Graph::check_samples (void) const
 		}
 	}
 
-	cerr << "checking Samples: uniqueness of samples" << endl ;
+	cerr << "checking sample values: uniqueness of samples" << endl ;
 	for (unsigned long i = 0 ; i < n ; i++) {
 		for (unsigned long j = 0 ; j < n ; j++) {
 			if (i != j) {
-				if (Samples[i]->getKey() == Samples[j]->getKey()) {
+				if (SampleValues[i]->getKey() == SampleValues[j]->getKey()) {
 					retval = false ;
-					cerr << "FAILED: duplicate sample in Sampels[" << i << "] and Samples[" << j << "]" << endl ;
+					cerr << "FAILED: duplicate sample in SampleValues[" << i << "] and SampleValues[" << j << "]" << endl ;
 				}
 			}
 		}
@@ -864,12 +838,12 @@ bool Graph::check_sampleoppositeneighbourhood (void) const
 {
 	bool retval = true ;
 
-	cerr << "checking SampleOppositeNeighbourhood: samples are opposite" << endl ;
-	for (unsigned long srclbl = 0 ; srclbl < Samples.size() ; srclbl++) {
-		const vector<SampleLabel> &oppneighs = SampleOppositeNeighbourhood[srclbl] ;
-		for (vector<SampleLabel>::const_iterator destlbl = oppneighs.begin() ; destlbl != oppneighs.end() ; destlbl++) {
-			Bit srcbit = Samples[srclbl]->getBit() ;
-			Bit destbit = Samples[*destlbl]->getBit() ;
+	cerr << "checking SampleValueOppositeNeighbourhood: sample values are opposite" << endl ;
+	for (SampleValueLabel srclbl = 0 ; srclbl < SampleValues.size() ; srclbl++) {
+		const vector<SampleValueLabel> &oppneighs = SValueOppNeighs[srclbl] ;
+		for (vector<SampleValueLabel>::const_iterator destlbl = oppneighs.begin() ; destlbl != oppneighs.end() ; destlbl++) {
+			Bit srcbit = SampleValues[srclbl]->getBit() ;
+			Bit destbit = SampleValues[*destlbl]->getBit() ;
 			if (srcbit == destbit) {
 				retval = false ;
 				cerr << "FAILED: SampleOppositeNeighbourhood contains a non-opposite sample" << endl ;
@@ -878,17 +852,19 @@ bool Graph::check_sampleoppositeneighbourhood (void) const
 		}
 	}
 
-	cerr << "checking SampleOppositeNeighbourhood: all oppneighs are in this list" << endl ;
-	for (unsigned long i = 0 ; i < Samples.size() ; i++) {
-		for (unsigned long j = 0 ; j < Samples.size() ; j++) {
-			if (Samples[i]->getBit() != Samples[j]->getBit()) {
+	// FIXME - also check all are neighbours
+
+	cerr << "checking SampleValueOppositeNeighbourhood: all oppneighs are in this list" << endl ;
+	for (unsigned long i = 0 ; i < SampleValues.size() ; i++) {
+		for (unsigned long j = 0 ; j < SampleValues.size() ; j++) {
+			if (SampleValues[i]->getBit() != SampleValues[j]->getBit()) {
 				// they are opposite...
-				if (Samples[i]->isNeighbour (Samples[j])) {
+				if (SampleValues[i]->isNeighbour (SampleValues[j])) {
 					// ...and they are neighbours => there must be an entry in SampleOppositeNeighbourhood
-					assert (Samples[j]->isNeighbour (Samples[i])) ;
-					const vector<SampleLabel> &oppneighs = SampleOppositeNeighbourhood[i] ;
+					assert (SampleValues[j]->isNeighbour (SampleValues[i])) ;
+					const vector<SampleValueLabel> &oppneighs = SValueOppNeighs[i] ;
 					bool found = false ;
-					for (vector<SampleLabel>::const_iterator k = oppneighs.begin() ; k != oppneighs.end() ; k++) {
+					for (vector<SampleValueLabel>::const_iterator k = oppneighs.begin() ; k != oppneighs.end() ; k++) {
 						if (*k == j) {
 							found = true ;
 						}
@@ -913,9 +889,9 @@ bool Graph::check_vertexcontents (void) const
 	for (vector<Vertex*>::const_iterator i = Vertices.begin() ; i != Vertices.end() ; i++) {
 		VertexContent *vcontent = (*i)->getContent() ;
 		for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
-			SampleLabel lbl = vcontent->getSampleLabel (j) ;
-			CvrStgSample *s = (*i)->getSample (j) ;
-			if (Samples[lbl] != s) { // pointer equivalence
+			SampleValueLabel lbl = vcontent->getSampleValueLabel (j) ;
+			SampleValue *s = (*i)->getSample (j) ;
+			if (SampleValues[lbl] != s) { // pointer equivalence
 				retval = false ;
 				cerr << "FAILED: vertex and it's content not consistent" << endl ;
 				break ;
@@ -927,7 +903,7 @@ bool Graph::check_vertexcontents (void) const
 	for (vector<Vertex*>::const_iterator i = Vertices.begin() ; i != Vertices.end() ; i++) {
 		VertexContent *vcontent = (*i)->getContent() ;
 		for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
-			SampleLabel lbl = vcontent->getSampleLabel (j) ;
+			SampleValueLabel lbl = vcontent->getSampleValueLabel (j) ;
 			bool found = false ;	// it should be possible to reach vcontent from all sample labels
 			for (list<VertexContent*>::const_iterator k = VertexContents[lbl].begin() ; k != VertexContents[lbl].end() ; k++) {
 				if ((*k) == vcontent) {
@@ -951,7 +927,7 @@ bool Graph::check_sampleoccurences (void) const
 	unsigned long nsamples = File->getNumSamples() ;
 
 	cerr << "checking SampleOccurences: every samplepos is a valid samplepos for this file" << endl ;
-	for (unsigned long i = 0 ; i < Samples.size() ; i++) {
+	for (unsigned long i = 0 ; i < SampleValues.size() ; i++) {
 		for (map<SamplePos,pair<Vertex*,unsigned short> >::const_iterator j = SampleOccurences[i].begin() ; j != SampleOccurences[i].end() ; j++) {
 			if (j->first >= nsamples) {
 				retval = false ;
@@ -962,7 +938,7 @@ bool Graph::check_sampleoccurences (void) const
 
 	cerr << "checking SampleOccurences: every samplepos occurs not more than once" << endl ;
 	vector<bool> hasoccured (nsamples, false) ;
-	for (unsigned long i = 0 ; i < Samples.size() ; i++) {
+	for (unsigned long i = 0 ; i < SampleValues.size() ; i++) {
 		for (map<SamplePos,pair<Vertex*,unsigned short> >::const_iterator j = SampleOccurences[i].begin() ; j != SampleOccurences[i].end() ; j++) {
 			if (hasoccured[j->first]) {
 				retval = false ;

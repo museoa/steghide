@@ -18,35 +18,35 @@
  *
  */
 
-#ifndef SH_AUSAMPLE_H
-#define SH_AUSAMPLE_H
+#ifndef SH_WAVSAMPLE_H
+#define SH_WAVSAMPLE_H
 
-#include "cvrstgsample.h"
+#include "samplevalue.h"
 #include "common.h"
 
-class AuSample : public CvrStgSample {
+class WavPCMSampleValue : public SampleValue {
 	public:
-	AuSample (void)
-		: CvrStgSample(NULL) {} ;
-	AuSample (CvrStgFile *f, unsigned char v)
-		: CvrStgSample(f), Value(v)
-		{ SBit = (Bit) (Value & 1) ; Key = (unsigned long) Value ; } ;
+	WavPCMSampleValue (void) : SampleValue(NULL) {} ;
+	WavPCMSampleValue (CvrStgFile *f, int v) ;
 
-	bool isNeighbour (CvrStgSample *s) const ;
-	list<CvrStgSample*> *getOppositeNeighbours (void) const ;
-	CvrStgSample* getNearestOppositeSample (void) const ;
-	float calcDistance (CvrStgSample *s) const ;
+	bool isNeighbour (SampleValue *s) const ;
+	SampleValue* getNearestOppositeSampleValue (void) const ;
+	float calcDistance (SampleValue *s) const ;
 
-	unsigned char getValue (void) const ;
+	float getRadius (void) const ;
+
+	int getValue (void) const ;
 
 	private:
 	/**
-	 * every pair of au samples whose distance is smaller than this constant are neighbours
+	 * every pair of wav samples whose distance is smaller than this constant are neighbours
 	 **/
-	// FIXME static const float DefaultRadius = 1.0 ;
+	static const float DefaultRadius = 1.0 ;
 	static float Radius ;
 
-	unsigned char Value ;
+	int Value ;
+	int MaxValue ;
+	int MinValue ;
 } ;
 
-#endif // ndef SH_AUSAMPLE_H
+#endif // ndef SH_WAVSAMPLE_H

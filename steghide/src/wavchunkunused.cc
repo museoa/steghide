@@ -18,36 +18,20 @@
  *
  */
 
-#ifndef SH_JPEGFILE_H
-#define SH_JPEGFILE_H
+#include "wavchunkunused.h"
 
-#include <vector>
+void WavChunkUnused::read (BinaryIO *io)
+{
+	Data = vector<BYTE> (ChunkHeader->getChunkLength()) ;
+	for (unsigned int i = 0 ; i < ChunkHeader->getChunkLength() ; i++) {
+		Data[i] = io->read8() ;
+	}
+}
 
-#include "binaryio.h"
-#include "cvrstgfile.h"
-#include "jpegframe.h"
-
-/**
- * \class JpegFile
- * \brief a cover/stego file in jpeg, i.e. jfif format
- **/
-class JpegFile : public CvrStgFile {
-	public:
-	JpegFile (void) ;
-	JpegFile (BinaryIO *io) ;
-	~JpegFile (void) ;
-
-	void read (BinaryIO *io) ;
-	void write (void) ;
-
-	unsigned long getNumSamples (void) ;
-	void replaceSample (SamplePos pos, SampleValue *s) ;
-	SampleValue* getSample (SamplePos pos) ;
-	unsigned int getSamplesPerEBit (void) ;
-
-	private:
-	/// the frame of the jpeg file
-	JpegFrame *frame ;
-} ;
-
-#endif // ndef SH_JPEGFILE_H
+void WavChunkUnused::write (BinaryIO *io)
+{
+	WavChunk::write (io) ;
+	for (vector<BYTE>::const_iterator i = Data.begin() ; i != Data.end() ; i++) {
+		io->write8 (*i) ;
+	}
+}

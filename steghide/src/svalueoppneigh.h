@@ -18,36 +18,26 @@
  *
  */
 
-#ifndef SH_JPEGFILE_H
-#define SH_JPEGFILE_H
+#ifndef SH_SVALUEOPPNEIGHS_H
+#define SH_SVALUEOPPNEIGHS_H
 
 #include <vector>
 
-#include "binaryio.h"
-#include "cvrstgfile.h"
-#include "jpegframe.h"
+#include "samplevalue.h"
+#include "common.h"
 
-/**
- * \class JpegFile
- * \brief a cover/stego file in jpeg, i.e. jfif format
- **/
-class JpegFile : public CvrStgFile {
+class SampleValueOppositeNeighbourhood {
 	public:
-	JpegFile (void) ;
-	JpegFile (BinaryIO *io) ;
-	~JpegFile (void) ;
+	SampleValueOppositeNeighbourhood (void) {} ;
+	SampleValueOppositeNeighbourhood (const vector<SampleValue*> &svalues) ;
 
-	void read (BinaryIO *io) ;
-	void write (void) ;
-
-	unsigned long getNumSamples (void) ;
-	void replaceSample (SamplePos pos, SampleValue *s) ;
-	SampleValue* getSample (SamplePos pos) ;
-	unsigned int getSamplesPerEBit (void) ;
+	const vector<SampleValueLabel> &operator[] (SampleValueLabel l) const { return OppNeighs[l] ; } ;
 
 	private:
-	/// the frame of the jpeg file
-	JpegFrame *frame ;
+	vector<vector<SampleValueLabel> > OppNeighs ;
+
+	void calcOppNeighs_generic (const vector<SampleValue*> &svalues) ;
+	void calcOppNeighs_RGB (const vector<SampleValue*> &svalues) ;
 } ;
 
-#endif // ndef SH_JPEGFILE_H
+#endif // ndef SH_SVALUEOPPNEIGHS_H

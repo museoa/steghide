@@ -65,24 +65,27 @@ typedef unsigned int WORD16;
 # elif SIZEOF_UNSIGNED_SHORT_INT == 2
 typedef unsigned short WORD16;
 # else
-#  error "There is no int with a size of 32 bits on your system. Cannot compile."
+#  error "There is no int with a size of 16 bits on your system. Cannot compile."
 # endif
 
 # if SIZEOF_UNSIGNED_CHAR == 1
 typedef unsigned char BYTE;
 # else
-#  error "There is no char with a size of 32 bits on your system. Cannot compile."
+#  error "There is no char with a size of 8 bits on your system. Cannot compile."
 # endif
 
 #else
+
+// FIXME - ev. UWORD für unsigned, WORD für signed
 typedef unsigned long	WORD32 ;
 typedef unsigned int	WORD16 ;
 typedef unsigned char	BYTE ;
+
 #endif
 
 typedef int Bit ;
-typedef unsigned long SamplePos ;
-typedef unsigned long VertexLabel ;
-typedef unsigned long SampleLabel ;
+typedef WORD32 SamplePos ;
+typedef WORD32 VertexLabel ;
+typedef WORD32 SampleValueLabel ;
 
 #endif // ndef SH_COMMON_H

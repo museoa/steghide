@@ -18,46 +18,24 @@
  *
  */
 
-#include "common.h"
-#include "cvrstgsample.h"
-#include "cvrstgfile.h"
+#ifndef SH_WAVCHUNK_H
+#define SH_WAVCHUNK_H
 
-CvrStgSample::CvrStgSample (void)
-	: File(NULL), Label(0)
-{
-}
+#include "binaryio.h"
+#include "wavchunkheader.h"
 
-CvrStgSample::CvrStgSample (CvrStgFile *f)
-	: File(f), Label(0)
-{
-}
+class WavChunk {
+	public:
+	WavChunk (void) {} ;
+	WavChunk (WavChunkHeader *chh) :
+		ChunkHeader(chh) {} ;
+	virtual ~WavChunk (void) ;
 
-Bit CvrStgSample::getBit (void) const
-{
-	return SBit ;
-}
+	virtual void read (BinaryIO *io) = 0 ;
+	virtual void write (BinaryIO *io) ;
 
-unsigned long CvrStgSample::getKey (void) const
-{
-	return Key ;
-}
+	protected:
+	WavChunkHeader *ChunkHeader ;
+} ;
 
-CvrStgFile *CvrStgSample::getFile (void) const
-{
-	return File ;
-}
-
-void CvrStgSample::setFile (CvrStgFile *f)
-{
-	File = f ;
-}
-
-unsigned long CvrStgSample::getLabel (void) const
-{
-	return Label ;
-}
-
-void CvrStgSample::setLabel (unsigned long l)
-{
-	Label = l ;
-}
+#endif // ndef SH_WAVCHUNK_H

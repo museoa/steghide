@@ -348,6 +348,24 @@ void Arguments::parse (int argc, char *argv[])
 			}
 		}
 
+		else if (std::string (argv[i]) == "-r" || std::string (argv[i]) == "--radius") {
+			if (Command.getValue() != EMBED) {
+				throw SteghideError (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
+			}
+
+			if (Radius.is_set()) {
+				throw SteghideError (_("the radius argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
+			}
+
+			if (++i == argc) {
+				throw SteghideError (_("the \"%s\" argument must be followed by the neighbourhood radius. type \"%s --help\" for help."), argv[i - 1], PROGNAME) ;
+			}
+
+			float tmp = 0.0 ;
+			sscanf (argv[i], "%f", &tmp) ;
+			Radius.setValue (tmp) ;
+		}
+
 		else if (std::string (argv[i]) == "-f" || std::string (argv[i]) == "--force") {
 			if (Force.is_set()) {
 				throw SteghideError (_("the force argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
@@ -438,24 +456,6 @@ void Arguments::parse (int argc, char *argv[])
 				unsigned int tmp = 0 ;
 				sscanf (argv[i], "%u", &tmp) ;
 				NConstrHeur.setValue (tmp) ;
-			}
-
-			else if (std::string (argv[i]) == "-r" || std::string (argv[i]) == "--radius") {
-				if (Command.getValue() != EMBED) {
-					throw SteghideError (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
-				}
-
-				if (Radius.is_set()) {
-					throw SteghideError (_("the radius argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
-				}
-
-				if (++i == argc) {
-					throw SteghideError (_("the \"%s\" argument must be followed by the neighbourhood radius. type \"%s --help\" for help."), argv[i - 1], PROGNAME) ;
-				}
-
-				float tmp = 0.0 ;
-				sscanf (argv[i], "%f", &tmp) ;
-				Radius.setValue (tmp) ;
 			}
 		}
 #endif

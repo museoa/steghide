@@ -18,36 +18,33 @@
  *
  */
 
-#ifndef SH_JPEGFILE_H
-#define SH_JPEGFILE_H
+#include "wavchunkheader.h"
 
-#include <vector>
+WavChunkHeader::WavChunkHeader (char *id, WORD32 len)
+{
+	for (unsigned int i = 0 ; i < 4 ; i++) {
+		ChunkId[i] = id[i] ;
+	}
+	ChunkLength = len ;
+}
 
-#include "binaryio.h"
-#include "cvrstgfile.h"
-#include "jpegframe.h"
+WavChunkHeader::WavChunkHeader (BinaryIO *io)
+{
+	read (io) ;
+}
 
-/**
- * \class JpegFile
- * \brief a cover/stego file in jpeg, i.e. jfif format
- **/
-class JpegFile : public CvrStgFile {
-	public:
-	JpegFile (void) ;
-	JpegFile (BinaryIO *io) ;
-	~JpegFile (void) ;
+void WavChunkHeader::read (BinaryIO *io)
+{
+	for (unsigned int i = 0 ; i < 4 ; i++) {
+		ChunkId[i] = io->read8() ;
+	}
+	ChunkLength = io->read32_le() ;
+}
 
-	void read (BinaryIO *io) ;
-	void write (void) ;
-
-	unsigned long getNumSamples (void) ;
-	void replaceSample (SamplePos pos, SampleValue *s) ;
-	SampleValue* getSample (SamplePos pos) ;
-	unsigned int getSamplesPerEBit (void) ;
-
-	private:
-	/// the frame of the jpeg file
-	JpegFrame *frame ;
-} ;
-
-#endif // ndef SH_JPEGFILE_H
+void WavChunkHeader::write (BinaryIO *io) const
+{
+	for (unsigned int i = 0 ; i < 4 ; i++) {
+		io->write8 (ChunkId[i]) ;
+	}
+	io->write32_le (ChunkLength) ;
+}

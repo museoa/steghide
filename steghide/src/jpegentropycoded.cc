@@ -27,7 +27,7 @@
 #include "jpegentropycoded.h"
 #include "jpegframe.h"
 #include "jpegframehdr.h"
-#include "jpegsample.h"
+#include "jpegsamplevalue.h"
 #include "jpegscan.h"
 #include "jpegscanhdr.h"
 
@@ -289,21 +289,21 @@ unsigned long JpegEntropyCoded::getNumSamples()
 	return ((unsigned long) dctcoeffs.size()) ;
 }
 
-void JpegEntropyCoded::replaceSample (SamplePos pos, CvrStgSample *s)
+void JpegEntropyCoded::replaceSample (SamplePos pos, SampleValue *s)
 {
 	assert (pos < dctcoeffs.size()) ;
-	JpegSample *sample = dynamic_cast<JpegSample*> (s) ;
+	JpegSampleValue *sample = dynamic_cast<JpegSampleValue*> (s) ;
 	assert (sample != NULL) ;
 	dctcoeffs[pos] = sample->getDctCoeff() ;
 }
 
-CvrStgSample *JpegEntropyCoded::getSample (SamplePos pos)
+SampleValue *JpegEntropyCoded::getSample (SamplePos pos)
 {
 	assert (pos < dctcoeffs.size()) ;
 	JpegScan *p_scan = (JpegScan *) getParent() ;
 	JpegFrame *p_frame = (JpegFrame *) p_scan->getParent() ;
 	JpegFile *p_file = p_frame->getFile() ;
-	return ((CvrStgSample *) new JpegSample ((CvrStgFile *) p_file, dctcoeffs[pos])) ;
+	return ((SampleValue *) new JpegSampleValue ((CvrStgFile *) p_file, dctcoeffs[pos])) ;
 }
 
 unsigned char JpegEntropyCoded::decode (BinaryIO *io, JpegHuffmanTable *ht)

@@ -22,7 +22,7 @@
 
 #include "common.h"
 #include "cvrstgfile.h"
-#include "cvrstgsample.h"
+#include "samplevalue.h"
 #include "embdata.h"
 #include "extractor.h"
 #include "permutation.h"

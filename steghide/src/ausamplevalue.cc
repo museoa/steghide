@@ -21,34 +21,21 @@
 #include <cstdlib>
 #include <cmath>
 
-#include "ausample.h"
+#include "ausamplevalue.h"
 #include "common.h"
 #include "randomsource.h"
 
-unsigned char AuSample::getValue () const
+unsigned char AuSampleValue::getValue () const
 {
 	return Value ;
 }
 
-bool AuSample::isNeighbour (CvrStgSample *s) const
+bool AuSampleValue::isNeighbour (SampleValue *s) const
 {
 	return (calcDistance (s) <= Radius) ;
 }
 
-list<CvrStgSample*> *AuSample::getOppositeNeighbours() const
-{
-	// FIXME - in this function it is assumed that the neighbourhood radius is 1
-	list<CvrStgSample*> *retval = new list<CvrStgSample*> ;
-	if (Value != 0) {
-		retval->push_back ((CvrStgSample *) new AuSample (getFile(), Value - 1)) ;
-	}
-	if (Value != 255) {
-		retval->push_back ((CvrStgSample *) new AuSample (getFile(), Value + 1)) ;
-	}
-	return retval ;
-}
-
-CvrStgSample *AuSample::getNearestOppositeSample() const
+SampleValue *AuSampleValue::getNearestOppositeSampleValue() const
 {
 	unsigned char n_value = 0 ;
 	if (Value == 0) {
@@ -65,14 +52,26 @@ CvrStgSample *AuSample::getNearestOppositeSample() const
 			n_value = Value + 1 ;
 		}
 	}
-	return ((CvrStgSample *) new AuSample (getFile(), n_value)) ;
+	return ((SampleValue *) new AuSampleValue (getFile(), n_value)) ;
 }
 
-float AuSample::calcDistance (CvrStgSample *s) const
+float AuSampleValue::calcDistance (SampleValue *s) const
 {
-	AuSample *sample = dynamic_cast<AuSample*> (s) ;
+	AuSampleValue *sample = dynamic_cast<AuSampleValue*> (s) ;
 	assert (sample != NULL) ;
 	return (abs (((float) Value) - ((float) sample->getValue()))) ;
 }
 
-float AuSample::Radius = 1.0 ;
+float AuSampleValue::getRadius () const
+{
+	float retval ;
+	if (Args.Radius.is_set()) {
+		retval = Args.Radius.getValue() ;
+	}
+	else {
+		retval = DefaultRadius ;
+	}
+	return retval ;
+}
+
+float AuSampleValue::Radius = AuSampleValue::DefaultRadius ;

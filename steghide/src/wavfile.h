@@ -25,6 +25,9 @@
 
 #include "binaryio.h"
 #include "cvrstgfile.h"
+#include "wavchunkheader.h"
+#include "wavchunkunused.h"
+#include "wavformatchunk.h"
 
 class WavFile : public CvrStgFile {
 	public:
@@ -36,58 +39,34 @@ class WavFile : public CvrStgFile {
 	void write (void) ;
 
 	unsigned long getNumSamples (void) ;
-	void replaceSample (SamplePos pos, CvrStgSample *s) ;
-	CvrStgSample* getSample (SamplePos pos) ;
+	void replaceSample (SamplePos pos, SampleValue *s) ;
+	SampleValue* getSample (SamplePos pos) ;
 	unsigned int getSamplesPerEBit (void) ;
 
 	unsigned short getBitsPerSample (void) ;
 
 	private:
 	static const signed short	FormatPCM = 1 ;
-	static const unsigned short	SizeFormatChunk = 16 ;
-	static const unsigned short	SizeChunkHeader = 8 ;
 
-	typedef struct struct_ChunkHeader {
-		char			id[4] ;
-		unsigned long	len ;
-	} ChunkHeader ;
-
-	typedef struct struct_PCMFormatChunk {
-		signed short	FormatTag ;
-		unsigned short	Channels ;
-		unsigned long	SamplesPerSec ;
-		unsigned long	AvgBytesPerSec ;
-		unsigned short	BlockAlign ;
-		unsigned short	BitsPerSample ;
-	} PCMFormatChunk ;
-
-	typedef struct struct_UnsupChunks {
-		int		len ;
-		void	*data ;
-	} UnsupChunks ;
-
-	ChunkHeader riffchhdr ;
+	WavChunkHeader *riffchhdr ;
 	char id_wave[4] ;
-	ChunkHeader fmtchhdr ;
-	PCMFormatChunk fmtch ;
-	UnsupChunks unsupchunks1 ;
-	ChunkHeader datachhdr ;
+
+	WavFormatChunk *FormatChunk ;
+
+	WavChunkHeader *datachhdr ;
 	/// this vector contains the wav data if BitsPerSample <= 8
 	vector<unsigned char> data_small ;
 	/// this vector contains the wav data if BitsPerSample >8
 	vector<int> data_large ;	// it is assumed that an int can hold 32 bits
 	
-	UnsupChunks	unsupchunks2 ;
+	vector<WavChunkUnused*> UnusedBeforeData ;
+	vector<WavChunkUnused*> UnusedAfterData ;
 
 	void readheaders (void) ;
 	void readdata (void) ;
 	void writeheaders (void) ;
 	void writedata (void) ;
 	void calcpos (SamplePos n, unsigned long *bytepos, unsigned short *firstbitpos) const ;
-	ChunkHeader *getChhdr (void) ;
-	void putChhdr (ChunkHeader *chhdr) ;
-	void *s_realloc (void *ptr, size_t size) ;
-	void cp32ul2uc_le (unsigned char *dest, unsigned long src) ;
 	/**
 	 * get the position of the first bit (of the first byte) containing the actual sample data
 	 * \return the bit position (where 0 is the lsb and 7 the msb)

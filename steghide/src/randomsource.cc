@@ -55,8 +55,9 @@ RandomSource::~RandomSource()
 
 BYTE RandomSource::getByte ()
 {
+#ifdef NORANDOM
 	BYTE retval = 0 ;
-#ifndef NORANDOM
+#else
 	if (RandomInput != NULL) {
 		retval = getc (RandomInput) ;
 	}

@@ -25,7 +25,7 @@
 #include "common.h"
 #include "cvrstgfile.h"
 #include "bmpfile.h"
-#include "bmpsample.h"
+#include "bmpsamplevalue.h"
 #include "error.h"
 
 BmpFile::BmpFile ()
@@ -84,7 +84,7 @@ unsigned long BmpFile::getNumSamples()
 	return retval ;
 }
 
-void BmpFile::replaceSample (SamplePos pos, CvrStgSample *s)
+void BmpFile::replaceSample (SamplePos pos, SampleValue *s)
 {
 	unsigned long row = 0, column = 0 ;
 	unsigned short firstbit = 0 ;
@@ -93,7 +93,7 @@ void BmpFile::replaceSample (SamplePos pos, CvrStgSample *s)
 	unsigned short bitcount = getBitCount() ;
 	switch (bitcount) {
 		case 1: case 4: case 8: {
-			BmpPaletteSample* sample = dynamic_cast<BmpPaletteSample*> (s) ;
+			BmpPaletteSampleValue* sample = dynamic_cast<BmpPaletteSampleValue*> (s) ;
 			assert (sample != NULL) ;
 
 			for (unsigned short i = 0 ; i < bitcount ; i++) {
@@ -103,7 +103,7 @@ void BmpFile::replaceSample (SamplePos pos, CvrStgSample *s)
 		break ; }
 
 		case 24: {
-			BmpRGBSample* sample = dynamic_cast<BmpRGBSample*> (s) ;
+			BmpRGBSampleValue* sample = dynamic_cast<BmpRGBSampleValue*> (s) ;
 			assert (sample != NULL) ;
 
 			bitmap[row][column] = sample->getRed() ;
@@ -128,25 +128,25 @@ unsigned int BmpFile::getSamplesPerEBit()
 	return retval ;
 }
 
-CvrStgSample *BmpFile::getSample (SamplePos pos)
+SampleValue *BmpFile::getSample (SamplePos pos)
 {
 	unsigned long row = 0, column = 0 ;
 	unsigned short firstbit = 0 ;
 	calcRCB (pos, &row, &column, &firstbit) ;
 
 	unsigned short bitcount = getBitCount() ;
-	CvrStgSample *retval = NULL ;
+	SampleValue *retval = NULL ;
 	switch (bitcount) {
 		case 1: case 4: case 8: {
 			unsigned char index = 0 ;
 			for (unsigned short i = 0 ; i < bitcount ; i++) {
 				index |= ((bitmap[row][column] & (1 << (firstbit + i))) >> firstbit) ;
 			}
-			retval = (CvrStgSample*) new BmpPaletteSample (this, index) ;
+			retval = (SampleValue*) new BmpPaletteSampleValue (this, index) ;
 		break ; }
 
 		case 24: {
-			retval = (CvrStgSample*) new BmpRGBSample (this, bitmap[row][column], bitmap[row][column + 1], bitmap[row][column + 2]) ;
+			retval = (SampleValue*) new BmpRGBSampleValue (this, bitmap[row][column], bitmap[row][column + 1], bitmap[row][column + 2]) ;
 		break ; }
 	}
 	return retval ;

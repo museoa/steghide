@@ -39,10 +39,10 @@ class Arguments {
 	ArgString		StgFn ;
 	ArgBool			Force ;
 	ArgVerbosity	Verbosity ;
+	ArgFloat		Radius ;
 #ifdef DEBUG
 	ArgDebugCommand	DebugCommand ;
 	ArgUInt			DebugLevel ;
-	ArgFloat		Radius ;
 	ArgUInt			PriorityQueueRange ;
 	ArgUInt			NConstrHeur ;
 #endif

@@ -252,8 +252,8 @@ class JpegContainer : public JpegObject, public CvrStgObject {
 	void write (BinaryIO *io) ;
 
 	unsigned long getNumSamples (void) ;
-	void replaceSample (SamplePos pos, CvrStgSample *s) ;
-	CvrStgSample* getSample (SamplePos pos) ;
+	void replaceSample (SamplePos pos, SampleValue *s) ;
+	SampleValue* getSample (SamplePos pos) ;
 
 	protected:
 	/**

@@ -25,7 +25,7 @@
 #include <vector>
 
 #include "common.h"
-#include "cvrstgsample.h"
+#include "samplevalue.h"
 #include "edge.h"
 #include "vertexcontent.h"
 
@@ -42,7 +42,7 @@ class Vertex {
 	 * \param pos the position of the sample in the cvrstgfile
 	 * \param a pointer to the only(!) copy of the sample with this value
 	 **/
-	void addSample (SamplePos spos, CvrStgSample *s) ;
+	void addSample (SamplePos spos, SampleValue *s) ;
 
 	/**
 	 * of how many samples does this vertex consist ?
@@ -64,7 +64,7 @@ class Vertex {
 	 * \param i an index of a sample in this vertex
 	 * \return the value of the sample in the associated cvrstgfile
 	 **/
-	CvrStgSample *getSample (unsigned int i) const ;
+	SampleValue *getSample (unsigned int i) const ;
 
 	/**
 	 * set the content of the vertex (i.e. tell the vertex about his sample labels)
@@ -94,7 +94,7 @@ class Vertex {
 
 	unsigned short NumSamples ;
 	vector<SamplePos> SamplePositions ;
-	vector<CvrStgSample*> Samples ;
+	vector<SampleValue*> Samples ;
 	
 	VertexContent *Content ;
 	list<Vertex*>::iterator OccurencesInContentIt ;

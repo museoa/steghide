@@ -38,8 +38,8 @@ class BmpFile : public CvrStgFile {
 	void write (void) ;
 
 	unsigned long getNumSamples (void) ;
-	void replaceSample (SamplePos pos, CvrStgSample *s) ;
-	CvrStgSample* getSample (SamplePos pos) ;
+	void replaceSample (SamplePos pos, SampleValue *s) ;
+	SampleValue* getSample (SamplePos pos) ;
 	unsigned int getSamplesPerEBit (void) ;
 
 	unsigned short getBitCount (void) const ;

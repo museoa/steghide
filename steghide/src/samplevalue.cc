@@ -18,34 +18,46 @@
  *
  */
 
-#ifndef SH_WAVSAMPLE_H
-#define SH_WAVSAMPLE_H
-
-#include "cvrstgsample.h"
 #include "common.h"
+#include "samplevalue.h"
+#include "cvrstgfile.h"
 
-class WavPCMSample : public CvrStgSample {
-	public:
-	WavPCMSample (void) : CvrStgSample(NULL) {} ;
-	WavPCMSample (CvrStgFile *f, int v) ;
+SampleValue::SampleValue (void)
+	: File(NULL), Label(0)
+{
+}
 
-	bool isNeighbour (CvrStgSample *s) const ;
-	list<CvrStgSample*> *getOppositeNeighbours (void) const ;
-	CvrStgSample* getNearestOppositeSample (void) const ;
-	float calcDistance (CvrStgSample *s) const ;
+SampleValue::SampleValue (CvrStgFile *f)
+	: File(f), Label(0)
+{
+}
 
-	int getValue (void) const ;
+Bit SampleValue::getBit (void) const
+{
+	return SBit ;
+}
 
-	private:
-	/**
-	 * every pair of wav samples whose distance is smaller than this constant are neighbours
-	 **/
-	//FIXME static const float DefaultRadius = 1.0 ;
-	static float Radius ;
+unsigned long SampleValue::getKey (void) const
+{
+	return Key ;
+}
 
-	int Value ;
-	int MaxValue ;
-	int MinValue ;
-} ;
+CvrStgFile *SampleValue::getFile (void) const
+{
+	return File ;
+}
 
-#endif // ndef SH_WAVSAMPLE_H
+void SampleValue::setFile (CvrStgFile *f)
+{
+	File = f ;
+}
+
+unsigned long SampleValue::getLabel (void) const
+{
+	return Label ;
+}
+
+void SampleValue::setLabel (unsigned long l)
+{
+	Label = l ;
+}

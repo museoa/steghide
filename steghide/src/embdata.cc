@@ -96,6 +96,7 @@ void EmbData::addBits (BitString bits)
 				MCryptpp crypto (CryptAlgo, CryptMode) ;
 				decrypted = crypto.decrypt (bits, Args.Passphrase.getValue()) ;
 			}
+			// TODO - zlib inflate here - decrypted becomes plain
 
 			unsigned long pos = 0 ;
 
@@ -280,6 +281,7 @@ BitString EmbData::getBitString ()
 	hdr.append((unsigned char) CryptAlgo, MCryptpp::sizeAlgorithm).append((unsigned char) CryptMode, MCryptpp::sizeMode) ;
 	hdr.append(nbits(main.getLength()), NBitsLenOfNEmbBits).append(main.getLength(), nbits(main.getLength())) ;
 
+	// TODO - zlib deflate here
 	if (CryptAlgo != MCryptpp::NONE) {
 		MCryptpp crypto (CryptAlgo, CryptMode) ;
 		main = crypto.encrypt (main, Args.Passphrase.getValue()) ;

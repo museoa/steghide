@@ -24,7 +24,7 @@
 #include <vector>
 
 #include "aufile.h"
-#include "ausample.h"
+#include "ausamplevalue.h"
 #include "common.h"
 #include "cvrstgfile.h"
 #include "cvrstgobject.h"
@@ -84,18 +84,18 @@ unsigned long AuFile::getNumSamples()
 	return data.size() ;
 }
 
-void AuFile::replaceSample (SamplePos pos, CvrStgSample *s)
+void AuFile::replaceSample (SamplePos pos, SampleValue *s)
 {
-	AuSample *sample = dynamic_cast<AuSample*> (s) ;
+	AuSampleValue *sample = dynamic_cast<AuSampleValue*> (s) ;
 	assert (sample != NULL) ;
 	assert (pos < getNumSamples()) ;
 	data[pos] = sample->getValue() ;
 }
 
-CvrStgSample *AuFile::getSample (SamplePos pos)
+SampleValue *AuFile::getSample (SamplePos pos)
 {
 	assert (pos < getNumSamples()) ;
-	return ((CvrStgSample *) new AuSample (this, data[pos])) ;
+	return ((SampleValue *) new AuSampleValue (this, data[pos])) ;
 }
 
 void AuFile::readheaders (void)

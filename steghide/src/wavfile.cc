@@ -27,7 +27,7 @@
 #include "error.h"
 #include "msg.h"
 #include "wavfile.h"
-#include "wavsample.h"
+#include "wavsamplevalue.h"
 
 WavFile::WavFile ()
 	: CvrStgFile()
@@ -43,8 +43,15 @@ WavFile::WavFile (BinaryIO *io)
 
 WavFile::~WavFile ()
 {
-	free (unsupchunks1.data) ;
-	free (unsupchunks2.data) ;
+	delete riffchhdr ;
+	delete FormatChunk ;
+	delete datachhdr ;
+	for (vector<WavChunkUnused*>::iterator i = UnusedBeforeData.begin() ; i != UnusedBeforeData.end() ; i++) {
+		delete (*i) ;
+	}
+	for (vector<WavChunkUnused*>::iterator i = UnusedAfterData.begin() ; i != UnusedAfterData.end() ; i++) {
+		delete (*i) ;
+	}
 }
 
 void WavFile::read (BinaryIO *io)
@@ -66,7 +73,7 @@ void WavFile::write ()
 unsigned long WavFile::getNumSamples()
 {
 	unsigned long retval = 0 ;
-	if (fmtch.BitsPerSample <= 8) {
+	if (FormatChunk->getBitsPerSample() <= 8) {
 		retval = data_small.size() ;
 	}
 	else {
@@ -75,11 +82,11 @@ unsigned long WavFile::getNumSamples()
 	return retval ;
 }
 
-void WavFile::replaceSample (SamplePos pos, CvrStgSample *s)
+void WavFile::replaceSample (SamplePos pos, SampleValue *s)
 {
-	WavPCMSample *sample = dynamic_cast<WavPCMSample*> (s) ;
+	WavPCMSampleValue *sample = dynamic_cast<WavPCMSampleValue*> (s) ;
 	assert (sample != NULL) ;
-	if (fmtch.BitsPerSample <= 8) {
+	if (FormatChunk->getBitsPerSample() <= 8) {
 		data_small[pos] = (unsigned char) sample->getValue() ;
 	}
 	else {
@@ -92,31 +99,31 @@ unsigned int WavFile::getSamplesPerEBit()
 	return 2 ;
 }
 
-CvrStgSample *WavFile::getSample (SamplePos pos)
+SampleValue *WavFile::getSample (SamplePos pos)
 {
 	int value = 0 ;
-	if (fmtch.BitsPerSample <= 8) {
+	if (FormatChunk->getBitsPerSample() <= 8) {
 		value = (int) data_small[pos] ;
 	}
 	else {
 		value = data_large[pos] ;
 	}
-	return ((CvrStgSample *) new WavPCMSample (this, value)) ;
+	return ((SampleValue *) new WavPCMSampleValue (this, value)) ;
 }
 
 unsigned short WavFile::getBitsPerSample()
 {
-	return fmtch.BitsPerSample ;
+	return FormatChunk->getBitsPerSample() ;
 }
 
 unsigned short WavFile::getBytesPerSample()
 {
 	unsigned short retval = 0 ;
-	if (fmtch.BitsPerSample % 8 == 0) {
-		retval = fmtch.BitsPerSample / 8 ;
+	if (FormatChunk->getBitsPerSample() % 8 == 0) {
+		retval = FormatChunk->getBitsPerSample() / 8 ;
 	}
 	else {
-		retval = (fmtch.BitsPerSample / 8) + 1 ;
+		retval = (FormatChunk->getBitsPerSample() / 8) + 1 ;
 	}
 	return retval ;
 }
@@ -124,11 +131,11 @@ unsigned short WavFile::getBytesPerSample()
 unsigned short WavFile::getFirstBitPosinSample()
 {
 	unsigned short retval = 0 ;
-	if (fmtch.BitsPerSample % 8 == 0) {
+	if (FormatChunk->getBitsPerSample() % 8 == 0) {
 		retval = 0 ;
 	}
 	else {
-		retval = 8 - (fmtch.BitsPerSample % 8) ;
+		retval = 8 - (FormatChunk->getBitsPerSample() % 8) ;
 	}
 	return retval ;
 }
@@ -139,12 +146,13 @@ void WavFile::readdata (void)
 	try {
 		data_small.clear() ;
 		data_large.clear() ;
+		unsigned short bitspersample = FormatChunk->getBitsPerSample() ;
 		unsigned short bytespersample = getBytesPerSample() ;
 		unsigned short firstbitpos = getFirstBitPosinSample() ;
 			
 		unsigned long readpos = 0 ;
-		while (readpos < datachhdr.len) {
-			if (fmtch.BitsPerSample <= 8) {
+		while (readpos < datachhdr->getChunkLength()) {
+			if (bitspersample <= 8) {
 				data_small.push_back ((getBinIO()->read8()) >> firstbitpos) ;
 			}
 			else {
@@ -153,7 +161,7 @@ void WavFile::readdata (void)
 				value = value >> firstbitpos ;
 					
 				int sign = 0 ;
-				if (((value & (1 << (fmtch.BitsPerSample - 1))) >> (fmtch.BitsPerSample - 1)) == 0) {
+				if (((value & (1 << (bitspersample - 1))) >> (bitspersample - 1)) == 0) {
 					sign = 1 ;
 				}
 				else {
@@ -163,7 +171,7 @@ void WavFile::readdata (void)
 				}
 
 				unsigned int mask = 0 ;
-				for (unsigned short i = 0 ; i < fmtch.BitsPerSample ; i++) {
+				for (unsigned short i = 0 ; i < bitspersample ; i++) {
 					mask <<= 1 ;
 					mask |= 1 ;
 				}
@@ -174,19 +182,11 @@ void WavFile::readdata (void)
 			readpos += bytespersample ;
 		}
 
-		unsupchunks2.data = NULL ;
-		unsupchunks2.len = 0 ;
-		if (!getBinIO()->eof()) {
-			unsigned char *ptrunsupdata2 = NULL ;
-
-			while (!getBinIO()->eof()) {
-				unsupchunks2.data = s_realloc (unsupchunks2.data, unsupchunks2.len + 1) ;
-				ptrunsupdata2 = (unsigned char *) unsupchunks2.data ;
-
-				ptrunsupdata2[unsupchunks2.len] = getBinIO()->read8() ;
-				unsupchunks2.len++ ;
-			}			
-		}
+		UnusedAfterData.clear() ;
+		while (!getBinIO()->eof()) {
+			WavChunkHeader *chhdr = new WavChunkHeader (getBinIO()) ;
+			UnusedAfterData.push_back (new WavChunkUnused (chhdr, getBinIO())) ;
+		}			
 	}
 	catch (BinaryInputError e) {
 		switch (e.getType()) {
@@ -212,12 +212,13 @@ void WavFile::readdata (void)
 void WavFile::writedata (void)
 {
 	try {
+		unsigned short bitspersample = FormatChunk->getBitsPerSample() ;
 		unsigned short bytespersample = getBytesPerSample() ;
 		unsigned short firstbitpos = getFirstBitPosinSample() ;
 
 		unsigned long writepos = 0 ;
-		while (writepos < datachhdr.len) {
-			if (fmtch.BitsPerSample <= 8) {
+		while (writepos < datachhdr->getChunkLength()) {
+			if (bitspersample <= 8) {
 				getBinIO()->write8 (data_small[writepos] << firstbitpos) ;
 			}
 			else {
@@ -236,11 +237,8 @@ void WavFile::writedata (void)
 			writepos += bytespersample ;
 		}
 
-		if (unsupchunks2.len > 0) {
-			unsigned char *ptrunsupdata2 = (unsigned char *) unsupchunks2.data ;
-			for (int i = 0; i < unsupchunks2.len; i++) {
-				getBinIO()->write8 (ptrunsupdata2[i]) ;
-			}
+		for (vector<WavChunkUnused*>::const_iterator i = UnusedAfterData.begin() ; i != UnusedAfterData.end() ; i++) {
+			(*i)->write (getBinIO()) ;
 		}
 	}
 	catch (BinaryOutputError e) {
@@ -260,72 +258,25 @@ void WavFile::writedata (void)
 void WavFile::readheaders ()
 {
 	try {
-		riffchhdr.id[0] = 'R' ;
-		riffchhdr.id[1] = 'I' ;
-		riffchhdr.id[2] = 'F' ;
-		riffchhdr.id[3] = 'F' ;
-
-		riffchhdr.len = getBinIO()->read32_le() ;
+		riffchhdr = new WavChunkHeader ("RIFF", getBinIO()->read32_le()) ;
 
 		for (unsigned int i = 0 ; i < 4 ; i++) {
 			id_wave[i] = getBinIO()->read8() ;
 		}
-		if (!(id_wave[0] == 'W' &&
-			id_wave[1] == 'A' &&
-			id_wave[2] == 'V' &&
-			id_wave[3] == 'E')) {
+		if (strncmp (id_wave, "WAVE", 4) != 0) {
 			throw UnSupFileFormat (getBinIO()) ;
 		}
 
-		fmtchhdr = *getChhdr() ;
-		if (!(fmtchhdr.id[0] == 'f' &&
-			fmtchhdr.id[1] == 'm' &&
-			fmtchhdr.id[2] == 't' &&
-			fmtchhdr.id[3] == ' ')) {
-			if (getBinIO()->is_std()) {
-				throw SteghideError (_("could not find the format chunk in the wav file from standard input.")) ;
-			}
-			else {
-				throw SteghideError (_("could not find the format chunk in the wav file \"%s\"."), getBinIO()->getName().c_str()) ;
-			}
-		}
-		if ((fmtch.FormatTag = getBinIO()->read16_le()) != FormatPCM) {
-			if (getBinIO()->is_std()) {
-				throw SteghideError (_("the wav file from standard input has a format that is not supported.")) ;
-			}
-			else {
-				throw SteghideError (_("the wav file \"%s\" has a format that is not supported."), getBinIO()->getName().c_str()) ;
-			}
-		}
-		fmtch.Channels = getBinIO()->read16_le () ;
-		fmtch.SamplesPerSec = getBinIO()->read32_le () ;
-		fmtch.AvgBytesPerSec = getBinIO()->read32_le () ;
-		fmtch.BlockAlign = getBinIO()->read16_le () ;
-		fmtch.BitsPerSample = getBinIO()->read16_le() ;
+		FormatChunk = new WavFormatChunk (new WavChunkHeader (getBinIO()), getBinIO()) ;
 
-		unsupchunks1.data = NULL ;
-		unsupchunks1.len = 0 ;
-		ChunkHeader *tmpchhdr = getChhdr () ;
-		while (strncmp (tmpchhdr->id, "data", 4) != 0) {
-			unsupchunks1.data = s_realloc (unsupchunks1.data, (unsupchunks1.len + SizeChunkHeader + tmpchhdr->len)) ;
-
-			unsigned char *ptrunsupdata1 = (unsigned char *) unsupchunks1.data ;
-			unsigned int i = 0 ;
-			for (i = 0; i < 4; i++) {
-				ptrunsupdata1[unsupchunks1.len++] = (unsigned char) tmpchhdr->id[i] ;
-			}
-			cp32ul2uc_le (&ptrunsupdata1[unsupchunks1.len], tmpchhdr->len) ;
-			unsupchunks1.len += 4 ;
-
-			for (i = 0; i < tmpchhdr->len; i++) {
-				ptrunsupdata1[unsupchunks1.len++] = (unsigned char) getBinIO()->read8() ;
-			}
-
-			tmpchhdr = getChhdr() ;
+		UnusedBeforeData.clear() ;
+		WavChunkHeader *chhdr = new WavChunkHeader (getBinIO()) ; 
+		while (strncmp (chhdr->getChunkId(), "data", 4) != 0) {
+			UnusedBeforeData.push_back (new WavChunkUnused (chhdr, getBinIO())) ;
+			chhdr = new WavChunkHeader (getBinIO()) ;
 		}
 
-		strncpy (datachhdr.id, tmpchhdr->id, 4) ;
-		datachhdr.len = tmpchhdr->len ;
+		datachhdr = chhdr ;
 	}
 	catch (BinaryInputError e) {
 		switch (e.getType()) {
@@ -362,26 +313,18 @@ void WavFile::readheaders ()
 void WavFile::writeheaders ()
 {
 	try {
-		putChhdr (&riffchhdr) ;
+		riffchhdr->write (getBinIO()) ;
 		for (int i = 0 ; i < 4 ; i++) {
 			getBinIO()->write8 (id_wave[i]) ;
 		}
 
-		putChhdr (&fmtchhdr) ;
-		getBinIO()->write16_le (fmtch.FormatTag) ;
-		getBinIO()->write16_le (fmtch.Channels) ;
-		getBinIO()->write32_le (fmtch.SamplesPerSec) ;
-		getBinIO()->write32_le (fmtch.AvgBytesPerSec) ;
-		getBinIO()->write16_le (fmtch.BlockAlign) ;
-		getBinIO()->write16_le (fmtch.BitsPerSample) ;
+		FormatChunk->write (getBinIO()) ;
 
-		if (unsupchunks1.len > 0) {
-			unsigned char *ptrunsupdata1 = (unsigned char *) unsupchunks1.data ;
-			for (int i = 0; i < unsupchunks1.len; i++)
-				getBinIO()->write8 (ptrunsupdata1[i]) ;
+		for (vector<WavChunkUnused*>::const_iterator i = UnusedBeforeData.begin() ; i != UnusedBeforeData.end() ; i++) {
+			(*i)->write (getBinIO()) ;
 		}
 
-		putChhdr (&datachhdr) ;
+		datachhdr->write (getBinIO()) ;
 	}
 	catch (BinaryOutputError e) {
 		switch (e.getType()) {
@@ -398,45 +341,4 @@ void WavFile::writeheaders ()
 			}
 		}
 	}
-}
-
-/* reads a wav chunk header */
-WavFile::ChunkHeader *WavFile::getChhdr ()
-{
-	ChunkHeader *retval = new ChunkHeader ;
-
-	retval->id[0] = getBinIO()->read8() ;
-	retval->id[1] = getBinIO()->read8() ;
-	retval->id[2] = getBinIO()->read8() ;
-	retval->id[3] = getBinIO()->read8() ;
-	retval->len = getBinIO()->read32_le() ;
-
-	return retval ;
-}
-
-/* writes a wav chunk header from chhdr to the file */
-void WavFile::putChhdr (ChunkHeader *chhdr)
-{
-	getBinIO()->write8 (chhdr->id[0]) ;
-	getBinIO()->write8 (chhdr->id[1]) ;
-	getBinIO()->write8 (chhdr->id[2]) ;
-	getBinIO()->write8 (chhdr->id[3]) ;
-	getBinIO()->write32_le (chhdr->len) ;
-}
-
-void *WavFile::s_realloc (void *ptr, size_t size)
-{
-	void *retval = NULL ;
-	if ((retval = realloc (ptr, size)) == NULL) {
-		throw SteghideError (_("could not reallocate memory.")) ;
-	}
-	return retval ;
-}
-
-void WavFile::cp32ul2uc_le (unsigned char *dest, unsigned long src)
-{
-	dest[0] = src & 0xFF ;
-	dest[1] = (src >> 8) & 0xFF ;
-	dest[2] = (src >> 16) & 0xFF ;
-	dest[3] = (src >> 24) & 0xFF ;
 }

@@ -107,8 +107,7 @@ vector<unsigned char> MCryptpp::_encrypt (vector<unsigned char> p, string pp)
 	unsigned char *IV = NULL ;
 	if (mcrypt_enc_mode_has_iv (MCryptD)) {
 		unsigned int ivsize = mcrypt_enc_get_iv_size (MCryptD) ;
-		//DEBUG vector<unsigned char> rndIV = RndSrc.getBytes (ivsize) ;
-		vector<unsigned char> rndIV = vector<unsigned char> (ivsize, 0) ;
+		vector<unsigned char> rndIV = RndSrc.getBytes (ivsize) ;
 		IV = (unsigned char *) s_malloc (ivsize) ;
 		for (unsigned int i = 0 ; i < ivsize ; i++) {
 			IV[i] = rndIV[i] ;
@@ -176,7 +175,6 @@ vector<unsigned char> MCryptpp::_decrypt (vector<unsigned char> c, string pp)
 		unsigned int ivsize = mcrypt_enc_get_iv_size (MCryptD) ;
 		IV = (unsigned char *) s_malloc (ivsize) ;
 		for (unsigned int i = 0 ; i < ivsize ; i++) {
-			assert (c[i] == 0) ; // DEBUG
 			IV[i] = c[i] ;
 		}
 		cstart = ivsize ;

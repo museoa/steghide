@@ -25,8 +25,8 @@
 //
 VertexContent::VertexContent (const vector<unsigned long> &sl)
 {
-	SampleLabels = sl ;
-	sort (SampleLabels.begin(), SampleLabels.end()) ;
+	SampleValueLabels = sl ;
+	sort (SampleValueLabels.begin(), SampleValueLabels.end()) ;
 
 	Occurences = list<Vertex*>() ;
 	Degree = 0 ;
@@ -49,14 +49,14 @@ void VertexContent::decDegree()
 	}
 }
 
-SampleLabel VertexContent::getSampleLabel (unsigned short n) const
+SampleValueLabel VertexContent::getSampleValueLabel (unsigned short n) const
 {
-	return SampleLabels[n] ;
+	return SampleValueLabels[n] ;
 }
 
-const vector<SampleLabel> &VertexContent::getSampleLabels() const
+const vector<SampleValueLabel> &VertexContent::getSampleValueLabels() const
 {
-	return SampleLabels ;
+	return SampleValueLabels ;
 }
 
 list<Vertex*>::iterator VertexContent::addOccurence (Vertex *v)
@@ -80,8 +80,8 @@ void VertexContent::deleteFromOccurences (list<Vertex*>::iterator it)
 bool VertexContentsEqual::operator() (const VertexContent *vc1, const VertexContent* vc2) const
 {
 	// it is assumed that the SampleLabels returned from vc1,vc2 are sorted - FIXME - is this ok ?
-	vector<SampleLabel> samplelabels1 = vc1->getSampleLabels() ;
-	vector<SampleLabel> samplelabels2 = vc2->getSampleLabels() ;
+	vector<SampleValueLabel> samplelabels1 = vc1->getSampleValueLabels() ;
+	vector<SampleValueLabel> samplelabels2 = vc2->getSampleValueLabels() ;
 	bool retval = true ;
 	if (samplelabels1.size() == samplelabels2.size()) {
 		for (unsigned short i = 0 ; i != samplelabels1.size() ; i++) {
@@ -104,7 +104,7 @@ bool VertexContentsEqual::operator() (const VertexContent *vc1, const VertexCont
 size_t hash<VertexContent*>::operator() (const VertexContent *vc) const
 {
 	size_t retval = 0 ;
-	vector<SampleLabel> samplelabels = vc->getSampleLabels() ;
+	vector<SampleValueLabel> samplelabels = vc->getSampleValueLabels() ;
 	assert (samplelabels.size() <= 4) ;
 	for (unsigned short i = 0 ; i < samplelabels.size() ; i++) {
 		size_t newval = 0 ;

@@ -23,7 +23,7 @@
 
 #include "common.h"
 // declared here to prevent circulating #includes
-class CvrStgSample ;
+class SampleValue ;
 
 /**
  * \class CvrStgObject
@@ -44,13 +44,13 @@ class CvrStgObject {
 	virtual unsigned long getNumSamples (void) = 0 ;
 
 	/**
-	 * replace a sample thus (possibly) altering the value of the bit returned by CvrStgSample->getBit()
+	 * replace a sample thus (possibly) altering the value of the bit returned by SampleValue->getBit()
 	 * \param pos the position of the sample (must be in 0...getNumSamples()-1)
 	 * \param s the sample value that should replace the current sample value (must be of correct type for this CvrStgObject)
 	 *
 	 * The derived class should check the condition(s) given above in its Implementation of this function.
 	 **/
-	virtual void replaceSample (SamplePos pos, CvrStgSample *s) = 0 ;
+	virtual void replaceSample (SamplePos pos, SampleValue *s) = 0 ;
 
 	/**
 	 * get the sample at position pos
@@ -60,7 +60,7 @@ class CvrStgObject {
 	 * The sample object is created in this function and can safely be deleted afterwards.
 	 * The derived class should check the condition(s) given above in its Implementation of this function.
 	 **/
-	virtual CvrStgSample* getSample (SamplePos pos) = 0 ;
+	virtual SampleValue* getSample (SamplePos pos) = 0 ;
 } ;
 
 #endif //ndef SH_CVRSTGOBJECT_H

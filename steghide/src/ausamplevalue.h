@@ -18,36 +18,36 @@
  *
  */
 
-#ifndef SH_JPEGFILE_H
-#define SH_JPEGFILE_H
+#ifndef SH_AUSAMPLE_H
+#define SH_AUSAMPLE_H
 
-#include <vector>
+#include "samplevalue.h"
+#include "common.h"
 
-#include "binaryio.h"
-#include "cvrstgfile.h"
-#include "jpegframe.h"
-
-/**
- * \class JpegFile
- * \brief a cover/stego file in jpeg, i.e. jfif format
- **/
-class JpegFile : public CvrStgFile {
+class AuSampleValue : public SampleValue {
 	public:
-	JpegFile (void) ;
-	JpegFile (BinaryIO *io) ;
-	~JpegFile (void) ;
+	AuSampleValue (void)
+		: SampleValue(NULL) {} ;
+	AuSampleValue (CvrStgFile *f, unsigned char v)
+		: SampleValue(f), Value(v)
+		{ SBit = (Bit) (Value & 1) ; Key = (unsigned long) Value ; } ;
 
-	void read (BinaryIO *io) ;
-	void write (void) ;
+	bool isNeighbour (SampleValue *s) const ;
+	SampleValue* getNearestOppositeSampleValue (void) const ;
+	float calcDistance (SampleValue *s) const ;
 
-	unsigned long getNumSamples (void) ;
-	void replaceSample (SamplePos pos, SampleValue *s) ;
-	SampleValue* getSample (SamplePos pos) ;
-	unsigned int getSamplesPerEBit (void) ;
+	virtual float getRadius() const ;
+
+	unsigned char getValue (void) const ;
 
 	private:
-	/// the frame of the jpeg file
-	JpegFrame *frame ;
+	/**
+	 * every pair of au samples whose distance is smaller than this constant are neighbours
+	 **/
+	static const float DefaultRadius = 1.0 ;
+	static float Radius ;
+
+	unsigned char Value ;
 } ;
 
-#endif // ndef SH_JPEGFILE_H
+#endif // ndef SH_AUSAMPLE_H

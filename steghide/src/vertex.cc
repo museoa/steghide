@@ -26,13 +26,13 @@ Vertex::Vertex (VertexLabel l, unsigned short spebit)
 {
 	NumSamples = 0 ;
 	SamplePositions = vector<SamplePos> (spebit) ;
-	Samples = vector<CvrStgSample*> (spebit) ;
+	Samples = vector<SampleValue*> (spebit) ;
 	Content = NULL ;
 	ShortestEdge = NULL ;
 	MatchingEdge = NULL ;
 }
 
-void Vertex::addSample (SamplePos spos, CvrStgSample *s)
+void Vertex::addSample (SamplePos spos, SampleValue *s)
 {
 	assert (NumSamples < SamplePositions.size()) ;
 	SamplePositions[NumSamples] = spos ;
@@ -51,7 +51,7 @@ SamplePos Vertex::getSamplePos (unsigned int i) const
 	return SamplePositions[i] ;
 }
 
-CvrStgSample *Vertex::getSample (unsigned int i) const
+SampleValue *Vertex::getSample (unsigned int i) const
 {
 	assert (i < Samples.size()) ;
 	return Samples[i] ;
@@ -63,10 +63,10 @@ void Vertex::connectToContent (VertexContent *vc)
 	OccurencesInContentIt = Content->addOccurence (this) ;
 
 	// reorder SamplePositions and Samples to match the order of SampleLabels in the vertex content
-	vector<SampleLabel> sl = Content->getSampleLabels() ;
+	vector<SampleValueLabel> sl = Content->getSampleValueLabels() ;
 	
 	vector<SamplePos> new_sposs (SamplePositions.size()) ;
-	vector<CvrStgSample*> new_samples (Samples.size()) ;
+	vector<SampleValue*> new_samples (Samples.size()) ;
 
 	vector<bool> srcused (Samples.size(), false) ;
 

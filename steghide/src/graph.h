@@ -28,6 +28,7 @@
 #include <vector>
 
 #include "common.h"
+#include "svalueoppneigh.h"
 #include "vertex.h"
 #include "vertexcontent.h"
 
@@ -86,15 +87,18 @@ class Graph {
 	vector<Vertex*> Vertices ;
 
 	/// contains the unique sample list - Samples[i] is the sample with label i
-	vector<CvrStgSample*> Samples ;
+	vector<SampleValue*> SampleValues ;
 	/// is used to create the unique sample list
-	hash_set<CvrStgSample*,hash<CvrStgSample*>,SamplesEqual> Samples_set ;
+	hash_set<SampleValue*,hash<SampleValue*>,SampleValuesEqual> SampleValues_set ;
 
+#if 0
 	/**
 	 * SampleOppositeNeighbourhood[sample_label] contains a list of those SampleLabels that describe samples that
 	 * are in the set Samples[sample_label]->getOppositeNeighbours().
 	 **/
 	vector<vector<SampleLabel> > SampleOppositeNeighbourhood ;
+#endif
+	SampleValueOppositeNeighbourhood SValueOppNeighs ;
 
 	/**
 	 * contains the unique vertex contents - the size of the vector is the number of unique samples (indexed by sample labels)

@@ -18,30 +18,37 @@
  *
  */
 
-#ifndef SH_JPEGSAMPLE_H
-#define SH_JPEGSAMPLE_H
+#ifndef SH_WAVFORMATCHUNK_H
+#define SH_WAVFORMATCHUNK_H
 
-#include "cvrstgsample.h"
+#include "binaryio.h"
 #include "common.h"
+#include "wavchunk.h"
 
-class JpegSample : public CvrStgSample {
+class WavFormatChunk : public WavChunk {
 	public:
-	JpegSample (void)
-		: CvrStgSample(NULL) {} ;
-	JpegSample (CvrStgFile *f, int c) ;
+	WavFormatChunk (void) :
+		WavChunk() {} ;
+	WavFormatChunk (WavChunkHeader *chh) :
+		WavChunk(chh) {} ;
+	WavFormatChunk (WavChunkHeader *chh, BinaryIO *io) :
+		WavChunk(chh) { read(io) ; } ;
 
-	bool isNeighbour (CvrStgSample *s) const ;
-	list<CvrStgSample*> *getOppositeNeighbours (void) const ;
-	CvrStgSample* getNearestOppositeSample (void) const ;
-	float calcDistance (CvrStgSample *s) const ;
+	void read (BinaryIO *io) ;
+	void write (BinaryIO *io) ;
 
-	int getDctCoeff (void) const ;
+	WORD16 getBitsPerSample (void) const { return BitsPerSample ; } ;
 
 	private:
-	//FIXME static const float DefaultRadius = 1.0 ;
-	static float Radius ;
+	static const WORD16 WAVE_FORMAT_PCM = 0x0001 ;
 
-	int DctCoeff ;
+	WORD16 FormatTag ;
+	WORD16 Channels ;
+	WORD32 SamplesPerSec ;
+	WORD32 AvgBytesPerSec ;
+	WORD16 BlockAlign ;
+	WORD16 BitsPerSample ;
+	WORD16 AdditionalSize ;
 } ;
 
-#endif // ndef SH_JPEGSAMPLE_H
+#endif // ndef SH_WAVCHUNKFORMAT_H
