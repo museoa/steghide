@@ -112,6 +112,8 @@ class EdgeIterator : private GraphAccess {
 	/**
 	 * find the shortest edge, starting the search at SVOppNeighsIndices[0...k]
 	 * set the private variables accordingly
+	 * is only called to find a new destination sample value, i.e. if one of the
+	 * SVOppNeighsIndices[i] is changed
 	 **/
 	void findNextEdge (void) ;
 

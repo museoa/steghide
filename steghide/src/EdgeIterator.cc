@@ -93,39 +93,44 @@ void EdgeIterator::reset ()
 
 void EdgeIterator::findNextEdge ()
 {
-	// increment SVOppNeighsIndices to point to valid destination sample value
+	float mindist = FLT_MAX ;
 	for (unsigned short i = 0 ; i < TheGraph->getSamplesPerVertex() ; i++) {
 		SampleValue* srcsv = SrcVertex->getSampleValue(i) ;
+		SampleValue* destsv = NULL ;
+		std::list<SampleOccurence>::const_iterator soccit_candidate ;
+
+		// increment SVOppNeighsIndices[i] until it points to a valid destination sample value
 		while (SVOppNeighsIndices[i] < TheGraph->SampleValueOppNeighs[srcsv].size()) {
-			SampleValue* destsv = TheGraph->SampleValueOppNeighs[srcsv][SVOppNeighsIndices[i]] ;
-			if (isDestSampleValueOK(destsv)) {
+			destsv = TheGraph->SampleValueOppNeighs[srcsv][SVOppNeighsIndices[i]] ;
+
+			// look for a sample occurence of destsv - thereby setting soccit_candidate
+			bool found = false ;
+			const std::list<SampleOccurence>& socc = TheGraph->SampleOccurences[destsv->getLabel()] ;
+			soccit_candidate = socc.begin() ;
+			while (!found && soccit_candidate != socc.end()) {
+				if (soccit_candidate->getVertex()->getLabel() == SrcVertex->getLabel()) {
+					soccit_candidate++ ;
+				}
+				else {
+					found = true ;
+				}
+			}
+
+			if (found) {
 				break ;
 			}
 			else {
 				SVOppNeighsIndices[i]++ ;
 			}
 		}
-	}
 
-	// find index with edge with minimal distance
-	float mindist = FLT_MAX ;
-	unsigned short idx_mindist = 0 ;
-	if (TheGraph->getSamplesPerVertex() == 1) {
-		if (SVOppNeighsIndices[0] < TheGraph->SampleValueOppNeighs[SrcVertex->getSampleValue(0)].size()) {
-			mindist = -1.0 ; // make "if (mindist == FLT_MAX)" below go to else-branch because idx_mindist is 0
-		}
-	}
-	else {
-		for (unsigned short i = 0 ; i < TheGraph->getSamplesPerVertex() ; i++) {
-			SampleValue* srcsv = SrcVertex->getSampleValue(i) ;
-			if (SVOppNeighsIndices[i] < TheGraph->SampleValueOppNeighs[srcsv].size()) {
-				// there are edges from the i-th sample
-				SampleValue* destsv = TheGraph->SampleValueOppNeighs[srcsv][SVOppNeighsIndices[i]] ;
-				float thisdist = srcsv->calcDistance(destsv) ;
-				if (thisdist < mindist) {
-					mindist = thisdist ;
-					idx_mindist = i ;
-				}
+		// test if the destination sample value leads to edge with (until now) minimal distance - thereby setting SrcIndex and SampleOccurenceIt
+		if (SVOppNeighsIndices[i] < TheGraph->SampleValueOppNeighs[srcsv].size()) {
+			float thisdist = srcsv->calcDistance(destsv) ;
+			if (thisdist < mindist) {
+				mindist = thisdist ;
+				SrcIndex = i ;
+				SampleOccurenceIt = soccit_candidate ;
 			}
 		}
 	}
@@ -134,31 +139,4 @@ void EdgeIterator::findNextEdge ()
 		// no edge has been found
 		Finished = true ;
 	}
-	else {
-		SrcIndex = idx_mindist ;
-		SampleValue* srcsv = SrcVertex->getSampleValue(SrcIndex) ;
-		SampleValue* destsv = TheGraph->SampleValueOppNeighs[srcsv][SVOppNeighsIndices[SrcIndex]] ;
-		std::list<SampleOccurence>::const_iterator it = TheGraph->SampleOccurences[destsv->getLabel()].begin() ;
-		while (it->getVertex()->getLabel() == SrcVertex->getLabel()) {
-			it++ ;
-		}
-		SampleOccurenceIt = it ;
-	}
-}
-
-// FIXME - it could be returned so findNextEdge does not have to do the same search again - rewrite findNextEdge
-bool EdgeIterator::isDestSampleValueOK (const SampleValue *sv)
-{
-	bool found = false ;
-	const std::list<SampleOccurence>& socc = TheGraph->SampleOccurences[sv->getLabel()] ;
-	std::list<SampleOccurence>::const_iterator it = socc.begin() ;
-	while (!found && it != socc.end()) {
-		if (it->getVertex()->getLabel() == SrcVertex->getLabel()) {
-			it++ ;
-		}
-		else {
-			found = true ;
-		}
-	}
-	return found ;
 }
