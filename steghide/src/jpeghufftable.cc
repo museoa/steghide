@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.6 - a steganography program
+ * steghide 0.4.6b - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -55,16 +55,22 @@ JpegHuffmanTable::Class JpegHuffmanTable::getClass ()
 
 	switch (tableclass) {
 		case 0:
-		retval = DCTABLE ;
-		break ;
+		{
+			retval = DCTABLE ;
+			break ;
+		}
 
 		case 1:
-		retval = ACTABLE ;
-		break ;
+		{
+			retval = ACTABLE ;
+			break ;
+		}
 
 		default:
-		assert (0) ;
-		break ;
+		{
+			assert (0) ;
+			break ;
+		}
 	}
 
 	return retval ;

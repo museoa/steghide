@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-05-13 19:26+0200\n"
+"POT-Creation-Date: 2002-05-14 07:54+0200\n"
 "PO-Revision-Date: 2002-05-12 18:34+0100\n"
 "Last-Translator: Julien Catanese <julien_catanese@yahoo.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -13,663 +13,7 @@ msgstr ""
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/arguments.cc:67
-msgid "you cannot use arguments with the \"version\" command"
-msgstr "vous ne pouvez pas utilisez d'arguments avec la commande \"version\"."
-
-#: src/arguments.cc:75
-msgid "you cannot use arguments with the \"license\" command"
-msgstr "vous ne pouvez pas utiliser d'arguments avec la commande \"license\"."
-
-#: src/arguments.cc:83
-msgid "you cannot use arguments with the \"help\" command"
-msgstr "vous ne pouvez pas utiliser d'arguments avec la commande \"help\"."
-
-#: src/arguments.cc:95
-#, c-format
-msgid "unknown command \"%s\". type \"%s --help\" for help."
-msgstr "commande \"%s\" inconnue. tapez \"%s --help\" pour l'aide."
-
-#: src/arguments.cc:104 src/arguments.cc:152
-#, c-format
-msgid ""
-"the argument \"%s\" can only be used with the \"embed\" command. type \"%s --"
-"help\" for help."
-msgstr ""
-"l'argument \"%s\" peut seulement être utilisé avec la commande \"embed\". "
-"tapez \"%s --help\" pour l'aide."
-
-#: src/arguments.cc:108
-#, c-format
-msgid ""
-"the distribution argument can be used only once. type \"%s --help\" for help."
-msgstr ""
-"l'argument distribution peut être utilisé seulement une fois. tapez \"%s --"
-"help\" pour l'aide."
-
-#: src/arguments.cc:112
-#, c-format
-msgid "the argument \"%s\" is incomplete. type \"%s --help\" for help."
-msgstr "l'argument \"%s\" est incomplet. tapez \"%s --help\" pour l'aide."
-
-#: src/arguments.cc:123
-#, c-format
-msgid "the interval length for the cnsti method must be smaller than %d."
-msgstr ""
-"la longueur d'intervalle pour la méthode cnsti doit être plus petite que %d."
-
-#: src/arguments.cc:138
-#, c-format
-msgid ""
-"the maximum interval length for the prndi method must be smaller than %d."
-msgstr ""
-"la longueur maximale d'intervalle pour la méthode prndi doit être plus "
-"petite que %d."
-
-#: src/arguments.cc:146
-#, c-format
-msgid "unknown distribution method \"%s\". type \"%s --help\" for help."
-msgstr ""
-"méthode de distribution \"%s\" inconnues. tapez \"%s --help\" pour l'aide."
-
-#: src/arguments.cc:156 src/arguments.cc:168
-#, c-format
-msgid ""
-"the encryption argument can be used only once. type \"%s --help\" for help."
-msgstr ""
-"l'argument encryption peut être utilisé une fois seulement. tapez \"%s --help"
-"\" pour l'aide."
-
-#: src/arguments.cc:164 src/arguments.cc:192 src/arguments.cc:204
-#: src/arguments.cc:216 src/arguments.cc:228 src/arguments.cc:268
-#, c-format
-msgid ""
-"argument \"%s\" can only be used with the \"embed\" command. type \"%s --help"
-"\" for help."
-msgstr ""
-"l'argument \"%s\" peut seulement être utilisé avec la commande \"embed\". "
-"tapez \"%s --help\" pour l'aide."
-
-#: src/arguments.cc:176 src/arguments.cc:184
-#, c-format
-msgid ""
-"the stego header encryption argument can be used only once. type \"%s --help"
-"\" for help."
-msgstr ""
-"l'argument stego header encryption peut seulement être utilisé une fois "
-"seulement. tapez \"%s --help\" pour l'aide."
-
-#: src/arguments.cc:196 src/arguments.cc:208
-#, c-format
-msgid ""
-"the checksum argument can be used only once. type \"%s --help\" for help."
-msgstr ""
-"l'argument checksum peut seulement être utilisé une fois. tapez \"%s --help"
-"\" pour l'aide."
-
-#: src/arguments.cc:220 src/arguments.cc:232
-#, c-format
-msgid ""
-"the plain file name embedding argument can be used only once. type \"%s --"
-"help\" for help."
-msgstr ""
-"l'argument pour l'encapsulation du fichier de données ne peut être utilisé "
-"qu'une seule fois. taper \"%s --help\" pour l'aide."
-
-#: src/arguments.cc:240
-#, c-format
-msgid ""
-"the compatibility argument can be used only once. type \"%s --help\" for "
-"help."
-msgstr ""
-"l'argument compatibility peut être utilisé une fois seulement. tapez \"%s --"
-"help\" pour l'aide."
-
-#: src/arguments.cc:248
-#, c-format
-msgid ""
-"the passphrase argument can be used only once. type \"%s --help\" for help."
-msgstr ""
-"l'argument passphrase peut être utilisé seulement une fois. tapez \"%s --help"
-"\" pour l'aide."
-
-#: src/arguments.cc:252
-#, c-format
-msgid ""
-"the \"%s\" argument must be followed by the passphrase. type \"%s --help\" "
-"for help."
-msgstr ""
-"l'argument \"%s\" doit être suivi de la passphrase. tapez \"%s --help\" pour "
-"l'aide."
-
-#: src/arguments.cc:256 src/support.cc:96 src/support.cc:110
-#, c-format
-msgid "the maximum length of the passphrase is %d characters."
-msgstr "la longueur maximale de la passphrase est de %d caractères."
-
-#: src/arguments.cc:272
-#, c-format
-msgid ""
-"the cover file name argument can be used only once. type \"%s --help\" for "
-"help."
-msgstr ""
-"le nom du fichier-couverture peut seulement être utilisé une fois en "
-"argument. tapez pour l'aide."
-
-#: src/arguments.cc:276
-#, c-format
-msgid ""
-"the \"%s\" argument must be followed by the cover file name. type \"%s --help"
-"\" for help."
-msgstr ""
-"l'argument \"%s\" doit être suivi du nom du fichier-couverture. tapez \"%s --"
-"help\" pour l'aide."
-
-#: src/arguments.cc:289
-#, c-format
-msgid ""
-"the stego file name argument can be used only once. type \"%s --help\" for "
-"help."
-msgstr ""
-"le nom du fichier stégo peut être utilisé en argument seulement une fois. "
-"tapez \"%s --help\"pour l'aide."
-
-#: src/arguments.cc:293
-#, c-format
-msgid ""
-"the \"%s\" argument must be followed by the stego file name. type \"%s --help"
-"\" for help."
-msgstr ""
-"l'argument \"%s\" doit être suivi du nom du fichier stégo. tapez \"%s --help"
-"\" pour l'aide."
-
-#: src/arguments.cc:306
-#, c-format
-msgid ""
-"the plain file name argument can be used only once. type \"%s --help\" for "
-"help."
-msgstr ""
-"le nom du fichier de données peut seulement être utilisé une fois en "
-"argument. tapez \"%s --help pour l'aide."
-
-#: src/arguments.cc:310
-#, c-format
-msgid ""
-"the \"%s\" argument must be followed by the plain file name. type \"%s --help"
-"\" for help."
-msgstr ""
-"l'argument \"%s\" doit être suivi du nom du fichier de données. tapez \"%s --"
-"help\" pour l'aide."
-
-#: src/arguments.cc:323
-#, c-format
-msgid "the force argument can be used only once. type \"%s --help\" for help."
-msgstr ""
-"l'argument force peut seulement être utilisé une fois. tapez \"%s --help\" "
-"pour l'aide."
-
-#: src/arguments.cc:331 src/arguments.cc:339
-#, c-format
-msgid ""
-"the \"%s\" argument cannot be used here because the verbosity has already "
-"been set."
-msgstr ""
-"l'argument \"%s\" ne peut pas être utilisé ici car le mode verbeux a déjà "
-"été choisi."
-
-#: src/arguments.cc:346
-#, c-format
-msgid "unknown argument \"%s\". type \"%s --help\" for help."
-msgstr "argument \"%s\" inconnu. tapez \"%s --help\" pour l'aide."
-
-#: src/arguments.cc:353
-#, c-format
-msgid ""
-"standard input cannot be used for cover AND plain data. type \"%s --help\" "
-"for help."
-msgstr ""
-"l'entrée standard ne peut pas être utilisée pour cacher des données AND. "
-"tapez \"%s --help\" pour l'aide."
-
-#: src/arguments.cc:361 src/arguments.cc:367
-msgid ""
-"if standard input is used, the passphrase must be specified on the command "
-"line."
-msgstr ""
-"si l'entrée  standard est utilisée, la passphrase doit être donnée en ligne "
-"de commande."
-
-#: src/aufile.cc:126
-#, c-format
-msgid "an error occured while reading the au headers from the file \"%s\"."
-msgstr ""
-"une erreur a eu lieu lors de la lecture de l'entête au à partir du fichier "
-"\"%s\"."
-
-#: src/aufile.cc:130
-#, c-format
-msgid "premature end of file \"%s\" while reading au headers."
-msgstr "fin innattendue du fichier  \"%s\" lors de la lecture des entetes au."
-
-#: src/aufile.cc:134
-msgid "an error occured while reading the au headers from standard input."
-msgstr ""
-"une erreur a eu lieu lors de la lecture de l'entete au à partir de l'entrée "
-"standard."
-
-#: src/aufile.cc:138
-msgid "premature end of data from standard input while reading au headers."
-msgstr ""
-"fin prématurée des données lors de la lecture des entetes au  à partir de "
-"l'entrée standard."
-
-#: src/aufile.cc:168
-#, c-format
-msgid "an error occured while writing the au headers to the file \"%s\"."
-msgstr ""
-"une erreur a eu lieu lors de l'écriture de l'entête au vers le fichier \"%s"
-"\"."
-
-#: src/aufile.cc:172
-msgid "an error occured while writing the au headers to standard output."
-msgstr ""
-"une erreur a eu lieu lors de l'écriture de l'entête au vers la sortie "
-"standard."
-
-#: src/aufile.cc:196 src/wavfile.cc:153
-#, c-format
-msgid "an error occured while reading the audio data from the file \"%s\"."
-msgstr ""
-"une erreur a eu lieu lors de la lecture des données audio à partir du "
-"fichier \"%s\"."
-
-#: src/aufile.cc:200 src/wavfile.cc:157
-#, c-format
-msgid "premature end of file \"%s\" while reading audio data."
-msgstr ""
-"fin innattendue du fichier \"%s\" lors de la lecture des données audio."
-
-#: src/aufile.cc:204 src/wavfile.cc:161
-msgid "an error occured while reading the audio data from standard input."
-msgstr ""
-"une erreur a eu lieu lors de la lecture des données audio à partir de "
-"l'entrée standard."
-
-#: src/aufile.cc:208 src/wavfile.cc:165
-msgid "premature end of data from standard input while reading audio data."
-msgstr ""
-"fin prématurée des données lors de la lecture des données audio à partir de "
-"l'entrée standard."
-
-#: src/aufile.cc:226 src/wavfile.cc:192
-#, c-format
-msgid "an error occured while writing the audio data to the file \"%s\"."
-msgstr ""
-"une erreur a eu lieu lors de l'écriture des données audio vers le fichier \"%"
-"s\"."
-
-#: src/aufile.cc:230 src/wavfile.cc:196
-msgid "an error occured while writing the audio data to standard output."
-msgstr ""
-"une erreur a eu lieu lors de l'écriture des données audio vers la sortie "
-"standard."
-
-#: src/binaryio.cc:131
-#, c-format
-msgid "could not open the file \"%s\"."
-msgstr "n'a pas pu ouvrir le fichier \"%s\"."
-
-#: src/binaryio.cc:154
-#, c-format
-msgid "could not close the file \"%s\"."
-msgstr "n'a pas pu fermer le fichier \"%s\"."
-
-#: src/bmpfile.cc:183
-msgid "the bmp data from standard input has a format that is not supported."
-msgstr ""
-"les données bmp à partir de l'entrée standard sont dans un format non "
-"supporté."
-
-#: src/bmpfile.cc:186
-#, c-format
-msgid "the bmp file \"%s\" has a format that is not supported."
-msgstr "le fichier \"%s\" a un format qui n'est pas supporté."
-
-#: src/bmpfile.cc:194
-#, c-format
-msgid "an error occured while reading the bmp headers from the file \"%s\"."
-msgstr ""
-"une erreur a eu lieu lors de la lecture de l'entête bmp du fichier \"%s\"."
-
-#: src/bmpfile.cc:198
-#, c-format
-msgid "premature end of file \"%s\" while reading bmp headers."
-msgstr "fin innattendue du fichier \"%s\" lors de la lecture des entetes bmp."
-
-#: src/bmpfile.cc:202
-msgid "an error occured while reading the bmp headers from standard input."
-msgstr ""
-"une erreur a eu lieu lors de la lecture de l'entête bmp à partir de l'entrée "
-"standard."
-
-#: src/bmpfile.cc:206
-msgid "premature end of data from standard input while reading bmp headers."
-msgstr ""
-"fin prématurée des données lors de la lecture des entetes  bmp à partir de "
-"l'entrée standard."
-
-#: src/bmpfile.cc:227
-msgid ""
-"the bitmap data from standard input is compressed which is not supported."
-msgstr ""
-"les données bitmap à partir de l'entrée standard sont compréssées. ceci "
-"n'est pas supporté."
-
-#: src/bmpfile.cc:230
-#, c-format
-msgid "the bitmap data in \"%s\" is compressed which is not supported."
-msgstr ""
-"les données bitmap dans \"%s\" sont compréssées de manière non supportée."
-
-#: src/bmpfile.cc:248 src/bmpfile.cc:311
-msgid "using a black/white bitmap as cover is very insecure!"
-msgstr "l'utilisation d'un bitmap en noir comme couverture est très peu sûr !"
-
-#: src/bmpfile.cc:256 src/bmpfile.cc:319
-msgid "using a 16-color bitmap as cover is very insecure!"
-msgstr ""
-"l'utilisation d'un bitmap en 16-couleurs comme fichier couverture et très "
-"peu sûr !"
-
-#: src/bmpfile.cc:280
-msgid "maybe corrupted windows bmp data (Reserved in RGBQUAD is non-zero)."
-msgstr ""
-"possibilité de données bmp corrompues (reservation dans RGBQUAD n'est pas "
-"égale à zéro)."
-
-#: src/bmpfile.cc:372
-#, c-format
-msgid "an error occured while writing the bmp headers to the file \"%s\"."
-msgstr ""
-"une erreur a eu lieu lors de l'écriture de l'entête bmp vers le fichier \"%s"
-"\"."
-
-#: src/bmpfile.cc:376
-msgid "an error occured while writing the bmp headers to standard output."
-msgstr ""
-"une erreur a eu lieu lors de l'écriture de l'entête bmp vers la sortie "
-"standard."
-
-#: src/bmpfile.cc:499
-msgid "maybe corrupted bmp data (padding byte set to non-zero)."
-msgstr ""
-"possibilité de données bmp corrompues (octet padding différent de zéro)."
-
-#: src/bmpfile.cc:512
-#, c-format
-msgid "an error occured while reading the bmp data from the file \"%s\"."
-msgstr ""
-"une erreur a eu lieu lors de la lecture des données bitmap du fichier \"%s\"."
-
-#: src/bmpfile.cc:516
-#, c-format
-msgid "premature end of file \"%s\" while reading bmp data."
-msgstr "fin innattendue du fichier \"%s\" lors de la lecture des données bmp."
-
-#: src/bmpfile.cc:520
-msgid "an error occured while reading the bmp data from standard input."
-msgstr ""
-"une erreur a eu lieu lors de la lecture des données bitmap à partir de "
-"l'entrée standard."
-
-#: src/bmpfile.cc:524
-msgid "premature end of bmp data from standard input."
-msgstr "fin innatendue des données bmp à partir de l'entrée standard."
-
-#: src/bmpfile.cc:562
-#, c-format
-msgid "an error occured while writing the bitmap data to the file \"%s\"."
-msgstr ""
-"une erreur a eu lieu lors de l'écriture des données bitmap vers le fichier "
-"\"%s\"."
-
-#: src/bmpfile.cc:566
-msgid "an error occured while writing the bitmap data to standard output."
-msgstr ""
-"une erreur a eu lieu lors de l'écriture des données bitmap vers la sortie "
-"standard."
-
-#: src/crypto.cc:59 src/crypto.cc:95 src/crypto.cc:149 src/crypto.cc:221
-#, c-format
-msgid "could not open libmcrypt module \"%s\",\"%s\"."
-msgstr "n'a pas pu ouvrir le module libmcrypt \"%s\",\"%s\"."
-
-#: src/crypto.cc:66 src/crypto.cc:156
-msgid ""
-"could not initialize libmcrypt encryption. see above error messages if any."
-msgstr ""
-"n'a pas pu initialiser le chiffrement libmcrypt. voir au dessus les messages "
-"d'erreur, s'il y en a."
-
-#: src/crypto.cc:70
-msgid "could not encrypt stego header."
-msgstr "n'a pas pu chiffrer l'entête stégo."
-
-#: src/crypto.cc:74
-msgid "could not finish encryption of stego header."
-msgstr "n'a pas pu le chiffrement de l'entête stégo."
-
-#: src/crypto.cc:102 src/crypto.cc:228
-msgid ""
-"could not initialize libmcrypt decryption. see above error messages if any."
-msgstr ""
-"n'a pas pu initialiser le déchiffrement libmcrypt. voir au dessus les "
-"messages d'erreur, s'il y en a."
-
-#: src/crypto.cc:106
-msgid "could not decrypt stego header."
-msgstr "n'a pas pu déchiffrer l'entête stégo."
-
-#: src/crypto.cc:110
-msgid "could not finish decryption of stego header."
-msgstr "n'a pas pu finir le déchiffrement de l'entête stégo."
-
-#: src/crypto.cc:125
-msgid "encrypting plain data."
-msgstr "chiffrement des données à cacher."
-
-#: src/crypto.cc:174
-#, c-format
-msgid "could not encrypt plain data. failed at block number %lu"
-msgstr "n'a pas pu chiffrer les données à cacher. a échoué au bloc numéro %lu"
-
-#: src/crypto.cc:185
-msgid "could not finish encryption of plain data."
-msgstr "n'a pas pu finir le chiffrement des données à cacher."
-
-#: src/crypto.cc:202
-msgid "decrypting plain data."
-msgstr "déchiffrement des données cachées."
-
-#: src/crypto.cc:238
-#, c-format
-msgid "could not decrypt plain data. failed at block number %ul"
-msgstr "n'a pas pu déchiffrer les données cachées. a échoué au bloc numéro %ul"
-
-#: src/crypto.cc:251
-msgid "could not finish decryption of plain data."
-msgstr "n'a pas pu finir le déchiffrement des données cachées."
-
-#: src/cvrstgfile.cc:73
-msgid "reading cover file from standard input."
-msgstr "lecture du fichier-couverture à partir de l'entrée standard."
-
-#: src/cvrstgfile.cc:77
-#, c-format
-msgid "reading cover file \"%s\"."
-msgstr "lecture du fichier-couverture \"%s\"."
-
-#: src/cvrstgfile.cc:83
-msgid "reading stego file from standard input."
-msgstr "lecture du fichier stégo à partir de l'entrée standard."
-
-#: src/cvrstgfile.cc:87
-#, c-format
-msgid "reading stego file \"%s\"."
-msgstr "lecture du fichier stégo \"%s\"."
-
-#: src/cvrstgfile.cc:99
-msgid "writing stego file to standard output."
-msgstr "écriture du fichier stégo vers la sortie standard."
-
-#: src/cvrstgfile.cc:103
-#, c-format
-msgid "writing stego file \"%s\"."
-msgstr "écriture du fichier stégo \"%s\"."
-
-#: src/error.cc:36
-msgid "error, exiting. (no error message defined)"
-msgstr "erreur, fin du programme. (pas de message d'erreur spécifié)"
-
-#: src/error.cc:67
-msgid "premature end of data from standard input."
-msgstr "fin prématurée des données à partir de l'entrée standard."
-
-#: src/error.cc:71
-#, c-format
-msgid "premature end of file \"%s\"."
-msgstr "fin innattendue du fichier \"%s\"."
-
-#: src/error.cc:77
-msgid "an error occured while reading data from standard input."
-msgstr ""
-"une erreur a eu lieu lors de la lecture des données à partir de l'entrée "
-"standard."
-
-#: src/error.cc:81
-#, c-format
-msgid "an error occured while reading data from the file \"%s\"."
-msgstr ""
-"une erreur a eu lieu lors de la lecture des données à partir du fichier \"%s"
-"\"."
-
-#: src/error.cc:104
-msgid "an error occured while writing data to standard output."
-msgstr ""
-"une erreur a eu lieu lors de l'écriture des données vers la sortie standard."
-
-#: src/error.cc:108
-#, c-format
-msgid "an error occured while writing data to the file \"%s\"."
-msgstr ""
-"une erreur a eu lieu lors de l'écriture des données vers le fichier \"%s\"."
-
-#: src/error.cc:130
-msgid "the file format of the data from standard input is not supported."
-msgstr ""
-"le format de données du fichier à partir de l'entrée standard n'est pas "
-"supporté."
-
-#: src/error.cc:133
-#, c-format
-msgid "the file format of the file \"%s\" is not supported."
-msgstr "le format du fichier \"%s\" n'est pas supporté."
-
-#: src/error.cc:150
-msgid "corrupt jpeg file on standard input:"
-msgstr "fichier jpeg corrompu à partir de l'entrée standard."
-
-#: src/error.cc:153
-#, c-format
-msgid "corrupt jpeg file \"%s\":"
-msgstr "fichier jpeg \"%s\" corrompu."
-
-#: src/hash.cc:42 src/hash.cc:95
-msgid "could not initialize libmhash MD5 algorithm."
-msgstr "n'a pas pu initialiser l'algorithme libmhash MD5."
-
-#: src/hash.cc:63
-msgid "could not initialize libmhash CRC32 algorithm."
-msgstr "n'a pas pu initialiser l'algorithme libmhash CRC32."
-
-#: src/jpegentropycoded.cc:214
-#, c-format
-msgid "entropy coded data interrupted by marker 0x%x."
-msgstr "données codées aléatoirement intérompues par le marqueur 0x%x."
-
-#: src/jpegframe.cc:95 src/jpegscan.cc:80
-msgid "could not find start of marker (0xff)."
-msgstr "n'a pas pu trouver le début de la marque (0xff)."
-
-#: src/jpegframe.cc:110 src/jpegscan.cc:93
-#, c-format
-msgid "huffman table has destination specifier %u (0-3 is allowed)."
-msgstr ""
-"la table huffman a comme spécificateur de destination %u (valeurs 0-3 "
-"permises)."
-
-#: src/jpegframe.cc:138
-msgid ""
-"the jpeg file on standard input uses progressive DCT mode which is not "
-"supported in this version."
-msgstr ""
-"le fichier jpeg à partir de l'entrée standard utilise le mode DCT progressif "
-"qui n'est pas supporté dans cette version."
-
-#: src/jpegframe.cc:141
-#, c-format
-msgid ""
-"the jpeg file \"%s\" uses progressive DCT mode which is not supported in "
-"this version."
-msgstr ""
-"le fichier jpeg \"%s\" utilise le mode progressif DCT qui n'est pas supporté "
-"dans cette version."
-
-#: src/jpegframe.cc:146
-#, c-format
-msgid ""
-"encountered unknown marker code 0x%x in jpeg file on standard input while "
-"reading frame."
-msgstr ""
-"a recontré un code marqueur 0x%x inconnu dans le fichier jpeg à partir de "
-"l'entrée standard, lors de la lecture frame."
-
-#: src/jpegframe.cc:149
-#, c-format
-msgid ""
-"encountered unknown marker code 0x%x in jpeg file \"%s\" while reading frame."
-msgstr ""
-"a rencontré un un code marqueur 0x%x inconnu dans le fichier jpeg \"%s\" "
-"lors de la lecture frame."
-
-#: src/jpegjfifapp0.cc:64
-msgid "the version of the jpeg file on standard input is not supported."
-msgstr ""
-"la version du fichier jpeg à partir de l'entrée standard n'est pas supportée."
-
-#: src/jpegjfifapp0.cc:67
-#, c-format
-msgid "the version of the jpeg file \"%s\" is not supported."
-msgstr "la version du fichier jpeg \"%s\" n'est pas supporté."
-
-#: src/jpegscan.cc:135
-#, c-format
-msgid ""
-"encountered unknown marker code 0x%x in jpeg file on standard input while "
-"reading scan."
-msgstr ""
-"a rencontré un code marqueur 0x%x inconnu dans le fichier jpeg à partir de "
-"l'entrée standard, lors de la lecture scan."
-
-#: src/jpegscan.cc:138
-#, c-format
-msgid ""
-"encountered unknown marker code 0x%x in jpeg file \"%s\" while reading scan."
-msgstr ""
-"a rencontré un code marqueur 0x%x inconnu dans le fichier jpeg \"%s\" lors "
-"de la lecture scan."
-
-#: src/main.cc:252
+#: main.cc:269
 msgid ""
 "\n"
 "the first argument must be one of the following:\n"
@@ -772,82 +116,445 @@ msgstr ""
 "steghide extract -sf stg.bmp\n"
 "\n"
 
-#: src/main.cc:353 src/main.cc:383
-msgid "done."
-msgstr "terminé."
-
-#: src/msg.cc:41
-msgid "__no_message_defined__"
-msgstr "__aucun_message_spécifié__"
-
-#: src/msg.cc:152 src/msg.cc:170
+#: msg.cc:152 msg.cc:170
 msgid ": warning: "
 msgstr ": attention: "
 
-#: src/msg.cc:179 src/msg.cc:186 src/msg.cc:193
-msgid "y"
-msgstr "o"
+#: support.cc:92
+msgid "Enter passphrase: "
+msgstr "Entrez la passphrase: "
 
-#: src/msg.cc:180 src/msg.cc:187 src/msg.cc:194
-msgid "n"
-msgstr "n"
+#: support.cc:105
+msgid "Re-Enter passphrase: "
+msgstr "Entrez à nouveau la passphrase: "
 
-#: src/plnfile.cc:46
-msgid "reading plain file from standard input."
-msgstr "lecture du fichier de données à partir de l'entrée standard?"
+#: msg.cc:41
+msgid "__no_message_defined__"
+msgstr "__aucun_message_spécifié__"
 
-#: src/plnfile.cc:50
+#: error.cc:77
+msgid "an error occured while reading data from standard input."
+msgstr ""
+"une erreur a eu lieu lors de la lecture des données à partir de l'entrée "
+"standard."
+
+#: error.cc:81
 #, c-format
-msgid "reading plain file \"%s\"."
-msgstr "lecture du fichier de données \"%s\"."
+msgid "an error occured while reading data from the file \"%s\"."
+msgstr ""
+"une erreur a eu lieu lors de la lecture des données à partir du fichier \"%s"
+"\"."
 
-#: src/plnfile.cc:62
+#: aufile.cc:139
+msgid "an error occured while reading the au headers from standard input."
+msgstr ""
+"une erreur a eu lieu lors de la lecture de l'entete au à partir de l'entrée "
+"standard."
+
+#: aufile.cc:127
 #, c-format
-msgid "could not open file \"%s\"."
-msgstr "n'a pas pu ouvrir le fichier \"%s\"."
+msgid "an error occured while reading the au headers from the file \"%s\"."
+msgstr ""
+"une erreur a eu lieu lors de la lecture de l'entête au à partir du fichier "
+"\"%s\"."
 
-#: src/plnfile.cc:76
+#: aufile.cc:221 wavfile.cc:166
+msgid "an error occured while reading the audio data from standard input."
+msgstr ""
+"une erreur a eu lieu lors de la lecture des données audio à partir de "
+"l'entrée standard."
+
+#: aufile.cc:209 wavfile.cc:154
+#, c-format
+msgid "an error occured while reading the audio data from the file \"%s\"."
+msgstr ""
+"une erreur a eu lieu lors de la lecture des données audio à partir du "
+"fichier \"%s\"."
+
+#: bmpfile.cc:587
+msgid "an error occured while reading the bmp data from standard input."
+msgstr ""
+"une erreur a eu lieu lors de la lecture des données bitmap à partir de "
+"l'entrée standard."
+
+#: bmpfile.cc:575
+#, c-format
+msgid "an error occured while reading the bmp data from the file \"%s\"."
+msgstr ""
+"une erreur a eu lieu lors de la lecture des données bitmap du fichier \"%s\"."
+
+#: bmpfile.cc:225
+msgid "an error occured while reading the bmp headers from standard input."
+msgstr ""
+"une erreur a eu lieu lors de la lecture de l'entête bmp à partir de l'entrée "
+"standard."
+
+#: bmpfile.cc:213
+#, c-format
+msgid "an error occured while reading the bmp headers from the file \"%s\"."
+msgstr ""
+"une erreur a eu lieu lors de la lecture de l'entête bmp du fichier \"%s\"."
+
+#: plnfile.cc:79
+#, c-format
+msgid "an error occured while reading the file \"%s\"."
+msgstr "une erreur a eu lieu lors de la lecture du fichier \"%s\"."
+
+#: plnfile.cc:76
 msgid "an error occured while reading the plain data from standard input."
 msgstr ""
 "une erreur a eu lieu lors de la lecture des données à cacher à partir de "
 "l'entrée standard."
 
-#: src/plnfile.cc:79
+#: wavfile.cc:310
+msgid "an error occured while reading the wav headers from standard input."
+msgstr ""
+"une erreur a eu lieu lors de la lecture de l'entete wav à partir de l'entrée "
+"standard."
+
+#: wavfile.cc:298
 #, c-format
-msgid "an error occured while reading the file \"%s\"."
-msgstr "une erreur a eu lieu lors de la lecture du fichier \"%s\"."
+msgid "an error occured while reading the wav headers from the file \"%s\"."
+msgstr ""
+"une erreur a eu lieu lors de la lecture de l'entête wav à partir du fichier "
+"\"%s\"."
 
-#: src/plnfile.cc:93
-msgid "writing plain file to standard output."
-msgstr "écriture du fichier de données vers la sortie standard."
+#: error.cc:104
+msgid "an error occured while writing data to standard output."
+msgstr ""
+"une erreur a eu lieu lors de l'écriture des données vers la sortie standard."
 
-#: src/plnfile.cc:97
+#: error.cc:108
 #, c-format
-msgid "writing plain file to \"%s\"."
-msgstr "écriture du fichier de données vers \"%s\"."
+msgid "an error occured while writing data to the file \"%s\"."
+msgstr ""
+"une erreur a eu lieu lors de l'écriture des données vers le fichier \"%s\"."
 
-#: src/plnfile.cc:107
+#: aufile.cc:183
+msgid "an error occured while writing the au headers to standard output."
+msgstr ""
+"une erreur a eu lieu lors de l'écriture de l'entête au vers la sortie "
+"standard."
+
+#: aufile.cc:177
 #, c-format
-msgid "could not create plain file \"%s\"."
-msgstr "n'a pas pu créer le fichier de données cachées \"%s\"."
+msgid "an error occured while writing the au headers to the file \"%s\"."
+msgstr ""
+"une erreur a eu lieu lors de l'écriture de l'entête au vers le fichier \"%s"
+"\"."
 
-#: src/plnfile.cc:118
+#: aufile.cc:253 wavfile.cc:207
+msgid "an error occured while writing the audio data to standard output."
+msgstr ""
+"une erreur a eu lieu lors de l'écriture des données audio vers la sortie "
+"standard."
+
+#: aufile.cc:247 wavfile.cc:201
+#, c-format
+msgid "an error occured while writing the audio data to the file \"%s\"."
+msgstr ""
+"une erreur a eu lieu lors de l'écriture des données audio vers le fichier \"%"
+"s\"."
+
+#: bmpfile.cc:639
+msgid "an error occured while writing the bitmap data to standard output."
+msgstr ""
+"une erreur a eu lieu lors de l'écriture des données bitmap vers la sortie "
+"standard."
+
+#: bmpfile.cc:633
+#, c-format
+msgid "an error occured while writing the bitmap data to the file \"%s\"."
+msgstr ""
+"une erreur a eu lieu lors de l'écriture des données bitmap vers le fichier "
+"\"%s\"."
+
+#: bmpfile.cc:425
+msgid "an error occured while writing the bmp headers to standard output."
+msgstr ""
+"une erreur a eu lieu lors de l'écriture de l'entête bmp vers la sortie "
+"standard."
+
+#: bmpfile.cc:419
+#, c-format
+msgid "an error occured while writing the bmp headers to the file \"%s\"."
+msgstr ""
+"une erreur a eu lieu lors de l'écriture de l'entête bmp vers le fichier \"%s"
+"\"."
+
+#: plnfile.cc:118
 msgid "an error occured while writing the plain data to standard output."
 msgstr ""
 "une erreur a eu lieu lors de l'écriture des données cachées vers la sortie "
 "standard."
 
-#: src/plnfile.cc:121
+#: wavfile.cc:360
+msgid "an error occured while writing the wav headers to standard output."
+msgstr ""
+"une erreur a eu lieu lors de l'écriture de l'entête wav vers la sortie "
+"standard."
+
+#: wavfile.cc:354
+#, c-format
+msgid "an error occured while writing the wav headers to the file \"%s\"."
+msgstr ""
+"une erreur a eu lieu lors de l'écriture de l'entête wav vers le fichier \"%s"
+"\"."
+
+#: plnfile.cc:121
 #, c-format
 msgid "an error occured while writing to the file \"%s\"."
 msgstr "une erreur a eu lieu lors de l'écriture vers le fichier \"%s\"."
 
-#: src/plnfile.cc:150
+#: arguments.cc:164 arguments.cc:192 arguments.cc:204 arguments.cc:216
+#: arguments.cc:228 arguments.cc:268
 #, c-format
-msgid "the maximum length for the plain file name is %d characters."
-msgstr "la longueur maximale du fichier de données est de %d caractères."
+msgid ""
+"argument \"%s\" can only be used with the \"embed\" command. type \"%s --help"
+"\" for help."
+msgstr ""
+"l'argument \"%s\" peut seulement être utilisé avec la commande \"embed\". "
+"tapez \"%s --help\" pour l'aide."
 
-#: src/plnfile.cc:207
+#: error.cc:153
+#, c-format
+msgid "corrupt jpeg file \"%s\":"
+msgstr "fichier jpeg \"%s\" corrompu."
+
+#: error.cc:150
+msgid "corrupt jpeg file on standard input:"
+msgstr "fichier jpeg corrompu à partir de l'entrée standard."
+
+#: support.cc:223 support.cc:234
+msgid "could not allocate memory."
+msgstr "n'a pas pu allouer la mémoire."
+
+#: binaryio.cc:164
+#, c-format
+msgid "could not close the file \"%s\"."
+msgstr "n'a pas pu fermer le fichier \"%s\"."
+
+#: plnfile.cc:107
+#, c-format
+msgid "could not create plain file \"%s\"."
+msgstr "n'a pas pu créer le fichier de données cachées \"%s\"."
+
+#: crypto.cc:238
+#, c-format
+msgid "could not decrypt plain data. failed at block number %ul"
+msgstr "n'a pas pu déchiffrer les données cachées. a échoué au bloc numéro %ul"
+
+#: crypto.cc:106
+msgid "could not decrypt stego header."
+msgstr "n'a pas pu déchiffrer l'entête stégo."
+
+#: crypto.cc:174
+#, c-format
+msgid "could not encrypt plain data. failed at block number %lu"
+msgstr "n'a pas pu chiffrer les données à cacher. a échoué au bloc numéro %lu"
+
+#: crypto.cc:70
+msgid "could not encrypt stego header."
+msgstr "n'a pas pu chiffrer l'entête stégo."
+
+#: jpegframe.cc:99 jpegscan.cc:80
+msgid "could not find start of marker (0xff)."
+msgstr "n'a pas pu trouver le début de la marque (0xff)."
+
+#: wavfile.cc:244
+#, c-format
+msgid "could not find the format chunk in the wav file \"%s\"."
+msgstr ""
+"n'a pas pu trouver les informations nécéssaires dans le fichier wav \"%s\""
+
+#: wavfile.cc:241
+msgid "could not find the format chunk in the wav file from standard input."
+msgstr ""
+"n'a pas pu trouver les informations nécéssaires pour le fichier wav à partir "
+"de l'entrée standard."
+
+#: crypto.cc:251
+msgid "could not finish decryption of plain data."
+msgstr "n'a pas pu finir le déchiffrement des données cachées."
+
+#: crypto.cc:110
+msgid "could not finish decryption of stego header."
+msgstr "n'a pas pu finir le déchiffrement de l'entête stégo."
+
+#: crypto.cc:185
+msgid "could not finish encryption of plain data."
+msgstr "n'a pas pu finir le chiffrement des données à cacher."
+
+#: crypto.cc:74
+msgid "could not finish encryption of stego header."
+msgstr "n'a pas pu le chiffrement de l'entête stégo."
+
+#: support.cc:131 support.cc:149
+msgid "could not get terminal attributes."
+msgstr "n'a pas pu trouver les propriétés du terminal."
+
+#: crypto.cc:102 crypto.cc:228
+msgid ""
+"could not initialize libmcrypt decryption. see above error messages if any."
+msgstr ""
+"n'a pas pu initialiser le déchiffrement libmcrypt. voir au dessus les "
+"messages d'erreur, s'il y en a."
+
+#: crypto.cc:66 crypto.cc:156
+msgid ""
+"could not initialize libmcrypt encryption. see above error messages if any."
+msgstr ""
+"n'a pas pu initialiser le chiffrement libmcrypt. voir au dessus les messages "
+"d'erreur, s'il y en a."
+
+#: hash.cc:63
+msgid "could not initialize libmhash CRC32 algorithm."
+msgstr "n'a pas pu initialiser l'algorithme libmhash CRC32."
+
+#: hash.cc:42 hash.cc:95
+msgid "could not initialize libmhash MD5 algorithm."
+msgstr "n'a pas pu initialiser l'algorithme libmhash MD5."
+
+#: plnfile.cc:62
+#, c-format
+msgid "could not open file \"%s\"."
+msgstr "n'a pas pu ouvrir le fichier \"%s\"."
+
+#: crypto.cc:59 crypto.cc:95 crypto.cc:149 crypto.cc:221
+#, c-format
+msgid "could not open libmcrypt module \"%s\",\"%s\"."
+msgstr "n'a pas pu ouvrir le module libmcrypt \"%s\",\"%s\"."
+
+#: binaryio.cc:141
+#, c-format
+msgid "could not open the file \"%s\"."
+msgstr "n'a pas pu ouvrir le fichier \"%s\"."
+
+#: support.cc:245
+msgid "could not reallocate memory."
+msgstr "n'a pas pu ré-allouer la mémoire."
+
+#: support.cc:138 support.cc:158 support.cc:167
+msgid "could not set terminal attributes."
+msgstr "n'a pas pu fixer les propriétés du terminal."
+
+#: plnfile.cc:232
+msgid "crc32 checksum failed! extracted data is probably corrupted."
+msgstr ""
+"le checksum crc32 a échoué! les données extraites sont probablement "
+"corrompues."
+
+#: plnfile.cc:228
+msgid "crc32 checksum test ok."
+msgstr "test checksum crc32 ok."
+
+#: crypto.cc:202
+msgid "decrypting plain data."
+msgstr "déchiffrement des données cachées."
+
+#: support.cc:360
+#, c-format
+msgid "did not write to file \"%s\"."
+msgstr "n'a pas écrit vers le fichier \"%s\"."
+
+#: main.cc:370 main.cc:400
+msgid "done."
+msgstr "terminé."
+
+#: stegano.cc:57
+msgid "embedding plain data."
+msgstr "camouflage des données à cacher."
+
+#: stegano.cc:143
+msgid "embedding stego header."
+msgstr "camouflage de l'entête stégo."
+
+#: jpegframe.cc:153
+#, c-format
+msgid ""
+"encountered unknown marker code 0x%x in jpeg file \"%s\" while reading frame."
+msgstr ""
+"a rencontré un un code marqueur 0x%x inconnu dans le fichier jpeg \"%s\" "
+"lors de la lecture frame."
+
+#: jpegscan.cc:138
+#, c-format
+msgid ""
+"encountered unknown marker code 0x%x in jpeg file \"%s\" while reading scan."
+msgstr ""
+"a rencontré un code marqueur 0x%x inconnu dans le fichier jpeg \"%s\" lors "
+"de la lecture scan."
+
+#: jpegframe.cc:150
+#, c-format
+msgid ""
+"encountered unknown marker code 0x%x in jpeg file on standard input while "
+"reading frame."
+msgstr ""
+"a recontré un code marqueur 0x%x inconnu dans le fichier jpeg à partir de "
+"l'entrée standard, lors de la lecture frame."
+
+#: jpegscan.cc:135
+#, c-format
+msgid ""
+"encountered unknown marker code 0x%x in jpeg file on standard input while "
+"reading scan."
+msgstr ""
+"a rencontré un code marqueur 0x%x inconnu dans le fichier jpeg à partir de "
+"l'entrée standard, lors de la lecture scan."
+
+#: crypto.cc:125
+msgid "encrypting plain data."
+msgstr "chiffrement des données à cacher."
+
+#: jpegentropycoded.cc:214
+#, c-format
+msgid "entropy coded data interrupted by marker 0x%x."
+msgstr "données codées aléatoirement intérompues par le marqueur 0x%x."
+
+#: error.cc:36
+msgid "error, exiting. (no error message defined)"
+msgstr "erreur, fin du programme. (pas de message d'erreur spécifié)"
+
+#: stegano.cc:93
+msgid "extracting plain data."
+msgstr "extraction des données cachées."
+
+#: stegano.cc:226
+msgid "extracting stego header."
+msgstr "extraction de l'entête stégo."
+
+#: jpegframe.cc:114 jpegscan.cc:93
+#, c-format
+msgid "huffman table has destination specifier %u (0-3 is allowed)."
+msgstr ""
+"la table huffman a comme spécificateur de destination %u (valeurs 0-3 "
+"permises)."
+
+#: arguments.cc:361 arguments.cc:367
+msgid ""
+"if standard input is used, the passphrase must be specified on the command "
+"line."
+msgstr ""
+"si l'entrée  standard est utilisée, la passphrase doit être donnée en ligne "
+"de commande."
+
+#: bmpfile.cc:561
+msgid "maybe corrupted bmp data (padding byte set to non-zero)."
+msgstr ""
+"possibilité de données bmp corrompues (octet padding différent de zéro)."
+
+#: bmpfile.cc:314
+msgid "maybe corrupted windows bmp data (Reserved in RGBQUAD is non-zero)."
+msgstr ""
+"possibilité de données bmp corrompues (reservation dans RGBQUAD n'est pas "
+"égale à zéro)."
+
+#: msg.cc:180 msg.cc:187 msg.cc:194
+msgid "n"
+msgstr "n"
+
+#: plnfile.cc:207
 msgid ""
 "please specify a name for the plain file (there is none embedded in the "
 "stego file)."
@@ -855,172 +562,193 @@ msgstr ""
 "choisissez svp un nom pour le fichier de données (il n'y en a aucun spécifié "
 "dans le fichier stégo)."
 
-#: src/plnfile.cc:228
-msgid "crc32 checksum test ok."
-msgstr "test checksum crc32 ok."
+#: bmpfile.cc:593
+msgid "premature end of bmp data from standard input."
+msgstr "fin innatendue des données bmp à partir de l'entrée standard."
 
-#: src/plnfile.cc:232
-msgid "crc32 checksum failed! extracted data is probably corrupted."
+#: aufile.cc:145
+msgid "premature end of data from standard input while reading au headers."
 msgstr ""
-"le checksum crc32 a échoué! les données extraites sont probablement "
-"corrompues."
+"fin prématurée des données lors de la lecture des entetes au  à partir de "
+"l'entrée standard."
 
-#: src/stegano.cc:57
-msgid "embedding plain data."
-msgstr "camouflage des données à cacher."
-
-#: src/stegano.cc:77
-msgid ""
-"the cover file is too short to embed the plain data. try a smaller interval "
-"length."
+#: aufile.cc:227 wavfile.cc:172
+msgid "premature end of data from standard input while reading audio data."
 msgstr ""
-"le fichier-couverture est trop petit pour cacher les données. essayez un "
-"intervalle plus court."
+"fin prématurée des données lors de la lecture des données audio à partir de "
+"l'entrée standard."
 
-#: src/stegano.cc:93
-msgid "extracting plain data."
-msgstr "extraction des données cachées."
-
-#: src/stegano.cc:128
-msgid ""
-"the stego file is too short to contain the plain data (file corruption ?)."
+#: bmpfile.cc:231
+msgid "premature end of data from standard input while reading bmp headers."
 msgstr ""
-"le fichier stégo est trop petit pour contenir les données (fichier "
-"corrompu ?)."
+"fin prématurée des données lors de la lecture des entetes  bmp à partir de "
+"l'entrée standard."
 
-#: src/stegano.cc:143
-msgid "embedding stego header."
-msgstr "camouflage de l'entête stégo."
-
-#: src/stegano.cc:199
-msgid ""
-"the cover file is too short to embed the stego header. use another cover "
-"file."
+#: wavfile.cc:316
+msgid "premature end of data from standard input while reading wav headers."
 msgstr ""
-"le fichier-couverture est trop petit pour cacher l'entête stégo. utilisez un "
-"autre fichier-couverture."
+"fin prématurée des données lors de la lecture des entetes wav à partir de "
+"l'entrée standard."
 
-#: src/stegano.cc:220
-msgid "extracting stego header."
-msgstr "extraction de l'entête stégo."
+#: error.cc:67
+msgid "premature end of data from standard input."
+msgstr "fin prématurée des données à partir de l'entrée standard."
 
-#: src/stegano.cc:240
-msgid ""
-"the stego file is too short to contain the stego header (file corruption ?)."
+#: aufile.cc:133
+#, c-format
+msgid "premature end of file \"%s\" while reading au headers."
+msgstr "fin innattendue du fichier  \"%s\" lors de la lecture des entetes au."
+
+#: aufile.cc:215 wavfile.cc:160
+#, c-format
+msgid "premature end of file \"%s\" while reading audio data."
 msgstr ""
-"le fichier stégo est trop petit pour contenir l'entête stégo (fichier "
-"corrompu ?)."
+"fin innattendue du fichier \"%s\" lors de la lecture des données audio."
 
-#: src/stegano.cc:273
-msgid ""
-"the distribution method saved in the stego header is unknown (file "
-"corruption ?)."
-msgstr ""
-"la méthode de distribution présente dans l'entête stégo est inconnue "
-"(fichier corrompu?)."
+#: bmpfile.cc:581
+#, c-format
+msgid "premature end of file \"%s\" while reading bmp data."
+msgstr "fin innattendue du fichier \"%s\" lors de la lecture des données bmp."
 
-#: src/stegano.cc:281
-msgid "the mask saved in the stego header is zero (file corruption ?)."
-msgstr "le masque spécifié dans l'entête stégo est zéro (fichier corrompu ?)."
+#: bmpfile.cc:219
+#, c-format
+msgid "premature end of file \"%s\" while reading bmp headers."
+msgstr "fin innattendue du fichier \"%s\" lors de la lecture des entetes bmp."
 
-#: src/stegano.cc:285
-msgid ""
-"the mask saved in the stego header is not the default (1). This is no longer "
-"supported (file corruption ?)."
-msgstr ""
-"le masque spécifié dans l'entête stégo n'est pas celui par défaut (1). Ceci "
-"n'est plus supporté (fichier corrompu ?)."
+#: wavfile.cc:304
+#, c-format
+msgid "premature end of file \"%s\" while reading wav headers."
+msgstr "fin innatendue du fichier \"%s\" lors de la lecture des entetes wav."
 
-#: src/stegano.cc:298
-msgid ""
-"the plain data is compressed. this is not implemented in this version (file "
-"corruption ?)."
-msgstr ""
-"les données cachées sont compréssées. ceci n'est pas encore implémenté "
-"(fichier corrompu ?)."
+#: error.cc:71
+#, c-format
+msgid "premature end of file \"%s\"."
+msgstr "fin innattendue du fichier \"%s\"."
 
-#: src/stegano.cc:368
+#: cvrstgfile.cc:77
+#, c-format
+msgid "reading cover file \"%s\"."
+msgstr "lecture du fichier-couverture \"%s\"."
+
+#: cvrstgfile.cc:73
+msgid "reading cover file from standard input."
+msgstr "lecture du fichier-couverture à partir de l'entrée standard."
+
+#: plnfile.cc:50
+#, c-format
+msgid "reading plain file \"%s\"."
+msgstr "lecture du fichier de données \"%s\"."
+
+#: plnfile.cc:46
+msgid "reading plain file from standard input."
+msgstr "lecture du fichier de données à partir de l'entrée standard?"
+
+#: cvrstgfile.cc:87
+#, c-format
+msgid "reading stego file \"%s\"."
+msgstr "lecture du fichier stégo \"%s\"."
+
+#: cvrstgfile.cc:83
+msgid "reading stego file from standard input."
+msgstr "lecture du fichier stégo à partir de l'entrée standard."
+
+#: stegano.cc:390
 #, c-format
 msgid "setting interval length to %d."
 msgstr "longueur de l'intervalle fixée à %d."
 
-#: src/stegano.cc:378
+#: stegano.cc:402
 #, c-format
 msgid "setting maximum interval length to %d."
 msgstr "longueur maximale de l'intervalle fixée à %d."
 
-#: src/stegano.cc:424
+#: arguments.cc:353
+#, c-format
 msgid ""
-"the cover file is too short to embed the plain data. use another cover file."
+"standard input cannot be used for cover AND plain data. type \"%s --help\" "
+"for help."
 msgstr ""
-"le fichier-couverture est trop petit pour cacher les données. utilisez un "
-"autre fichier-couverture."
+"l'entrée standard ne peut pas être utilisée pour cacher des données AND. "
+"tapez \"%s --help\" pour l'aide."
 
-#: src/support.cc:92
-msgid "Enter passphrase: "
-msgstr "Entrez la passphrase: "
-
-#: src/support.cc:105
-msgid "Re-Enter passphrase: "
-msgstr "Entrez à nouveau la passphrase: "
-
-#: src/support.cc:119
-msgid "the passphrases do not match."
-msgstr "les passphrases ne correspondent pas."
-
-#: src/support.cc:131 src/support.cc:149
-msgid "could not get terminal attributes."
-msgstr "n'a pas pu trouver les propriétés du terminal."
-
-#: src/support.cc:138 src/support.cc:158 src/support.cc:167
-msgid "could not set terminal attributes."
-msgstr "n'a pas pu fixer les propriétés du terminal."
-
-#: src/support.cc:223 src/support.cc:234
-msgid "could not allocate memory."
-msgstr "n'a pas pu allouer la mémoire."
-
-#: src/support.cc:245
-msgid "could not reallocate memory."
-msgstr "n'a pas pu ré-allouer la mémoire."
-
-#: src/support.cc:354
+#: arguments.cc:331 arguments.cc:339
 #, c-format
-msgid "the file \"%s\" does already exist."
-msgstr "le fichier \"%s\" existe déjà."
-
-#: src/support.cc:357
-#, c-format
-msgid "the file \"%s\" does already exist. overwrite ?"
-msgstr "le fichier \"%s\" existe déjà. l'écraser ?"
-
-#: src/support.cc:360
-#, c-format
-msgid "did not write to file \"%s\"."
-msgstr "n'a pas écrit vers le fichier \"%s\"."
-
-#: src/wavfile.cc:229
-msgid "could not find the format chunk in the wav file from standard input."
+msgid ""
+"the \"%s\" argument cannot be used here because the verbosity has already "
+"been set."
 msgstr ""
-"n'a pas pu trouver les informations nécéssaires pour le fichier wav à partir "
-"de l'entrée standard."
+"l'argument \"%s\" ne peut pas être utilisé ici car le mode verbeux a déjà "
+"été choisi."
 
-#: src/wavfile.cc:232
+#: arguments.cc:276
 #, c-format
-msgid "could not find the format chunk in the wav file \"%s\"."
+msgid ""
+"the \"%s\" argument must be followed by the cover file name. type \"%s --help"
+"\" for help."
 msgstr ""
-"n'a pas pu trouver les informations nécéssaires dans le fichier wav \"%s\""
+"l'argument \"%s\" doit être suivi du nom du fichier-couverture. tapez \"%s --"
+"help\" pour l'aide."
 
-#: src/wavfile.cc:237
-msgid "the wav file from standard input has a format that is not supported."
-msgstr "le fichier wav à partir de l'entrée standard a un format non supporté."
-
-#: src/wavfile.cc:240
+#: arguments.cc:252
 #, c-format
-msgid "the wav file \"%s\" has a format that is not supported."
-msgstr "le fichier wav \"%s\" est dans un format non supporté."
+msgid ""
+"the \"%s\" argument must be followed by the passphrase. type \"%s --help\" "
+"for help."
+msgstr ""
+"l'argument \"%s\" doit être suivi de la passphrase. tapez \"%s --help\" pour "
+"l'aide."
 
-#: src/wavfile.cc:251
+#: arguments.cc:310
+#, c-format
+msgid ""
+"the \"%s\" argument must be followed by the plain file name. type \"%s --help"
+"\" for help."
+msgstr ""
+"l'argument \"%s\" doit être suivi du nom du fichier de données. tapez \"%s --"
+"help\" pour l'aide."
+
+#: arguments.cc:293
+#, c-format
+msgid ""
+"the \"%s\" argument must be followed by the stego file name. type \"%s --help"
+"\" for help."
+msgstr ""
+"l'argument \"%s\" doit être suivi du nom du fichier stégo. tapez \"%s --help"
+"\" pour l'aide."
+
+#: arguments.cc:104 arguments.cc:152
+#, c-format
+msgid ""
+"the argument \"%s\" can only be used with the \"embed\" command. type \"%s --"
+"help\" for help."
+msgstr ""
+"l'argument \"%s\" peut seulement être utilisé avec la commande \"embed\". "
+"tapez \"%s --help\" pour l'aide."
+
+#: arguments.cc:112
+#, c-format
+msgid "the argument \"%s\" is incomplete. type \"%s --help\" for help."
+msgstr "l'argument \"%s\" est incomplet. tapez \"%s --help\" pour l'aide."
+
+#: bmpfile.cc:253
+msgid ""
+"the bitmap data from standard input is compressed which is not supported."
+msgstr ""
+"les données bitmap à partir de l'entrée standard sont compréssées. ceci "
+"n'est pas supporté."
+
+#: bmpfile.cc:256
+#, c-format
+msgid "the bitmap data in \"%s\" is compressed which is not supported."
+msgstr ""
+"les données bitmap dans \"%s\" sont compréssées de manière non supportée."
+
+#: wavfile.cc:266
+#, c-format
+msgid "the bits/sample rate of the wav file \"%s\" is not a multiple of eight."
+msgstr "le nombre de bits du fichier wav \"%s\" n'est pas un multiple de huit."
+
+#: wavfile.cc:263
 msgid ""
 "the bits/sample rate of the wav file from standard input is not a multiple "
 "of eight."
@@ -1028,44 +756,316 @@ msgstr ""
 "le nombre de bits du fichier wav à partir de l'entrée standard n'est pas un "
 "multiple de huit."
 
-#: src/wavfile.cc:254
+#: bmpfile.cc:200
+msgid "the bmp data from standard input has a format that is not supported."
+msgstr ""
+"les données bmp à partir de l'entrée standard sont dans un format non "
+"supporté."
+
+#: bmpfile.cc:203
 #, c-format
-msgid "the bits/sample rate of the wav file \"%s\" is not a multiple of eight."
-msgstr "le nombre de bits du fichier wav \"%s\" n'est pas un multiple de huit."
+msgid "the bmp file \"%s\" has a format that is not supported."
+msgstr "le fichier \"%s\" a un format qui n'est pas supporté."
 
-#: src/wavfile.cc:285
+#: arguments.cc:196 arguments.cc:208
 #, c-format
-msgid "an error occured while reading the wav headers from the file \"%s\"."
+msgid ""
+"the checksum argument can be used only once. type \"%s --help\" for help."
 msgstr ""
-"une erreur a eu lieu lors de la lecture de l'entête wav à partir du fichier "
-"\"%s\"."
+"l'argument checksum peut seulement être utilisé une fois. tapez \"%s --help"
+"\" pour l'aide."
 
-#: src/wavfile.cc:289
+#: arguments.cc:240
 #, c-format
-msgid "premature end of file \"%s\" while reading wav headers."
-msgstr "fin innatendue du fichier \"%s\" lors de la lecture des entetes wav."
-
-#: src/wavfile.cc:293
-msgid "an error occured while reading the wav headers from standard input."
+msgid ""
+"the compatibility argument can be used only once. type \"%s --help\" for "
+"help."
 msgstr ""
-"une erreur a eu lieu lors de la lecture de l'entete wav à partir de l'entrée "
-"standard."
+"l'argument compatibility peut être utilisé une fois seulement. tapez \"%s --"
+"help\" pour l'aide."
 
-#: src/wavfile.cc:297
-msgid "premature end of data from standard input while reading wav headers."
+#: stegano.cc:77
+msgid ""
+"the cover file is too short to embed the plain data. try a smaller interval "
+"length."
 msgstr ""
-"fin prématurée des données lors de la lecture des entetes wav à partir de "
-"l'entrée standard."
+"le fichier-couverture est trop petit pour cacher les données. essayez un "
+"intervalle plus court."
 
-#: src/wavfile.cc:333
+#: stegano.cc:449
+msgid ""
+"the cover file is too short to embed the plain data. use another cover file."
+msgstr ""
+"le fichier-couverture est trop petit pour cacher les données. utilisez un "
+"autre fichier-couverture."
+
+#: stegano.cc:205
+msgid ""
+"the cover file is too short to embed the stego header. use another cover "
+"file."
+msgstr ""
+"le fichier-couverture est trop petit pour cacher l'entête stégo. utilisez un "
+"autre fichier-couverture."
+
+#: arguments.cc:272
 #, c-format
-msgid "an error occured while writing the wav headers to the file \"%s\"."
+msgid ""
+"the cover file name argument can be used only once. type \"%s --help\" for "
+"help."
 msgstr ""
-"une erreur a eu lieu lors de l'écriture de l'entête wav vers le fichier \"%s"
-"\"."
+"le nom du fichier-couverture peut seulement être utilisé une fois en "
+"argument. tapez pour l'aide."
 
-#: src/wavfile.cc:337
-msgid "an error occured while writing the wav headers to standard output."
+#: arguments.cc:108
+#, c-format
+msgid ""
+"the distribution argument can be used only once. type \"%s --help\" for help."
 msgstr ""
-"une erreur a eu lieu lors de l'écriture de l'entête wav vers la sortie "
-"standard."
+"l'argument distribution peut être utilisé seulement une fois. tapez \"%s --"
+"help\" pour l'aide."
+
+#: stegano.cc:284
+msgid ""
+"the distribution method saved in the stego header is unknown (file "
+"corruption ?)."
+msgstr ""
+"la méthode de distribution présente dans l'entête stégo est inconnue "
+"(fichier corrompu?)."
+
+#: arguments.cc:156 arguments.cc:168
+#, c-format
+msgid ""
+"the encryption argument can be used only once. type \"%s --help\" for help."
+msgstr ""
+"l'argument encryption peut être utilisé une fois seulement. tapez \"%s --help"
+"\" pour l'aide."
+
+#: support.cc:354
+#, c-format
+msgid "the file \"%s\" does already exist."
+msgstr "le fichier \"%s\" existe déjà."
+
+#: support.cc:357
+#, c-format
+msgid "the file \"%s\" does already exist. overwrite ?"
+msgstr "le fichier \"%s\" existe déjà. l'écraser ?"
+
+#: error.cc:130
+msgid "the file format of the data from standard input is not supported."
+msgstr ""
+"le format de données du fichier à partir de l'entrée standard n'est pas "
+"supporté."
+
+#: error.cc:133
+#, c-format
+msgid "the file format of the file \"%s\" is not supported."
+msgstr "le format du fichier \"%s\" n'est pas supporté."
+
+#: arguments.cc:323
+#, c-format
+msgid "the force argument can be used only once. type \"%s --help\" for help."
+msgstr ""
+"l'argument force peut seulement être utilisé une fois. tapez \"%s --help\" "
+"pour l'aide."
+
+#: arguments.cc:123
+#, c-format
+msgid "the interval length for the cnsti method must be smaller than %d."
+msgstr ""
+"la longueur d'intervalle pour la méthode cnsti doit être plus petite que %d."
+
+#: jpegframe.cc:145
+#, c-format
+msgid ""
+"the jpeg file \"%s\" uses progressive DCT mode which is not supported in "
+"this version."
+msgstr ""
+"le fichier jpeg \"%s\" utilise le mode progressif DCT qui n'est pas supporté "
+"dans cette version."
+
+#: jpegframe.cc:142
+msgid ""
+"the jpeg file on standard input uses progressive DCT mode which is not "
+"supported in this version."
+msgstr ""
+"le fichier jpeg à partir de l'entrée standard utilise le mode DCT progressif "
+"qui n'est pas supporté dans cette version."
+
+#: stegano.cc:297
+msgid ""
+"the mask saved in the stego header is not the default (1). This is no longer "
+"supported (file corruption ?)."
+msgstr ""
+"le masque spécifié dans l'entête stégo n'est pas celui par défaut (1). Ceci "
+"n'est plus supporté (fichier corrompu ?)."
+
+#: stegano.cc:293
+msgid "the mask saved in the stego header is zero (file corruption ?)."
+msgstr "le masque spécifié dans l'entête stégo est zéro (fichier corrompu ?)."
+
+#: arguments.cc:138
+#, c-format
+msgid ""
+"the maximum interval length for the prndi method must be smaller than %d."
+msgstr ""
+"la longueur maximale d'intervalle pour la méthode prndi doit être plus "
+"petite que %d."
+
+#: plnfile.cc:150
+#, c-format
+msgid "the maximum length for the plain file name is %d characters."
+msgstr "la longueur maximale du fichier de données est de %d caractères."
+
+#: arguments.cc:256 support.cc:96 support.cc:110
+#, c-format
+msgid "the maximum length of the passphrase is %d characters."
+msgstr "la longueur maximale de la passphrase est de %d caractères."
+
+#: arguments.cc:248
+#, c-format
+msgid ""
+"the passphrase argument can be used only once. type \"%s --help\" for help."
+msgstr ""
+"l'argument passphrase peut être utilisé seulement une fois. tapez \"%s --help"
+"\" pour l'aide."
+
+#: support.cc:119
+msgid "the passphrases do not match."
+msgstr "les passphrases ne correspondent pas."
+
+#: stegano.cc:310
+msgid ""
+"the plain data is compressed. this is not implemented in this version (file "
+"corruption ?)."
+msgstr ""
+"les données cachées sont compréssées. ceci n'est pas encore implémenté "
+"(fichier corrompu ?)."
+
+#: arguments.cc:306
+#, c-format
+msgid ""
+"the plain file name argument can be used only once. type \"%s --help\" for "
+"help."
+msgstr ""
+"le nom du fichier de données peut seulement être utilisé une fois en "
+"argument. tapez \"%s --help pour l'aide."
+
+#: arguments.cc:220 arguments.cc:232
+#, c-format
+msgid ""
+"the plain file name embedding argument can be used only once. type \"%s --"
+"help\" for help."
+msgstr ""
+"l'argument pour l'encapsulation du fichier de données ne peut être utilisé "
+"qu'une seule fois. taper \"%s --help\" pour l'aide."
+
+#: stegano.cc:128
+msgid ""
+"the stego file is too short to contain the plain data (file corruption ?)."
+msgstr ""
+"le fichier stégo est trop petit pour contenir les données (fichier "
+"corrompu ?)."
+
+#: stegano.cc:246
+msgid ""
+"the stego file is too short to contain the stego header (file corruption ?)."
+msgstr ""
+"le fichier stégo est trop petit pour contenir l'entête stégo (fichier "
+"corrompu ?)."
+
+#: arguments.cc:289
+#, c-format
+msgid ""
+"the stego file name argument can be used only once. type \"%s --help\" for "
+"help."
+msgstr ""
+"le nom du fichier stégo peut être utilisé en argument seulement une fois. "
+"tapez \"%s --help\"pour l'aide."
+
+#: arguments.cc:176 arguments.cc:184
+#, c-format
+msgid ""
+"the stego header encryption argument can be used only once. type \"%s --help"
+"\" for help."
+msgstr ""
+"l'argument stego header encryption peut seulement être utilisé une fois "
+"seulement. tapez \"%s --help\" pour l'aide."
+
+#: jpegjfifapp0.cc:67
+#, c-format
+msgid "the version of the jpeg file \"%s\" is not supported."
+msgstr "la version du fichier jpeg \"%s\" n'est pas supporté."
+
+#: jpegjfifapp0.cc:64
+msgid "the version of the jpeg file on standard input is not supported."
+msgstr ""
+"la version du fichier jpeg à partir de l'entrée standard n'est pas supportée."
+
+#: wavfile.cc:252
+#, c-format
+msgid "the wav file \"%s\" has a format that is not supported."
+msgstr "le fichier wav \"%s\" est dans un format non supporté."
+
+#: wavfile.cc:249
+msgid "the wav file from standard input has a format that is not supported."
+msgstr "le fichier wav à partir de l'entrée standard a un format non supporté."
+
+#: arguments.cc:346
+#, c-format
+msgid "unknown argument \"%s\". type \"%s --help\" for help."
+msgstr "argument \"%s\" inconnu. tapez \"%s --help\" pour l'aide."
+
+#: arguments.cc:95
+#, c-format
+msgid "unknown command \"%s\". type \"%s --help\" for help."
+msgstr "commande \"%s\" inconnue. tapez \"%s --help\" pour l'aide."
+
+#: arguments.cc:146
+#, c-format
+msgid "unknown distribution method \"%s\". type \"%s --help\" for help."
+msgstr ""
+"méthode de distribution \"%s\" inconnues. tapez \"%s --help\" pour l'aide."
+
+#: bmpfile.cc:285 bmpfile.cc:354
+msgid "using a 16-color bitmap as cover is very insecure!"
+msgstr ""
+"l'utilisation d'un bitmap en 16-couleurs comme fichier couverture et très "
+"peu sûr !"
+
+#: bmpfile.cc:275 bmpfile.cc:344
+msgid "using a black/white bitmap as cover is very insecure!"
+msgstr "l'utilisation d'un bitmap en noir comme couverture est très peu sûr !"
+
+#: plnfile.cc:97
+#, c-format
+msgid "writing plain file to \"%s\"."
+msgstr "écriture du fichier de données vers \"%s\"."
+
+#: plnfile.cc:93
+msgid "writing plain file to standard output."
+msgstr "écriture du fichier de données vers la sortie standard."
+
+#: cvrstgfile.cc:103
+#, c-format
+msgid "writing stego file \"%s\"."
+msgstr "écriture du fichier stégo \"%s\"."
+
+#: cvrstgfile.cc:99
+msgid "writing stego file to standard output."
+msgstr "écriture du fichier stégo vers la sortie standard."
+
+#: msg.cc:179 msg.cc:186 msg.cc:193
+msgid "y"
+msgstr "o"
+
+#: arguments.cc:83
+msgid "you cannot use arguments with the \"help\" command"
+msgstr "vous ne pouvez pas utiliser d'arguments avec la commande \"help\"."
+
+#: arguments.cc:75
+msgid "you cannot use arguments with the \"license\" command"
+msgstr "vous ne pouvez pas utiliser d'arguments avec la commande \"license\"."
+
+#: arguments.cc:67
+msgid "you cannot use arguments with the \"version\" command"
+msgstr "vous ne pouvez pas utilisez d'arguments avec la commande \"version\"."

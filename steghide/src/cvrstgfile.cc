@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.6 - a steganography program
+ * steghide 0.4.6b - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -151,28 +151,40 @@ CvrStgFile* CvrStgFile::readfile (string fn)
 	CvrStgFile *file = NULL ;
 	switch (guessff (BinIO)) {
 		case FF_UNKNOWN:
-		throw UnSupFileFormat (BinIO) ;	
-		break ;
+		{
+			throw UnSupFileFormat (BinIO) ;	
+			break ;
+		}
 
 		case FF_BMP:
-		file = new BmpFile (BinIO) ;
-		break ;
+		{
+			file = new BmpFile (BinIO) ;
+			break ;
+		}
 
 		case FF_WAV:
-		file = new WavFile (BinIO) ;
-		break ;
+		{
+			file = new WavFile (BinIO) ;
+			break ;
+		}
 
 		case FF_AU:
-		file = new AuFile (BinIO) ;
-		break ;
+		{
+			file = new AuFile (BinIO) ;
+			break ;
+		}
 
 		case FF_JPEG:
-		file = new JpegFile (BinIO) ;
-		break ;
+		{
+			file = new JpegFile (BinIO) ;
+			break ;
+		}
 
 		default:
-		assert (0) ;
-		break ;
+		{
+			assert (0) ;
+			break ;
+		}
 	}
 
 	return file ;

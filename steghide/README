@@ -6,7 +6,7 @@ file by replacing some of the least significant bits of the cover file with bits
 of the secret message. After that, the secret message is imperceptible and can
 only be extracted with the correct passphrase.
 
-The current version of steghide is 0.4.6.
+The current version of steghide is 0.4.6b
 Features:
 support for JPEG, BMP, WAV and AU files
 encryption of plain data before embedding (blowfish encryption algorithm)

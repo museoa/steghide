@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.6 - a steganography program
+ * steghide 0.4.6b - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -152,19 +152,25 @@ void embedsthdr (CvrStgFile *cvrstgfile, int dmtd, DMTDINFO dmtdinfo, int enc, c
 	bit = cp_bits_to_buf_le (hdrbuf, bit, (unsigned long) sthdr.dmtd, SIZE_DMTD) ;
 	switch (sthdr.dmtd) {
 		case DMTD_CNSTI:
+		{
 			bit = cp_bits_to_buf_le (hdrbuf, bit, (unsigned long) nbits (sthdr.dmtdinfo.cnsti.interval_len), SIZE_DMTDINFO_CNSTI_NBITS_ILEN) ;
 			bit = cp_bits_to_buf_le (hdrbuf, bit, (unsigned long) sthdr.dmtdinfo.cnsti.interval_len, nbits (sthdr.dmtdinfo.cnsti.interval_len)) ;
-		break ;
+			break ;
+		}
 
 		case DMTD_PRNDI:
+		{
 			bit = cp_bits_to_buf_le (hdrbuf, bit, (unsigned long) sthdr.dmtdinfo.prndi.seed, SIZE_DMTDINFO_PRNDI_SEED) ;
 			bit = cp_bits_to_buf_le (hdrbuf, bit, (unsigned long) nbits (sthdr.dmtdinfo.prndi.interval_maxlen), SIZE_DMTDINFO_PRNDI_NBITS_IMLEN) ;
 			bit = cp_bits_to_buf_le (hdrbuf, bit, (unsigned long) sthdr.dmtdinfo.prndi.interval_maxlen, nbits (sthdr.dmtdinfo.prndi.interval_maxlen)) ;
-		break ;
+			break ;
+		}
 
 		default:
-		assert (0) ;
-		break ;
+		{
+			assert (0) ;
+			break ;
+		}
 	}
 
 	// always use the default mask
@@ -256,22 +262,28 @@ void extractsthdr (CvrStgFile *cvrstgfile, int dmtd, DMTDINFO dmtdinfo, int enc,
 	sthdr.dmtd = (unsigned int) tmp ;
 	switch (sthdr.dmtd) {
 		case DMTD_CNSTI:
+		{
 			bit = cp_bits_from_buf_le (hdrbuf, bit, &nbits, SIZE_DMTDINFO_CNSTI_NBITS_ILEN) ;
 			bit = cp_bits_from_buf_le (hdrbuf, bit, &tmp, nbits) ;
 			sthdr.dmtdinfo.cnsti.interval_len = (unsigned int) tmp ;
-		break ;
+			break ;
+		}
 
 		case DMTD_PRNDI:
+		{
 			bit = cp_bits_from_buf_le (hdrbuf, bit, &tmp, SIZE_DMTDINFO_PRNDI_SEED) ;
 			sthdr.dmtdinfo.prndi.seed = (unsigned long) tmp ;
 			bit = cp_bits_from_buf_le (hdrbuf, bit, &nbits, SIZE_DMTDINFO_PRNDI_NBITS_IMLEN) ;
 			bit = cp_bits_from_buf_le (hdrbuf, bit, &tmp, nbits) ;
 			sthdr.dmtdinfo.prndi.interval_maxlen = (unsigned int) tmp ;
-		break ;
+			break ;
+		}
 
 		default:
+		{
 			throw SteghideError (_("the distribution method saved in the stego header is unknown (file corruption ?).")) ;
-		break ;
+			break ;
+		}
 	}
 
 	bit = cp_bits_from_buf_le (hdrbuf, bit, &tmp, SIZE_MASKUSED) ;
@@ -316,16 +328,22 @@ void dmtd_reset (unsigned int dmtd, DMTDINFO dmtdinfo, unsigned long resetpos)
 {
 	switch (dmtd) {
 		case DMTD_CNSTI:
-		/* no initialization code necessary */
-		break ;
+		{
+			/* no initialization code necessary */
+			break ;
+		}
 
 		case DMTD_PRNDI:
-		srnd (dmtdinfo.prndi.seed) ;
-		break ;
+		{
+			srnd (dmtdinfo.prndi.seed) ;
+			break ;
+		}
 
 		default:
-		assert (0) ;
-		break ;
+		{
+			assert (0) ;
+			break ;
+		}
 	}
 
 	curdmtd_dmtd = dmtd ;
@@ -339,16 +357,22 @@ unsigned long dmtd_nextpos (void)
 {
 	switch (curdmtd_dmtd) {
 		case DMTD_CNSTI:
-		curdmtd_curpos += curdmtd_dmtdinfo.cnsti.interval_len + 1 ;
-		break ;
+		{
+			curdmtd_curpos += curdmtd_dmtdinfo.cnsti.interval_len + 1 ;
+			break ;
+		}
 
 		case DMTD_PRNDI:
-		curdmtd_curpos += rnd (curdmtd_dmtdinfo.prndi.interval_maxlen) + 1 ;
-		break ;
+		{
+			curdmtd_curpos += rnd (curdmtd_dmtdinfo.prndi.interval_maxlen) + 1 ;
+			break ;
+		}
 
 		default:
-		assert (0) ;
-		break ;
+		{
+			assert (0) ;
+			break ;
+		}
 	}
 
 	return curdmtd_curpos ;
@@ -356,36 +380,37 @@ unsigned long dmtd_nextpos (void)
 
 void setmaxilen (unsigned long cvrbytes, unsigned long plnbytes, unsigned long firstplnpos)
 {
-	unsigned int maxilen = 0 ;
-	VerboseMessage v ;
-
 	switch (args->dmtd.getValue()) {
 		case DMTD_CNSTI:
-		maxilen = findmaxilen_cnsti (cvrbytes, plnbytes, firstplnpos) ;
-		if (maxilen > DMTD_CNSTI_MAX_ILEN) {
-			maxilen = DMTD_CNSTI_MAX_ILEN ;
+		{
+			unsigned int maxilen = findmaxilen_cnsti (cvrbytes, plnbytes, firstplnpos) ;
+			if (maxilen > DMTD_CNSTI_MAX_ILEN) {
+				maxilen = DMTD_CNSTI_MAX_ILEN ;
+			}
+			VerboseMessage v (_("setting interval length to %d."), maxilen) ;
+			v.printMessage() ;
+			sthdr.dmtdinfo.cnsti.interval_len = maxilen ;
+			break ;
 		}
-		v.setMessage (_("setting interval length to %d."), maxilen) ;
-		v.printMessage() ;
-		sthdr.dmtdinfo.cnsti.interval_len = maxilen ;
-		break ;
 
 		case DMTD_PRNDI:
-		maxilen = findmaxilen_prndi (cvrbytes, plnbytes, firstplnpos) ;
-		if (maxilen > DMTD_PRNDI_MAX_IMLEN) {
-			maxilen = DMTD_PRNDI_MAX_IMLEN ;
+		{
+			unsigned int maxilen = findmaxilen_prndi (cvrbytes, plnbytes, firstplnpos) ;
+			if (maxilen > DMTD_PRNDI_MAX_IMLEN) {
+				maxilen = DMTD_PRNDI_MAX_IMLEN ;
+			}
+			VerboseMessage v (_("setting maximum interval length to %d."), maxilen) ;
+			v.printMessage() ;
+			sthdr.dmtdinfo.prndi.interval_maxlen = maxilen ;
+			break;
 		}
-		v.setMessage (_("setting maximum interval length to %d."), maxilen) ;
-		v.printMessage() ;
-		sthdr.dmtdinfo.prndi.interval_maxlen = maxilen ;
-		break;
 
 		default:
-		assert (0) ;
-		break ;
+		{
+			assert (0) ;
+			break ;
+		}
 	}
-
-	return ;
 }
 
 static unsigned int findmaxilen_cnsti (unsigned long cvrbytes, unsigned long plnbytes, unsigned long firstplnpos)
@@ -478,19 +503,25 @@ unsigned long calc_ubfirstplnpos (int dmtd, DMTDINFO dmtdinfo, int enc, unsigned
 		bit += SIZE_DMTD ;
 		switch (args->dmtd.getValue()) {
 			case DMTD_CNSTI:
+			{
 				bit += SIZE_DMTDINFO_CNSTI_NBITS_ILEN ;
 				bit += MAXSIZE_DMTDINFO_CNSTI_ILEN ;
-			break ;
+				break ;
+			}
 
 			case DMTD_PRNDI:
+			{
 				bit += SIZE_DMTDINFO_PRNDI_SEED ;
 				bit += SIZE_DMTDINFO_PRNDI_NBITS_IMLEN ;
 				bit += MAXSIZE_DMTDINFO_PRNDI_IMLEN ;
-			break ;
+				break ;
+			}
 
 			default:
-			assert (0) ;
-			break ;
+			{
+				assert (0) ;
+				break ;
+			}
 		}
 
 		bit += SIZE_MASKUSED ;	/* backwards compatibility - mask is always default */

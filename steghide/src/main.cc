@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.6 - a steganography program
+ * steghide 0.4.6b - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -103,28 +103,40 @@ int main (int argc, char *argv[])
 
 		switch (args->command.getValue()) {
 			case EMBED:
-			embedfile (args->cvrfn.getValue(), args->stgfn.getValue(), args->plnfn.getValue()) ;
-			break ;
+			{
+				embedfile (args->cvrfn.getValue(), args->stgfn.getValue(), args->plnfn.getValue()) ;
+				break ;
+			}
 
 			case EXTRACT:
-			extractfile (args->stgfn.getValue(), args->plnfn.getValue()) ;
-			break ;
+			{
+				extractfile (args->stgfn.getValue(), args->plnfn.getValue()) ;
+				break ;
+			}
 
 			case SHOWVERSION:
-			version () ;
-			break ;
+			{
+				version () ;
+				break ;
+			}
 
 			case SHOWLICENSE:
-			license () ;
-			break ;
+			{
+				license () ;
+				break ;
+			}
 
 			case SHOWHELP:
-			usage () ;
-			break ;
+			{
+				usage () ;
+				break ;
+			}
 
 			default:
-			assert (0) ;
-			break ;
+			{
+				assert (0) ;
+				break ;
+			}
 		}
 
 		cleanup () ;
@@ -191,6 +203,7 @@ static void fillsthdr (unsigned long nbytescvrbuf, unsigned long nbytesplain, un
 
 	switch (sthdr.dmtd) {
 		case DMTD_CNSTI:
+		{
 			if (args->dmtdinfo.is_set()) {
 				DMTDINFO di = args->dmtdinfo.getValue() ;
 				sthdr.dmtdinfo.cnsti.interval_len = di.cnsti.interval_len ;
@@ -199,9 +212,11 @@ static void fillsthdr (unsigned long nbytescvrbuf, unsigned long nbytesplain, un
 				unsigned long ubfirstplnpos = calc_ubfirstplnpos(sthdr_dmtd, sthdr_dmtdinfo, args->sthdrencryption.getValue(), nbytesplain) ;
 				setmaxilen (nbytescvrbuf, nbytesenc, ubfirstplnpos) ;
 			}
-		break ;
+			break ;
+		}
 
 		case DMTD_PRNDI:
+		{
 			DMTDINFO di = args->dmtdinfo.getValue() ;
 			sthdr.dmtdinfo.prndi.seed = di.prndi.seed ;
 			if (args->dmtdinfo.is_set()) {
@@ -211,11 +226,14 @@ static void fillsthdr (unsigned long nbytescvrbuf, unsigned long nbytesplain, un
 				unsigned long ubfirstplnpos = calc_ubfirstplnpos(sthdr_dmtd, sthdr_dmtdinfo, args->sthdrencryption.getValue(), nbytesplain) ;
 				setmaxilen (nbytescvrbuf, nbytesenc, ubfirstplnpos) ;
 			}
-		break ;
+			break ;
+		}
 
 		default:
+		{
 			assert (0) ;
-		break ;
+			break ;
+		}
 	}
 
 	sthdr.mask = DEFAULTMASK ; /* only for backwards compatibility to 0.4.x versions */
@@ -227,8 +245,7 @@ static void fillsthdr (unsigned long nbytescvrbuf, unsigned long nbytesplain, un
 		sthdr.encryption = ENC_NONE ;
 	}
 
-	/* compression is not yet implemented but included
-	   to enable 0.4.6 to read not compressed post 0.4.6 files */
+	/* compression is not yet implemented */
 	sthdr.compression = COMPR_NONE ;
 
 	if (args->checksum.getValue()) {

@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.6 - a steganography program
+ * steghide 0.4.6b - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -100,16 +100,22 @@ void BinaryIO::open (string fn, MODE m)
 	if (fn == "") {
 		switch (m) {
 			case READ:
-			setStream (stdin) ;
-			break ;
+			{
+				setStream (stdin) ;
+				break ;
+			}
 
 			case WRITE:
-			setStream (stdout) ;
-			break ;
+			{
+				setStream (stdout) ;
+				break ;
+			}
 
 			default:
-			assert (0) ;
-			break ;
+			{
+				assert (0) ;
+				break ;
+			}
 		}
 	}
 	else {
@@ -118,13 +124,17 @@ void BinaryIO::open (string fn, MODE m)
 
 		switch (m) {
 			case READ:
-			cmode = "rb" ;
-			break ;
+			{
+				cmode = "rb" ;
+				break ;
+			}
 
 			case WRITE:
-			checkforce (fn.c_str()) ;
-			cmode = "wb" ;
-			break ;
+			{
+				checkforce (fn.c_str()) ;
+				cmode = "wb" ;
+				break ;
+			}
 		}
 
 		if ((s = fopen (fn.c_str(), cmode)) == NULL) {

@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.6 - a steganography program
+ * steghide 0.4.6b - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -150,20 +150,28 @@ void WavFile::readdata (void)
 	catch (BinaryInputError e) {
 		switch (e.getType()) {
 			case BinaryInputError::FILE_ERR:
-			throw SteghideError (_("an error occured while reading the audio data from the file \"%s\"."), getBinIO()->getName().c_str()) ;
-			break ;
+			{
+				throw SteghideError (_("an error occured while reading the audio data from the file \"%s\"."), getBinIO()->getName().c_str()) ;
+				break ;
+			}
 
 			case BinaryInputError::FILE_EOF:
-			throw SteghideError (_("premature end of file \"%s\" while reading audio data."), getBinIO()->getName().c_str()) ;
-			break ;
+			{
+				throw SteghideError (_("premature end of file \"%s\" while reading audio data."), getBinIO()->getName().c_str()) ;
+				break ;
+			}
 
 			case BinaryInputError::STDIN_ERR:
-			throw SteghideError (_("an error occured while reading the audio data from standard input.")) ;
-			break ;
+			{
+				throw SteghideError (_("an error occured while reading the audio data from standard input.")) ;
+				break ;
+			}
 
 			case BinaryInputError::STDIN_EOF:
-			throw SteghideError (_("premature end of data from standard input while reading audio data.")) ;
-			break ;
+			{
+				throw SteghideError (_("premature end of data from standard input while reading audio data.")) ;
+				break ;
+			}
 		}
 	}
 }
@@ -189,12 +197,16 @@ void WavFile::writedata (void)
 	catch (BinaryOutputError e) {
 		switch (e.getType()) {
 			case BinaryOutputError::FILE_ERR:
-			throw SteghideError (_("an error occured while writing the audio data to the file \"%s\"."), getBinIO()->getName().c_str()) ;
-			break ;
+			{
+				throw SteghideError (_("an error occured while writing the audio data to the file \"%s\"."), getBinIO()->getName().c_str()) ;
+				break ;
+			}
 
 			case BinaryOutputError::STDOUT_ERR:
-			throw SteghideError (_("an error occured while writing the audio data to standard output.")) ;
-			break ;
+			{
+				throw SteghideError (_("an error occured while writing the audio data to standard output.")) ;
+				break ;
+			}
 		}
 	}
 }
@@ -282,20 +294,28 @@ void WavFile::readheaders ()
 	catch (BinaryInputError e) {
 		switch (e.getType()) {
 			case BinaryInputError::FILE_ERR:
-			throw SteghideError (_("an error occured while reading the wav headers from the file \"%s\"."), getBinIO()->getName().c_str()) ;
-			break ;
+			{
+				throw SteghideError (_("an error occured while reading the wav headers from the file \"%s\"."), getBinIO()->getName().c_str()) ;
+				break ;
+			}
 
 			case BinaryInputError::FILE_EOF:
-			throw SteghideError (_("premature end of file \"%s\" while reading wav headers."), getBinIO()->getName().c_str()) ;
-			break ;
+			{
+				throw SteghideError (_("premature end of file \"%s\" while reading wav headers."), getBinIO()->getName().c_str()) ;
+				break ;
+			}
 
 			case BinaryInputError::STDIN_ERR:
-			throw SteghideError (_("an error occured while reading the wav headers from standard input.")) ;
-			break ;
+			{
+				throw SteghideError (_("an error occured while reading the wav headers from standard input.")) ;
+				break ;
+			}
 
 			case BinaryInputError::STDIN_EOF:
-			throw SteghideError (_("premature end of data from standard input while reading wav headers.")) ;
-			break ;
+			{
+				throw SteghideError (_("premature end of data from standard input while reading wav headers.")) ;
+				break ;
+			}
 		}
 	}
 
@@ -330,12 +350,16 @@ void WavFile::writeheaders ()
 	catch (BinaryOutputError e) {
 		switch (e.getType()) {
 			case BinaryOutputError::FILE_ERR:
-			throw SteghideError (_("an error occured while writing the wav headers to the file \"%s\"."), getBinIO()->getName().c_str()) ;
-			break ;
+			{
+				throw SteghideError (_("an error occured while writing the wav headers to the file \"%s\"."), getBinIO()->getName().c_str()) ;
+				break ;
+			}
 
 			case BinaryOutputError::STDOUT_ERR:
-			throw SteghideError (_("an error occured while writing the wav headers to standard output.")) ;
-			break ;
+			{
+				throw SteghideError (_("an error occured while writing the wav headers to standard output.")) ;
+				break ;
+			}
 		}
 	}
 }

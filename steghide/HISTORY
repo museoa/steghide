@@ -1,3 +1,9 @@
+steghide 0.4.6b :
+=================
+
+* bugfix (did not compile on some systems)
+
+
 steghide 0.4.6 :
 ================
 
