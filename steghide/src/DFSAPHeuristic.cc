@@ -74,7 +74,6 @@ void DFSAPHeuristic::run ()
 {
 	const Edge** path = new const Edge*[TheGraph->getNumVertices()] ;
 
-	// FIXME - ? as reference
 	const std::list<Vertex*> ExposedVertices = TheMatching->getExposedVertices() ;
 	for (std::list<Vertex*>::const_iterator expv = ExposedVertices.begin() ;
 		(expv != ExposedVertices.end()) && (TheMatching->getCardinality() < CardinalityGoal) ; expv++) {
@@ -223,7 +222,6 @@ unsigned long DFSAPHeuristic::searchAugmentingPath (Vertex *v0, const Edge** pat
 	return pathlen ;
 }
 
-// FIXME - speed, readability !!
 const Edge* DFSAPHeuristic::getNextEdge (Vertex *v)
 {
 	if (isVisited(v)) {

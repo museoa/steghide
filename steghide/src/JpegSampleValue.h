@@ -34,7 +34,6 @@ class JpegSampleValue : public SampleValue {
 	SWORD16 getDctCoeff (void) const
 		{ return DctCoeff ; } ;
 
-	// FIXME - would it make sense to let EValue(-1) be 0, not 1 ? (i.e. invert for negative numbers) ?
 	static EmbValue calcEValue (SWORD16 dctc)
 		{ return (((dctc >= 0) ? dctc : -dctc)  % 2) ; } ;
 

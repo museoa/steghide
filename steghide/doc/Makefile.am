@@ -1,5 +1,5 @@
 man_MANS = steghide.1
-EXTRA_DIST = steghide.1 doxygen.cfg
+EXTRA_DIST = steghide.1
 MAINTAINERCLEANFILES = Makefile.in
 
 if HAVE_DOXYGEN
@@ -12,5 +12,5 @@ maintainer-clean-local:
 	rm -rf doxygen
 
 doxygen:
-	doxygen doxygen.cfg
+	doxygen ../steghide.doxygen
 endif
