@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.5 - a steganography program
+ * steghide 0.4.6 - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -130,4 +130,4 @@ unsigned long dmtd_nextpos (void) ;
 unsigned long calc_ubfirstplnpos (int dmtd, DMTDINFO dmtdinfo, int enc, unsigned long nbytesplain) ;
 void setmaxilen (unsigned long cvrbytes, unsigned long plnbytes, unsigned long firstplnpos) ;
 
-#endif /* ndef SH_STEGANO_H */
+#endif // ndef SH_STEGANO_H

@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.5 - a steganography program
+ * steghide 0.4.6 - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -52,4 +52,4 @@ unsigned int nbits (unsigned long x) ;
 bool stdin_isused (void) ;
 void checkforce (const char *filename) ;
 
-#endif /* ndef SH_SUPPORT_H */
+#endif // ndef SH_SUPPORT_H

@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.5 - a steganography program
+ * steghide 0.4.6 - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -18,8 +18,8 @@
  *
  */
 
-#ifndef SH_FF_BMP_H
-#define SH_FF_BMP_H
+#ifndef SH_BMPFILE_H
+#define SH_BMPFILE_H
 
 #include "arguments.h"
 #include "binaryio.h"
@@ -119,16 +119,12 @@ class BmpFile : public CvrStgFile {
 
 	enum SUBFORMAT { WIN, OS2 } ;
 
-#ifdef DEBUG
 	public:
-#endif
 	BITMAPFILEHEADER bmfh ;
 	BMPINFO bmi ;
 	unsigned char **bitmap ;
-#ifdef DEBUG
-	private:
-#endif
 
+	private:
 	void readheaders () ;
 	void bmpwin_readheaders () ;
 	void bmpos2_readheaders () ;
@@ -143,4 +139,4 @@ class BmpFile : public CvrStgFile {
 	SUBFORMAT getSubformat (void) ;
 } ;
 
-#endif /* ndef SH_FF_BMP_H */
+#endif /* ndef SH_BMPFILE_H */

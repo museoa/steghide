@@ -18,27 +18,25 @@
  *
  */
 
-#ifndef SH_PLNFILE_H
-#define SH_PLNFILE_H
+#ifndef SH_JPEGFILE_H
+#define SH_JPEGFILE_H
 
-#include "bufmanag.h"
+#include "binaryio.h"
+#include "cvrstgfile.h"
 
-/* PLNFILE describes a plaindata file */
-typedef struct struct_PLNFILE {	
-	/* file as data stream */
-	FILE	*stream ;
-	/* name of file */
-	char	*filename ;
-	/* first element of linked list of buffers that contain the data of the file */
-	BUFFER	*plndata ;
-} PLNFILE ;
+class JpegFile : public CvrStgFile {
+	public:
+	JpegFile (void) ;
+	JpegFile (BinaryIO *io) ;
+	~JpegFile (void) ;
 
-/* function prototypes */
-PLNFILE *pln_readfile (char *filename) ;
-void pln_writefile (PLNFILE *plnfile) ;
-void assemble_plndata (PLNFILE *plnfile) ;
-void deassemble_plndata (PLNFILE *plnfile) ;
-PLNFILE *pln_createfile (void) ;
-void pln_cleanup (PLNFILE *plnfile) ;
+	void read (BinaryIO *io) ;
+	void write (void) ;
+	unsigned long getCapacity (void) ;
+	void embedBit (unsigned long pos, int bit) ;
+	int extractBit (unsigned long pos) ;
 
-#endif // SH_PLNFILE_H
+	protected:
+} ;
+
+#endif // ndef SH_JPEGFILE_H

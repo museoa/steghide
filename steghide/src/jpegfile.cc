@@ -18,27 +18,47 @@
  *
  */
 
-#ifndef SH_PLNFILE_H
-#define SH_PLNFILE_H
+#include <iostream>
 
-#include "bufmanag.h"
+#include "binaryio.h"
+#include "jpegfile.h"
 
-/* PLNFILE describes a plaindata file */
-typedef struct struct_PLNFILE {	
-	/* file as data stream */
-	FILE	*stream ;
-	/* name of file */
-	char	*filename ;
-	/* first element of linked list of buffers that contain the data of the file */
-	BUFFER	*plndata ;
-} PLNFILE ;
+JpegFile::JpegFile ()
+	: CvrStgFile()
+{
+	// empty
+}
 
-/* function prototypes */
-PLNFILE *pln_readfile (char *filename) ;
-void pln_writefile (PLNFILE *plnfile) ;
-void assemble_plndata (PLNFILE *plnfile) ;
-void deassemble_plndata (PLNFILE *plnfile) ;
-PLNFILE *pln_createfile (void) ;
-void pln_cleanup (PLNFILE *plnfile) ;
+JpegFile::JpegFile (BinaryIO *io)
+	: CvrStgFile()
+{
+	read (io) ;
+}
 
-#endif // SH_PLNFILE_H
+JpegFile::~JpegFile ()
+{
+}
+
+void JpegFile::read (BinaryIO *io)
+{
+	CvrStgFile::read (io) ;
+}
+
+void JpegFile::write ()
+{
+	CvrStgFile::write() ;
+}
+
+unsigned long JpegFile::getCapacity (void)
+{
+	return 0 ;
+}
+
+void JpegFile::embedBit (unsigned long pos, int bit)
+{
+}
+
+int JpegFile::extractBit (unsigned long pos)
+{
+	return 0 ;
+}

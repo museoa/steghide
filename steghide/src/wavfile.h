@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.5 - a steganography program
+ * steghide 0.4.6 - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -18,8 +18,8 @@
  *
  */
 
-#ifndef SH_FF_WAV_H
-#define SH_FF_WAV_H
+#ifndef SH_WAVFILE_H
+#define SH_WAVFILE_H
 
 #include "binaryio.h"
 #include "bufmanag.h"
@@ -80,4 +80,4 @@ class WavFile : public CvrStgFile {
 	void putChhdr (ChunkHeader *chhdr) ;
 } ;
 
-#endif /* ndef SH_FF_WAV_H */
+#endif // ndef SH_WAVFILE_H

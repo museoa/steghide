@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.5 - a steganography program
+ * steghide 0.4.6 - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -40,4 +40,4 @@ typedef struct struct_LCIDENTRY {
 
 #define INTERVAL_DEFAULT	10
 
-#endif /* ndef SH_MAIN_H */
+#endif // ndef SH_MAIN_H

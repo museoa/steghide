@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.5 - a steganography program
+ * steghide 0.4.6 - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -18,8 +18,8 @@
  *
  */
 
-#ifndef SH_FF_AU_H
-#define SH_FF_AU_H
+#ifndef SH_AUFILE_H
+#define SH_AUFILE_H
 
 #include "binaryio.h"
 #include "bufmanag.h"
@@ -66,4 +66,4 @@ class AuFile : public CvrStgFile {
 	void writedata (void) ;
 } ;
 
-#endif /* ndef SH_FF_AU_H */
+#endif /* ndef SH_AUFILE_H */

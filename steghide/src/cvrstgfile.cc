@@ -1,3 +1,23 @@
+/*
+ * steghide 0.4.6 - a steganography program
+ * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -17,6 +37,7 @@
 #include "bmpfile.h"
 #include "wavfile.h"
 #include "aufile.h"
+#include "jpegfile.h"
 
 CvrStgFile::CvrStgFile (void)
 {
@@ -94,6 +115,9 @@ static int detectff (BinaryIO *io, unsigned long *rifflen)
 	if (strncmp ("BM", buf, 2) == 0) {
 		retval = FF_BMP ;
 	}
+	else if ((unsigned char) buf[0] == 0xFF && (unsigned char) buf[1] == 0xD8) {
+		retval = FF_JPEG ;
+	}
 	else {
 		for (unsigned int i = 2 ; i < 4 ; i++) {
 			buf[i] = (char) io->read8() ;
@@ -142,6 +166,10 @@ CvrStgFile *cvrstg_readfile (string filename)
 
 		case FF_AU:
 		file = new AuFile (BinIO) ;
+		break ;
+
+		case FF_JPEG:
+		file = new JpegFile (BinIO) ;
 		break ;
 
 		default:

@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.5 - a steganography program
+ * steghide 0.4.6 - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -50,5 +50,6 @@ CvrStgFile *cvrstg_readfile (string filename) ;
 #define FF_BMP		1
 #define FF_WAV		2
 #define FF_AU		3
+#define FF_JPEG		4
 
 #endif /* ndef SH_CVRSTGFILE_H */
