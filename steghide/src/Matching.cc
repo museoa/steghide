@@ -41,6 +41,10 @@ Matching::Matching (Graph* g, ProgressOutput* po)
 	setCardinality (0) ;
 }
 
+Matching::~Matching ()
+{
+}
+
 bool Matching::includesEdge (const Edge* e) const
 {
 	Vertex* v1 = e->getVertex1() ;
@@ -67,7 +71,7 @@ Matching& Matching::addEdge (Edge *e)
 
 	myassert (VertexInformation[vlbl1].isExposed()) ;
 	myassert (VertexInformation[vlbl2].isExposed()) ;
-	std::list<Edge*>::iterator edgeit = MatchingEdges.insert (MatchingEdges.end(), e) ;
+	std::list<Edge*>::iterator edgeit = MatchingEdges.insert (MatchingEdges.end(), new Edge (*e)) ;
 
 	ExposedVertices.erase (VertexInformation[vlbl1].getExposedIterator()) ;
 	ExposedVertices.erase (VertexInformation[vlbl2].getExposedIterator()) ;
@@ -95,6 +99,7 @@ Matching& Matching::removeEdge (Edge* e)
 	std::list<Edge*>::iterator eit2 = VertexInformation[vlbl2].getMatchedIterator() ;
 	myassert (eit1 == eit2) ;
 	MatchingEdges.erase (eit1) ;
+	// FIXME - delete (mem) the erased edge
 
 	// add v1,v2 to ExposedVertices
 	std::list<Vertex*>::iterator expvit1 = ExposedVertices.insert (ExposedVertices.end(), v1) ;
@@ -106,17 +111,17 @@ Matching& Matching::removeEdge (Edge* e)
 	return *this ;
 }
 
-Matching& Matching::augment (const std::vector<Edge*> &path)
+Matching& Matching::augment (const Edge** path, unsigned long len)
 {
-	myassert (path.size() % 2 == 1) ;
+	myassert (len % 2 == 1) ;
 	bool e_was_matched = false ;
 	Edge *e = NULL ;
 	Edge *e_before = NULL ;
-	for (unsigned int i = 0 ; i < path.size() ; i++) {
-		// give e the correct orientation (using pointer equivalence(!))
-		e = path[i] ;
+	for (unsigned int i = 0 ; i < len ; i++) {
+		// give e the correct orientation (using pointer equivalence of vertices(!))
+		e = new Edge (*(path[i])) ;
 		if (e_before == NULL) {
-			if (path.size() > 1) {
+			if (len > 1) {
 				// e is the first, but not the only edge in path
 				if ((e->getVertex1() == path[1]->getVertex1()) || (e->getVertex1() == path[1]->getVertex2())) {
 					e->swap() ;
@@ -171,6 +176,16 @@ Matching& Matching::augment (const std::vector<Edge*> &path)
 	setCardinality (Cardinality + 1) ;
 
 	return *this ;
+}
+
+Matching& Matching::augment (const std::vector<Edge*>& path)
+{
+	unsigned long len = path.size() ;
+	const Edge** p = new const Edge*[len] ;
+	for (unsigned long i = 0 ; i < len ; i++) {
+		p[i] = path[i] ;
+	}
+	return augment (p, len) ;
 }
 
 void Matching::printVerboseInfo (void) const

@@ -23,10 +23,9 @@
 
 #include <list>
 
-#include "SampleOccurence.h"
-
-class Edge ;
+#include "Edge.h"
 class Graph ;
+#include "SampleOccurence.h"
 class SampleValue ;
 class Vertex ;
 
@@ -57,6 +56,11 @@ class EdgeIterator {
 	} ;
 
 	/**
+	 * the default contructor - does not create a valid object
+	 **/
+	EdgeIterator (void) ;
+
+	/**
 	 * \param v the source vertex
 	 **/
 	EdgeIterator (Vertex *v, ITERATIONMODE m = SAMPLEOCCURENCE) ;
@@ -71,11 +75,9 @@ class EdgeIterator {
 	/**
 	 * get the current edge
 	 * \return the edge that is described by the current status of this EdgeIterator
-	 *
-	 * The returned Edge object is created in this function and
-	 * should be deleted by the caller.
 	 **/
-	Edge* operator* (void) const ;
+	const Edge* operator* (void) const
+		{ return ((Finished) ? NULL : &CurrentEdge) ; }
 
 	/**
 	 * set this iterator to next edge
@@ -106,12 +108,21 @@ class EdgeIterator {
 	static void setMaxNumEdges (UWORD32 mne)
 		{ MaxNumEdges = mne ; } ;
 
+#ifdef DEBUG
+	void print (unsigned short spc = 0) const ;
+#endif
+
 	private:
+	// FIXME - save some memory here (e.g. by using CurrentEdge.Vertex1 (and .Index1) instead of SrcVertex, SrcIndex
+
 	/// the vertex that is common to all edges this edge iterator will iterate trough
 	Vertex* SrcVertex ;
 
 	/// the index of the sample value in the source vertex that is part of the current edge
 	unsigned short SrcIndex ;
+
+	/// the current edge (is returned by operator*)
+	Edge CurrentEdge ;
 
 	/// mode of iteration
 	ITERATIONMODE Mode ;
@@ -146,9 +157,6 @@ class EdgeIterator {
 	 * \return true iff there is a sample with value sv that is part of an edge starting at SrcVertex
 	 **/
 	bool isDestSampleValueOK (const SampleValue *sv) ;
-
-	/// check if operator* will return a valid edge
-	bool check_EdgeValidity (void) const ;
 } ;
 
 #endif // ndef SH_EDGEITERATOR_H

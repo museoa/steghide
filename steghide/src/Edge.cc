@@ -29,12 +29,44 @@ Edge::Edge (Vertex *v1, unsigned short idx1, Vertex *v2, unsigned short idx2)
 	myassert (v1->getLabel() != v2->getLabel()) ;
 }
 
+Edge::Edge (const Edge& e)
+{
+	Vertex1 = e.Vertex1 ;
+	Index1 = e.Index1 ;
+	Vertex2 = e.Vertex2 ;
+	Index2 = e.Index2 ;
+	Weight = e.Weight ;
+}
+
 UWORD32 Edge::getWeight ()
 {
 	if (Weight == UWORD32_MAX) {
 		Weight = Vertex1->getSampleValue(Index1)->calcDistance(Vertex2->getSampleValue(Index2)) ;
 	}
 	return Weight ;
+}
+
+void Edge::set (Vertex* v1, unsigned short idx1, Vertex* v2, unsigned short idx2)
+{
+	Vertex1 = v1 ;
+	Index1 = idx1 ;
+	Vertex2 = v2 ;
+	Index2 = idx2 ;
+	Weight = UWORD32_MAX ;
+}
+
+void Edge::set1 (Vertex* v1, unsigned short idx1)
+{
+	Vertex1 = v1 ;
+	Index1 = idx1 ;
+	Weight = UWORD32_MAX ;
+}
+
+void Edge::set2 (Vertex* v2, unsigned short idx2)
+{
+	Vertex2 = v2 ;
+	Index2 = idx2 ;
+	Weight = UWORD32_MAX ;
 }
 
 bool Edge::operator== (const Edge& e) const
@@ -132,7 +164,7 @@ SampleValue *Edge::getReplacingSampleValue (Vertex *v) const
 }
 
 #ifdef DEBUG
-void Edge::print (unsigned short spc)
+void Edge::print (unsigned short spc) const
 {
 	char* space = new char[spc + 1] ;
 	for (unsigned short i = 0 ; i < spc ; i++) {
@@ -145,6 +177,13 @@ void Edge::print (unsigned short spc)
 	std::cerr << space << " Index1: " << Index1 << std::endl ;
 	Vertex2->print (spc + 1) ;
 	std::cerr << space << " Index2: " << Index2 << std::endl ;
-	std::cerr << space << " Weight: " << getWeight() << std::endl ;
+	std::cerr << space << " Weight: " ;
+	if (Weight == UWORD32_MAX) {
+		std::cerr << "not calculated" ;
+	}
+	else {
+		std::cerr << Weight ;
+	}
+	std::cerr << std::endl ;
 }
 #endif

@@ -48,7 +48,7 @@ class AugmentingPathHeuristic : public MatchingAlgorithm {
 	 * \param mo the mode for edge iteration
 	 **/
 	AugmentingPathHeuristic (Graph* g, Matching* m, float goal, UWORD32 mne = UWORD32_MAX, EdgeIterator::ITERATIONMODE mo = EdgeIterator::SAMPLEOCCURENCE) ;
-	virtual ~AugmentingPathHeuristic (void) {} ;
+	virtual ~AugmentingPathHeuristic (void) ;
 
 	/**
 	 * reset the state of this AugmentingPathHeuristic, esp. the EdgeIterators
@@ -61,12 +61,12 @@ class AugmentingPathHeuristic : public MatchingAlgorithm {
 	private:
 	/**
 	 * \param v0 an exposed vertex
+	 * \param path an array of Edge pointers where the path will be put
+	 * \return the length of the path (the number of valid edges in path)
 	 **/
-	std::vector<Edge*>* searchAugmentingPath (Vertex* v0) ;
+	unsigned long searchAugmentingPath (Vertex* v0, const Edge** path) ;
 
-	Edge* getNextEdge (Vertex *v) ;
-
-	void pushOnPath (std::vector<Edge*>* path, Edge* e) ;
+	const Edge* getNextEdge (Vertex *v) ;
 
 	void markVisited (Vertex *v)
 		{ TimeCounters[v->getLabel()] = TimeCounter ; } ;
@@ -82,9 +82,9 @@ class AugmentingPathHeuristic : public MatchingAlgorithm {
 		{ return (TimeCounters[vlbl] == TimeCounter) ; } ;
 
 	UWORD32 TimeCounter ;
-	std::vector<UWORD32> TimeCounters ;
-	std::vector<bool> VertexOnPath ;
-	std::vector<EdgeIterator> EdgeIterators ;
+	UWORD32* TimeCounters ;
+	bool* VertexOnPath ;
+	EdgeIterator* EdgeIterators ;
 } ;
 
 #endif // ndef SH_AUGMENTINGPATHHEURISTIC

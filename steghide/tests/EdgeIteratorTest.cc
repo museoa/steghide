@@ -153,11 +153,13 @@ void EdgeIteratorTest::testIterationLength ()
 	Globs = gl11 ; addTestResult (genericTestIterationLength (g11)) ;
 }
 
+#if 0
 bool EdgeIteratorTest::genericTestGraphIteration (Graph* g, EdgeIterator::ITERATIONMODE m)
 {
 	for (VertexLabel vlbl = 0 ; vlbl < g->Vertices.size() ; vlbl++) {
 	}
 }
+#endif
 
 bool EdgeIteratorTest::genericTestVertexIteration (Vertex* srcvertex, EdgeIterator::ITERATIONMODE m, const std::vector<Edge*>& edges)
 {
@@ -174,7 +176,9 @@ bool EdgeIteratorTest::genericTestVertexIteration (Vertex* srcvertex, EdgeIterat
 				std::cerr << "expected edge:" << std::endl ;
 				(*refit)->print(1) ;
 				std::cerr << "found edge:" << std::endl ;
-				(*edgeit)->print(1) ;
+				Edge* e = new Edge(**edgeit) ;
+				e->print(1) ;
+				delete e ;
 			}
 			ok = false ;
 		}

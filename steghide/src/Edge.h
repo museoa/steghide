@@ -28,9 +28,20 @@
 class Edge {
 	public:
 	/**
+	 * default constructor - does not create a useful object
+	 **/
+	Edge (void)
+		: Vertex1(NULL), Index1(0), Vertex2(NULL), Index2(0), Weight(UWORD32_MAX) {} ;
+
+	/**
 	 * constructs an edge object
 	 **/
 	Edge (Vertex *v1, unsigned short idx1, Vertex *v2, unsigned short idx2) ;
+
+	/**
+	 * copy constructor
+	 **/
+	Edge (const Edge& e) ;
 
 	Vertex *getVertex1 (void) const
 		{ return Vertex1 ; } ;
@@ -45,6 +56,12 @@ class Edge {
 		{ return Index2 ; } ;
 
 	UWORD32 getWeight (void) ;
+
+	void set (Vertex* v1, unsigned short idx1, Vertex* v2, unsigned short idx2) ;
+
+	void set1 (Vertex* v1, unsigned short idx1) ;
+
+	void set2 (Vertex* v2, unsigned short idx2) ;
 
 	bool operator== (const Edge& e) const ;
 
@@ -81,7 +98,7 @@ class Edge {
 	SampleValue *getReplacingSampleValue (Vertex *v) const ;
 
 #ifdef DEBUG
-	void print (unsigned short spc = 0) ;
+	void print (unsigned short spc = 0) const ;
 #endif
 	
 	private:

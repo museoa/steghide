@@ -82,12 +82,12 @@ void Graph::constructSamples (const std::vector<SamplePos*>& sposs, std::vector<
 	svalues.resize (numvertices) ;
 
 	// fill a hash table with the (unique) sample values and svalues with pointers to them
-	sgi::hash_set<SampleValue*,sgi::hash<SampleValue*>,SampleValuesEqual> SampleValues_set ;
+	sgi::hash_set<SampleValue*,SampleValueHash,SampleValuesEqual> SampleValues_set ;
 	for (unsigned long i = 0 ; i < numvertices ; i++) {
 		svalues[i] = new SampleValue*[File->getSamplesPerVertex()] ;
 		for (unsigned short j = 0 ; j < File->getSamplesPerVertex() ; j++) {
 			SampleValue *sv = File->getSampleValue (sposs[i][j]) ;
-			sgi::hash_set<SampleValue*,sgi::hash<SampleValue*>,SampleValuesEqual>::iterator res = SampleValues_set.find (sv) ;
+			sgi::hash_set<SampleValue*,SampleValueHash,SampleValuesEqual>::iterator res = SampleValues_set.find (sv) ;
 			if (res == SampleValues_set.end()) { // sample has not been found - add it !
 				SampleValues_set.insert (sv) ;
 				svalues[i][j] = sv ;
@@ -102,7 +102,7 @@ void Graph::constructSamples (const std::vector<SamplePos*>& sposs, std::vector<
 	// move the hash_set SampleValues_set into the vector SampleValues, set sample labels
 	SampleValues = std::vector<SampleValue*> (SampleValues_set.size()) ;
 	unsigned long label = 0 ;
-	for (sgi::hash_set<SampleValue*,sgi::hash<SampleValue*>,SampleValuesEqual>::const_iterator i = SampleValues_set.begin() ; i != SampleValues_set.end() ; i++) {
+	for (sgi::hash_set<SampleValue*,SampleValueHash,SampleValuesEqual>::const_iterator i = SampleValues_set.begin() ; i != SampleValues_set.end() ; i++) {
 		SampleValues[label] = *i ;
 		SampleValues[label]->setLabel (label) ;
 		label++ ;
@@ -156,6 +156,7 @@ void Graph::constructEdges ()
 
 Graph::~Graph()
 {
+	/* FIXME
 	for (std::vector<Vertex*>::iterator i = Vertices.begin() ; i != Vertices.end() ; i++) {
 		delete *i ;
 	}
@@ -167,6 +168,7 @@ Graph::~Graph()
 	for (EmbValue t = 0 ; t < File->getEmbValueModulus() ; t++) {
 		delete SVALists[t] ;
 	}
+	*/
 }
 
 void Graph::unmarkDeletedAllVertices ()
@@ -574,7 +576,7 @@ void Graph::printVertex_gml (std::ostream& out, Vertex* vstart, unsigned int rec
 	if (recdepth > 0) {
 		EdgeIterator eit (vstart) ;
 		while (!eit.isFinished()) {
-			Edge* e = *eit ;
+			const Edge* e = *eit ;
 			Vertex* vnext = e->getOtherVertex(vstart) ;
 
 			if (!edgesprinted[vstart->getLabel()] && !edgesprinted[vnext->getLabel()]) {
@@ -587,7 +589,6 @@ void Graph::printVertex_gml (std::ostream& out, Vertex* vstart, unsigned int rec
 				out << "    ]" << std::endl ;
 			}
 
-			delete e ;
 			++eit ;
 		}
 
@@ -595,12 +596,11 @@ void Graph::printVertex_gml (std::ostream& out, Vertex* vstart, unsigned int rec
 
 		eit.reset() ;
 		while (!eit.isFinished()) {
-			Edge* e = *eit ;
+			const Edge* e = *eit ;
 			Vertex* vnext = e->getOtherVertex(vstart) ;
 
 			printVertex_gml (out, vnext, recdepth - 1, nodeprinted, edgesprinted, false) ;
 
-			delete e ;
 			++eit ;
 		}
 	}

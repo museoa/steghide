@@ -60,9 +60,7 @@ Vertex::~Vertex ()
 	delete[] SampleOccurenceIts ;
 	delete[] SamplePositions ;
 	delete[] SampleValues ;
-	if (ShortestEdge != NULL) {
-		delete ShortestEdge ;
-	}
+	delete ShortestEdge ;
 }
 
 void Vertex::markDeleted ()
@@ -103,16 +101,14 @@ void Vertex::updateShortestEdge ()
 	printDebug (3, "updating shorted edge for vertex with label %lu", getLabel()) ;
 #endif
 
-	if (ShortestEdge != NULL) {
-		delete ShortestEdge ;
-	}
+	delete ShortestEdge ;
 
 	if (getDegree() == 0) {
 		ShortestEdge = NULL ;
 	}
 	else {
 		EdgeIterator edgeit (this) ;
-		ShortestEdge = *edgeit ;
+		ShortestEdge = new Edge (**edgeit) ;
 	}
 }
 
@@ -182,9 +178,10 @@ void Vertex::printEdges() const
 	std::cerr << "edges of vertex with label " << getLabel() << std::endl ;
 	EdgeIterator edgeit (Globs.TheGraph->getVertex(getLabel())) ;
 	while (*edgeit != NULL) {
-		Edge* e = *edgeit ;
+		Edge* e = new Edge (**edgeit) ;
 		std::cerr << "  label of other vertex: " << e->getOtherVertex(this)->getLabel() << std::endl ;
 		std::cerr << "  weight: " << e->getWeight() << std::endl ;
+		delete e ;
 		++edgeit ;
 	}
 }

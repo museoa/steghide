@@ -146,33 +146,26 @@ class SampleValue {
 	unsigned long NumEdges ;
 } ;
 
-
-struct SampleValuesEqual : std::binary_function<SampleValue*, SampleValue*, bool> {
+struct SampleValuesEqual : public std::binary_function<SampleValue*, SampleValue*, bool> {
 	bool operator() (const SampleValue* s1, const SampleValue *s2) const
 	{
 		return (*s1 == *s2) ;
 	}
 } ;
 
-struct SampleValuesLess : std::binary_function<SampleValue*, SampleValue*, bool> {
+struct SampleValuesLess : public std::binary_function<SampleValue*, SampleValue*, bool> {
 	bool operator() (const SampleValue* s1, const SampleValue *s2) const
 	{
 		return (*s1 < *s2) ;
 	}
 } ;
 
-
-namespace NAMESPACE_SGI
-{
-
-struct sgi::hash<SampleValue*> {
-	size_t operator() (const SampleValue *s) const
+struct SampleValueHash : public std::unary_function<SampleValue*,size_t> {
+	size_t operator() (const SampleValue* s) const
 	{
-		sgi::hash<unsigned long> h ;
-		return h (s->getKey()) ;
+		sgi::hash<UWORD32> h ;
+		return h(s->getKey()) ;
 	}
 } ;
-
-}
 
 #endif // ndef SH_CVRSTGSAMPLE_H

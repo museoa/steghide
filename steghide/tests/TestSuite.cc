@@ -78,6 +78,7 @@ void TestSuite::startCategory (std::string n)
 		*OutStream << "    " << n ;
 		runningCategory = n ;
 		runningCategoryOk = true ;
+		OutStream->flush() ;
 	}
 	else {
 		*OutStream << "UNEXPECTED ERROR in " << __FILE__ << ":" << __LINE__ << std::endl ;
@@ -114,6 +115,7 @@ void TestSuite::addTestResult (bool r)
 			SuiteOk = false ;
 		}
 		runningCategoryOk &= r ;
+		OutStream->flush() ;
 	}
 }
 

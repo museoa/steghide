@@ -33,6 +33,10 @@ class ProgressOutput ;
 /**
  * \class Matching
  * \brief represent a matching on a graph
+ *
+ * A Matching object will copy all Edges that are passed to it and will take care of them, i.e.
+ * delete them if they are no longer used. Edges do only "leave" a Matching object as const
+ * pointers.
  **/
 class Matching {
 	public:
@@ -43,6 +47,8 @@ class Matching {
 	 **/
 	Matching (Graph* g, ProgressOutput* po = NULL) ;
 	
+	~Matching (void) ;
+
 	/**
 	 * returns true iff the vertex v is matched in this matching.
 	 **/
@@ -71,7 +77,7 @@ class Matching {
 	 * get the edge that is in the matching and adjacent to v
 	 * \return the matched edge or NULL if v is exposed
 	 **/
-	Edge *getMatchingEdge (Vertex *v) const
+	const Edge* getMatchingEdge (Vertex *v) const
 		{ return VertexInformation[v->getLabel()].getMatchingEdge() ; } ;
 
 	/**
@@ -120,7 +126,7 @@ class Matching {
 	Matching &removeEdge (Edge *e) ;
 
 	/**
-	 * get the std::list of all edges in this matching
+	 * get the list of all edges in this matching
 	 **/
 	const std::list<Edge*>& getEdges (void) const
 		{ return MatchingEdges ; } ;
@@ -128,15 +134,15 @@ class Matching {
 	/**
 	 * augment this matching along the given augmenting path
 	 * \param path an augmenting path
+	 * \param len the length (number of edges) of the augmenting path
 	 *
 	 * An augementing path is a path where edges with odd indices (the first, third,...) are not
 	 * in the matching and edges with even indices are and the path has
 	 * an odd length.
-	 *
-	 * The Edge objects in path must not be deleted by the caller, they
-	 * will be deleted later by the Matching object.
 	 **/
-	Matching &augment (const std::vector<Edge*>& path) ;
+	Matching& augment (const Edge** path, unsigned long len) ;
+
+	Matching& augment (const std::vector<Edge*>& path) ;
 
 	void printVerboseInfo (void) const ;
 

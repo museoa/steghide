@@ -35,7 +35,7 @@
 #  if __GNUC_MINOR__ == 0
     namespace sgi = std ;			// GCC 3.0
 #  else
-    namespace sgi = ::__gnu_cxx ;	// GCC 3.1 and later
+    namespace sgi = __gnu_cxx ;	// GCC 3.1 and later
 #   define NAMESPACE_SGI __gnu_cxx
 #  endif
 # endif
