@@ -1,0 +1,209 @@
+.\" Steghide 0.4.1 man page
+.TH steghide 1 "4 Nov 2001"
+.SH NAME
+steghide \- a steganography program
+.SH SYNOPSIS
+.B steghide
+.I command
+[
+.I arguments
+]
+.SH DESCRIPTION
+.B Steghide
+is a steganography program which embeds a secret message in a cover file by
+replacing some of the least significant bits of the cover file with bits of the
+secret message. After that, the secret message is imperceptible and can only be
+extracted with the correct passphrase. The result of the embedding process
+(an innocuous looking file with an embedded message) is called stego file.
+
+The bmp, wav and au file formats are supported by steghide. You can use a file
+of any of these formats as cover/stego file. There are no restrictions on the
+format of the plain file.
+
+The plain data can be encrypted before embedding. The encryption algorithm
+blowfish is used together with the hash algorithm MD5 (to create a key for
+blowfish from the passphrase). There is no restriction on the length of the
+passphrase.
+
+.SH COMMANDS
+In this section the commands for steghide are listed. The first argument must
+always be one of these commands. You can supply some arguments to the embed and
+extract commands. For a detailed description of these arguments see section
+.B ARGUMENTS.
+.TP
+.B "embed, --embed"
+The embed command embeds the plain file in the cover file, resulting in the
+stego file. This command needs the following arguments: the name of the cover
+file (-cf), the name of the plain file (-pf), a name for the stego file that
+will be created (-sf) and a passphrase (-p).
+.TP
+.B "extract, --extract"
+The extract command extracts the plain data from a stego file. This command
+needs the following arguments: the name of the stego file (-sf), the name of
+the plain file that will be created (-pf) and the passphrase (-p).
+.TP
+.B "version, --version"
+Displays a short version information. No arguments required.
+.TP
+.B "license, --license"
+Displays steghide's license. No arguments required.
+.TP
+.B "help, --help"
+Displays a help screen. No arguments required.
+
+.SH ARGUMENTS
+.TP
+.B "-d, --distribution"
+This argument defines the method that is used to calculate the postions of the
+hidden bits in the cover/stego file. You can choose among two different
+methods: a constant interval length between two hidden bits (this method is
+called "cnsti") and a pseudo-random interval length between two hidden bits
+(this method is called "prndi").
+
+This argument can only be used with the embed command.
+
+To use the cnsti method you have to pass the following to steghide:
+.B -d cnsti <n>
+where <n> is the interval length you wish to use, i.e. the number of bytes
+(in the cover file) between two bytes that each contain a hidden bit.
+
+Supplying the following argument makes steghide use the prndi method:
+.B -d prndi <n>
+where <n> is the
+.B maximum
+interval length. The average interval length (using the prndi method) will be
+approximately the half of the maximum interval length.
+
+Usually you will not need to use the -d argument as it defaults to prndi 20,
+which is a pretty good choice. If you have problems with a plain file that is
+too long for the cover file you can use this argument to make the plain file
+fit into the cover file (by supplying prndi <n> where <n> is less than 20).
+
+.TP
+.B "-pf, --plainfile"
+This argument can be used with the embed and the extract command. When used
+with the embed command it defines the file that contains the secret message.
+
+When this argument is used with the extract command, a file with the name passed
+with this command will be created and the plain data that is embedded in the
+stego file will be written to this file.
+
+Note that steghide embeds the original file name of the plain file in the stego
+file. If you omit the -pf argument when extracting data, the embedded plain file
+will be saved to the current directory under its original name.
+
+If you use the argument
+.B -pf -
+standard input or standard output will be used
+instead of a file. You can use this notation with the -cf and -sf arguments too.
+
+.TP
+.B "-cf, --coverfile"
+Defines the file that is to be used as cover file, e.g.
+.B -cf mycover.bmp
+tells steghide to use the file mycover.bmp as cover file.
+
+This argument can only be used with the embed command.
+
+.TP
+.B "-sf, --stegofile"
+Defines the file that will be used as stego file. When this argument is used
+with the embed command a file of that name will be created. When used with the
+extract command the file must already exist and contain an embedded message.
+
+.TP
+.B "-p, --passphrase"
+Use the string that is following this argument as the passphrase. If your
+passphrase is more that one word long you have to enclose it in quotes, e.g.
+-p "a very long passphrase".
+
+The passphrase is mandatory for the embed and the extract command.
+
+.TP
+.B "-e, --encryption"
+Encrypt the plain data before embedding. This is the default anyway, so you will
+not need this argument. You can use it to specify explicitly that encryption
+should be used.
+
+.TP
+.B "-E, --noencryption"
+Do
+.B not
+encrypt the plain data before embedding. Note that embedding unecrypted data is
+not recommended because it less secure.
+
+The -e and -E arguments can only be used with the embed command.
+
+.TP
+.B "-h, --sthdrencryption"
+Encrypt the stego header before embedding. The stego header is some
+administrative information that is also embedded in the stego file, for example
+the length of the plain data.
+
+Encrypting the stego header is the default, so there is no need to use this
+argument.
+
+.TP
+.B "-H, --nosthdrencryption"
+Do
+.B not
+encrypt the stego header before embedding. This is also not recommended.
+
+Important Note: If the sender of a stego file has not encrypted the stego
+header (i.e. has used the -H argument) then the receiver of the message must
+also use the -H argument with the extract command. Otherwise steghide will
+assume that the stego header is encrypted and will fail.
+
+.TP
+.B "-m, --mask"
+This argument is followed by a number which specifies an 8 bit mask that is used
+to hide data in the cover bytes. For every one in the mask a bit will be hidden
+at the position of this one, for zeros no bits are hidden. If the mask is for
+example 3 then data is embedded in the least significant and second least
+significant bit of the cover byte.
+
+The number can be specified as decimal ("17") as octal with a leading zero
+("021"), as hexadecimal with the 0x prefix ("0x11") or as binary with b or B as
+prefix ("b10001" or "B10001"). This notation for numbers can also be used for
+the -d argument.
+
+The default value is 1 which is pretty secure, you should not change it. Note
+that it can be very insecure to embed data in bits other than the least
+significant. You should only use this argument if you know exactly what you are
+doing.
+
+The -m argument can only be used with the embed command.
+
+.SH EXAMPLES
+To embed the file mysecret.txt in the wav file cover.wav and save the resulting
+stego file as stego.wav type:
+
+  steghide embed -pf mysecret.txt -cf cover.wav -sf stego.wav -p "a passphrase"
+
+To extract this data again type:
+
+  steghide extract -sf stego.wav -p "a passphrase"
+
+When embedding data, the name of the original plain file is embedded too, so
+this command will create a file mysecret.txt in the current directory and write
+the embedded data to mysecret.txt.
+
+You can override the embedded plain file name if you specify a -pf argument
+when extracting. The following command will put the embedded data into the file
+plain.txt:
+
+  steghide extract -sf stego.wav -pf plain.txt -p "a passphrase"
+
+If you are using a system that supports pipes you can pass data via
+standard input to steghide. In the following example data is compressed before
+it is (encrypted and) embedded:
+
+  gzip -c pln.txt | steghide embed -cf cvr.bmp -sf stg.bmp -pf - -p "This is another passphrase."
+
+To extract (and view) the data from this file again, you could do something
+like this:
+
+  steghide extract -sf stg.bmp -pf - -p "This is another passphrase." | gunzip | less
+
+.SH AUTHOR
+Stefan Hetzl <shetzl@teleweb.at>

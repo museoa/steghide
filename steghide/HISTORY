@@ -1,0 +1,50 @@
+steghide 0.4.1 :
+================
+
+* more secure embedding algorithm
+
+* libmcrypt is used for encryption
+
+* libmhash is used for hashing
+
+* command line syntax revision
+
+* reorganisation and partial rewrite
+
+* bugfixes
+
+
+steghide 0.3 :
+==============
+
+* blowfish encryption
+
+* md5 for generating 128 bit keys from passphrase
+
+* autconf and automake
+
+* rpm packages
+
+* support for au files
+
+* man page
+
+* interactive mode
+
+* command line syntax revision
+
+* fixed a bug that prevented the use of stdin as cover or stego data stream
+
+
+steghide 0.2 :
+==============
+
+* support for wav (pcm) files
+
+* support for bmp files that use color tables
+
+* support for OS/2 1.x bmp files
+
+* file format auto-detection
+
+* internal changes (better buffer-management)

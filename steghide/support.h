@@ -1,0 +1,51 @@
+/*
+ * steghide 0.4.1 - a steganography program
+ * Copyright (C) 2001 Stefan Hetzl <shetzl@teleweb.at>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ */
+
+#ifndef SH_SUPPORT_H
+#define SH_SUPPORT_H
+
+#include <stdio.h>
+
+#define CHILD_ARGCMAX	20
+#define CHILD_ARGLENMAX 512
+
+/* function prototypes */
+void srnd (unsigned long seed) ;
+int rnd (unsigned long max) ;
+unsigned long readnum (char *s) ;
+char *stripdir (char *filename) ;
+void swap (unsigned long *x, unsigned long *y) ;
+int read16_le (FILE *file) ;
+int read16_be (FILE *file) ;
+unsigned long read32_le (FILE *file) ;
+unsigned long read32_be (FILE *file) ;
+void write16_le (FILE *file, int val) ;
+void write16_be (FILE *file, int val) ;
+void write32_le (FILE *file, unsigned long val) ;
+void write32_be (FILE *file, unsigned long val) ;
+void cp32ul2uc_be (unsigned char *dest, unsigned long src) ;
+void cp32uc2ul_be (unsigned long *dest, unsigned char *src) ;
+void cp32ul2uc_le (unsigned char *dest, unsigned long src) ;
+void cp32uc2ul_le (unsigned long *dest, unsigned char *src) ;
+unsigned int cp_bits_to_buf_le (void *buf, unsigned int bufbitpos, unsigned long val, unsigned int val_nbits) ;
+unsigned int cp_bits_from_buf_le (void *buf, unsigned int bufbitpos, unsigned long *val, unsigned int val_nbits) ;
+unsigned int nbits (unsigned long x) ;
+
+#endif /* ndef SH_SUPPORT_H */

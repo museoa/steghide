@@ -1,0 +1,115 @@
+Introduction :
+==============
+
+Steghide is a steganography program which embeds a secret message in a cover
+file by replacing some of the least significant bits of the cover file with bits
+of the secret message. After that, the secret message is imperceptible and can
+only be extracted with the correct passphrase.
+
+The current version of steghide is 0.4.1.
+Features:
+support for bmp, wav and au files
+encryption of plain data before embedding (blowfish encryption algorithm)
+pseudo-random distribution of hidden bits in stego file
+
+Steganography :
+===============
+
+Steganography literally means covered writing. Its goal is to hide the fact
+that communication is taking place. This is often achieved by using a (rather
+large) cover file and embedding the (rather short) secret message into this
+file. The result is a innocuous looking file (the stego file) that contains
+the secret message.
+If you want to know more about steganography take a look at
+http://www.jjtc.com/stegdoc/index2.html
+
+Compilation and Installation :
+==============================
+
+Requirements :
+--------------
+The following libraries are requiered to compile and use steghide:
+
+* libmhash
+a library that provides hashing algorithms - available at:
+http://mhash.sourceforge.net/
+
+* libmcrypt
+a library that provides encryption algorithms - available at:
+http://mcrypt.hellug.gr/
+
+Linux / Unix :
+--------------
+1) ./configure 
+2) make
+3) make install
+
+For more information see the generic installation instructions in the file
+INSTALL that came with the distribution. Tarballs, RPM packages and debian
+binary packages are available from the steghide website at:
+http://steghide.sourceforge.net/index.html
+ 
+Windows :
+---------
+You should download the precompiled binary from the steghide website at:
+http://steghide.sourceforge.net/index.html
+
+If you want to compile the sources yourself you need a C compiler. How you need
+to compile the source code depends on the compiler you are using: Please
+consult your compiler's documentation.
+
+Quick-Start Examples :
+======================
+
+Here are some examples how steghide can be used. If you want more detailed
+information please take a look at the manpage (type "man steghide" on
+Unix/Linux systems, open the file usage.txt on Windows).
+
+To embed the file mysecret.txt in the wav file cover.wav and save the resulting
+stego file as stego.wav type:
+  steghide embed -pf mysecret.txt -cf cover.wav -sf stego.wav -p "a passphrase"
+
+To extract this data again type:
+  steghide extract -sf stego.wav -p "a passphrase"
+When embedding data, the name of the original plain file is embedded too, so
+this command will create a file mysecret.txt in the current directory and write
+the embedded data to mysecret.txt.
+
+You can override the embedded plain file name if you specify a -pf argument
+when extracting. The following command will put the embedded data into the file
+plain.txt:
+  steghide extract -sf stego.wav -pf plain.txt -p "a passphrase"
+
+If you are using a system that supports pipes you can pass data via
+standard input to steghide. In the following example data is compressed before
+it is (encrypted and) embedded:
+  gzip -c pln.txt | steghide embed -cf cvr.bmp -sf stg.bmp -pf - -p "This is another passphrase."
+
+To extract (and view) the data from this file again, you could do something
+like this:
+  steghide extract -sf stg.bmp -pf - -p "This is another passphrase." | gunzip | less 
+
+Contact :
+=========
+
+Website :
+---------
+You can get the latest version of steghide as well as some additional
+information from the steghide website at:
+http://steghide.sourceforge.net/index.html
+
+Mailing Lists :
+---------------
+If you have found a bug or if you have questions, comments, suggestions, etc.
+please send a mail to the development mailing list:
+steghide-devel@lists.sourceforge.net
+You can subscribe to the development mailing list at:
+http://lists.sourceforge.net/lists/listinfo/steghide-devel
+
+If you want to be informed, when a new version of steghide is released please
+subscribe to the steghide announcement mailing list at:
+http://lists.sourceforge.net/lists/listinfo/steghide-announce
+
+Author :
+--------
+You can also contact me personally via e-mail: shetzl@teleweb.at
