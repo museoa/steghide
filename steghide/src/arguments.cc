@@ -417,6 +417,10 @@ void Arguments::parse (int argc, char *argv[])
 		if ((CvrFn.getValue() == "") && (EmbFn.getValue() == "")) {
 			throw SteghideError (_("standard input cannot be used for cover data AND data to be embedded. type \"%s --help\" for help."), PROGNAME) ;
 		}
+		if (!StgFn.is_set() && CvrFn.is_set()) {
+			StgFn.setValue (CvrFn.getValue()) ;
+			Force.setValue (true) ;
+		}
 	}
 
 	if (!Passphrase.is_set()) {

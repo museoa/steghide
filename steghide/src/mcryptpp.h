@@ -136,8 +136,7 @@ class MCryptpp {
 
 	static bool AlgoSupportsMode (string algo, string mode) ;
 
-	// keymode ist mcrypt_keymode
-
+	// ? - macht das sinn ?
 	// TODO wenn einmal so funktioniert: salt (unverändert durch verstecken !!) verwenden,
 	// um Schlüssel außer von passphrase auch von cvrstg-Datei abhängig zu machen - dazu:
 	// in CvrStgObject neue Funktion vector<unsigned char> getCleanSample (unsigned int n) - retourniert daten eines samples bis auf
