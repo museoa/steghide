@@ -1,11 +1,13 @@
 /* format for logo space */
 #topleft {
   background: #EFEFE7;
+  width: 170px;
   height: 80px;
   color: black;
-  border-top: solid thin black;
-  border-left: solid thin black;
-  border-bottom: solid thin black;
+  border-top: solid 1px black;
+  border-left: solid 1px black;
+  border-bottom: solid 1px black;
+  text-align: center;
 }
 
 /* format for title space */
@@ -13,156 +15,158 @@
   background: #EFEFE7;
   height: 80px;
   color: black;
-  border-top: solid thin black;
-  border-right: solid thin black;
-  border-bottom: solid thin black;
+  border-top: solid black 1px;
+  border-right: solid 1px black;
+  border-bottom: solid 1px black;
+  font-size: x-large;
+  font-weight: bold;
 }
 
 /* format for a closed section */
 td.seccloseddefault {
   height: 30px;
   background: #B5A58C;
-  border-top: solid thin black;
-  border-left: solid thin black;
-  border-right: solid thin black;
+  border-top: solid 1px black;
+  border-left: solid 1px black;
+  border-right: solid 1px black;
 }
 td.seccloseddefault:hover {
   height: 30px;
   background: #DDDDDD;
-  border-top: solid thin black;
-  border-left: solid thin black;
-  border-right: solid thin black;
+  border-top: solid 1px black;
+  border-left: solid 1px black;
+  border-right: solid 1px black;
 }
 td.secclosedfirst {
   height: 30px;
   background: #B5A58C;
-  border-left: solid thin black;
-  border-right: solid thin black;
+  border-left: solid 1px black;
+  border-right: solid 1px black;
 }
 td.secclosedfirst:hover {
   height: 30px;
   background: #DDDDDD;
-  border-left: solid thin black;
-  border-right: solid thin black;
+  border-left: solid 1px black;
+  border-right: solid 1px black;
 }
 
 /* format for an open section (and subsections) */
 td.secopendefault {
   height: 30px;
   background: #B5A58C;
-  border-top: solid thin black;
-  border-left: solid thin black;
-  border-right: solid thin black;
+  border-top: solid 1px black;
+  border-left: solid 1px black;
+  border-right: solid 1px black;
 }
 td.secopenfirst {
   height: 30px;
   background: #B5A58C;
-  border-left: solid thin black;
-  border-right: solid thin black;
+  border-left: solid 1px black;
+  border-right: solid 1px black;
 }
 
 td.ssecleft {
   background: #B5A58C;
-  border-left: solid thin black;
+  border-left: solid 1px black;
 }
 
 td.ssecrightfirstclosed {
   background: #DED6C6;
-  border: solid thin black;
+  border: solid 1px black;
   padding: 3px;
 }
 td.ssecrightdefaultclosed {
   background: #DED6C6;
-  border-left: solid thin black;
-  border-right: solid thin black;
-  border-bottom: solid thin black;
+  border-left: solid 1px black;
+  border-right: solid 1px black;
+  border-bottom: solid 1px black;
   padding: 3px;
 }
 td.ssecrightlastclosed {
   background: #DED6C6;
-  border-left: solid thin black;
-  border-right: solid thin black;
+  border-left: solid 1px black;
+  border-right: solid 1px black;
   padding: 3px;
 }
 td.ssecrightonlyclosed {
   background: #DED6C6;
-  border-top: solid thin black;
-  border-left: solid thin black;
-  border-right: solid thin black;
+  border-top: solid 1px black;
+  border-left: solid 1px black;
+  border-right: solid 1px black;
   padding: 3px;
 }
 
 td.ssecrightfirstclosed:hover {
   background: #DDDDDD;
-  border: solid thin black;
+  border: solid 1px black;
   padding: 3px;
 }
 td.ssecrightdefaultclosed:hover {
   background: #DDDDDD;
-  border-left: solid thin black;
-  border-right: solid thin black;
-  border-bottom: solid thin black;
+  border-left: solid 1px black;
+  border-right: solid 1px black;
+  border-bottom: solid 1px black;
   padding: 3px;
 }
 td.ssecrightlastclosed:hover {
   background: #DDDDDD;
-  border-left: solid thin black;
-  border-right: solid thin black;
+  border-left: solid 1px black;
+  border-right: solid 1px black;
   padding: 3px;
 }
 td.ssecrightonlyclosed:hover {
   background: #DDDDDD;
-  border-top: solid thin black;
-  border-left: solid thin black;
-  border-right: solid thin black;
+  border-top: solid 1px black;
+  border-left: solid 1px black;
+  border-right: solid 1px black;
   padding: 3px;
 }
 
 td.ssecrightfirstopen {
   background: #DED6C6;
-  border: solid thin black;
+  border: solid 1px black;
   padding: 3px;
 }
 td.ssecrightdefaultopen {
   background: #DED6C6;
-  border-left: solid thin black;
-  border-right: solid thin black;
-  border-bottom: solid thin black;
+  border-left: solid 1px black;
+  border-right: solid 1px black;
+  border-bottom: solid 1px black;
   padding: 3px;
 }
 td.ssecrightlastopen {
   background: #DED6C6;
-  border-left: solid thin black;
-  border-right: solid thin black;
+  border-left: solid 1px black;
+  border-right: solid 1px black;
   padding: 3px;
 }
 td.ssecrightonlyopen {
   background: #DED6C6;
-  border-top: solid thin black;
-  border-left: solid thin black;
-  border-right: solid thin black;
+  border-top: solid 1px black;
+  border-left: solid 1px black;
+  border-right: solid 1px black;
   padding: 3px;
 }
 
 /* a section link */
 a.seclinkclickable {
-  font-family: sans-serif;
-  font-size: 14pt;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: large;
   font-weight: bold;
   color: #00005A;
   text-decoration: none;
 }
 a.seclinkclickable:active {
-  font-family: sans-serif;
-  font-size: 14pt;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: large; 
   font-weight: bold;
   color: #4632BE;
   text-decoration: none;
 }
 
 a.seclinkactive {
-  font-family: sans-serif;
-  font-size: 14pt;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: large;
   font-weight: bold;
   color: #4632BE;
   text-decoration: none;
@@ -170,23 +174,23 @@ a.seclinkactive {
 
 /* a subsection link */
 a.sseclinkclickable {
-  font-family: sans-serif;
-  font-size: 12pt;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: medium;
   font-weight: bold;
   color: #00005A;
   text-decoration: none;
 }
 a.sseclinkclickable:active {
-  font-family: sans-serif;
-  font-size: 12pt;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: medium;
   font-weight: bold;
   color: #4632BE;
   text-decoration: none;
 }
 
 a.sseclinkactive {
-  font-family: sans-serif;
-  font-size: 12pt;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: medium;
   font-weight: bold;
   color: #4632BE;
   text-decoration: none;
@@ -195,17 +199,17 @@ a.sseclinkactive {
 /* format for the "last update"-box (bottom-left) */
 #lastupdate {
   background: #EFEFE7;
-  border: solid thin black;
-  font-size: 10pt;
+  border: solid 1px black;
+  font-size: small; 
 }
 
 /* definitions to harmonize main text with overall look */
 /* FIXME - keep this ?
 h2 {
-  font-family: sans-serif;
+  font-family: Helvetica, Arial, sans-serif;
   font-size: 12pt;
   color: black ;
   background: #DED6C6;
-  border: solid thin black;
+  border: solid 1px black;
 }
 */

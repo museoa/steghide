@@ -268,13 +268,14 @@ function pBodyPrologue ()
 	global $SectionID, $ToRoot;
 	$sectioninfo = getSectionInfo($SectionID); 
 
-	echo " <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\n"; // main table to get 3(left)+2(right)=5 areas
+	echo " <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\"> <!-- table: main -->\n"; // main table to get 3(left)+2(right)=5 areas
   	echo "  <tr>\n"; // upper areas (logo, title)
-	echo "   <td id=\"topleft\" width=\"170\" align=\"center\" valgin=\"middle\"><img src=\"" . $ToRoot . "images/logo.png" . "\"></td>\n"; // top left area (logo)
-	echo "   <td id=\"topright\"><h1>" . $sectioninfo["title"] . "</h1></td>\n"; // top right area (title)
+	echo "   <td id=\"topleft\"><img src=\"" . $ToRoot . "images/logo.png" . "\"></td>\n"; // top left area (logo)
+	echo "   <td id=\"topright\">" . $sectioninfo["title"] . "</td>\n"; // top right area (title)
 	echo "  </tr>\n";
 	echo "  <tr>\n"; // lower areas (hierachy, text)
-	echo "   <td width=\"170\" height=\"100%\" valign=\"top\">\n"; // lower left area containing the hierachy table
+	// FIXME WINFIX here height=100%
+	echo "   <td width=\"170\" valign=\"top\">\n"; // lower left area containing the hierachy table
 	phierachytable ($SectionID, "    ");
 	echo "   </td>\n";
 	echo "   <td rowspan=\"2\">\n"; // lower right area containing the text
