@@ -81,7 +81,7 @@ void Graph::addVertex (const vector<SamplePos> &poss)
 
 void Graph::finishAdding()
 {
-	// move the hash_set Samples_set into the vector Samples, set sample labels and initialize other data structures
+	// move the hash_set Samples_set into the vector Samples, set sample labels
 	// needs: filled Sample_set
 	Samples = vector<CvrStgSample*> (Samples_set.size()) ;
 	unsigned long label = 0 ;
@@ -91,101 +91,38 @@ void Graph::finishAdding()
 		label++ ;
 	}
 
-	// initializations
-	SampleOccurences = vector<map<SamplePos,pair<Vertex*,unsigned short> > > (Samples.size()) ;
-	VertexContents = vector<list<VertexContent*> > (Samples.size()) ;
-	SampleOppositeNeighbourhood = vector<list<SampleLabel> > (Samples.size()) ;
+	
+	// partition the samples into those with getBit()==1 and those with getBit()==0
+	unsigned long nsamples = Samples.size() ;
+	vector<CvrStgSample*> Samples0 = vector<CvrStgSample*>() ;
+	vector<CvrStgSample*> Samples1 = vector<CvrStgSample*>() ;
+	Samples0.reserve (nsamples / 2) ;
+	Samples1.reserve (nsamples / 2) ;
+	for (unsigned long label = 0 ; label < nsamples ; label++) {
+		if (Samples[label]->getBit()) {
+			Samples1.push_back (Samples[label]) ;
+		}
+		else {
+			Samples0.push_back (Samples[label]) ;
+		}
+	}
 
 	// create the SampleOppositeNeighbourhood data structure
-	// needs: filled Samples_set, filled Samples
-	for (unsigned long label = 0 ; label < Samples.size() ; label++) {
-		list<CvrStgSample*> *potoppneighs = Samples[label]->getOppositeNeighbours() ;
-		for (list<CvrStgSample*>::iterator i = potoppneighs->begin() ; i != potoppneighs->end() ; i++) {
-			hash_set<CvrStgSample*, hash<CvrStgSample*>, SamplesEqual>::const_iterator searchres = Samples_set.find (*i) ;
-			if (searchres != Samples_set.end()) { // this sample does exist in this graph
-				SampleOppositeNeighbourhood[label].push_back ((*searchres)->getLabel()) ;
+	SampleOppositeNeighbourhood = vector<list<SampleLabel> > (nsamples) ;
+	unsigned long nsamples0 = Samples0.size() ;
+	unsigned long nsamples1 = Samples1.size() ;
+	for (unsigned long i0 = 0 ; i0 < nsamples0 ; i0++) {
+		for (unsigned long i1 = 0 ; i1 < nsamples1 ; i1++) {
+			if (Samples0[i0]->isNeighbour(Samples1[i1])) {
+				unsigned long label0 = Samples0[i0]->getLabel() ;
+				unsigned long label1 = Samples1[i1]->getLabel() ;
+				SampleOppositeNeighbourhood[label0].push_back (label1) ;
+				SampleOppositeNeighbourhood[label1].push_back (label0) ;
 			}
-			delete (*i) ; // delete the copy of the sample made in getOppositeNeighbours
 		}
-		delete potoppneighs ; // delete the list
 	}
-
+	
 	Samples_set.clear() ;
-
-	// create the (hash_)set of (unique) vertex contents and set vertex contents in vertices
-	// needs: filled Vertices
-	hash_set<VertexContent*,hash<VertexContent*>,VertexContentsEqual> vc_set ;
-	for (vector<Vertex*>::iterator i = Vertices.begin() ; i != Vertices.end() ; i++) {
-		vector<SampleLabel> samplelabels (SamplesPerEBit) ;
-		for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
-			samplelabels[j] = (*i)->getSample(j)->getLabel() ;
-		}
-		VertexContent *vcontent = new VertexContent (samplelabels) ;
-
-		hash_set<VertexContent*,hash<VertexContent*>,VertexContentsEqual>::iterator uvc = vc_set.find (vcontent) ;
-		if (uvc == vc_set.end()) { // vcontent has not been found - add it!
-			vc_set.insert (vcontent) ;
-		}
-		else { // vcontent is already there
-			delete vcontent ;
-			vcontent = *uvc ;
-		}
-
-		(*i)->connectToContent (vcontent) ;
-	}
-
-	// fill the SampleOccurences data structure
-	// needs: filled Vertices, sorted SampleData in Vertex Contents and Vertices
-	for (vector<Vertex*>::iterator i = Vertices.begin() ; i != Vertices.end() ; i++) {
-		for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
-			pair<SamplePos,pair<Vertex*,unsigned short> > occ ((*i)->getSamplePos(j), pair<Vertex*,unsigned short> (*i, j)) ;
-			pair<map<SamplePos,pair<Vertex*,unsigned short> >::iterator,bool> res = SampleOccurences[(*i)->getSample(j)->getLabel()].insert (occ) ;
-			assert (res.second) ;
-		}
-	}
-
-	// compute degrees and fill the VertexContents data structure
-	// needs: filled vc_set, filled SampleOccurences
-	for (hash_set<VertexContent*,hash<VertexContent*>,VertexContentsEqual>::iterator i = vc_set.begin() ; i != vc_set.end() ; i++) {
-		unsigned long degree = 0 ;
-		for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
-			const list<SampleLabel> &oppneighbours = SampleOppositeNeighbourhood[(*i)->getSampleLabel(j)] ;
-			for (list<SampleLabel>::const_iterator k = oppneighbours.begin() ; k != oppneighbours.end() ; k++) {
-				degree += SampleOccurences[*k].size() ;
-
-				// no loops
-				for (unsigned short l = 0 ; l < SamplesPerEBit ; l++) {
-					if (*k == (*i)->getSampleLabel(l)) {
-						degree-- ;
-					}
-				}
-			}
-		}
-		assert (degree >= 0) ;
-		(*i)->setDegree (degree) ;
-
-		for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
-			VertexContents[(*i)->getSampleLabel(j)].insert (VertexContents[(*i)->getSampleLabel(j)].end(), *i) ;
-		}
-	}
-
-	// calculate the shortest edge for each vertex
-	for (vector<Vertex*>::iterator i = Vertices.begin() ; i != Vertices.end() ; i++) {
-		updateShortestEdge (*i) ;
-	}
-
-#ifdef DEBUG
-	if (Args.DebugCommand.getValue() == PRINTGRAPH) {
-		print() ;
-		exit (EXIT_SUCCESS) ;
-	}
-#endif
-
-#if 0
-	cerr << "checking data structures:" << endl ;
-	assert (check_ds()) ;
-	// FIXME - wenn alle bugs draußen - einmal bbtest damit durchlaufen lassen
-#endif
 }
 
 unsigned long Graph::absdiff (unsigned long a, unsigned long b)
@@ -313,11 +250,12 @@ void Graph::insertInMatching (Edge *e)
 	// delete vertices from their vertex contents
 	v1->deleteFromContent() ;
 	v2->deleteFromContent() ;
-
 }
 
 void Graph::calcMatching()
 {
+	setupConstrHeuristic() ;
+
 	unsigned long nvertices = Vertices.size() ;
 
 	if (Args.Verbosity.getValue() == VERBOSE) { // don't do something needing linear time if it is not useful
@@ -376,7 +314,6 @@ void Graph::calcMatching()
 #endif
 	}
 
-	setupConstrHeuristic() ;
 	doConstrHeuristic() ;
 
 #ifdef DEBUG
@@ -412,6 +349,73 @@ void Graph::calcMatching()
 //
 void Graph::setupConstrHeuristic()
 {
+	// initializations
+	SampleOccurences = vector<map<SamplePos,pair<Vertex*,unsigned short> > > (Samples.size()) ;
+	VertexContents = vector<list<VertexContent*> > (Samples.size()) ;
+
+	// create the (hash_)set of (unique) vertex contents and set vertex contents in vertices
+	// needs: filled Vertices
+	hash_set<VertexContent*,hash<VertexContent*>,VertexContentsEqual> vc_set ;
+	for (vector<Vertex*>::iterator i = Vertices.begin() ; i != Vertices.end() ; i++) {
+		vector<SampleLabel> samplelabels (SamplesPerEBit) ;
+		for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
+			samplelabels[j] = (*i)->getSample(j)->getLabel() ;
+		}
+		VertexContent *vcontent = new VertexContent (samplelabels) ;
+
+		hash_set<VertexContent*,hash<VertexContent*>,VertexContentsEqual>::iterator uvc = vc_set.find (vcontent) ;
+		if (uvc == vc_set.end()) { // vcontent has not been found - add it!
+			vc_set.insert (vcontent) ;
+		}
+		else { // vcontent is already there
+			delete vcontent ;
+			vcontent = *uvc ;
+		}
+
+		(*i)->connectToContent (vcontent) ;
+	}
+
+	// fill the SampleOccurences data structure
+	// needs: filled Vertices, sorted SampleData in Vertex Contents and Vertices
+	for (vector<Vertex*>::iterator i = Vertices.begin() ; i != Vertices.end() ; i++) {
+		for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
+			pair<SamplePos,pair<Vertex*,unsigned short> > occ ((*i)->getSamplePos(j), pair<Vertex*,unsigned short> (*i, j)) ;
+			pair<map<SamplePos,pair<Vertex*,unsigned short> >::iterator,bool> res = SampleOccurences[(*i)->getSample(j)->getLabel()].insert (occ) ;
+			assert (res.second) ;
+		}
+	}
+
+	// compute degrees and fill the VertexContents data structure
+	// needs: filled vc_set, filled SampleOccurences
+	for (hash_set<VertexContent*,hash<VertexContent*>,VertexContentsEqual>::iterator i = vc_set.begin() ; i != vc_set.end() ; i++) {
+		unsigned long degree = 0 ;
+		for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
+			const list<SampleLabel> &oppneighbours = SampleOppositeNeighbourhood[(*i)->getSampleLabel(j)] ;
+			for (list<SampleLabel>::const_iterator k = oppneighbours.begin() ; k != oppneighbours.end() ; k++) {
+				degree += SampleOccurences[*k].size() ;
+
+				// no loops
+				for (unsigned short l = 0 ; l < SamplesPerEBit ; l++) {
+					if (*k == (*i)->getSampleLabel(l)) {
+						degree-- ;
+					}
+				}
+			}
+		}
+		assert (degree >= 0) ;
+		(*i)->setDegree (degree) ;
+
+		for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
+			VertexContents[(*i)->getSampleLabel(j)].insert (VertexContents[(*i)->getSampleLabel(j)].end(), *i) ;
+		}
+	}
+
+	// calculate the shortest edge for each vertex
+	for (vector<Vertex*>::iterator i = Vertices.begin() ; i != Vertices.end() ; i++) {
+		updateShortestEdge (*i) ;
+	}
+
+	// fill the VerticesDeg1 and VerticesDegG priority queues
 	VerticesDeg1 = priority_queue<Vertex*, vector<Vertex*>, LongerShortestEdge> () ;
 	VerticesDegG = priority_queue<Vertex*, vector<Vertex*>, LongerShortestEdge> () ;
 
@@ -428,6 +432,20 @@ void Graph::setupConstrHeuristic()
 	}
 
 	Matching = vector<Edge*>() ;
+
+#ifdef DEBUG
+	if (Args.DebugCommand.getValue() == PRINTGRAPH) {
+		print() ;
+		exit (EXIT_SUCCESS) ;
+	}
+#endif
+
+#if 0
+	cerr << "checking data structures:" << endl ;
+	assert (check_ds()) ;
+	// FIXME - wenn alle bugs draußen - einmal bbtest damit durchlaufen lassen
+#endif
+	
 }
 
 void Graph::doConstrHeuristic()

@@ -57,11 +57,17 @@ void BmpSample::setRadius (void)
 #else
 	Radius = DefaultRadius ;
 #endif
+	RadiusSquared = Radius * Radius ;
 }
 
 bool BmpSample::isNeighbour (CvrStgSample *s) const
 {
-	return (calcDistance (s) <= Radius) ;
+	BmpSample *sample = dynamic_cast<BmpSample*> (s) ;
+	assert (sample != NULL) ;
+	int dr = (int) getRed() - (int) sample->getRed() ;
+	int dg = (int) getGreen() - (int) sample->getGreen() ;
+	int db = (int) getBlue() - (int) sample->getBlue() ;
+	return ((dr*dr + dg*dg + db*db) <= RadiusSquared) ;
 }
 
 float BmpSample::calcDistance (CvrStgSample *s) const
@@ -75,6 +81,7 @@ float BmpSample::calcDistance (CvrStgSample *s) const
 }
 
 float BmpSample::Radius = 0.0 ;
+float BmpSample::RadiusSquared = 0.0 ;
 
 //
 // class BmpPaletteSample

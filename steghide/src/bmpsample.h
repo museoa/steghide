@@ -52,8 +52,9 @@ class BmpSample : public CvrStgSample {
 	virtual unsigned char getBlue (void) const = 0 ;
 
 	protected:
-	static const float DefaultRadius = 10.0 ;
+	static const float DefaultRadius = 20.0 ;
 	static float Radius ;
+	static float RadiusSquared ;
 
 	private:
 	void setRadius (void) ;
