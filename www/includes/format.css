@@ -1,7 +1,7 @@
 /* format for logo space */
 #topleft {
   background: #EFEFE7;
-  height: 70px;
+  height: 80px;
   color: black;
   border-top: solid thin black;
   border-left: solid thin black;
@@ -11,7 +11,7 @@
 /* format for title space */
 #topright {
   background: #EFEFE7;
-  height: 70px;
+  height: 80px;
   color: black;
   border-top: solid thin black;
   border-right: solid thin black;

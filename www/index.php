@@ -13,41 +13,43 @@ init("home");
 <br>
 <?php pBoxHead("Introduction:"); ?>
 Steghide is a steganography program that is able to hide data in various kinds of image- and audio-files. The color- respectivly
-sample-frequencies are not changed thus making the embedding resistant against first-order statistical tests. Features of steghide
-include compression and encryption of embedded data, embedding of a checksum to verify the integrity of the extracted data and
-support for jpeg, bmp, wav and au files.
+sample-frequencies are not changed thus making the embedding resistant against first-order statistical tests.
 <p>
 The current version is 0.5.1.
+<p>
+Features:
+<ul>
+<li>compression of embedded data</li>
+<li>encryption of embedded data</li>
+<li>embedding of a checksum to verify the integrity of the extraced data</li>
+<li>support for JPEG, BMP, WAV and AU files</li>
+</ul>
 <p>
 Steghide is licensed under the GNU General Public License (GPL) which permits
 modification and distribution of the program as long as these modifications are
 made available to the public under the GPL. For more information, see the
 <a href="http://www.gnu.org/copyleft/gpl.html">full text of the GPL</a>.
-<p>
-
-see old website,
-short terminology: stego-file
 <?php pBoxEnd(); ?>
 
-<?php pBoxHead("? News ?"); ?>
-new versions, patches, etc.
+<?php pBoxHead("News:"); ?>
+<b>XX.YY.ZZZZ: steghide 0.5.1 released!</b><br>
+release announcement, changes
 <?php pBoxEnd(); ?>
 
 <?php pBoxHead("Dependencies:"); ?>
-<!-- required: libmhash, highly recommended: libmcrypt, libjpeg, optional: perl (tests) (layout: see debian package pages) -->
 You should have the following libraries installed to use steghide.
 <p>
 <dl>
 <dt><a href="http://mhash.sourceforge.net/">libmhash</a></dt>
  <dd>A library that provides various hash algorithms and cryptographic key generation algorithms. Steghide needs this library
- to convert a passphrase into a form that can be used as input for the cryptographic and steganographic algorithms.</dd>
+ to convert a passphrase into a form that can be used as input for cryptographic and steganographic algorithms.</dd>
 <dt><a href="http://mcrypt.hellug.gr/">libmcrypt</a></dt>
  <dd>A library that provides a lot of symmetric encryption algorithms. If you compile steghide without libmcrypt you will not
  be able to use steghide to encrypt data before embedding nor to extract encrypted data (even if you know the correct passphrase).</dd>
 <dt><a href="http://www.ijg.org/">libjpeg</a></dt>
  <dd>A library implementing jpeg image compression. Without this library you will not be able to embed data in jpeg files nor
  to extract data from jpeg files.</dd>
-<dt><a href="http://www.ijg.org/">zlib</a></dt>
+<dt><a href="http://www.gzip.org/zlib/">zlib</a></dt>
  <dd>A lossless data compression library. If you compile steghide without having this library installed you will not be able
  to use steghide to compress data before embedding nor to extract compressed data from a stego-file.</dd>
 </dl>

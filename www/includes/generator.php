@@ -144,20 +144,33 @@ function psection ($sec, $sectioninfo, $activesecid, $isfirst, $spc)
 				$activesec = $activesecid;
 			}
 
-			if ($isfirst) {
-				$csssection = "secopenfirst";
-			}
-			else {
-				$csssection = "secopendefault";
-			}
-
 			$numsubsections = count($sectioninfo["subsections"]);
 			echo "$spc<tr><td>\n"; // is part of hierachy table
 			echo "$spc<table cellspacing=\"0\" cellpadding=\"0\" width=\"100%\">\n"; // create table to contain section and open subsections
 
 			// section name
-			pseclinktr (TRUE, $csssection, "seclinkactive", "images/arrow_sec_down.png", "arrow down",
-				"", $sectioninfo["linkname"], $spc);
+			if ($sec == $activesecid) {
+				if ($isfirst) {
+					$csssection = "secopenfirst";
+				}
+				else {
+					$csssection = "secopendefault";
+				}
+
+				pseclinktr (TRUE, $csssection, "seclinkactive", "images/arrow_sec_down.png", "arrow down",
+					"", $sectioninfo["linkname"], $spc);
+			}
+			else {
+				if ($isfirst) {
+					$csssection = "secclosedfirst";
+				}
+				else {
+					$csssection = "seccloseddefault";
+				}
+
+				pseclinktr (TRUE, $csssection, "seclinkactive", "images/arrow_sec_down.png", "arrow down",
+					$sectioninfo["link"], $sectioninfo["linkname"], $spc);
+			}
 
 			// dark area on the left - &nbsp; to make mozilla draw the left border
 			echo "$spc<tr><td class=\"ssecleft\" rowspan=\"$numsubsections\" width=\"20%\">&nbsp;</td>\n";
@@ -244,12 +257,12 @@ function pHead ()
  **/
 function pBodyPrologue ()
 {
-	global $SectionID;
+	global $SectionID, $ToRoot;
 	$sectioninfo = getSectionInfo($SectionID); 
 
 	echo " <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\n"; // main table to get 3(left)+2(right)=5 areas
   	echo "  <tr>\n"; // upper areas (logo, title)
-	echo "   <td id=\"topleft\" width=\"170\">LOGO</td>\n"; // top left area (logo)
+	echo "   <td id=\"topleft\" width=\"170\" align=\"center\" valgin=\"middle\"><img src=\"" . $ToRoot . "images/logo.png" . "\"></td>\n"; // top left area (logo)
 	echo "   <td id=\"topright\"><h1>" . $sectioninfo["title"] . "</h1></td>\n"; // top right area (title)
 	echo "  </tr>\n";
 	echo "  <tr>\n"; // lower areas (hierachy, text)
