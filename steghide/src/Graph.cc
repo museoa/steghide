@@ -443,27 +443,22 @@ void Graph::print (void) const
 	}
 }
 
-#if 0
-// TODO - move to Matching
-void Graph::printUnmatchedVertices (void) const
+void Graph::print_Vertices (unsigned short spc) const
 {
-	unsigned long num = 0 ;
-	for (std::vector<Vertex*>::const_iterator i = Vertices.begin() ; i != Vertices.end() ; i++) {
-		if (!(*i)->isMatched()) {
-			num++ ;
-			for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
-				std::cerr << (*i)->getSample(j)->getKey() ;
-				if (j + 1 != SamplesPerEBit) {
-					std::cerr << "/" ;
-				}
-			}
-			std::cerr << std::endl ;
-		}
+	char* space = new char[spc + 1] ;
+	for (unsigned short i = 0 ; i < spc ; i++) {
+		space[i] = ' ' ;
 	}
-	std::cerr << num << " unmatched vertices found." << std::endl ;
+	space[spc] = '\0' ;
+
+	std::cerr << space << "Vertices:" << std::endl ;
+	for (std::vector<Vertex*>::const_iterator vit = Vertices.begin() ; vit != Vertices.end() ; vit++) {
+		(*vit)->print(spc + 1) ;
+	}
 }
 #endif
 
+#if 0
 bool Graph::check_matching (std::vector<Edge*> *m) const
 {
 	bool retval = true ;
@@ -560,18 +555,4 @@ bool Graph::check_degrees (void) const
 	return retval ;
 }
 
-
-#if 0
-// move to Matching - TODO
-void Graph::printUnmatchedVerticescontaining (unsigned long samplekey) const
-{
-	for (unsigned long i = 0 ; i < Vertices.size() ; i++) {
-		for (unsigned int j = 0 ; j < SamplesPerEBit ; j++) {
-			if (!Vertices[i]->isMatched() && Vertices[i]->getSample(j)->getKey() == samplekey) {
-				std::cerr << Vertices[i]->getLabel() << " at pos " << j << std::endl ;
-			}
-		}
-	}
-}
 #endif
-#endif // def DEBUG

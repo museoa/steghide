@@ -24,8 +24,8 @@
 #include <functional>
 #include <list>
 
-#include "common.h"
 #include "GraphAccess.h"
+#include "common.h"
 #include "wrapper_hash_set.h"
 
 class Graph ;

@@ -27,7 +27,7 @@
 class AssertionFailed : public SteghideError {
 	public:
 	AssertionFailed (const char* fn, unsigned int l)
-		: SteghideError(_("assertion failed in %s at line number %d."), stripDir(fn), l) { printMessage() ; } ;
+		: SteghideError(_("assertion failed in %s at line number %d."), stripDir(fn), l) {} ;
 
 	void printMessage (void) const ;
 

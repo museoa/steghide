@@ -27,6 +27,13 @@
 
 // TODO: new test - readwrite with the same file name
 
+// TODO: ReadCompare tests (compare on the getSampleBit() - level) against reference
+
+// TODO: for a bug (already fixed): some ReadExtractCompare tests for every type of file
+// ...a stego file in the tests/data is read, the embedded data is extracted and compared against reference
+
+// TODO: EmbedWriteCompare - inverted ReadExtractCompare tests - data is embedded, stego file written and compared against reference stego file
+
 bool CvrStgFileTest::genericTestReadWrite (const std::string& rfn) const
 {
 	std::string wfn ("test_rw.out") ;

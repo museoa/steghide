@@ -22,8 +22,14 @@
 #define SH_ARG_H
 
 #include <string>
+
 #include "EncryptionAlgorithm.h"
 #include "EncryptionMode.h"
+
+// to include DEBUG if defined
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 template<class T> class Arg {
 	public:

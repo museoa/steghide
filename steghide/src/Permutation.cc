@@ -18,10 +18,10 @@
  *
  */
 
-#include "common.h"
 #include "BitString.h"
 #include "MHash.h"
 #include "Permutation.h"
+#include "common.h"
 
 Permutation::Permutation (UWORD32 w, std::string pp, UWORD32 n)
 {
@@ -64,6 +64,12 @@ void Permutation::calculate (UWORD32 n)
 		} while (val >= Width) ;
 		Values.push_back (val) ;
 	}
+}
+
+UWORD32 Permutation::operator[] (UWORD32 pos) const
+{
+	myassert (pos < Values.size()) ;
+	return Values[pos] ;
 }
 
 void Permutation::setWidth (UWORD32 w)
@@ -139,3 +145,21 @@ UWORD32 Permutation::keyhash (UWORD32 key, UWORD32 arg)
 	myassert (retval <= 0xFFFF) ;
 	return retval ;
 }
+
+#ifdef DEBUG
+void Permutation::print (unsigned short spc) const
+{
+	char* space = new char[spc + 1] ;
+	for (unsigned short i = 0 ; i < spc ; i++) {
+		space[i] = ' ' ;
+	}
+	space[spc] = '\0' ;
+
+	std::cerr << space << "Values.size(): " << Values.size() << std::endl ;
+	std::cerr << space << "Values:" << std::endl ;
+	std::cerr << space ;
+	for (unsigned long i = 0 ; i < Values.size() ; i++) {
+		std::cerr << " " << Values[i] ;
+	}
+}
+#endif

@@ -48,14 +48,17 @@ class Permutation {
 	/**
 	 * get the value of the permutation at position pos
 	 **/
-	UWORD32 operator[] (UWORD32 pos) const
-		{ return Values[pos] ; } ;
+	UWORD32 operator[] (UWORD32 pos) const ;
 
 	/**
 	 * get the width of this permutation
 	 **/
 	UWORD32 getWidth (void) const
 		{ return Width ; } ;
+
+#ifdef DEBUG
+	void print (unsigned short spc = 0) const ;
+#endif
 
 	private:
 	/**

@@ -167,6 +167,11 @@ class BitString {
 	 **/
 	bool operator== (const BitString& v) const ;
 
+#ifdef DEBUG
+	void print (unsigned short spc = 0) const ;
+#endif
+	void printDebug (unsigned short level, unsigned short spc = 0) const ;
+
 	protected:
 	void _append (BIT v) ;
 

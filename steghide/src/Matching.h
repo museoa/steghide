@@ -26,6 +26,7 @@
 
 #include "GraphAccess.h"
 #include "Vertex.h"
+#include "common.h"
 
 class Edge ;
 

@@ -50,6 +50,9 @@ class CvrStgFile : public CvrStgObject {
 	const std::string& getName (void) const
 		{ return getBinIO()->getName() ; } ;
 
+	bool is_std (void) const
+		{ return getBinIO()->is_std() ; } ;
+
 	/**
 	 * get the capacity of this cvrstgfile
 	 * \return the capacity in bytes

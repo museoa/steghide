@@ -18,11 +18,11 @@
  *
  */
 
-#include "common.h"
 #include "ConstructionHeuristic.h"
 #include "Edge.h"
 #include "Graph.h"
 #include "Matching.h"
+#include "common.h"
 
 ConstructionHeuristic::ConstructionHeuristic (Graph* g)
 	: GraphAccess(g)

@@ -25,6 +25,7 @@
 #include <vector>
 
 #include "BinaryIO.h"
+#include "common.h"
 #include "jpegbase.h"
 
 /**

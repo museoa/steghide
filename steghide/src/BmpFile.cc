@@ -105,9 +105,9 @@ void BmpFile::replaceSample (const SamplePos pos, const SampleValue* s)
 			const BmpRGBSampleValue* sample = dynamic_cast<const BmpRGBSampleValue*> (s) ;
 			myassert (sample) ;
 
-			bitmap[row][column] = sample->getRed() ;
+			bitmap[row][column] = sample->getBlue() ;
 			bitmap[row][column + 1] = sample->getGreen() ;
-			bitmap[row][column + 2] = sample->getBlue() ;
+			bitmap[row][column + 2] = sample->getRed() ;
 		break ; }
 	}
 }
@@ -171,7 +171,8 @@ void BmpFile::calcRCB (SamplePos pos, unsigned long *row, unsigned long *column,
 		unsigned short samplesperbyte = 8 / bitcount ;
 
 		*column = pos / samplesperbyte ;
-		*firstbit = (pos % samplesperbyte) * bitcount ;
+		// to account for the order pixels are stored in one byte:
+		*firstbit = (samplesperbyte - (pos % samplesperbyte) - 1) * bitcount ;
 
 		myassert (*firstbit < 8) ;
 

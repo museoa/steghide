@@ -21,6 +21,7 @@
 #include "Edge.h"
 #include "Graph.h"
 #include "Matching.h"
+#include "common.h"
 #include "msg.h"
 
 Matching::Matching (Graph* g)

@@ -22,15 +22,11 @@
 #include <iostream>
 #include <string>
 
+#include "MCrypt.h"
+#include "Terminal.h"
 #include "common.h"
 #include "error.h"
 #include "msg.h"
-#include "MCrypt.h"
-#include "Terminal.h"
-
-#ifdef DEBUG
-#include "test.h"
-#endif
 
 // the global Arguments object
 Arguments Args ;
@@ -172,12 +168,6 @@ void Arguments::parse_Command (ArgIt& curarg)
 			throw ArgError (_("you cannot use arguments with the \"help\" command.")) ;
 		}
 	}
-#ifdef DEBUG
-	else if (DebugMode && (*curarg == "test")) {
-		steghide_test_all () ;
-		exit (EXIT_SUCCESS) ;
-	}
-#endif
 	else {
 		throw ArgError (_("unknown command \"%s\"."), curarg->c_str()) ;
 	}

@@ -26,6 +26,11 @@
 
 #include "Arg.h"
 
+// to include DEBUG if defined
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 /**
  * \class Arguments
  * \brief parsing and data representation of command-line arguments

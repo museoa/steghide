@@ -69,8 +69,14 @@ void EmbData::addBits (BitString bits)
 	myassert (Mode == EXTRACT) ;
 	myassert (bits.getLength() == NumBitsNeeded) ;
 
+	printDebug (1, "EmbData::addBits called with\n") ;
+	printDebug (1, " bits:") ;
+	bits.printDebug (1, 2) ;
+
 	switch (State) {
 		case READCRYPT: {
+			printDebug (1, "in the READCRYPT state") ;
+
 			unsigned int algo = (unsigned int) bits.getValue (0, EncryptionAlgorithm::IRep_size) ;
 			if (EncryptionAlgorithm::isValidIntegerRep (algo)) {
 				EncAlgo.setValue ((EncryptionAlgorithm::IRep) algo) ;
@@ -89,11 +95,13 @@ void EmbData::addBits (BitString bits)
 		break ; }
 
 		case READLENOFNEMBBITS: {
+			printDebug (1, "in the READLENOFNEMBBITS state") ;
 			NumBitsNeeded = bits.getValue (0, NBitsLenOfNEmbBits) ;
 			State = READNEMBBITS ;
 		break ; }
 
 		case READNEMBBITS: {
+			printDebug (1, "in the READNEMBBITS state") ;
 			NEmbBits = bits.getValue (0, NumBitsNeeded) ;
 #ifdef USE_LIBMCRYPT
 			NumBitsNeeded = MCrypt::getEncryptedSize (EncAlgo, EncMode, NEmbBits) ;
@@ -105,6 +113,7 @@ void EmbData::addBits (BitString bits)
 		break ; }
 
 		case READENCRYPTED: {
+			printDebug (1, "in the READENCRYPTED state") ;
 #ifdef USE_LIBMCRYPT
 			BitString decrypted ;
 			if (EncAlgo.getIntegerRep() == EncryptionAlgorithm::NONE) {
@@ -135,7 +144,7 @@ void EmbData::addBits (BitString bits)
 			}
 
 			unsigned int lenoffilename = (unsigned int) decrypted.getValue (pos, NBitsLenOfFileName) ;
-			pos += 8 ;
+			pos += NBitsLenOfFileName ;
 			std::string filename = "" ;
 			for (unsigned int i = 0 ; i < lenoffilename ; i++) {
 				filename += (char) decrypted.getValue (pos, 8) ;
@@ -274,6 +283,7 @@ BitString EmbData::getBitString ()
 	
 	main.append (Checksum) ;
 	if (Checksum) {
+		// FIXME - verify that a checksum is embedded per default !!
 		MHash hash (MHASH_CRC32) ;
 		for (std::vector<unsigned char>::iterator i = Data.begin() ; i != Data.end() ; i++) {
 			hash << *i ;

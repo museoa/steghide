@@ -209,10 +209,10 @@ bool Question::getAnswer ()
 //
 // debugging output
 //
-void printDebug (unsigned int level, const char *msgfmt, ...)
+void printDebug (unsigned short level, const char *msgfmt, ...)
 {
 #ifdef DEBUG
-	if (level <= Args.DebugLevel.getValue()) {
+	if (RUNDEBUGLEVEL(level)) {
 		va_list ap ;
 		va_start (ap, msgfmt) ;
 		vfprintf (stderr, msgfmt, ap) ;

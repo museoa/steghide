@@ -20,6 +20,7 @@
 
 #include "Graph.h"
 #include "VertexContent.h"
+#include "common.h"
 
 //
 // class VertexContent

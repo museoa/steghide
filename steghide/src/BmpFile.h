@@ -98,6 +98,13 @@ class BmpFile : public CvrStgFile {
 	BITMAPINFOHEADER bmih ;
 	BITMAPCOREHEADER bmch ;
 	ColorPalette* Palette ;
+	/**
+	 * contains the bitmap in the following format
+	 * bitmap[i] is the pixel data of the i-th row of the bitmap
+	 * bitmap[i][j] is the j-th byte of the pixel data of the i-th row of the bitmap
+	 * if bitcount is < 8 then bitmap[i][j] contains the pixels as read in from the file (i.e. in the "wrong" direction)
+	 * this is taken care of in the calcRCB function
+	 **/
 	std::vector<std::vector <unsigned char> > bitmap ;
 	/// contains bytes that are appended at the end of the bitmap data (some image editors apparently do this)
 	std::vector<unsigned char> atend ;
@@ -110,6 +117,14 @@ class BmpFile : public CvrStgFile {
 	void bmpos2_writeheaders () ;
 	void readdata () ;
 	void writedata () ;
+	/**
+	 * for a given sample position pos calculate where this sample can be found in the bitmap
+	 * \param pos a sample position
+	 * \param row the row-index in the 2D-array bitmap
+	 * \param column the column-index in the 2D-array bitmap
+	 * \param firstbit the first bit in bitmap[row][column] that belongs to the sample with the given position
+	 * \return the values in row, column and firstbit
+	 **/
 	void calcRCB (SamplePos pos, unsigned long *row, unsigned long *column, unsigned short *firstbit) const ;
 	long calcLinelength () ;
 	SUBFORMAT getSubformat (void) const ;

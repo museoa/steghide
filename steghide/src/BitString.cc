@@ -202,3 +202,35 @@ BitString& BitString::operator^= (const BitString &v)
 	}
 	return *this ;
 }
+
+#ifdef DEBUG
+void BitString::print (unsigned short spc) const
+{
+	char* space = new char[spc + 1] ;
+	for (unsigned short i = 0 ; i < spc ; i++) {
+		space[i] = ' ' ;
+	}
+	space[spc] = '\0' ;
+	std::cerr << space << "Length: " << getLength() << std::endl ;
+	std::cerr << space << "Data.size(): " << Data.size() << std::endl ;
+	std::cerr << space << "Data:" << std::endl ;
+
+	std::cerr << space ;
+	for (unsigned long i = 0 ; i < getLength() ; i++) {
+		if (i % 8 == 0) {
+			std::cerr << " " ;
+		}
+		std::cerr << ((*this)[i]) ;
+	}
+	std::cerr << std::endl ;
+}
+#endif
+
+void BitString::printDebug (unsigned short level, unsigned short spc) const
+{
+#ifdef DEBUG
+	if (RUNDEBUGLEVEL(level)) {
+		print (spc) ;
+	}
+#endif
+}

@@ -108,6 +108,17 @@ class Graph {
 	 **/
 	bool check_SampleOccurences (void) const ;
 
+#ifdef DEBUG
+	/**
+	 * prints graph in a format suitable as input to the C implementation
+	 * of Gabow's non-weighted matching algorithm by E. Rothberg to stdout
+	 * (available at: ftp://ftp.zib.de/pub/Packages/mathprog/matching/index.html
+	 **/
+	void print (void) const ;
+
+	void print_Vertices (unsigned short spc = 0) const ;
+#endif
+
 	private:
 	//
 	// friend-declarations
@@ -193,15 +204,10 @@ class Graph {
 
 #ifdef DEBUG
 	unsigned long NumVertexContents ;
+#endif
 
+#if 0
 	public:
-	/**
-	 * prints graph in a format suitable as input to the C implementation
-	 * of Gabow's non-weighted matching algorithm by E. Rothberg to stdout
-	 * (available at: ftp://ftp.zib.de/pub/Packages/mathprog/matching/index.html
-	 **/
-	void print (void) const ;
-
 	// FIXME - clean up these functions
 
 	void printUnmatchedVertices (void) const ;
