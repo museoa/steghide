@@ -21,7 +21,7 @@ unittests_LDADD = \
 ../src/EdgeIterator.o ../src/EmbData.o ../src/Embedder.o \
 ../src/EncryptionAlgorithm.o ../src/EncryptionMode.o ../src/Extractor.o \
 ../src/Graph.o ../src/JpegFile.o ../src/JpegSampleValue.o \
-../src/MCryptpp.o ../src/MHashPP.o ../src/MHashKeyGen.o ../src/Matching.o \
+../src/MCryptPP.o ../src/MHashPP.o ../src/MHashKeyGen.o ../src/Matching.o \
 ../src/Permutation.o ../src/RGBTriple.o ../src/RandomSource.o \
 ../src/SampleValue.o ../src/SampleValueOppositeNeighbourhood.o \
 ../src/Session.o ../src/SteghideError.o ../src/Terminal.o ../src/Vertex.o \
