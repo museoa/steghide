@@ -40,7 +40,6 @@ class BmpFile : public CvrStgFile {
 	unsigned long getNumSamples (void) const ;
 	void replaceSample (const SamplePos pos, const SampleValue* s) ;
 	SampleValue* getSampleValue (SamplePos pos) const ;
-	unsigned short getSamplesPerEBit (void) const ;
 
 	unsigned short getBitCount (void) const ;
 	unsigned long getWidth (void) const ;
@@ -87,6 +86,11 @@ class BmpFile : public CvrStgFile {
 	static const unsigned short SizeBMCOREHEADER = 12 ;
 	static const unsigned int COMPRESSION_BI_RGB = 0 ;
 
+	static const unsigned short SamplesPerEBit_Palette = 2 ;
+	static const unsigned short SamplesPerEBit_RGB = 1 ;
+	/// the default radius (400 = 20^2)
+	static const UWORD32 Radius = 400 ;
+
 	enum SUBFORMAT { WIN, OS2 } ;
 
 	SUBFORMAT subformat ;
@@ -102,8 +106,14 @@ class BmpFile : public CvrStgFile {
 	 * this is taken care of in the calcRCB function
 	 **/
 	std::vector<std::vector <unsigned char> > bitmap ;
+
+	/**
+	 * contains the bitmap data in the same order as read from file (but without padding bytes)
+	 **/
+	std::vector<BYTE> BitmapData ;
+
 	/// contains bytes that are appended at the end of the bitmap data (some image editors apparently do this)
-	std::vector<unsigned char> atend ;
+	std::vector<BYTE> atend ;
 
 	void readheaders () ;
 	void bmpwin_readheaders () ;
@@ -114,15 +124,13 @@ class BmpFile : public CvrStgFile {
 	void readdata () ;
 	void writedata () ;
 	/**
-	 * for a given sample position pos calculate where this sample can be found in the bitmap
+	 * translate a sample position into a <index,firstbit> pair "pointing" into the BitmapData array
 	 * \param pos a sample position
-	 * \param row the row-index in the 2D-array bitmap
-	 * \param column the column-index in the 2D-array bitmap
-	 * \param firstbit the first bit in bitmap[row][column] that belongs to the sample with the given position
-	 * \return the values in row, column and firstbit
+	 * \param index a pointer to a variable that will contain the array index used to access the pos-th sample
+	 * \param firstbit the firstbit in BitmapData[index] that belongs to the sample with the given position
 	 **/
-	void calcRCB (SamplePos pos, unsigned long *row, unsigned long *column, unsigned short *firstbit) const ;
-	long calcLinelength () ;
+	void calcIndex (SamplePos pos, unsigned long* index, unsigned short* firstbit) const ;
+	unsigned long calcLinelength () ;
 	SUBFORMAT getSubformat (void) const ;
 } ;
 

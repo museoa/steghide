@@ -18,14 +18,31 @@
  *
  */
 
-#ifndef SH_AUSAMPLEVALUES_H
-#define SH_AUSAMPLEVALUES_H
+#ifndef SH_JPEGFILETEST_H
+#define SH_JPEGFILETEST_H
 
-#include "AudioSampleValue.h"
+#include "JpegFile.h"
 
-typedef AudioSampleValue<AuMuLaw,BYTE> AuMuLawSampleValue ;
-typedef AudioSampleValue<AuPCM8,SBYTE> AuPCM8SampleValue ;
-typedef AudioSampleValue<AuPCM16,SWORD16> AuPCM16SampleValue ;
-typedef AudioSampleValue<AuPCM32,SWORD32> AuPCM32SampleValue ;
+#include "CvrStgFileTest.h"
 
-#endif // ndef SH_AUSAMPLEVALUES_H
+class JpegFileTest : public CvrStgFileTest {
+	public:
+	JpegFileTest (TestSuite* s) ;
+
+	void setup (void) ;
+	void cleanup (void) ;
+
+	void testReadWrite (void) ;
+	void testReadEmbedExtract (void) ;
+	void testReadEmbedWriteReadExtract (void) ;
+	void testPosition (void) ;
+
+	private:
+#if 0
+	BitString *bs1, *bs2, *bs3 ;
+	CvrStgFile *f1, *f2, *f3 ;
+	Globals gl1, gl2, gl3 ;
+#endif
+} ;
+
+#endif // ndef SH_JPEGFILETEST_H

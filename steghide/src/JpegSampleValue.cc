@@ -30,7 +30,6 @@ JpegSampleValue::JpegSampleValue (int c)
 	int dctcoeff = ((DctCoeff >= 0) ? DctCoeff : -DctCoeff) ;
 	SBit = (BIT) (dctcoeff % 2) ;
 	Key = (UWORD32) DctCoeff ;
-	setRadius (DefaultRadius) ;
 }
 
 SampleValue *JpegSampleValue::getNearestOppositeSampleValue() const

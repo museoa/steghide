@@ -30,7 +30,15 @@ bool SampleValueTest::areOpposite (SampleValue* s1, SampleValue* s2)
 
 bool SampleValueTest::genericTestIsNeighbour (SampleValue* s1, SampleValue* s2, bool res)
 {
-	return ((s1->isNeighbour(s2) == s2->isNeighbour(s1)) && (s1->isNeighbour(s2) == res)) ;
+	bool retval = ((s1->isNeighbour(s2) == s2->isNeighbour(s1)) && (s1->isNeighbour(s2) == res)) ;
+	if (ArgVerbose && !retval) {
+		std::cerr << std::endl << "---- FAILED: genericIsNeighbour ----" << std::endl ;
+		std::cerr << "is: " << s1->isNeighbour(s2) << ", shouldbe: " << res << std::endl ;
+		std::cerr << "distance of s1 (0x" << std::hex << s1->getKey() << ") and s2 (0x" ;
+		std::cerr << s2->getKey() << std::dec << ") is: " << s1->calcDistance(s2) << std::endl ;
+		std::cerr << "-------------------------------------" << std::endl ;
+	}
+	return retval ;
 }
 
 bool SampleValueTest::genericTestDistance (SampleValue* s1, SampleValue* s2, UWORD32 dist)

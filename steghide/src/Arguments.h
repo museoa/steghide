@@ -89,7 +89,7 @@ class Arguments {
 	static const EncryptionAlgorithm Default_EncAlgo ;
 	static const EncryptionMode Default_EncMode ;
 	static const bool		Default_Checksum = true ;
-	static const int		Default_Compression = 9 ; // FIXME - really use slowest but smallest ?
+	static const int		Default_Compression = 9 ; // slowest, but smallest
 	static const bool		Default_EmbedEmbFn = true ;
 	static const bool		Default_Force = false ;
 	static const VERBOSITY	Default_Verbosity = NORMAL ;

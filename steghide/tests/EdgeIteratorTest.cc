@@ -18,14 +18,20 @@
  *
  */
 
-#ifndef SH_AUSAMPLEVALUES_H
-#define SH_AUSAMPLEVALUES_H
+#include "common.h"
 
-#include "AudioSampleValue.h"
+#include "EdgeIteratorTest.h"
+#include "TestCategoryCaller.h"
 
-typedef AudioSampleValue<AuMuLaw,BYTE> AuMuLawSampleValue ;
-typedef AudioSampleValue<AuPCM8,SBYTE> AuPCM8SampleValue ;
-typedef AudioSampleValue<AuPCM16,SWORD16> AuPCM16SampleValue ;
-typedef AudioSampleValue<AuPCM32,SWORD32> AuPCM32SampleValue ;
+EdgeIteratorTest::EdgeIteratorTest (TestSuite* s)
+	: UnitTest ("EdgeIterator", s)
+{
+}
 
-#endif // ndef SH_AUSAMPLEVALUES_H
+void EdgeIteratorTest::setup ()
+{
+}
+
+void EdgeIteratorTest::cleanup ()
+{
+}

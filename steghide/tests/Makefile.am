@@ -4,19 +4,28 @@ AM_CPPFLAGS = -I../src
 check_PROGRAMS = unittests
 EXTRA_DIST = systemtests.pl STSupport.pm st_fileformats.pl
 noinst_HEADERS = \
-AuFileTest.h BitStringTest.h BmpWinFileTest.h BmpOS2FileTest.h CvrStgFileTest.h \
-ColorPaletteTest.h DummyFile.h DummySampleValue.h EmbDataTest.h MatchingTest.h MHashPPTest.h Test.h TestCategory.h \
-ConstructionHeuristicTest.h GraphTest.h TestCategoryCaller.h TestSuite.h UnitTest.h utcommon.h \
-BmpPaletteSampleValueTest.h SampleValueOppositeNeighbourhoodTest.h SampleValueTest.h SelectorTest.h \
-VertexContentTest.h WavFileTest.h BmpRGBSampleValueTest.h AugmentingPathHeuristicTest.h
+AudioSampleValueTest.h AuFileTest.h AugmentingPathHeuristicTest.h \
+BitStringTest.h BmpOS2FileTest.h BmpPaletteSampleValueTest.h \
+BmpRGBSampleValueTest.h BmpWinFileTest.h ColorPaletteTest.h \
+ConstructionHeuristicTest.h CvrStgFileTest.h DummyFile.h DummySampleValue.h \
+EmbDataTest.h GraphTest.h JpegFileTest.h JpegSampleValueTest.h MatchingTest.h \
+MCryptPPTest.h MHashKeyGenTest.h MHashPPTest.h \
+SampleValueOppositeNeighbourhoodTest.h SampleValueTest.h SelectorTest.h \
+Test.h TestCategory.h TestCategoryCaller.h TestSuite.h UnitTest.h utcommon.h \
+VertexContentTest.h WavFileTest.h WavPCMSampleValueTest.h
 unittests_SOURCES = \
-AuFileTest.cc BitStringTest.cc BmpWinFileTest.cc BmpOS2FileTest.cc CvrStgFileTest.cc ConstructionHeuristicTest.cc \
-ColorPaletteTest.cc DummyFile.cc DummySampleValue.cc EmbDataTest.cc MatchingTest.cc GraphTest.cc MHashPPTest.cc TestSuite.cc UnitTest.cc \
-SampleValueTest.cc BmpPaletteSampleValueTest.cc BmpRGBSampleValueTest.cc SelectorTest.cc VertexContentTest.cc WavFileTest.cc \
-SampleValueOppositeNeighbourhoodTest.cc AugmentingPathHeuristicTest.cc main.cc
+AuFileTest.cc AudioSampleValueTest.cc AugmentingPathHeuristicTest.cc \
+BitStringTest.cc BmpOS2FileTest.cc BmpPaletteSampleValueTest.cc \
+BmpRGBSampleValueTest.cc BmpWinFileTest.cc ColorPaletteTest.cc \
+ConstructionHeuristicTest.cc CvrStgFileTest.cc DummyFile.cc \
+DummySampleValue.cc EdgeIteratorTest.cc EmbDataTest.cc GraphTest.cc \
+JpegFileTest.cc JpegSampleValueTest.cc MCryptPPTest.cc MHashKeyGenTest.cc \
+MHashPPTest.cc MatchingTest.cc SampleValueOppositeNeighbourhoodTest.cc \
+SampleValueTest.cc SelectorTest.cc TestSuite.cc UnitTest.cc \
+VertexContentTest.cc WavFileTest.cc WavPCMSampleValueTest.cc main.cc
 unittests_LDADD = \
 ../src/Arg.o ../src/Arguments.o ../src/AssertionFailed.o ../src/AuFile.o \
-../src/AugmentingPathHeuristic.o \
+../src/AugmentingPathHeuristic.o ../src/AuSampleValues.o \
 ../src/BinaryIO.o ../src/BitString.o ../src/BmpFile.o \
 ../src/BmpPaletteSampleValue.o ../src/BmpRGBSampleValue.o \
 ../src/BmpSampleValue.o ../src/ColorPalette.o ../src/ConstructionHeuristic.o \

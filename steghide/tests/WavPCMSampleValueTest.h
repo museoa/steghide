@@ -18,14 +18,27 @@
  *
  */
 
-#ifndef SH_AUSAMPLEVALUES_H
-#define SH_AUSAMPLEVALUES_H
+#ifndef SH_WAVPCMSAMPLEVALUETEST_H
+#define SH_WAVPCMSAMPLEVALUETEST_H
 
-#include "AudioSampleValue.h"
+#include "SampleValueTest.h"
 
-typedef AudioSampleValue<AuMuLaw,BYTE> AuMuLawSampleValue ;
-typedef AudioSampleValue<AuPCM8,SBYTE> AuPCM8SampleValue ;
-typedef AudioSampleValue<AuPCM16,SWORD16> AuPCM16SampleValue ;
-typedef AudioSampleValue<AuPCM32,SWORD32> AuPCM32SampleValue ;
+class CvrStgFile ;
 
-#endif // ndef SH_AUSAMPLEVALUES_H
+class WavPCMSampleValueTest : public SampleValueTest {
+	public:
+	WavPCMSampleValueTest (TestSuite* s) ;
+
+	void setup (void) ;
+	void cleanup (void) ;
+
+	void testDistance (void) ;
+	void testIsNeighbour (void) ;
+
+	private:
+	CvrStgFile *f_WavPCM8, *f_WavPCM16 ;
+	SampleValue *sv_WavPCM8_0, *sv_WavPCM8_1, *sv_WavPCM8_45, *sv_WavPCM16_m32768, *sv_WavPCM16_32767, *sv_WavPCM16_0, *sv_WavPCM16_15 ;
+	Globals gl_WavPCM8, gl_WavPCM16 ;
+} ;
+
+#endif // ndef SH_WAVPCMSAMPLEVALUETEST_H

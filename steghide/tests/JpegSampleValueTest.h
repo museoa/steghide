@@ -18,14 +18,26 @@
  *
  */
 
-#ifndef SH_AUSAMPLEVALUES_H
-#define SH_AUSAMPLEVALUES_H
+#ifndef SH_JPEGSAMPLEVALUETEST_H
+#define SH_JPEGSAMPLEVALUETEST_H
 
-#include "AudioSampleValue.h"
+#include "SampleValueTest.h"
 
-typedef AudioSampleValue<AuMuLaw,BYTE> AuMuLawSampleValue ;
-typedef AudioSampleValue<AuPCM8,SBYTE> AuPCM8SampleValue ;
-typedef AudioSampleValue<AuPCM16,SWORD16> AuPCM16SampleValue ;
-typedef AudioSampleValue<AuPCM32,SWORD32> AuPCM32SampleValue ;
+class CvrStgFile ;
 
-#endif // ndef SH_AUSAMPLEVALUES_H
+class JpegSampleValueTest : public SampleValueTest {
+	public:
+	JpegSampleValueTest (TestSuite* s) ;
+
+	void setup (void) ;
+	void cleanup (void) ;
+
+	void testDistance (void) ;
+	void testIsNeighbour (void) ;
+
+	private:
+	CvrStgFile *f1 ;
+	Globals gl1 ;
+} ;
+
+#endif // ndef SH_JPEGSAMPLEVALUETEST_H

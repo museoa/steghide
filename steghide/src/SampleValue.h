@@ -119,8 +119,6 @@ class SampleValue {
 	void incNumEdges (void) { NumEdges++ ; } ;
 	void decNumEdges (void) ;
 
-	UWORD32 getRadius (void) const { return Radius ; } ;
-
 	void setLabel (unsigned long l) { Label = l ; } ;
 	unsigned long getLabel (void) const { return Label ; } ;
 
@@ -134,19 +132,6 @@ class SampleValue {
 
 	/// the key of this sample value - must be different for two different sample values - must be set in constructor of derived class
 	UWORD32 Key ;
-
-	/// the radius of all sample values - must be set in constructor of derived class using the setRadius method
-	static UWORD32 Radius ; // FIXME - what about unit-tests ? - move this to Globals ??
-
-	/**
-	 * set the static variable Radius either to the value specified by the user or to dr
-	 * \param dr the default (if no value has been specified by the user)
-	 *
-	 * This method should be called from the constructor of the derived class
-	 * with a class-specific constant for the default radius. The Radius variable
-	 * is only set if it contains the value 0 (indicating that it has not been set yet).
-	 **/
-	void setRadius (UWORD32 dr) ;
 
 	private:
 	unsigned long Label ;

@@ -24,6 +24,7 @@
 #define DATADIR "./data/"
 #define REMOVE	"rm -f"
 #define COMPARE	"cmp -s"
+#define COPY "cp"
 
 extern bool ArgVerbose ;
 

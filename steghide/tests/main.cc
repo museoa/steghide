@@ -18,8 +18,12 @@
  *
  */
 
-#include "TestSuite.h"
+#include <cstdlib>
 
+#include "common.h"
+
+#include "TestSuite.h"
+#include "AudioSampleValueTest.h"
 #include "AuFileTest.h"
 #include "AugmentingPathHeuristicTest.h"
 #include "BitStringTest.h"
@@ -27,26 +31,45 @@
 #include "BmpPaletteSampleValueTest.h"
 #include "BmpOS2FileTest.h"
 #include "BmpWinFileTest.h"
+#include "EdgeIteratorTest.h"
 #include "EmbDataTest.h"
 #include "ConstructionHeuristicTest.h"
 #include "ColorPaletteTest.h"
 #include "GraphTest.h"
+#include "JpegFileTest.h"
+#include "JpegSampleValueTest.h"
 #include "MatchingTest.h"
+#include "MCryptPPTest.h"
+#include "MHashKeyGenTest.h"
 #include "MHashPPTest.h"
 #include "SampleValueOppositeNeighbourhoodTest.h"
 #include "SelectorTest.h"
 #include "VertexContentTest.h"
 #include "WavFileTest.h"
+#include "WavPCMSampleValueTest.h"
 
 bool ArgVerbose ;
 
 int main (int argc, char *argv[])
 {
 	ArgVerbose = false ;
-	if (argc > 1) {
-		if (std::string(argv[1]) == "-v" || std::string(argv[1]) == "--verbose") {
+
+	unsigned short argi = 1 ;
+	while (argi < argc) {
+		if (std::string(argv[argi]) == "-v" || std::string(argv[argi]) == "--verbose") {
 			ArgVerbose = true ;
 		}
+		else if (std::string(argv[argi]) == "--debuglevel") {
+			argi++ ;
+			unsigned int tmp = 0 ;
+			sscanf (argv[argi], "%u", &tmp) ;
+			Args.DebugLevel.setValue (tmp) ;
+		}
+		else {
+			std::cerr << "unknown argument: " << argv[argi] << std::endl ;
+			exit (EXIT_FAILURE) ;
+		}
+		argi++ ;
 	}
 
 	TestSuite ts ;
@@ -54,9 +77,6 @@ int main (int argc, char *argv[])
 	// basic classes
 	BitStringTest bst (&ts) ;
 	ts.addUnitTest (&bst) ;
-
-	MHashPPTest mht (&ts) ;
-	ts.addUnitTest (&mht) ;
 
 	SelectorTest st (&ts) ;
 	ts.addUnitTest (&st) ;
@@ -67,12 +87,31 @@ int main (int argc, char *argv[])
 	EmbDataTest edt (&ts) ;
 	ts.addUnitTest (&edt) ;
 
+	// mlibs
+	MHashPPTest mht (&ts) ;
+	ts.addUnitTest (&mht) ;
+
+	MHashKeyGenTest mhkgt (&ts) ;
+	ts.addUnitTest (&mhkgt) ;
+
+	MCryptPPTest mct (&ts) ;
+	ts.addUnitTest (&mct) ;
+
 	// SampleValues
+	AudioSampleValueTest asvt (&ts) ;
+	ts.addUnitTest (&asvt) ;
+
 	BmpRGBSampleValueTest rgbsvt (&ts) ;
 	ts.addUnitTest (&rgbsvt) ;
 
 	BmpPaletteSampleValueTest palsvt (&ts) ;
 	ts.addUnitTest (&palsvt) ;
+
+	JpegSampleValueTest jsvt (&ts) ;
+	ts.addUnitTest (&jsvt) ;
+
+	WavPCMSampleValueTest wavsvt (&ts) ;
+	ts.addUnitTest (&wavsvt) ;
 
 	// CvrStgFiles
 	AuFileTest aut (&ts) ;
@@ -83,6 +122,9 @@ int main (int argc, char *argv[])
 
 	BmpWinFileTest bmpwt (&ts) ;
 	ts.addUnitTest (&bmpwt) ;
+
+	JpegFileTest jft (&ts) ;
+	ts.addUnitTest (&jft) ;
 
 	WavFileTest wt (&ts) ;
 	ts.addUnitTest (&wt) ;
@@ -96,6 +138,9 @@ int main (int argc, char *argv[])
 
 	GraphTest gt (&ts) ;
 	ts.addUnitTest (&gt) ;
+
+	EdgeIteratorTest eitt (&ts) ;
+	ts.addUnitTest (&eitt) ;
 
 	MatchingTest mt (&ts) ;
 	ts.addUnitTest (&mt) ;

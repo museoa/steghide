@@ -25,28 +25,45 @@
 #include "SampleValue.h"
 #include "utcommon.h"
 
-// TODO: new test - readwrite with the same file name
-
-// TODO: ReadCompare tests (compare on the getSampleBit() - level) against reference
-
-// TODO: for a bug (already fixed): some ReadExtractCompare tests for every type of file
-// ...a stego file in the tests/data is read, the embedded data is extracted and compared against reference
-
-// TODO: EmbedWriteCompare - inverted ReadExtractCompare tests - data is embedded, stego file written and compared against reference stego file
-
-bool CvrStgFileTest::genericTestReadWrite (const std::string& rfn) const
+// TODO - do tests with new_wfn == false in *FileTests !
+bool CvrStgFileTest::genericTestReadWrite (const std::string& rfn, bool new_wfn) const
 {
-	std::string wfn ("test_rw.out") ;
+	bool retval = false ;
+	if (new_wfn) {
+		CvrStgFile *file = CvrStgFile::readFile (rfn) ;
+		std::string wfn ("test_rw.out") ;
+		file->transform (wfn) ;
+		file->write() ;
+		delete file ;
 
-	CvrStgFile *file = CvrStgFile::readFile (rfn) ;
-	file->transform (wfn) ;
-	file->write() ;
-	delete file ;
+		retval = areEqual (rfn, wfn) ;
+		removeFile (wfn) ;
+	}
+	else {
+		CvrStgFile *file = CvrStgFile::readFile (rfn) ;
+		copyFile (rfn, "test_rw.bak") ;
+		file->write() ;
+		delete file ;
 
-	bool retval = areEqual (rfn, wfn) ;
-	removeFile (wfn) ;
+		retval = areEqual (rfn, "test_rw.bak") ;
+
+		// TODO - finish this
+	}
 
 	return retval ;
+}
+
+// TODO - use this in *FileTests !
+bool CvrStgFileTest::genericTestReadExtractCompare (const std::string& fn, const BitString& emb) const
+{
+	CvrStgFile *file = CvrStgFile::readFile (fn) ;
+	bool ok = true ;
+	for (unsigned long i = 0 ; i < emb.getLength() ; i++) {
+		ok = (emb[i] == file->getSampleBit(i)) && ok ;
+	}
+	delete file ;
+
+	return ok ;
 }
 
 bool CvrStgFileTest::genericTestReadEmbedExtract (const std::string& fn, const BitString& emb) const
@@ -141,5 +158,12 @@ void CvrStgFileTest::removeFile (const std::string& fn) const
 {
 	char command[256] ;
 	sprintf (command, "%s %s", REMOVE, fn.c_str()) ;
+	system (command) ;
+}
+
+void CvrStgFileTest::copyFile (const std::string& src, const std::string& dest) const
+{
+	char command[256] ;
+	sprintf (command, "%s %s %s", COPY, src.c_str(), dest.c_str()) ;
 	system (command) ;
 }

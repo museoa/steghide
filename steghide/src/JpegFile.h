@@ -69,7 +69,9 @@ class JpegFile : public CvrStgFile {
 	private:
 	/// the number of dct coefficients per block
 	static const unsigned int CoeffPerBlock = 64 ;
+
 	static const unsigned short SamplesPerEBit = 2 ;
+	static const UWORD32 Radius = 1 ;
 
 	struct jpeg_compress_struct CInfo ;
 	struct jpeg_decompress_struct DeCInfo ;

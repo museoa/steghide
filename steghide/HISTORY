@@ -1,17 +1,17 @@
 steghide 0.5.1 :
 ================
 
+* maintains first-order statistics for all file formats
+
 * support for all jpeg files (using libjpeg)
 
-* compression of embedded data
-
-* a 'capacity' command to display the capacity of a cover file
+* compression of embedded data (using zlib)
 
 * use of permutation as distribution function
 
-* random data can be taken from /dev/urandom
+* a 'capacity' command to display the capacity of a cover file
 
-* compilation without libmcrypt is possible
+* random data can be taken from /dev/urandom
 
 
 steghide 0.4.6b :

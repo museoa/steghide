@@ -21,12 +21,6 @@
 #include "BmpSampleValue.h"
 #include "common.h"
 
-BmpSampleValue::BmpSampleValue (void)
-		: SampleValue()
-{
-	setRadius (DefaultRadius) ;
-}
-
 UWORD32 BmpSampleValue::calcDistance (const SampleValue *s) const
 {
 	const BmpSampleValue *sample = (const BmpSampleValue*) s ;

@@ -42,12 +42,15 @@ class WavFile : public CvrStgFile {
 	unsigned long getNumSamples (void) const ;
 	void replaceSample (const SamplePos pos, const SampleValue* s) ;
 	SampleValue* getSampleValue (SamplePos pos) const ;
-	unsigned short getSamplesPerEBit (void) const ;
 
 	unsigned short getBitsPerSample (void) const ;
 
 	private:
 	static const signed short	FormatPCM = 1 ;
+
+	static const unsigned short SamplesPerEBit = 2 ;
+	static const UWORD32 Radius_small = 1 ;
+	static const UWORD32 Radius_large = 20 ;
 
 	WavChunkHeader *riffchhdr ;
 	char id_wave[4] ;

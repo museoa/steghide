@@ -34,6 +34,7 @@
 AuFile::AuFile (BinaryIO *io)
 	: CvrStgFile()
 {
+	setSamplesPerEBit (SamplesPerEBit) ;
 	read (io) ;
 }
 
@@ -71,18 +72,22 @@ void AuFile::read (BinaryIO *io)
 		// read data
 		switch (encoding) {
 			case MULAW8:
+			setRadius (Radius_MuLaw8) ;
 			Data = new AuMuLawAudioData (this) ;
 			break ;
 
 			case PCM8:
+			setRadius (Radius_PCM8) ;
 			Data = new AuPCM8AudioData (this) ;
 			break ;
 
 			case PCM16:
+			setRadius (Radius_PCM16) ;
 			Data = new AuPCM16AudioData (this) ;
 			break ;
 
 			case PCM32:
+			setRadius (Radius_PCM32) ;
 			Data = new AuPCM32AudioData (this) ;
 			break ;
 

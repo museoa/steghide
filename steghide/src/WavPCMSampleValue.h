@@ -38,11 +38,6 @@ class WavPCMSampleValue : public SampleValue {
 		{ return Value ; } ;
 
 	private:
-	/**
-	 * every pair of wav samples whose distance is smaller than this constant are neighbours
-	 **/
-	static const UWORD32 DefaultRadius = 20 ;
-
 	int Value ;
 	int MaxValue ;
 	int MinValue ;

@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2003-04-03 10:08+0200\n"
+"POT-Creation-Date: 2003-04-13 18:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,241 +15,282 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/Arguments.cc:85
+#: src/AssertionFailed.h:30
+#, c-format
+msgid "assertion failed in %s at line number %d."
+msgstr ""
+
+#: src/AudioData.h:90 src/WavFile.cc:187
+#, c-format
+msgid "an error occured while reading the audio data from the file \"%s\"."
+msgstr ""
+
+#: src/AudioData.h:96 src/WavFile.cc:191
+#, c-format
+msgid "premature end of file \"%s\" while reading audio data."
+msgstr ""
+
+#: src/AudioData.h:102 src/WavFile.cc:195
+msgid "an error occured while reading the audio data from standard input."
+msgstr ""
+
+#: src/AudioData.h:108 src/WavFile.cc:199
+msgid "premature end of data from standard input while reading audio data."
+msgstr ""
+
+#: src/AudioData.h:130 src/WavFile.cc:240
+#, c-format
+msgid "an error occured while writing the audio data to the file \"%s\"."
+msgstr ""
+
+#: src/AudioData.h:136 src/WavFile.cc:244
+msgid "an error occured while writing the audio data to standard output."
+msgstr ""
+
+#: src/Arguments.cc:86
 #, c-format
 msgid "unknown argument \"%s\"."
 msgstr ""
 
-#: src/Arguments.cc:91
+#: src/Arguments.cc:92
 msgid "standard input cannot be used for cover data AND data to be embedded."
 msgstr ""
 
-#: src/Arguments.cc:100
+#: src/Arguments.cc:101
 msgid "you have to supply a cover file name to calculate a capacity."
 msgstr ""
 
-#: src/Arguments.cc:109 src/Arguments.cc:115
+#: src/Arguments.cc:110 src/Arguments.cc:116
 msgid ""
 "if standard input is used, the passphrase must be specified on the command "
 "line."
 msgstr ""
 
-#: src/Arguments.cc:149
+#: src/Arguments.cc:145
 msgid "you cannot use arguments with the \"encinfo\" command."
 msgstr ""
 
-#: src/Arguments.cc:155
+#: src/Arguments.cc:152
 msgid "you cannot use arguments with the \"version\" command."
 msgstr ""
 
-#: src/Arguments.cc:161
+#: src/Arguments.cc:159
 msgid "you cannot use arguments with the \"license\" command."
 msgstr ""
 
-#: src/Arguments.cc:167
+#: src/Arguments.cc:166
 msgid "you cannot use arguments with the \"help\" command."
 msgstr ""
 
-#: src/Arguments.cc:171
+#: src/Arguments.cc:181
 #, c-format
 msgid "unknown command \"%s\"."
 msgstr ""
 
-#: src/Arguments.cc:183 src/Arguments.cc:333 src/Arguments.cc:347
-#: src/Arguments.cc:369 src/Arguments.cc:383 src/Arguments.cc:405
-#: src/Arguments.cc:507 src/Arguments.cc:535
+#: src/Arguments.cc:191 src/Arguments.cc:341 src/Arguments.cc:363
+#: src/Arguments.cc:383 src/Arguments.cc:405 src/Arguments.cc:427
+#: src/Arguments.cc:529 src/Arguments.cc:557
 #, c-format
 msgid "the argument \"%s\" can only be used with the \"embed\" command."
 msgstr ""
 
-#: src/Arguments.cc:187
+#: src/Arguments.cc:195
 msgid "the embed file name argument can be used only once."
 msgstr ""
 
-#: src/Arguments.cc:191
+#: src/Arguments.cc:199
 #, c-format
 msgid "the \"%s\" argument must be followed by the embed file name."
 msgstr ""
 
-#: src/Arguments.cc:214
+#: src/Arguments.cc:222
 #, c-format
 msgid "argument \"%s\" can only be used with the \"extract\" command."
 msgstr ""
 
-#: src/Arguments.cc:218
+#: src/Arguments.cc:226
 msgid "the extract file name argument can be used only once."
 msgstr ""
 
-#: src/Arguments.cc:222
+#: src/Arguments.cc:230
 #, c-format
 msgid "the \"%s\" argument must be followed by the plain file name."
 msgstr ""
 
-#: src/Arguments.cc:245
+#: src/Arguments.cc:253
 #, c-format
 msgid "the argument \"%s\" can not be used with the \"extract\" command."
 msgstr ""
 
-#: src/Arguments.cc:249
+#: src/Arguments.cc:257
 msgid "the cover file name argument can be used only once."
 msgstr ""
 
-#: src/Arguments.cc:253
+#: src/Arguments.cc:261
 #, c-format
 msgid "the \"%s\" argument must be followed by the cover file name."
 msgstr ""
 
-#: src/Arguments.cc:276 src/Arguments.cc:563 src/Arguments.cc:587
-#: src/Arguments.cc:601
+#: src/Arguments.cc:284 src/Arguments.cc:585 src/Arguments.cc:609
+#: src/Arguments.cc:623
 #, c-format
 msgid "the \"%s\" argument can not be used with the \"capacity\" command."
 msgstr ""
 
-#: src/Arguments.cc:280
+#: src/Arguments.cc:288
 msgid "the stego file name argument can be used only once."
 msgstr ""
 
-#: src/Arguments.cc:284
+#: src/Arguments.cc:292
 #, c-format
 msgid "the \"%s\" argument must be followed by the stego file name."
 msgstr ""
 
-#: src/Arguments.cc:307
+#: src/Arguments.cc:315
 #, c-format
 msgid "the \"%s\" argument cannot be used with the \"capacity\" command."
 msgstr ""
 
-#: src/Arguments.cc:311
+#: src/Arguments.cc:319
 msgid "the passphrase argument can be used only once."
 msgstr ""
 
-#: src/Arguments.cc:315
+#: src/Arguments.cc:323
 #, c-format
 msgid "the \"%s\" argument must be followed by the passphrase."
 msgstr ""
 
-#: src/Arguments.cc:337 src/Arguments.cc:351
+#: src/Arguments.cc:345
 msgid "the checksum argument can be used only once."
 msgstr ""
 
-#: src/Arguments.cc:373 src/Arguments.cc:387
-msgid "the file name embedding argument can be used only once."
+#: src/Arguments.cc:367 src/Arguments.cc:387
+msgid "the compression argument can be used only once."
+msgstr ""
+
+#: src/Arguments.cc:371
+#, c-format
+msgid "the \"%s\" argument must be followed by the compression level."
 msgstr ""
 
 #: src/Arguments.cc:409
+msgid "the file name embedding argument can be used only once."
+msgstr ""
+
+#: src/Arguments.cc:431
 msgid "the encryption argument can be used only once."
 msgstr ""
 
-#: src/Arguments.cc:413 src/Arguments.cc:418
+#: src/Arguments.cc:435 src/Arguments.cc:440
 #, c-format
 msgid "the \"%s\" argument must be followed by encryption information."
 msgstr ""
 
-#: src/Arguments.cc:450 src/Arguments.cc:459
+#: src/Arguments.cc:472 src/Arguments.cc:481
 #, c-format
 msgid "\"%s\" is neither an algorithm nor a mode supported by libmcrypt."
 msgstr ""
 
-#: src/Arguments.cc:464
+#: src/Arguments.cc:486
 #, c-format
 msgid ""
 "\"%s\" and \"%s\" are both libmcrypt algorithms. please specify only one."
 msgstr ""
 
-#: src/Arguments.cc:467
+#: src/Arguments.cc:489
 #, c-format
 msgid "\"%s\" and \"%s\" are both libmcrypt modes. please specify only one."
 msgstr ""
 
-#: src/Arguments.cc:484
+#: src/Arguments.cc:506
 #, c-format
 msgid "the encryption algorithm \"%s\" can not be used with the mode \"%s\"."
 msgstr ""
 
-#: src/Arguments.cc:490
+#: src/Arguments.cc:512
 msgid "steghide has been compiled without support for encryption."
 msgstr ""
 
-#: src/Arguments.cc:511
+#: src/Arguments.cc:533
 msgid "the radius argument can be used only once."
 msgstr ""
 
-#: src/Arguments.cc:515
+#: src/Arguments.cc:537
 #, c-format
 msgid "the \"%s\" argument must be followed by the neighbourhood radius."
 msgstr ""
 
-#: src/Arguments.cc:539
+#: src/Arguments.cc:561
 msgid "the goal argument can be used only once."
 msgstr ""
 
-#: src/Arguments.cc:543
+#: src/Arguments.cc:565
 #, c-format
 msgid "the \"%s\" argument must be followed by a number between 0 and 100."
 msgstr ""
 
-#: src/Arguments.cc:567
+#: src/Arguments.cc:589
 msgid "the force argument can be used only once."
 msgstr ""
 
-#: src/Arguments.cc:591 src/Arguments.cc:605
+#: src/Arguments.cc:613 src/Arguments.cc:627
 #, c-format
 msgid ""
 "the \"%s\" argument cannot be used here because the verbosity has already "
 "been set."
 msgstr ""
 
-#: src/Arguments.cc:623 src/Arguments.cc:633
+#: src/Arguments.cc:644 src/Arguments.cc:654
 msgid "you cannot use more than one debug command at a time."
 msgstr ""
 
-#: src/Arguments.cc:643
+#: src/Arguments.cc:664
 msgid "the debug level argument can be used only once."
 msgstr ""
 
-#: src/Arguments.cc:647
+#: src/Arguments.cc:668
 #, c-format
 msgid "the \"%s\" argument must be followed by the debug level."
 msgstr ""
 
-#: src/Arguments.cc:659 src/Arguments.cc:679
+#: src/Arguments.cc:680 src/Arguments.cc:700
 #, c-format
 msgid "argument \"%s\" can only be used with the \"embed\" command."
 msgstr ""
 
-#: src/Arguments.cc:663
+#: src/Arguments.cc:684
 msgid "the priority queue range argument can be used only once."
 msgstr ""
 
-#: src/Arguments.cc:667
+#: src/Arguments.cc:688
 #, c-format
 msgid "the \"%s\" argument must be followed by the priority queue range."
 msgstr ""
 
-#: src/Arguments.cc:683
+#: src/Arguments.cc:704
 msgid "the number construction heuristic argument can be used only once."
 msgstr ""
 
-#: src/Arguments.cc:687
+#: src/Arguments.cc:708
 #, c-format
 msgid ""
 "the \"%s\" argument must be followed by the number of times the construction "
 "heuristic should be run."
 msgstr ""
 
-#: src/Arguments.cc:708
+#: src/Arguments.cc:728
 msgid "unknown terminal. the passphrase you type now will be visible."
 msgstr ""
 
-#: src/Arguments.cc:712
+#: src/Arguments.cc:732
 msgid "Enter passphrase: "
 msgstr ""
 
-#: src/Arguments.cc:725
+#: src/Arguments.cc:745
 msgid "Re-Enter passphrase: "
 msgstr ""
 
-#: src/Arguments.cc:737
+#: src/Arguments.cc:757
 msgid "the passphrases do not match."
 msgstr ""
 
@@ -320,6 +361,25 @@ msgstr ""
 #: src/BinaryIO.cc:142
 #, c-format
 msgid "could not close the file \"%s\"."
+msgstr ""
+
+#: src/BitString.cc:234 src/BitString.cc:282 src/MCryptPP.cc:316
+#: src/MHashKeyGen.cc:117
+msgid "could not allocate memory."
+msgstr ""
+
+#: src/BitString.cc:238
+#, c-format
+msgid "error %d while calling zlib's compress2."
+msgstr ""
+
+#: src/BitString.cc:286
+msgid "can not uncompress data. compressed data is corrupted."
+msgstr ""
+
+#: src/BitString.cc:290
+#, c-format
+msgid "error %d while calling zlib's uncompress."
 msgstr ""
 
 #: src/BmpFile.cc:264
@@ -455,54 +515,43 @@ msgstr ""
 msgid "writing stego file \"%s\"."
 msgstr ""
 
-#: src/EmbData.cc:96
+#: src/CvrStgFile.cc:182
+msgid ""
+"can not read input file. steghide has been compiled without support for jpeg "
+"files."
+msgstr ""
+
+#: src/EmbData.cc:81
 msgid ""
 "the embedded data is encrypted but steghide has been compiled without "
 "encryption support."
 msgstr ""
 
-#: src/EmbData.cc:146
-msgid ""
-"the embedded data is compressed. this is not implemented in this version "
-"(file corruption ?)."
-msgstr ""
-
-#: src/EmbData.cc:178
-msgid ""
-"please specify a file name for the extracted data (there is no name embedded "
-"in the stego file)."
-msgstr ""
-
-#: src/EmbData.cc:204
+#: src/EmbData.cc:173
 msgid "crc32 checksum test ok."
 msgstr ""
 
-#: src/EmbData.cc:208
+#: src/EmbData.cc:177
 msgid "crc32 checksum failed! extracted data is probably corrupted."
 msgstr ""
 
-#: src/EmbData.cc:311
-#, c-format
-msgid "the maximum length for the embedded file's name is %d characters."
-msgstr ""
-
-#: src/Embedder.cc:56
+#: src/Embedder.cc:69
 msgid "the cover file is too short to embed the data."
 msgstr ""
 
-#: src/Embedder.cc:102
+#: src/Embedder.cc:115
 msgid "calculating the matching..."
 msgstr ""
 
-#: src/Embedder.cc:136
+#: src/Embedder.cc:149
 msgid "best matching after construction heuristic:"
 msgstr ""
 
-#: src/Embedder.cc:149
+#: src/Embedder.cc:162
 msgid "best matching after bounded augmenting path heuristic:"
 msgstr ""
 
-#: src/Embedder.cc:159
+#: src/Embedder.cc:172
 msgid "best matching after unbounded augmenting path heuristic:"
 msgstr ""
 
@@ -517,6 +566,12 @@ msgstr ""
 msgid ""
 "the stego file \"%s\" is too short to contain the embedded data (file "
 "corruption ?)."
+msgstr ""
+
+#: src/Extractor.cc:84
+msgid ""
+"please specify a file name for the extracted data (there is no name embedded "
+"in the stego file)."
 msgstr ""
 
 #: src/Graph.cc:36
@@ -553,6 +608,10 @@ msgstr ""
 msgid "number of edges: %lu"
 msgstr ""
 
+#: src/JpegFile.cc:46
+msgid "can not use standard input as source for jpeg files with libjpeg."
+msgstr ""
+
 #: src/MCryptPP.cc:64 src/MCryptPP.cc:250
 #, c-format
 msgid "could not open libmcrypt module \"%s\",\"%s\"."
@@ -582,10 +641,6 @@ msgstr ""
 
 #: src/MCryptPP.cc:210
 msgid "could not finish libmcrypt decryption."
-msgstr ""
-
-#: src/MCryptPP.cc:316 src/MHashKeyGen.cc:117
-msgid "could not allocate memory."
 msgstr ""
 
 #: src/MHashKeyGen.cc:63
@@ -635,18 +690,18 @@ msgstr ""
 msgid "could not close random input file."
 msgstr ""
 
-#: src/Session.cc:90
+#: src/Session.cc:96
 #, c-format
 msgid "the capacity of \"%s\" is approximately %.1f %s.\n"
 msgstr ""
 
-#: src/Session.cc:111
+#: src/Session.cc:117
 msgid ""
 "encryption algorithms:\n"
 "<algorithm>: <supported modes>...\n"
 msgstr ""
 
-#: src/Session.cc:128
+#: src/Session.cc:134
 msgid ""
 "steghide has been compiled without support for encryption.\n"
 "If you want to encrypt your data before embedding it, use an external "
@@ -655,7 +710,7 @@ msgid ""
 "steghide.\n"
 msgstr ""
 
-#: src/Session.cc:142
+#: src/Session.cc:148
 msgid ""
 "\n"
 "the first argument must be one of the following:\n"
@@ -679,10 +734,12 @@ msgid ""
 "   -r <r>                use the real number <r> as radius\n"
 " -g, --goal              specify a goal for the matching algorithms\n"
 "   -g <p>                stop search when <p> percent are reached\n"
-" -k, --checksum          embed crc32 checksum of embedded data (default)\n"
 " -K, --nochecksum        do not embed crc32 checksum of embedded data\n"
-" -n, --embedname         embed the name of the original file (default)\n"
 " -N, --dontembedname     do not embed the name of the original file\n"
+" -z, --compress          compress data before embedding (default)\n"
+"  -z <l>                 using level <l> (1 best speed...9 best "
+"compression)\n"
+" -Z, --dontcompress      do not compress data before embedding\n"
 "\n"
 "options for extracting only:\n"
 " -xf, --extractfile      select file for extracted data\n"
@@ -713,33 +770,6 @@ msgstr ""
 
 #: src/Terminal.cc:45 src/Terminal.cc:61 src/Terminal.cc:68
 msgid "could not set terminal attributes."
-msgstr ""
-
-#: src/WavFile.cc:187 src/AudioData.h:90
-#, c-format
-msgid "an error occured while reading the audio data from the file \"%s\"."
-msgstr ""
-
-#: src/WavFile.cc:191 src/AudioData.h:96
-#, c-format
-msgid "premature end of file \"%s\" while reading audio data."
-msgstr ""
-
-#: src/WavFile.cc:195 src/AudioData.h:102
-msgid "an error occured while reading the audio data from standard input."
-msgstr ""
-
-#: src/WavFile.cc:199 src/AudioData.h:108
-msgid "premature end of data from standard input while reading audio data."
-msgstr ""
-
-#: src/WavFile.cc:240 src/AudioData.h:130
-#, c-format
-msgid "an error occured while writing the audio data to the file \"%s\"."
-msgstr ""
-
-#: src/WavFile.cc:244 src/AudioData.h:136
-msgid "an error occured while writing the audio data to standard output."
 msgstr ""
 
 #: src/WavFile.cc:278
@@ -854,71 +884,9 @@ msgstr ""
 msgid ""
 "This feature is not implemented (yet). Please let me (shetzl@chello.at) "
 "know\n"
-"this to increase the chance that this will be implemented in the near "
-"future.\n"
-"Steghide has to exit now. Sorry.\n"
-msgstr ""
-
-#: src/jpegentropycoded.cc:212
-#, c-format
-msgid "entropy coded data interrupted by marker 0x%x."
-msgstr ""
-
-#: src/jpegframe.cc:105 src/jpegscan.cc:78
-msgid "could not find start of marker (0xff)."
-msgstr ""
-
-#: src/jpegframe.cc:120 src/jpegscan.cc:91
-#, c-format
-msgid "huffman table has destination specifier %u (0-3 is allowed)."
-msgstr ""
-
-#: src/jpegframe.cc:147
-msgid ""
-"the jpeg file on standard input uses progressive DCT mode which is not "
-"supported in this version."
-msgstr ""
-
-#: src/jpegframe.cc:150
-#, c-format
-msgid ""
-"the jpeg file \"%s\" uses progressive DCT mode which is not supported in "
-"this version."
-msgstr ""
-
-#: src/jpegframe.cc:155
-#, c-format
-msgid ""
-"encountered unknown marker code 0x%x in jpeg file on standard input while "
-"reading frame."
-msgstr ""
-
-#: src/jpegframe.cc:158
-#, c-format
-msgid ""
-"encountered unknown marker code 0x%x in jpeg file \"%s\" while reading frame."
-msgstr ""
-
-#: src/jpegjfifapp0.cc:57
-msgid "the version of the jpeg file on standard input is not supported."
-msgstr ""
-
-#: src/jpegjfifapp0.cc:60
-#, c-format
-msgid "the version of the jpeg file \"%s\" is not supported."
-msgstr ""
-
-#: src/jpegscan.cc:133
-#, c-format
-msgid ""
-"encountered unknown marker code 0x%x in jpeg file on standard input while "
-"reading scan."
-msgstr ""
-
-#: src/jpegscan.cc:136
-#, c-format
-msgid ""
-"encountered unknown marker code 0x%x in jpeg file \"%s\" while reading scan."
+"that you want to use this functionality to increase the chance that this "
+"will\n"
+"be implemented in the near future. Steghide has to exit now. Sorry.\n"
 msgstr ""
 
 #: src/msg.cc:35
@@ -939,9 +907,4 @@ msgstr ""
 
 #: src/msg.cc:187
 msgid "unknown terminal. you might need to press <Enter> after answering."
-msgstr ""
-
-#: src/AssertionFailed.h:30
-#, c-format
-msgid "assertion failed in %s at line number %d."
 msgstr ""

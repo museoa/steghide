@@ -18,14 +18,24 @@
  *
  */
 
-#ifndef SH_AUSAMPLEVALUES_H
-#define SH_AUSAMPLEVALUES_H
+#ifndef SH_MHASHKEYGENTEST_H
+#define SH_MHASHKEYGENTEST_H
 
-#include "AudioSampleValue.h"
+#include "BitString.h"
+#include "MHashKeyGen.h"
 
-typedef AudioSampleValue<AuMuLaw,BYTE> AuMuLawSampleValue ;
-typedef AudioSampleValue<AuPCM8,SBYTE> AuPCM8SampleValue ;
-typedef AudioSampleValue<AuPCM16,SWORD16> AuPCM16SampleValue ;
-typedef AudioSampleValue<AuPCM32,SWORD32> AuPCM32SampleValue ;
+#include "UnitTest.h"
+#include "TestSuite.h"
 
-#endif // ndef SH_AUSAMPLEVALUES_H
+class MHashKeyGenTest : public UnitTest {
+	public:
+	MHashKeyGenTest (TestSuite* s) ;
+
+	private:
+#if 0
+	// TODO
+	bool genericTestReference () ;
+#endif
+} ;
+
+#endif // ndef SH_MHASHKEYGENTEST_H

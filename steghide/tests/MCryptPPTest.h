@@ -18,14 +18,25 @@
  *
  */
 
-#ifndef SH_AUSAMPLEVALUES_H
-#define SH_AUSAMPLEVALUES_H
+#ifndef SH_MCRYPTPPTEST_H
+#define SH_MCRYPTPPTEST_H
 
-#include "AudioSampleValue.h"
+#include "BitString.h"
+#include "MCryptPP.h"
 
-typedef AudioSampleValue<AuMuLaw,BYTE> AuMuLawSampleValue ;
-typedef AudioSampleValue<AuPCM8,SBYTE> AuPCM8SampleValue ;
-typedef AudioSampleValue<AuPCM16,SWORD16> AuPCM16SampleValue ;
-typedef AudioSampleValue<AuPCM32,SWORD32> AuPCM32SampleValue ;
+#include "UnitTest.h"
+#include "TestSuite.h"
 
-#endif // ndef SH_AUSAMPLEVALUES_H
+class MCryptPPTest : public UnitTest {
+	public:
+	MCryptPPTest (TestSuite* s) ;
+
+	void testEncryption (void) ;
+	void testDecryption (void) ;
+
+	private:
+	bool genericTestEncryption () ;
+	bool genericTestDecryption () ;
+} ;
+
+#endif // ndef SH_MCRYPTPPTEST_H

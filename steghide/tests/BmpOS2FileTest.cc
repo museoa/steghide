@@ -95,18 +95,16 @@ void BmpOS2FileTest::testReadEmbedWriteReadExtract (void)
 void BmpOS2FileTest::testPosition()
 {
 	Globs = gl1 ;
-	addTestResult (genericTestPosition (f1, 0, new BmpPaletteSampleValue (0))) ;
+	addTestResult (genericTestPosition (f1, 0, new BmpPaletteSampleValue (1))) ;
 	addTestResult (genericTestPosition (f1, 1, new BmpPaletteSampleValue (1))) ;
-	addTestResult (genericTestPosition (f1, 2, new BmpPaletteSampleValue (0))) ;
-	addTestResult (genericTestPosition (f1, 47, new BmpPaletteSampleValue (1))) ;
-	addTestResult (genericTestPosition (f1, 48, new BmpPaletteSampleValue (1))) ;
-	addTestResult (genericTestPosition (f1, 2299, new BmpPaletteSampleValue (0))) ;
+	addTestResult (genericTestPosition (f1, 2, new BmpPaletteSampleValue (1))) ;
+	addTestResult (genericTestPosition (f1, 50, new BmpPaletteSampleValue (0))) ;
+	addTestResult (genericTestPosition (f1, 2300, new BmpPaletteSampleValue (0))) ;
 	addTestResult (genericTestPosition (f1, 2303, new BmpPaletteSampleValue (1))) ;
 
 	Globs = gl2 ;
-	addTestResult (genericTestPosition (f2, 0, new BmpPaletteSampleValue (3))) ;
-	addTestResult (genericTestPosition (f2, 10, new BmpPaletteSampleValue (1))) ;
-	addTestResult (genericTestPosition (f2, 95, new BmpPaletteSampleValue (5))) ;
-	addTestResult (genericTestPosition (f2, 96, new BmpPaletteSampleValue (2))) ;
-	addTestResult (genericTestPosition (f2, 2208, new BmpPaletteSampleValue (7))) ;
+	addTestResult (genericTestPosition (f2, 0, new BmpPaletteSampleValue (7))) ;
+	addTestResult (genericTestPosition (f2, 10, new BmpPaletteSampleValue (5))) ;
+	addTestResult (genericTestPosition (f2, 95, new BmpPaletteSampleValue (1))) ;
+	addTestResult (genericTestPosition (f2, 96, new BmpPaletteSampleValue (8))) ;
 }

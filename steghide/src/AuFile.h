@@ -69,6 +69,10 @@ class AuFile : public CvrStgFile {
 		unsigned short getBytesPerSample (void) const ;
 	} ;
 
+	static const UWORD32 Radius_MuLaw8 = 1 ;
+	static const UWORD32 Radius_PCM8 = 1 ;
+	static const UWORD32 Radius_PCM16 = 20 ;
+	static const UWORD32 Radius_PCM32 = 20 ; // FIXME - find good value
 	static const unsigned short SamplesPerEBit = 2 ;
 
 	AuHeader Header ;

@@ -35,6 +35,7 @@
 WavFile::WavFile (BinaryIO *io)
 	: CvrStgFile()
 {
+	setSamplesPerEBit (SamplesPerEBit) ;
 	read (io) ;
 }
 
@@ -86,11 +87,6 @@ void WavFile::replaceSample (const SamplePos pos, const SampleValue* s)
 	else {
 		data_large[pos] = sample->getValue() ;
 	}
-}
-
-unsigned short WavFile::getSamplesPerEBit() const
-{
-	return 2 ;
 }
 
 SampleValue *WavFile::getSampleValue (SamplePos pos) const
@@ -261,6 +257,12 @@ void WavFile::readheaders ()
 		}
 
 		FormatChunk = new WavFormatChunk (new WavChunkHeader (getBinIO()), getBinIO()) ;
+		if (FormatChunk->getBitsPerSample() <= 8) {
+			setRadius (Radius_small) ;
+		}
+		else {
+			setRadius (Radius_large) ;
+		}
 
 		UnusedBeforeData.clear() ;
 		WavChunkHeader *chhdr = new WavChunkHeader (getBinIO()) ; 

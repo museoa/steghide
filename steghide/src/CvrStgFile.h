@@ -29,6 +29,16 @@
 
 class SampleValue ;
 
+/**
+ * \class CvrStgFile
+ * \brief a cover-/stego-file
+ *
+ * file-format specific constants are handled as follows:
+ * CvrStgFile contains a protected set-function (e.g. setSamplesPerEBit), a public
+ * get-function (e.g. getSamplesPerEBit() const) and a private variable. The public get
+ * function does nothing else than returning the private variable, which must be set
+ * as soon as possible (if it is not set, it will contain a null value set in CvrStgFile::CvrStgFile).
+ **/
 class CvrStgFile : public CvrStgObject {
 	public:
 	/**
@@ -60,7 +70,16 @@ class CvrStgFile : public CvrStgObject {
 	unsigned long getCapacity (void) const
 		{ return (getNumSamples() / getSamplesPerEBit()) / 8 ; } ;
 
-	virtual unsigned short getSamplesPerEBit (void) const = 0 ;
+	/**
+	 * get the number of samples per embedded bit (this is a file-format specific constant)
+	 **/
+	unsigned short getSamplesPerEBit (void) const
+		{ return SamplesPerEBit ; } ;
+	/**
+	 * get the neighbourhood radius (this is a file-format specific constant)
+	 **/
+	UWORD32 getRadius (void) const
+		{ return Radius ; } ;
 
 	/**
 	 * get the bit that is embedded in the Sample pos
@@ -86,6 +105,14 @@ class CvrStgFile : public CvrStgObject {
 #endif
 
 	protected:
+	void setSamplesPerEBit (unsigned short spebit)
+		{ SamplesPerEBit = spebit ; } ;
+
+	/**
+	 * set Radius to r unless Args.Radius is set (set Radius to Args.Radius.getValue() then)
+	 **/
+	void setRadius (UWORD32 r) ;
+	
 	void setBinIO (BinaryIO* io)
 		{ BinIO = io ; } ;
 
@@ -101,6 +128,9 @@ class CvrStgFile : public CvrStgObject {
 	static FILEFORMAT guessff (BinaryIO *io) ;
 
 	BinaryIO* BinIO ;
+
+	unsigned short SamplesPerEBit ;
+	UWORD32 Radius ;
 } ;
 
 #endif /* ndef SH_CVRSTGFILE_H */

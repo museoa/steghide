@@ -14,7 +14,7 @@ Session.h SteghideError.h Terminal.h Vertex.h VertexContent.h WavChunk.h \
 WavChunkHeader.h WavChunkUnused.h WavFile.h WavFormatChunk.h \
 WavPCMSampleValue.h common.h error.h msg.h wrapper_hash_map.h wrapper_hash_set.h
 steghide_SOURCES = \
-Arg.cc Arguments.cc AssertionFailed.cc AuFile.cc \
+Arg.cc Arguments.cc AssertionFailed.cc AuFile.cc AuSampleValues.cc \
 AugmentingPathHeuristic.cc BinaryIO.cc BitString.cc \
 BmpFile.cc BmpPaletteSampleValue.cc BmpRGBSampleValue.cc BmpSampleValue.cc \
 ColorPalette.cc ConstructionHeuristic.cc CvrStgFile.cc Edge.cc EdgeIterator.cc \

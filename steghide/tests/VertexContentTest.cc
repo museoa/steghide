@@ -69,26 +69,26 @@ void VertexContentTest::testConstruction (void)
 	}
 
 	{
+		SamplePos sposs[] = { 10, 20 } ;
+		SamplePos dest_sposs[] = { 10, 20 } ;
+		addTestResult (genericTestConstruction (f1, g1, sposs, dest_sposs)) ;
+	}
+
+	{
 		SamplePos sposs[] = { 49, 10 } ;
-		SamplePos dest_sposs[] = { 49, 10 } ;
+		SamplePos dest_sposs[] = { 10, 49 } ;
 		addTestResult (genericTestConstruction (f1, g1, sposs, dest_sposs)) ;
 	}
 
 	{
-		SamplePos sposs[] = { 20, 65 } ;
-		SamplePos dest_sposs[] = { 65, 20 } ;
-		addTestResult (genericTestConstruction (f1, g1, sposs, dest_sposs)) ;
-	}
-
-	{
-		SamplePos sposs[] = { 10, 30 } ;
-		SamplePos dest_sposs[] = { 30, 10 } ;
+		SamplePos sposs[] = { 20, 30 } ;
+		SamplePos dest_sposs[] = { 30, 20 } ;
 		addTestResult (genericTestConstruction (f1, g1, sposs, dest_sposs)) ;
 	}
 
 	{ // violate correct order
-		SamplePos sposs[] = { 10, 30 } ;
-		SamplePos dest_sposs[] = { 10, 30 } ;
+		SamplePos sposs[] = { 1, 30 } ;
+		SamplePos dest_sposs[] = { 1, 30 } ; // should be 30, 1
 		addTestResult (!genericTestConstruction (f1, g1, sposs, dest_sposs)) ;
 	}
 }
@@ -106,5 +106,6 @@ bool VertexContentTest::genericTestConstruction (CvrStgFile* f, Graph* g, Sample
 	for (unsigned short k = 0 ; k < g->getSamplesPerVertex() ; k++) {
 		retval = (sposs[k] == dest_sposs[k]) && retval ;
 	}
+
 	return retval ;
 }

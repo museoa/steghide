@@ -34,8 +34,6 @@ class JpegSampleValue : public SampleValue {
 		{ return DctCoeff ; } ;
 
 	private:
-	static const UWORD32 DefaultRadius = 1 ;
-
 	int DctCoeff ;
 } ;
 

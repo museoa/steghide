@@ -18,14 +18,20 @@
  *
  */
 
-#ifndef SH_AUSAMPLEVALUES_H
-#define SH_AUSAMPLEVALUES_H
+#include "AuSampleValues.h"
 
-#include "AudioSampleValue.h"
+// AuMuLawSampleValue
+const BYTE AuMuLawSampleValue::MinValue = 0 ;
+const BYTE AuMuLawSampleValue::MaxValue = BYTE_MAX ;
 
-typedef AudioSampleValue<AuMuLaw,BYTE> AuMuLawSampleValue ;
-typedef AudioSampleValue<AuPCM8,SBYTE> AuPCM8SampleValue ;
-typedef AudioSampleValue<AuPCM16,SWORD16> AuPCM16SampleValue ;
-typedef AudioSampleValue<AuPCM32,SWORD32> AuPCM32SampleValue ;
+// AuPCM8SampleValue
+const SBYTE AuPCM8SampleValue::MinValue = SBYTE_MIN ;
+const SBYTE AuPCM8SampleValue::MaxValue = SBYTE_MAX ;
 
-#endif // ndef SH_AUSAMPLEVALUES_H
+// AuPCM16SampleValue
+const SWORD16 AuPCM16SampleValue::MinValue = SWORD16_MIN ;
+const SWORD16 AuPCM16SampleValue::MaxValue = SWORD16_MAX ;
+
+// AuPCM32SampleValue
+const SWORD32 AuPCM32SampleValue::MinValue = SWORD32_MIN ;
+const SWORD32 AuPCM32SampleValue::MaxValue = SWORD32_MAX ;

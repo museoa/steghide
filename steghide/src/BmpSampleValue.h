@@ -30,7 +30,7 @@
  **/
 class BmpSampleValue : public SampleValue {
 	public:
-	BmpSampleValue (void) ;
+	BmpSampleValue (void) : SampleValue() {} ;
 
 	UWORD32 calcDistance (const SampleValue *s) const ;
 
@@ -48,10 +48,6 @@ class BmpSampleValue : public SampleValue {
 	 * get the blue color component
 	 **/
 	virtual unsigned char getBlue (void) const = 0 ;
-
-	protected:
-	// set the default radius to 20^2 = 400
-	static const UWORD32 DefaultRadius = 400 ;
 } ;
 
 

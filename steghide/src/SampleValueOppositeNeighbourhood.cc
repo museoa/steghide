@@ -23,11 +23,12 @@
 #include <vector>
 
 #include "BmpRGBSampleValue.h"
-#include "common.h"
+#include "CvrStgFile.h"
 #include "Graph.h"
 #include "SampleValue.h"
 #include "SampleValueOppositeNeighbourhood.h"
 #include "WavPCMSampleValue.h"
+#include "common.h"
 
 SampleValueOppositeNeighbourhood::SampleValueOppositeNeighbourhood (Graph* g, const std::vector<SampleValue*>& svalues)
 	: TheGraph(g)
@@ -87,7 +88,7 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_rgb (const std::vector<Samp
 	svalues0.reserve (numsvs / 2) ;
 
 	unsigned short numcubes = 0 ;
-	short cubelen = (short) roundup (sqrt ((float) svalues[0]->getRadius())) ;
+	short cubelen = (short) roundup (sqrt ((float) Globs.TheCvrStgFile->getRadius())) ;
 	if (256 % cubelen == 0) {
 		numcubes = 256 / cubelen ;
 	}
@@ -175,7 +176,7 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_wav (const std::vector<Samp
 	sort (svalues1.begin(), svalues1.end(), smaller) ;
 
 	// fill the OppNeighs vectors
-	int r = svalues[0]->getRadius() ;
+	int r = Globs.TheCvrStgFile->getRadius() ;
 	OppNeighs = std::vector<std::vector<SampleValue*> > (n) ;
 	unsigned long n0 = svalues0.size() ;
 	unsigned long n1 = svalues1.size() ;

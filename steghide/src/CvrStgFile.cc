@@ -33,15 +33,25 @@
 #include "msg.h"
 
 CvrStgFile::CvrStgFile ()
+	: BinIO(NULL), SamplesPerEBit(0), Radius(0)
 {
 	Globs.TheCvrStgFile = this ;
-	setBinIO(NULL) ;
 }
 
 CvrStgFile::~CvrStgFile (void)
 {
 	if (getBinIO() != NULL) {
 		delete getBinIO() ;
+	}
+}
+
+void CvrStgFile::setRadius (UWORD32 r)
+{
+	if (Args.Radius.is_set()) {
+		Radius = Args.Radius.getValue() ;
+	}
+	else {
+		Radius = r ;
 	}
 }
 

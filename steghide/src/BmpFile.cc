@@ -32,6 +32,7 @@
 BmpFile::BmpFile (BinaryIO *io)
 	: CvrStgFile()
 {
+	setRadius (Radius) ;
 	read (io) ;
 }
 
@@ -79,9 +80,9 @@ unsigned long BmpFile::getNumSamples() const
 
 void BmpFile::replaceSample (const SamplePos pos, const SampleValue* s)
 {
-	unsigned long row = 0, column = 0 ;
+	unsigned long index = 0 ;
 	unsigned short firstbit = 0 ;
-	calcRCB (pos, &row, &column, &firstbit) ;
+	calcIndex (pos, &index, &firstbit) ;
 
 	unsigned short bitcount = getBitCount() ;
 	switch (bitcount) {
@@ -90,8 +91,8 @@ void BmpFile::replaceSample (const SamplePos pos, const SampleValue* s)
 			myassert (sample) ;
 
 			for (unsigned short i = 0 ; i < bitcount ; i++) {
-				bitmap[row][column] = bitmap[row][column] & (~(1 << (firstbit + i))) ;
-				bitmap[row][column] = bitmap[row][column] | ((sample->getIndex() & (1 << i)) << firstbit) ;
+				BitmapData[index] = BitmapData[index] & (~(1 << (firstbit + i))) ;
+				BitmapData[index] = BitmapData[index] | ((sample->getIndex() & (1 << i)) << firstbit) ;
 			}
 		break ; }
 
@@ -99,86 +100,78 @@ void BmpFile::replaceSample (const SamplePos pos, const SampleValue* s)
 			const BmpRGBSampleValue* sample = dynamic_cast<const BmpRGBSampleValue*> (s) ;
 			myassert (sample) ;
 
-			bitmap[row][column] = sample->getBlue() ;
-			bitmap[row][column + 1] = sample->getGreen() ;
-			bitmap[row][column + 2] = sample->getRed() ;
+			BitmapData[index] = sample->getBlue() ;
+			BitmapData[index + 1] = sample->getGreen() ;
+			BitmapData[index + 2] = sample->getRed() ;
 		break ; }
 	}
-}
-
-unsigned short BmpFile::getSamplesPerEBit() const
-{
-	unsigned short retval = 0 ;
-	switch (getBitCount()) {
-		case 1: case 4: case 8: {
-			retval = 2 ;
-		break ; }
-
-		case 24: {
-			retval = 1 ;
-		break ; }
-	}
-	return retval ;
 }
 
 SampleValue *BmpFile::getSampleValue (SamplePos pos) const
 {
-	unsigned long row = 0, column = 0 ;
+	unsigned long index = 0 ;
 	unsigned short firstbit = 0 ;
-	calcRCB (pos, &row, &column, &firstbit) ;
+	calcIndex (pos, &index, &firstbit) ;
 
 	unsigned short bitcount = getBitCount() ;
 	SampleValue *retval = NULL ;
 	switch (bitcount) {
 		case 1: case 4: case 8: {
-			unsigned char index = 0 ;
+			BYTE idx_pal = 0 ;
 			for (unsigned short i = 0 ; i < bitcount ; i++) {
-				index |= ((bitmap[row][column] & (1 << (firstbit + i))) >> firstbit) ;
+				idx_pal |= ((BitmapData[index] & (1 << (firstbit + i))) >> firstbit) ;
 			}
-			retval = (SampleValue*) new BmpPaletteSampleValue (index) ;
+			retval = (SampleValue*) new BmpPaletteSampleValue (idx_pal) ;
 		break ; }
 
 		case 24: {
-			retval = (SampleValue*) new BmpRGBSampleValue (bitmap[row][column + 2], bitmap[row][column + 1], bitmap[row][column]) ;
+			retval = (SampleValue*) new BmpRGBSampleValue (BitmapData[index + 2], BitmapData[index + 1], BitmapData[index]) ;
 		break ; }
 	}
 	return retval ;
 }
 
-void BmpFile::calcRCB (SamplePos pos, unsigned long *row, unsigned long *column, unsigned short *firstbit) const
+void BmpFile::calcIndex (SamplePos pos, unsigned long* index, unsigned short* firstbit) const
 {
-	unsigned long width = getWidth(), height = getHeight(), bitcount = getBitCount() ;
+	unsigned long width = getWidth(), bitcount = getBitCount() ;
 
-	*row = pos / width ;
-	myassert (*row < height) ;
-
-	pos = pos % width ;	// now searching for pos in a single row
-	if (bitcount >= 8) {
-		unsigned short bytespersample = bitcount / 8 ;
-		
-		*column = pos * bytespersample ;
-		*firstbit = 0 ;
-
-		myassert (*column < (width * bytespersample)) ;
+	unsigned long bytesperline_nonpadded = 0 ;
+	if (width * bitcount % 8 == 0) {
+		bytesperline_nonpadded = (width * bitcount) / 8 ;
 	}
 	else {
-		unsigned short samplesperbyte = 8 / bitcount ;
-
-		*column = pos / samplesperbyte ;
-		// to account for the order pixels are stored in one byte:
-		*firstbit = (samplesperbyte - (pos % samplesperbyte) - 1) * bitcount ;
-
-		myassert (*firstbit < 8) ;
-
-		unsigned long bytesperline = 0 ;
-		if ((width % samplesperbyte) == 0) {
-			bytesperline = width / samplesperbyte ;
-		}
-		else {
-			bytesperline = (width / samplesperbyte) + 1 ;
-		}
-		myassert (*column < bytesperline) ;
+		bytesperline_nonpadded = (width * bitcount) / 8 + 1 ;
 	}
+
+	unsigned long row = pos / width ;
+	pos = pos % width ;
+
+	unsigned long column = 0 ;
+	switch (bitcount) {
+		case 1: case 4: case 8:
+		{
+			unsigned short samplesperbyte = 8 / bitcount ;
+
+			column = pos / samplesperbyte ;
+
+			// to account for the order pixels are stored in one byte:
+			*firstbit = (samplesperbyte - (pos % samplesperbyte) - 1) * bitcount ;
+
+			myassert (*firstbit < 8) ;
+		}
+		break ;
+
+		case 24:
+			column = pos * 3 ;
+			*firstbit = 0 ;
+		break ;
+		
+		default:
+			myassert(false) ;
+		break ;
+	}
+
+	*index = bytesperline_nonpadded * row + column ;
 }
 
 unsigned short BmpFile::getBitCount() const
@@ -298,7 +291,13 @@ void BmpFile::bmpwin_readheaders ()
 	bmih.biPlanes = getBinIO()->read16_le () ;
 	myassert (bmih.biPlanes == 1) ;
 	bmih.biBitCount = getBinIO()->read16_le () ;
-	if ((bmih.biBitCount != 1) && (bmih.biBitCount != 4) && (bmih.biBitCount != 8) && (bmih.biBitCount != 24)) {
+	if ((bmih.biBitCount == 1) || (bmih.biBitCount == 4) || (bmih.biBitCount == 8)) {
+		setSamplesPerEBit (SamplesPerEBit_Palette) ;
+	}
+	else if (bmih.biBitCount == 24) {
+		setSamplesPerEBit (SamplesPerEBit_RGB) ;
+	}
+	else {
 		if (getBinIO()->is_std()) {
 			throw NotImplementedError (_("the bmp data from standard input has a format that is not supported (biBitCount: %d)."), bmih.biBitCount) ;
 		}
@@ -375,10 +374,20 @@ void BmpFile::bmpos2_readheaders ()
 	bmch.bcPlanes = getBinIO()->read16_le () ;
 	myassert (bmch.bcPlanes == 1) ;
 	bmch.bcBitCount = getBinIO()->read16_le () ;
-	myassert ((bmch.bcBitCount == 1) ||
-			(bmch.bcBitCount == 4) ||
-			(bmch.bcBitCount == 8) || 
-			(bmch.bcBitCount == 24)) ;
+	if ((bmch.bcBitCount == 1) || (bmch.bcBitCount == 4) || (bmch.bcBitCount == 8)) {
+		setSamplesPerEBit (SamplesPerEBit_Palette) ;
+	}
+	else if (bmch.bcBitCount == 24) {
+		setSamplesPerEBit (SamplesPerEBit_RGB) ;
+	}
+	else {
+		if (getBinIO()->is_std()) {
+			throw NotImplementedError (_("the bmp data from standard input has a format that is not supported (bcBitCount: %d)."), bmch.bcBitCount) ;
+		}
+		else {
+			throw NotImplementedError (_("the bmp file \"%s\" has a format that is not supported (bcBitCount: %d)."), getBinIO()->getName().c_str(), bmch.bcBitCount) ;
+		}
+	}
 
 	if (bmch.bcBitCount != 24) {
 		/* a color table exists */
@@ -498,9 +507,9 @@ void BmpFile::bmpos2_writeheaders ()
 }
 
 /* returns the number of bytes used to store the pixel data of one scan line */
-long BmpFile::calcLinelength ()
+unsigned long BmpFile::calcLinelength ()
 {
-	long retval = 0 ;
+	unsigned long retval = 0 ;
 
 	switch (getSubformat()) {
 		case WIN: {
@@ -534,8 +543,8 @@ long BmpFile::calcLinelength ()
 void BmpFile::readdata ()
 {
 	try {
-		long linelength = calcLinelength () ;
-		long height = getHeight () ;
+		unsigned long linelength = calcLinelength () ;
+		unsigned long height = getHeight () ;
 
 		int paddinglength = 0 ;
 		if (linelength % 4 == 0) {
@@ -545,10 +554,10 @@ void BmpFile::readdata ()
 			paddinglength = 4 - (linelength % 4) ;
 		}
 
-		bitmap = std::vector<std::vector<unsigned char> > (height) ;
-		for (long line = height - 1 ; line >= 0 ; line--) {
+		BitmapData.resize (height * linelength) ;
+		for (unsigned long line = 0 ; line < height ; line++) {
 			for (long posinline = 0 ; posinline < linelength ; posinline++) {
-				bitmap[line].push_back (getBinIO()->read8()) ;
+				BitmapData[line * linelength + posinline] = getBinIO()->read8() ;
 			}
 
 			for (int i = 0 ; i < paddinglength ; i++) {
@@ -559,6 +568,7 @@ void BmpFile::readdata ()
 			}
 		}
 
+		atend.clear() ;
 		while (!getBinIO()->eof()) {
 			atend.push_back (getBinIO()->read8()) ;
 		}
@@ -587,8 +597,8 @@ void BmpFile::readdata ()
 void BmpFile::writedata ()
 {
 	try {
-		long linelength = calcLinelength () ;
-		long height = getHeight () ;
+		unsigned long linelength = calcLinelength () ;
+		unsigned long height = getHeight () ;
 
 		unsigned int paddinglength = 0 ;
 		if (linelength % 4 == 0) {
@@ -598,12 +608,12 @@ void BmpFile::writedata ()
 			paddinglength = 4 - (linelength % 4) ;
 		}
 
-		for (long line = height - 1 ; line >= 0 ; line--) {
-			myassert (bitmap[line].size() == (unsigned long) linelength) ;
+		for (unsigned long line = 0 ; line < height ; line++) {
 			for (long posinline = 0 ; posinline < linelength ; posinline++) {
-				getBinIO()->write8 (bitmap[line][posinline]) ;
+				getBinIO()->write8 (BitmapData[line * linelength + posinline]) ;
 			}
 
+			// write padding bytes
 			for (unsigned int i = 0 ; i < paddinglength ; i++) {
 				getBinIO()->write8 (0) ;
 			}

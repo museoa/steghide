@@ -32,14 +32,25 @@ class CvrStgFileTest : public UnitTest {
 	CvrStgFileTest (std::string n, TestSuite* s) : UnitTest(n,s) {} ;
 
 	protected:
-	bool genericTestReadWrite (const std::string& rfn) const ;
+	/**
+	 * read the file rfn and write it again, return true iff write op created what was read by read op
+	 * \param rfn the file name of the file to read
+	 * \param new_wfn wether to write the data to another file or to rfn (a backup copy is done)
+	 **/
+	bool genericTestReadWrite (const std::string& rfn, bool new_wfn = true) const ;
 	bool genericTestReadEmbedExtract (const std::string& fn, const BitString& emb) const ;
+
+	/**
+	 * read fn and extract the first emb.getLength() bits, return true iff these equal emb
+	 **/
+	bool genericTestReadExtractCompare (const std::string& fn, const BitString& emb) const ;
 	bool genericTestReadEmbedWriteReadExtract (const std::string& cvrfn, const BitString& emb) const ;
 	bool genericTestPosition (const CvrStgFile* f, const SamplePos pos, SampleValue* sv_r) const ;
 
 	private:
 	bool areEqual (const std::string& fn1, const std::string& fn2) const ;
 	void removeFile (const std::string& fn) const ;
+	void copyFile (const std::string& src, const std::string& dest) const ;
 } ;
 
 #endif // ndef SH_CVRSTGFILETEST_H

@@ -48,9 +48,6 @@ class DummyFile : public CvrStgFile {
 
 	SampleValue* getSampleValue (const SamplePos pos) const ;
 
-	unsigned short getSamplesPerEBit (void) const
-		{ return 2 ; } ;
-
 	std::vector<std::vector<bool> >* getSampleValueAdjacencyMatrix() const
 		{ return SampleValueAdjacencyMatrix ; } ;
 
@@ -74,6 +71,8 @@ class DummyFile : public CvrStgFile {
 	static void createGraph (std::vector<std::list<UWORD16> >& adjlist, BitString** bs, CvrStgFile** f, Selector** s) ;
 
 	private:
+	static const unsigned short SamplesPerEBit = 2 ;
+
 	std::vector<UWORD16> Samples ;
 	std::vector<std::vector<bool> >* SampleValueAdjacencyMatrix ;
 } ;

@@ -33,6 +33,8 @@
 JpegFile::JpegFile (BinaryIO* io)
 	: CvrStgFile()
 {
+	setSamplesPerEBit (SamplesPerEBit) ;
+	setRadius (Radius) ;
 	read (io) ;
 }
 
@@ -63,9 +65,27 @@ void JpegFile::read (BinaryIO* io)
    */
 	
 	// resize LinDctCoeffs to size that is enough to contain all dct coeffs
+	unsigned int* height_in_blocks = new unsigned int[DeCInfo.num_components] ;
+	unsigned int* width_in_blocks = new unsigned int[DeCInfo.num_components] ;
+
 	unsigned long totalnumcoeffs = 0 ;
 	for (unsigned short icomp = 0 ; icomp < DeCInfo.num_components ; icomp++) {
-		totalnumcoeffs += CoeffPerBlock * (DeCInfo.comp_info[icomp].height_in_blocks * DeCInfo.comp_info[icomp].width_in_blocks) ;
+		if (DeCInfo.image_height % 8 == 0) {
+			height_in_blocks[icomp] = (DeCInfo.image_height / 8) * DeCInfo.comp_info[icomp].v_samp_factor ;
+		}
+		else {
+			// FIXME - include +1 padding into multiplication ??
+			height_in_blocks[icomp] = 1 + (DeCInfo.image_height / 8) * DeCInfo.comp_info[icomp].v_samp_factor ;
+		}
+		if (DeCInfo.image_width % 8 == 0) {
+			width_in_blocks[icomp] = (DeCInfo.image_width / 8) * DeCInfo.comp_info[icomp].h_samp_factor ;
+		}
+		else {
+			// FIXME - include +1 padding into multiplication ??
+			width_in_blocks[icomp] = 1 + (DeCInfo.image_width / 8) * DeCInfo.comp_info[icomp].h_samp_factor ;
+		}
+		// FIXME - height,width should be equal to (private) DeCInfo.comp_info[icomp].height_in_blocks resp. width_in_blocks
+		totalnumcoeffs += CoeffPerBlock * (height_in_blocks[icomp] * width_in_blocks[icomp]) ;
 	}
 	LinDctCoeffs.resize (totalnumcoeffs) ;
 
@@ -75,7 +95,7 @@ void JpegFile::read (BinaryIO* io)
 	JBLOCK block ;
 	for (unsigned short icomp = 0 ; icomp < DeCInfo.num_components ; icomp++) {
 		unsigned int currow = 0 ;
-		while (currow < DeCInfo.comp_info[icomp].height_in_blocks) {
+		while (currow < height_in_blocks[icomp]) {
 #if 0
 			unsigned int naccess = DeCInfo.comp_info[icomp].v_samp_factor ;
 			if (DeCInfo.comp_info[icomp].height_in_blocks - currow < naccess) {
@@ -86,7 +106,7 @@ void JpegFile::read (BinaryIO* io)
 			JBLOCKARRAY array = (*(DeCInfo.mem->access_virt_barray))
 				((j_common_ptr) &DeCInfo, DctCoeffs[icomp], currow, naccess, FALSE) ;
 			for (unsigned int irow = 0 ; irow < naccess ; irow++) {
-				for (unsigned int iblock = 0 ; iblock < DeCInfo.comp_info[icomp].width_in_blocks ; iblock++) {
+				for (unsigned int iblock = 0 ; iblock < width_in_blocks[icomp] ; iblock++) {
 					for (unsigned int icoeff = 0 ; icoeff < CoeffPerBlock ; icoeff++) {
 						LinDctCoeffs[linindex] = array[irow][iblock][icoeff] ;
 
@@ -101,6 +121,9 @@ void JpegFile::read (BinaryIO* io)
 			currow += naccess ;
 		}
 	}
+
+	delete[] height_in_blocks ;
+	delete[] width_in_blocks ;
 }
 
 void JpegFile::write ()
@@ -120,10 +143,29 @@ void JpegFile::write ()
 	jpeg_write_coefficients (&CInfo, DctCoeffs) ;
 
 	// copy current values to virtual array
+	unsigned int* height_in_blocks = new unsigned int[CInfo.num_components] ;
+	unsigned int* width_in_blocks = new unsigned int[CInfo.num_components] ;
+
 	UWORD32 linindex = 0 ;
 	for (unsigned short icomp = 0 ; icomp < CInfo.num_components ; icomp++) {
+		if (CInfo.image_height % 8 == 0) {
+			height_in_blocks[icomp] = (CInfo.image_height / 8) * CInfo.comp_info[icomp].v_samp_factor ;
+		}
+		else {
+			// FIXME - include +1 padding into multiplication ??
+			height_in_blocks[icomp] = 1 + (CInfo.image_height / 8) * CInfo.comp_info[icomp].v_samp_factor ;
+		}
+		if (CInfo.image_width % 8 == 0) {
+			width_in_blocks[icomp] = (CInfo.image_width / 8) * CInfo.comp_info[icomp].h_samp_factor ;
+		}
+		else {
+			// FIXME - include +1 padding into multiplication ??
+			width_in_blocks[icomp] = 1 + (CInfo.image_width / 8) * CInfo.comp_info[icomp].h_samp_factor ;
+		}
+		// FIXME - height,width should be equal to (private) DeCInfo.comp_info[icomp].height_in_blocks resp. width_in_blocks
+
 		unsigned int currow = 0 ;
-		while (currow < CInfo.comp_info[icomp].height_in_blocks) {
+		while (currow < height_in_blocks[icomp]) {
 #if 0
 			unsigned int naccess = CInfo.comp_info[icomp].v_samp_factor ;
 			if (CInfo.comp_info[icomp].height_in_blocks - currow < naccess) {
@@ -134,13 +176,8 @@ void JpegFile::write ()
 			JBLOCKARRAY array = (*(CInfo.mem->access_virt_barray))
 				((j_common_ptr) &CInfo, DctCoeffs[icomp], currow, naccess, TRUE) ;
 			for (unsigned int irow = 0 ; irow < naccess ; irow++) {
-				for (unsigned int iblock = 0 ; iblock < CInfo.comp_info[icomp].width_in_blocks ; iblock++) {
+				for (unsigned int iblock = 0 ; iblock < width_in_blocks[icomp] ; iblock++) {
 					for (unsigned int icoeff = 0 ; icoeff < CoeffPerBlock ; icoeff++) {
-#if 0
-						if (array[irow][iblock][icoeff] != LinDctCoeffs[linindex]) {
-							std::cerr << "found not equal at " << linindex << std::endl ;
-						}
-#endif
 						array[irow][iblock][icoeff] = LinDctCoeffs[linindex] ;
 						linindex++ ;
 					}
@@ -149,6 +186,9 @@ void JpegFile::write ()
 			currow += naccess ;
 		}
 	}
+
+	delete[] height_in_blocks ;
+	delete[] width_in_blocks ;
 
 	// write and deallocate everything (writing is possible only once)
 	jpeg_finish_compress (&CInfo) ;

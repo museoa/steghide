@@ -30,6 +30,9 @@ class BinaryIO ;
 /**
  * \class AudioData
  * \brief interface definition for AudioData objects.
+ *
+ * This class is necessary to provide one common base class for all types
+ * of audio data, i.e. all different instances of AudioDataImpl.
  **/
 class AudioData : public CvrStgObject {
 	public:

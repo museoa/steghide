@@ -46,19 +46,18 @@ enum AUDIOSAMPLETYPE {
  **/
 template<AUDIOSAMPLETYPE Type, class ValueType>
 class AudioSampleValue : public SampleValue {
-    public:
-    AudioSampleValue (ValueType v) ;
+	public:
+	AudioSampleValue (ValueType v) ;
 
-    ValueType getValue (void) const { return Value ; } ;
+	ValueType getValue (void) const { return Value ; } ;
 
 	SampleValue* getNearestOppositeSampleValue (void) const ;
-    UWORD32 calcDistance (const SampleValue* s) const ;
+	UWORD32 calcDistance (const SampleValue* s) const ;
 
-    private:
-    ValueType Value ;
+	private:
+	ValueType Value ;
 	static const ValueType MinValue ;
 	static const ValueType MaxValue ;
-    static const UWORD32 DefaultRadius ;
 } ;
 
 template<AUDIOSAMPLETYPE Type, class ValueType>
@@ -67,7 +66,6 @@ AudioSampleValue<Type,ValueType>::AudioSampleValue (ValueType v)
 {
 	Key = (UWORD32) (v - MinValue) ;
 	SBit = (BIT) (Key % 2) ;
-	setRadius (DefaultRadius) ;
 }
 
 template<AUDIOSAMPLETYPE Type, class ValueType>
@@ -78,12 +76,12 @@ UWORD32 AudioSampleValue<Type,ValueType>::calcDistance (const SampleValue* s) co
 	But calcDistance is called very often, a dynamic_cast costs a lot of time and
 	it does not make sense to pass anything but a correct AudioSampleValue as s anyway. */
 
-    if (sample->Value > Value) {
-        return sample->Value - Value ;
-    }
-    else {
-        return Value - sample->Value ;
-    }
+	if (sample->Value > Value) {
+		return sample->Value - Value ;
+	}
+	else {
+		return Value - sample->Value ;
+	}
 }
 
 template<AUDIOSAMPLETYPE Type, class ValueType>

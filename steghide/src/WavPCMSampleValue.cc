@@ -63,7 +63,6 @@ WavPCMSampleValue::WavPCMSampleValue (int v)
 
 	SBit = (BIT) (Value & 1) ;
 	Key = (unsigned long) Value ;
-	setRadius (DefaultRadius) ;
 }
 
 SampleValue *WavPCMSampleValue::getNearestOppositeSampleValue () const

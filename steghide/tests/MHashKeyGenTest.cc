@@ -18,14 +18,13 @@
  *
  */
 
-#ifndef SH_AUSAMPLEVALUES_H
-#define SH_AUSAMPLEVALUES_H
+#include <iostream>
 
-#include "AudioSampleValue.h"
+#include "MHashKeyGenTest.h"
 
-typedef AudioSampleValue<AuMuLaw,BYTE> AuMuLawSampleValue ;
-typedef AudioSampleValue<AuPCM8,SBYTE> AuPCM8SampleValue ;
-typedef AudioSampleValue<AuPCM16,SWORD16> AuPCM16SampleValue ;
-typedef AudioSampleValue<AuPCM32,SWORD32> AuPCM32SampleValue ;
+#include "BitString.h"
 
-#endif // ndef SH_AUSAMPLEVALUES_H
+MHashKeyGenTest::MHashKeyGenTest (TestSuite* s)
+	: UnitTest ("MHashKeyGen", s)
+{
+}

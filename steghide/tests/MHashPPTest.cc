@@ -25,7 +25,7 @@
 #include "BitString.h"
 
 MHashPPTest::MHashPPTest (TestSuite* s)
-	: UnitTest ("MHash", s)
+	: UnitTest ("MHashPP", s)
 {
 	ADDTESTCATEGORY (MHashPPTest, testMD5) ;
 	ADDTESTCATEGORY (MHashPPTest, testCRC32) ;
@@ -57,8 +57,7 @@ void MHashPPTest::testMD5 (void)
 
 void MHashPPTest::testCRC32 (void)
 {
-	// FIXME - these test vectors don't work
-#if 0
+	/* FIXME - these test vectors don't work
 	std::vector<unsigned char> data (40) ;
 
 	for (unsigned int i = 0 ; i < 40 ; i++) {
@@ -66,7 +65,7 @@ void MHashPPTest::testCRC32 (void)
 	}
 	BYTE shouldbe1[] = { 0x86, 0x4d, 0x7f, 0x99 } ;
 	addTestResult (genericTestMHashPP (MHASH_CRC32, BitString(data), shouldbe1)) ;
-#endif
+	*/
 
 	// the test vector used by libmhash
 	BYTE shouldbe2[] = { 0x7F, 0xBE, 0xB0, 0x2E } ;

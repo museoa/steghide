@@ -52,7 +52,10 @@ class Globals {
 	Globals (CvrStgFile* f = NULL, Graph* g = NULL)
 		: TheCvrStgFile(f), TheGraph(g) {} ;
 
+	/// the cover-/stego- file that is operated on (set in CvrStgFile::CvrStgFile)
 	CvrStgFile* TheCvrStgFile ;
+
+	/// the graph that is built upon the cover-/stego-file (set in Graph::Graph)
 	Graph* TheGraph ;
 
 	void operator= (const Globals& g)
