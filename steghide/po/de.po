@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
-"POT-Creation-Date: 2003-09-25 15:43+0200\n"
+"POT-Creation-Date: 2003-09-25 15:53+0200\n"
 "PO-Revision-Date: 2003-09-24 22:52+0200\n"
 "Last-Translator: Stefan Hetzl <shetzl@chello.at>\n"
 "Language-Team: Deutsch\n"
@@ -1110,4 +1110,3 @@ msgstr "Sie können nicht mehr als ein debug-Kommando auf einmal verwenden."
 #, c-format
 msgid "you have to suppy a filename to the \"%s\" command."
 msgstr "Das Kommando \"%s\" benötigt einen Dateinamen."
-
