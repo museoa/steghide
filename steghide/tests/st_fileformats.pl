@@ -26,6 +26,8 @@ sub runBmp {
 
 sub runJpeg {
 	startSubCategory("jpeg") ;
+	addTestResult(runEmbExtCmp(DATADIR . "std.jpg", DATADIR . RND100, EMPTY));
+	addTestResult(runEmbExtCmp(DATADIR . "prog.jpg", DATADIR . RND100, EMPTY));
 	endSubCategory() ;
 }
 

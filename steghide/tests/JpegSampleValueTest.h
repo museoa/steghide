@@ -23,6 +23,7 @@
 
 #include "SampleValueTest.h"
 
+class JpegSampleValue ;
 class CvrStgFile ;
 
 class JpegSampleValueTest : public SampleValueTest {
@@ -37,6 +38,7 @@ class JpegSampleValueTest : public SampleValueTest {
 
 	private:
 	CvrStgFile *f1 ;
+	JpegSampleValue *sv_m1, *sv_0, *sv_1 ;
 	Globals gl1 ;
 } ;
 

@@ -135,6 +135,20 @@ void GraphTest::setup ()
 	gl13 = Globs ;
 
 	Globs.reset() ;
+	f14 = CvrStgFile::readFile (std::string(DATADIR) + "std.jpg") ;
+	bs14 = new BitString (std::string ("standard jpeg produced by the GIMP")) ;
+	s14 = new Selector (bs14->getLength() * f14->getSamplesPerVertex(), std::string ("passphrase")) ;
+	g14 = new Graph (f14, *bs14, *s14) ;
+	gl14 = Globs ;
+
+	Globs.reset() ;
+	f15 = CvrStgFile::readFile (std::string(DATADIR) + "prog.jpg") ;
+	bs15 = new BitString (std::string ("progressive encoding")) ;
+	s15 = new Selector (bs15->getLength() * f15->getSamplesPerVertex(), std::string ("passphrase")) ;
+	g15 = new Graph (f15, *bs15, *s15) ;
+	gl15 = Globs ;
+
+	Globs.reset() ;
 	f_f = CvrStgFile::readFile (std::string(DATADIR) + "win3x24_std.bmp") ;
 	bs_f = new BitString (std::string ("this time embedding in RGB pixel data")) ;
 	s_f = new Selector (bs_f->getLength() * f_f->getSamplesPerVertex(), std::string ("a true-color passphrase ;-)")) ;
@@ -159,6 +173,8 @@ void GraphTest::cleanup ()
 	delete f11 ; delete bs11 ; delete s11 ; delete g11 ;
 	delete f12 ; delete bs12 ; delete s12 ; delete g12 ;
 	delete f13 ; delete bs13 ; delete s13 ; delete g13 ;
+	delete f14 ; delete bs14 ; delete s14 ; delete g14 ;
+	delete f15 ; delete bs15 ; delete s15 ; delete g15 ;
 	// *_f are not delted because inconsistencies might crash the destructors
 }
 
@@ -177,6 +193,8 @@ void GraphTest::testVertices()
 	Globs = gl11 ; addTestResult (g11->check_Vertices(ArgVerbose)) ;
 	Globs = gl12 ; addTestResult (g12->check_Vertices(ArgVerbose)) ;
 	Globs = gl13 ; addTestResult (g13->check_Vertices(ArgVerbose)) ;
+	Globs = gl14 ; addTestResult (g14->check_Vertices(ArgVerbose)) ;
+	Globs = gl15 ; addTestResult (g15->check_Vertices(ArgVerbose)) ;
 
 	// violate label consistency
 	Globs = gl_f ;
@@ -201,6 +219,8 @@ void GraphTest::testSampleValues()
 	Globs = gl11 ; addTestResult (g11->check_SampleValues(ArgVerbose)) ;
 	Globs = gl12 ; addTestResult (g12->check_SampleValues(ArgVerbose)) ;
 	Globs = gl13 ; addTestResult (g13->check_SampleValues(ArgVerbose)) ;
+	Globs = gl14 ; addTestResult (g14->check_SampleValues(ArgVerbose)) ;
+	Globs = gl15 ; addTestResult (g15->check_SampleValues(ArgVerbose)) ;
 
 	// violate uniqueness
 	Globs = gl_f ;
@@ -223,6 +243,8 @@ void GraphTest::testSampleOccurences()
 	Globs = gl11 ; addTestResult (g11->check_SampleOccurences(ArgVerbose)) ;
 	Globs = gl12 ; addTestResult (g12->check_SampleOccurences(ArgVerbose)) ;
 	Globs = gl13 ; addTestResult (g13->check_SampleOccurences(ArgVerbose)) ;
+	Globs = gl14 ; addTestResult (g14->check_SampleOccurences(ArgVerbose)) ;
+	Globs = gl15 ; addTestResult (g15->check_SampleOccurences(ArgVerbose)) ;
 }
 
 void GraphTest::testSampleValueAdjacencyLists ()
@@ -240,4 +262,6 @@ void GraphTest::testSampleValueAdjacencyLists ()
 	Globs = gl11 ; addTestResult (g11->check_SVALists(ArgVerbose)) ;
 	Globs = gl12 ; addTestResult (g12->check_SVALists(ArgVerbose)) ;
 	Globs = gl13 ; addTestResult (g13->check_SVALists(ArgVerbose)) ;
+	Globs = gl14 ; addTestResult (g14->check_SVALists(ArgVerbose)) ;
+	Globs = gl15 ; addTestResult (g15->check_SVALists(ArgVerbose)) ;
 }

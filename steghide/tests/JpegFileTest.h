@@ -32,18 +32,15 @@ class JpegFileTest : public CvrStgFileTest {
 	void setup (void) ;
 	void cleanup (void) ;
 
-	void testReadWrite (void) ;
 	void testReadEmbedExtract (void) ;
 	void testReadEmbedWriteReadExtract (void) ;
 	void testPosition (void) ;
 	void testReadExtractCompare (void) ;
 
 	private:
-#if 0
-	BitString *bs1, *bs2, *bs3 ;
-	CvrStgFile *f1, *f2, *f3 ;
-	Globals gl1, gl2, gl3 ;
-#endif
+	BitString *bs1, *bs2 ;
+	CvrStgFile *f1, *f2 ;
+	Globals gl1, gl2 ;
 } ;
 
 #endif // ndef SH_JPEGFILETEST_H
