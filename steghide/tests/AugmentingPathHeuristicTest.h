@@ -21,9 +21,10 @@
 #ifndef SH_AUGMENTINGPATHHEURISTICTEST_H
 #define SH_AUGMENTINGPATHHEURISTICTEST_H
 
+class AugmentingPathHeuristic ;
 class BitString ;
 class CvrStgFile ;
-#include "AugmentingPathHeuristic.h"
+class Matching ;
 class Selector ;
 
 #include "UnitTest.h"

@@ -18,6 +18,11 @@
  *
  */
 
+#define private public
+#define protected public
+#include "AugmentingPathHeuristic.h"
+#undef private
+#undef protected
 #include "BitString.h"
 #include "Edge.h"
 #include "Graph.h"
@@ -142,22 +147,16 @@ void AugmentingPathHeuristicTest::testAlgorithm ()
 		Edge* e34 = CREATEEDGE (g3, 3, 4) ;
 		Edge* e57 = CREATEEDGE (g3, 5, 7) ;
 		aph3->run() ;
-		addTestResult ( m2->getCardinality() == 4 &&
-						m2->includesEdge(e01) &&
-						m2->includesEdge(e26) &&
-						m2->includesEdge(e34) &&
-						m2->includesEdge(e57)) ;
+		addTestResult ( m3->getCardinality() == 4 &&
+						m3->includesEdge(e01) &&
+						m3->includesEdge(e26) &&
+						m3->includesEdge(e34) &&
+						m3->includesEdge(e57)) ;
 	}
 
 	{
 		Globs = gl4 ;
-		Edge* e12 = CREATEEDGE (g4, 1, 2) ;
-		Edge* e34 = CREATEEDGE (g4, 3, 4) ;
-		Edge* e56 = CREATEEDGE (g4, 5, 6) ;
-		aph4->run() ;
-		addTestResult ( m2->getCardinality() == 3 &&
-						m2->includesEdge(e12) &&
-						m2->includesEdge(e34) &&
-						m2->includesEdge(e56)) ;
+		std::vector<Edge*>* path = aph4->searchAugmentingPath (g4->getVertex(0)) ;
+		addTestResult (path->empty()) ;
 	}
 }

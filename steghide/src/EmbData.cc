@@ -129,7 +129,6 @@ void EmbData::addBits (BitString bits)
 
 				plain.truncate (pos, plain.getLength()) ;
 				pos = 0 ;
-				plain.print() ;
 				plain.uncompress (NUncompressedBits) ;
 			}
 
