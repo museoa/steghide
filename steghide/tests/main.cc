@@ -25,7 +25,7 @@
 #include "BmpOS2FileTest.h"
 #include "BmpWinFileTest.h"
 #include "GraphTest.h"
-#include "MHashTest.h"
+#include "MHashPPTest.h"
 #include "PermutationTest.h"
 #include "SampleValueOppositeNeighbourhoodTest.h"
 #include "WavFileTest.h"
@@ -47,7 +47,7 @@ int main (int argc, char *argv[])
 	BitStringTest bst (&ts) ;
 	ts.addUnitTest (&bst) ;
 
-	MHashTest mht (&ts) ;
+	MHashPPTest mht (&ts) ;
 	ts.addUnitTest (&mht) ;
 
 	PermutationTest pt (&ts) ;

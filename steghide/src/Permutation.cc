@@ -19,7 +19,7 @@
  */
 
 #include "BitString.h"
-#include "MHash.h"
+#include "MHashPP.h"
 #include "Permutation.h"
 #include "common.h"
 
@@ -106,8 +106,8 @@ void Permutation::setWidth (UWORD32 w)
 
 void Permutation::setKey (std::string pp)
 {
-	MHash hash (MHASH_MD5) ;
-	hash << pp << MHash::endhash ;
+	MHashPP hash (MHASH_MD5) ;
+	hash << pp << MHashPP::endhash ;
 	BitString hashbits = hash.getHashBits() ;
 
 	myassert (hashbits.getLength() == 128) ;
@@ -120,7 +120,7 @@ void Permutation::setKey (std::string pp)
 UWORD32 Permutation::keyhash (UWORD32 key, UWORD32 arg)
 {
 	// hash the concatenation of key and arg with md5
-	MHash hash (MHASH_MD5) ;
+	MHashPP hash (MHASH_MD5) ;
 	for (unsigned short i = 0 ; i < 32 ; i += 8) {
 		hash << (BYTE) ((key >> i) & 0xFF) ;
 	}
@@ -128,7 +128,7 @@ UWORD32 Permutation::keyhash (UWORD32 key, UWORD32 arg)
 	for (unsigned short i = 0 ; i < (NBits / 2) ; i += 8) {
 		hash << (BYTE) ((arg >> i) & 0xFF) ;
 	}
-	hash << MHash::endhash ;
+	hash << MHashPP::endhash ;
 	std::vector<BYTE> hashbytes = hash.getHashBytes() ;
 	myassert (hashbytes.size() == 16) ;
 

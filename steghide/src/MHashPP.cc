@@ -26,20 +26,20 @@
 #include "BitString.h"
 #include "common.h"
 #include "error.h"
-#include "MHash.h"
+#include "MHashPP.h"
 
-MHash::MHash ()
+MHashPP::MHashPP ()
 {
 	hashing = false ;
 	HashBytesValid = false ;
 }
 
-MHash::MHash (hashid id)
+MHashPP::MHashPP (hashid id)
 {
 	init (id) ;
 }
 
-void MHash::init (hashid id)
+void MHashPP::init (hashid id)
 {
 	if ((HashD = mhash_init (id)) == MHASH_FAILED) {
 		throw SteghideError (_("could not initialize libmhash %s algorithm."), getAlgorithmName(id).c_str()) ;
@@ -48,7 +48,7 @@ void MHash::init (hashid id)
 	HashBytesValid = false ;
 }
 
-const std::vector<BYTE>& MHash::end ()
+const std::vector<BYTE>& MHashPP::end ()
 {
 	myassert (hashing) ;
 
@@ -66,20 +66,20 @@ const std::vector<BYTE>& MHash::end ()
 	return HashBytes ;
 }
 
-unsigned int MHash::getHashSize (void)
+unsigned int MHashPP::getHashSize (void)
 {
 	myassert (hashing) ;
 	return ((unsigned int) mhash_get_block_size (mhash_get_mhash_algo (HashD))) ;
 }
 
-MHash& MHash::operator<< (std::string v)
+MHashPP& MHashPP::operator<< (std::string v)
 {
 	myassert (hashing) ;
 	mhash (HashD, v.data(), v.size()) ;
 	return *this ;
 }
 
-MHash& MHash::operator<< (BitString v)
+MHashPP& MHashPP::operator<< (BitString v)
 {
 	myassert (hashing) ;
 	myassert (v.getLength() % 8 == 0) ;
@@ -92,14 +92,14 @@ MHash& MHash::operator<< (BitString v)
 	return *this ;
 }
 
-MHash& MHash::operator<< (BYTE v)
+MHashPP& MHashPP::operator<< (BYTE v)
 {
 	myassert (hashing) ;
 	mhash (HashD, &v, 1) ;
 	return *this ;
 }
 
-MHash& MHash::operator<< (MHash::Command c)
+MHashPP& MHashPP::operator<< (MHashPP::Command c)
 {
 	switch (c) {
 		case endhash:
@@ -113,13 +113,13 @@ MHash& MHash::operator<< (MHash::Command c)
 	return *this ;
 }
 
-std::string MHash::getAlgorithmName ()
+std::string MHashPP::getAlgorithmName ()
 {
 	myassert (hashing) ;
 	return getAlgorithmName (mhash_get_mhash_algo (HashD)) ;
 }
 
-std::string MHash::getAlgorithmName (hashid id)
+std::string MHashPP::getAlgorithmName (hashid id)
 {
 	char *name = mhash_get_hash_name (id) ;
 	std::string retval ;
@@ -133,13 +133,13 @@ std::string MHash::getAlgorithmName (hashid id)
 	return retval ;
 }
 
-BitString MHash::getHashBits ()
+BitString MHashPP::getHashBits ()
 {
 	myassert (HashBytesValid) ;
 	return BitString (HashBytes) ;
 }
 
-const std::vector<BYTE>& MHash::getHashBytes()
+const std::vector<BYTE>& MHashPP::getHashBytes()
 {
 	myassert (HashBytesValid) ;
 	return HashBytes ;

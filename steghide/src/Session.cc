@@ -25,7 +25,7 @@
 #include "Embedder.h"
 #include "Extractor.h"
 #include "CvrStgFile.h"
-#include "MCrypt.h"
+#include "MCryptPP.h"
 #include "Session.h"
 #include "common.h"
 
@@ -105,8 +105,8 @@ std::string Session::stripDir (std::string s) const
 void Session::printEncInfo ()
 {
 #ifdef USE_LIBMCRYPT
-	std::vector<std::string> algos = MCrypt::getListAlgorithms() ;
-	std::vector<std::string> modes = MCrypt::getListModes() ;
+	std::vector<std::string> algos = MCryptPP::getListAlgorithms() ;
+	std::vector<std::string> modes = MCryptPP::getListModes() ;
 
 	printf (_("encryption algorithms:\n"
 		"<algorithm>: <supported modes>...\n")) ;
@@ -116,7 +116,7 @@ void Session::printEncInfo ()
 			std::cout << *a << ":" ;
 			for (std::vector<std::string>::iterator m = modes.begin() ; m != modes.end() ; m++) {
 				if (EncryptionMode::isValidStringRep (*m)) {
-					if (MCrypt::AlgoSupportsMode (*a, *m)) {
+					if (MCryptPP::AlgoSupportsMode (*a, *m)) {
 						std::cout << " " << *m ;
 					}
 				}

@@ -62,13 +62,11 @@ std::vector<Edge*>* AugmentingPathHeuristic::searchAugmentingPath (Vertex *v0)
 	printDebug (3, "searching augmenting path for vertex with label %lu", v0->getLabel()) ;
 
 	TimeCounter++ ;
-	bool addMatchedEdge = true ;
 	std::vector<Edge*>* path = new std::vector<Edge*>() ;
 	Edge *e = NULL ;
 
 	while ((e = getNextEdge(v0)) != NULL) {
 		pushOnPath (path, e) ;
-		myassert (path->size() == 1) ;
 		Vertex *w = e->getOtherVertex (v0) ;
 
 		if (TheMatching->isExposed(w)) {
@@ -79,13 +77,11 @@ std::vector<Edge*>* AugmentingPathHeuristic::searchAugmentingPath (Vertex *v0)
 		e = TheMatching->getMatchingEdge (w) ; // w is matched (because not exposed)
 		Vertex *w_next = e->getOtherVertex (w) ;
 		pushOnPath (path, e) ;
-		myassert (path->size() % 2 == 0) ;
 
 		while (!path->empty()) {
 			Edge* e_next = getNextEdge (w_next) ;
 			if (e_next != NULL) { // found next edge
 				pushOnPath (path, e_next) ;
-				myassert (path->size() % 2 == 1) ;
 				w = e_next->getOtherVertex (w_next) ;
 
 				if (TheMatching->isExposed(w)) {
@@ -96,7 +92,6 @@ std::vector<Edge*>* AugmentingPathHeuristic::searchAugmentingPath (Vertex *v0)
 				e = TheMatching->getMatchingEdge (w) ; // w is matched (because not exposed)
 				w_next = e->getOtherVertex (w) ;
 				pushOnPath (path, e) ;
-				myassert (path->size() % 2 == 0) ;
 			}
 			else { // could not find next edge
 				printDebug (4, "could not find next edge from vertex with label %lu", w_next->getLabel()) ;

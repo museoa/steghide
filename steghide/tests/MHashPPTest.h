@@ -18,24 +18,25 @@
  *
  */
 
-#ifndef SH_MHASHTEST_H
-#define SH_MHASHTEST_H
+#ifndef SH_MHASHPPTEST_H
+#define SH_MHASHPPTEST_H
 
 #define private public
 #define protected public
-#include "MHash.h"
+#include "MHashPP.h"
 #undef private
 #undef protected
 
+#include "BitString.h"
 #include "UnitTest.h"
 #include "TestSuite.h"
 
-class MHashTest : public UnitTest {
+class MHashPPTest : public UnitTest {
 	public:
-	MHashTest (TestSuite* s) ;
+	MHashPPTest (TestSuite* s) ;
 
 	/**
-	 * test output of MHash class with MD5 algorithm against the test vectors given in RFC 1321
+	 * test output of MHashPP class with MD5 algorithm against the test vectors given in RFC 1321
 	 **/
 	void testMD5 (void) ;
 
@@ -43,13 +44,13 @@ class MHashTest : public UnitTest {
 
 	private:
 	/**
-	 * compute a hash using MHash and compare it to a reference value
-	 * \param a the hash algorithm that should be used by MHash
+	 * compute a hash using MHashPP and compare it to a reference value
+	 * \param a the hash algorithm that should be used by MHashPP
 	 * \param data the input of the hash algorithm
 	 * \param shouldbe the reference value of the result of the hash algorithm
-	 * \return true iff shouldbe is the result of the hash algorithm a applied to data by MHash
+	 * \return true iff shouldbe is the result of the hash algorithm a applied to data by MHashPP
 	 **/
-	bool genericTestMHash (hashid a, BitString data, BYTE* shouldbe) ;
+	bool genericTestMHashPP (hashid a, BitString data, BYTE* shouldbe) ;
 } ;
 
-#endif // ndef SH_MHASHTEST_H
+#endif // ndef SH_MHASHPPTEST_H

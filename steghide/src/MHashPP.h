@@ -27,12 +27,12 @@
 
 class BitString ;
 
-class MHash {
+class MHashPP {
 	public:
 	enum Command { endhash } ;
 
-	MHash (void) ;
-	MHash (hashid a) ;
+	MHashPP (void) ;
+	MHashPP (hashid a) ;
 
 	void init (hashid a) ;
 
@@ -42,25 +42,25 @@ class MHash {
 	 * feed the std::string v to the hashing algorithm
 	 * \param v the std::string to be feeded to the hashing algorithm (without '\0' at the end)
 	 **/
-	MHash& operator<< (std::string v) ;
+	MHashPP& operator<< (std::string v) ;
 
 	/**
 	 * feed the BitString v to the hashing algorithm
 	 * \param v the BitString to be feeded to the hashing algorithm (v.getLength() % 8 == 0 must hold)
 	 **/
-	MHash& operator<< (BitString v) ;
+	MHashPP& operator<< (BitString v) ;
 
 	/**
 	 * feed the byte v to the hashing algorithm
 	 * \param v the byte to be feeded to the hashing algorithm
 	 **/
-	MHash& operator<< (BYTE v) ;
+	MHashPP& operator<< (BYTE v) ;
 
 	/**
 	 * interpret the command c
-	 * \param c a command (member of MHash::Command)
+	 * \param c a command (member of MHashPP::Command)
 	 **/
-	MHash& operator<< (Command c) ;
+	MHashPP& operator<< (Command c) ;
 
 	/**
 	 * get the hash bits

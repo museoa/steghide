@@ -3,13 +3,13 @@ AM_CPPFLAGS = -I../src
 check_PROGRAMS = unittests
 noinst_HEADERS = \
 BitStringTest.h BmpWinFileTest.h BmpOS2FileTest.h CvrStgFileTest.h \
-MHashTest.h PermutationTest.h Test.h TestCategory.h \
+MHashPPTest.h PermutationTest.h Test.h TestCategory.h \
 GraphTest.h TestCategoryCaller.h TestSuite.h UnitTest.h utcommon.h \
 SampleValueOppositeNeighbourhoodTest.h SampleValueTest.h WavFileTest.h \
 BmpRGBSampleValueTest.h
 unittests_SOURCES = \
 BitStringTest.cc BmpWinFileTest.cc BmpOS2FileTest.cc CvrStgFileTest.cc \
-GraphTest.cc MHashTest.cc PermutationTest.cc TestSuite.cc UnitTest.cc \
+GraphTest.cc MHashPPTest.cc PermutationTest.cc TestSuite.cc UnitTest.cc \
 SampleValueTest.cc BmpRGBSampleValueTest.cc WavFileTest.cc \
 SampleValueOppositeNeighbourhoodTest.cc main.cc
 unittests_LDADD = \
@@ -21,7 +21,7 @@ unittests_LDADD = \
 ../src/EdgeIterator.o ../src/EmbData.o ../src/Embedder.o \
 ../src/EncryptionAlgorithm.o ../src/EncryptionMode.o ../src/Extractor.o \
 ../src/Graph.o ../src/JpegFile.o ../src/JpegSampleValue.o \
-../src/MCrypt.o ../src/MHash.o ../src/MHashKeyGen.o ../src/Matching.o \
+../src/MCryptPP.o ../src/MHashPP.o ../src/MHashKeyGen.o ../src/Matching.o \
 ../src/Permutation.o ../src/RGBTriple.o ../src/RandomSource.o \
 ../src/SampleValue.o ../src/SampleValueOppositeNeighbourhood.o \
 ../src/Session.o ../src/SteghideError.o ../src/Terminal.o ../src/Vertex.o \

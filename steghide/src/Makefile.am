@@ -14,8 +14,8 @@ EmbData.h Embedder.h \
 EncryptionAlgorithm.h EncryptionMode.h \
 Extractor.h Graph.h \
 GraphAccess.h JpegFile.h \
-JpegSampleValue.h MCrypt.h \
-MHash.h MHashKeyGen.h \
+JpegSampleValue.h MCryptPP.h \
+MHashPP.h MHashKeyGen.h \
 Matching.h Permutation.h \
 RGBTriple.h RandomSource.h \
 SampleOccurence.h SampleValue.h \
@@ -46,7 +46,7 @@ Embedder.cc EncryptionAlgorithm.cc \
 EncryptionMode.cc Extractor.cc \
 Graph.cc \
 JpegFile.cc JpegSampleValue.cc \
-MCrypt.cc MHash.cc \
+MCryptPP.cc MHashPP.cc \
 MHashKeyGen.cc Matching.cc \
 Permutation.cc RGBTriple.cc \
 RandomSource.cc SampleValue.cc \
