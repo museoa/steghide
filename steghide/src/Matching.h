@@ -51,10 +51,22 @@ class Matching : private GraphAccess {
 		{ return VertexInformation[v->getLabel()].isMatched() ; } ;
 
 	/**
+	 * returns true iff the vertex with the label vlbl is matched in this matching.
+	 **/
+	bool isMatched (VertexLabel vlbl) const
+		{ return VertexInformation[vlbl].isMatched() ; } ;
+
+	/**
 	 * returns true iff the vertex v is exposed (not matched) in this matching.
 	 **/
 	bool isExposed (Vertex *v) const
 		{ return VertexInformation[v->getLabel()].isExposed() ; } ;
+
+	/**
+	 * returns true iff the vertex with the label vlbl is exposed (not matched) in this matching.
+	 **/
+	bool isExposed (VertexLabel vlbl) const
+		{ return VertexInformation[vlbl].isExposed() ; } ;
 
 	/**
 	 * get the edge that is in the matching and adjacent to v
@@ -95,6 +107,8 @@ class Matching : private GraphAccess {
 	 *
 	 * For e=(v1,v2): neither v1 nor v2 are allowed to be adjacent
 	 * to an edge that is already in the matching, 
+	 *
+	 * The Edge e is not copied so it must not be deleted while still in this Matching.
 	 **/
 	Matching &addEdge (Edge *e) ;
 
@@ -163,7 +177,9 @@ class Matching : private GraphAccess {
 
 		private:
 		bool Matched ;
+		/// an iterator into the list of matched edges (only valid if this vertex is matched)
 		std::list<Edge*>::iterator MatchedIterator ;
+		/// an iterator into the list of exposed vertices (only valid if this vertex is exposed)
 		std::list<Vertex*>::iterator ExposedIterator ;
 	} ;
 

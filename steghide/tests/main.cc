@@ -25,6 +25,7 @@
 #include "BmpOS2FileTest.h"
 #include "BmpWinFileTest.h"
 #include "GraphTest.h"
+#include "MatchingTest.h"
 #include "MHashPPTest.h"
 #include "SampleValueOppositeNeighbourhoodTest.h"
 #include "SelectorTest.h"
@@ -77,6 +78,9 @@ int main (int argc, char *argv[])
 
 	GraphTest gt (&ts) ;
 	ts.addUnitTest (&gt) ;
+
+	MatchingTest mt (&ts) ;
+	ts.addUnitTest (&mt) ;
 
 	ts.run() ;
 

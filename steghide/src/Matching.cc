@@ -79,6 +79,30 @@ Matching& Matching::addEdge (Edge *e)
 	return *this ;
 }
 
+Matching& Matching::removeEdge (Edge* e)
+{
+	Vertex* v1 = e->getVertex1() ;
+	Vertex* v2 = e->getVertex2() ;
+	VertexLabel vlbl1 = v1->getLabel() ;
+	VertexLabel vlbl2 = v2->getLabel() ;
+
+	// assert: matching contains e
+	myassert (VertexInformation[vlbl1].isMatched()) ;
+	myassert (VertexInformation[vlbl2].isMatched()) ;
+
+	// delete e from MatchingEdges
+	std::list<Edge*>::iterator eit1 = VertexInformation[vlbl1].getMatchedIterator() ;
+	std::list<Edge*>::iterator eit2 = VertexInformation[vlbl2].getMatchedIterator() ;
+	myassert (eit1 == eit2) ;
+	MatchingEdges.erase (eit1) ;
+
+	// add v1,v2 to ExposedVertices
+	std::list<Vertex*>::iterator expvit1 = ExposedVertices.insert (ExposedVertices.end(), v1) ;
+	VertexInformation[vlbl1].setExposed (expvit1) ;
+	std::list<Vertex*>::iterator expvit2 = ExposedVertices.insert (ExposedVertices.end(), v2) ;
+	VertexInformation[vlbl2].setExposed (expvit2) ;
+}
+
 Matching& Matching::augment (const std::vector<Edge*> &path)
 {
 	myassert (path.size() % 2 == 1) ;

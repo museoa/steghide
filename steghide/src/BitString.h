@@ -46,7 +46,7 @@ class BitString {
 	BitString (void) ;
 	
 	/**
-	 * construct a BitString containing l zeros
+	 * construct a BitString containing l bits with value zero
 	 **/
 	BitString (const unsigned long l) ;
 	
