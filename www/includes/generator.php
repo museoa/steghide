@@ -147,8 +147,9 @@ function psection ($sec, $sectioninfo, $activesecid, $isfirst, $spc)
 			}
 
 			$numsubsections = count($sectioninfo["subsections"]);
-			echo "$spc<tr><td>\n"; // is part of hierachy table
-			echo "$spc<table cellspacing=\"0\" cellpadding=\"0\" width=\"100%\">\n"; // create table to contain section and open subsections
+			echo "$spc<tr> <!-- active section: $sec -->\n";
+			echo "$spc <td>\n"; // is part of hierachy table
+			echo "$spc  <table cellspacing=\"0\" cellpadding=\"0\" width=\"100%\" height=\"100%\">\n"; // create table to contain section and open subsections
 
 			// section name
 			if ($sec == $activesecid) {
@@ -160,7 +161,7 @@ function psection ($sec, $sectioninfo, $activesecid, $isfirst, $spc)
 				}
 
 				pseclinktr (TRUE, $csssection, "seclinkactive", "images/arrow_sec_down.png", "arrow down",
-					"", $sectioninfo["linkname"], $spc);
+					"", $sectioninfo["linkname"], $spc . "  ");
 			}
 			else {
 				if ($isfirst) {

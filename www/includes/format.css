@@ -68,12 +68,14 @@ td.secopenfirst {
 td.ssecleft {
   background: #B5A58C;
   border-left: solid 1px black;
+  height: 30px;
 }
 
 td.ssecrightfirstclosed {
   background: #DED6C6;
   border: solid 1px black;
   padding: 3px;
+  height: 30px;
 }
 td.ssecrightdefaultclosed {
   background: #DED6C6;
@@ -81,12 +83,14 @@ td.ssecrightdefaultclosed {
   border-right: solid 1px black;
   border-bottom: solid 1px black;
   padding: 3px;
+  height: 30px;
 }
 td.ssecrightlastclosed {
   background: #DED6C6;
   border-left: solid 1px black;
   border-right: solid 1px black;
   padding: 3px;
+  height: 30px;
 }
 td.ssecrightonlyclosed {
   background: #DED6C6;
@@ -94,12 +98,14 @@ td.ssecrightonlyclosed {
   border-left: solid 1px black;
   border-right: solid 1px black;
   padding: 3px;
+  height: 30px;
 }
 
 td.ssecrightfirstclosed:hover {
   background: #DDDDDD;
   border: solid 1px black;
   padding: 3px;
+  height: 30px;
 }
 td.ssecrightdefaultclosed:hover {
   background: #DDDDDD;
@@ -107,12 +113,14 @@ td.ssecrightdefaultclosed:hover {
   border-right: solid 1px black;
   border-bottom: solid 1px black;
   padding: 3px;
+  height: 30px;
 }
 td.ssecrightlastclosed:hover {
   background: #DDDDDD;
   border-left: solid 1px black;
   border-right: solid 1px black;
   padding: 3px;
+  height: 30px;
 }
 td.ssecrightonlyclosed:hover {
   background: #DDDDDD;
@@ -120,12 +128,14 @@ td.ssecrightonlyclosed:hover {
   border-left: solid 1px black;
   border-right: solid 1px black;
   padding: 3px;
+  height: 30px;
 }
 
 td.ssecrightfirstopen {
   background: #DED6C6;
   border: solid 1px black;
   padding: 3px;
+  height: 30px;
 }
 td.ssecrightdefaultopen {
   background: #DED6C6;
@@ -133,12 +143,14 @@ td.ssecrightdefaultopen {
   border-right: solid 1px black;
   border-bottom: solid 1px black;
   padding: 3px;
+  height: 30px;
 }
 td.ssecrightlastopen {
   background: #DED6C6;
   border-left: solid 1px black;
   border-right: solid 1px black;
   padding: 3px;
+  height: 30px;
 }
 td.ssecrightonlyopen {
   background: #DED6C6;
@@ -146,6 +158,7 @@ td.ssecrightonlyopen {
   border-left: solid 1px black;
   border-right: solid 1px black;
   padding: 3px;
+  height: 30px;
 }
 
 /* a section link */
