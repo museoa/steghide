@@ -136,7 +136,7 @@ int CvrStgFile::guessff (BinaryIO *io)
 	return retval ;
 }
 
-CvrStgFile *CvrStgFile::readFile (string fn)
+CvrStgFile *CvrStgFile::readFile (std::string fn)
 {
 	BinaryIO *BinIO = new BinaryIO (fn, BinaryIO::READ) ;
 

@@ -181,7 +181,7 @@ class JpegHuffmanTable : public JpegSegment {
 	unsigned char tabledestid ;
 	std::vector<unsigned int> bits ;
 	std::vector<unsigned int> huffval ;
-	/// contains a list of code lengths
+	/// contains a std::list of code lengths
 	std::vector<unsigned int> huffsize ;
 	/// contains the codes corresponding to the code lengths in huffsize 
 	std::vector<unsigned int> huffcode ;
@@ -189,7 +189,7 @@ class JpegHuffmanTable : public JpegSegment {
 	std::vector<int> mincode ;
 	/// maxcode[l] contains the largest code value for the length l
 	std::vector<int> maxcode ;
-	/// valptr[l] contains the index to the start of the list of values in huffval which are decoded by code word of length l
+	/// valptr[l] contains the index to the start of the std::list of values in huffval which are decoded by code word of length l
 	std::vector<int> valptr ;
 	/// ehuffsize[v] contains the size of the huffman code representing the value v
 	std::vector<unsigned int> ehuffsize ;

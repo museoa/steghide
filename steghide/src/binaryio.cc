@@ -94,7 +94,7 @@ unsigned long BinaryIO::getPos (void) const
 	return ftell (stream) ;
 }
 
-bool BinaryIO::Fileexists (string fn)
+bool BinaryIO::Fileexists (std::string fn)
 {
 	bool retval = false ;
 	FILE *fd = fopen (fn.c_str(), "r") ;
@@ -105,7 +105,7 @@ bool BinaryIO::Fileexists (string fn)
 	return retval ;
 }
 
-void BinaryIO::checkForce (string fn)
+void BinaryIO::checkForce (std::string fn)
 {
 	if (!Args.Force.getValue()) {
 		if (Fileexists (fn)) {

@@ -25,7 +25,10 @@
 Edge::Edge (Vertex *v1, unsigned short idx1, Vertex *v2, unsigned short idx2)
 	: Vertex1(v1), Index1(idx1), Vertex2(v2), Index2(idx2)
 {
-	assert (v1->getLabel() != v2->getLabel()) ;
+	if (v1->getLabel() == v2->getLabel()) {
+		v1->print() ;
+		assert (v1->getLabel() != v2->getLabel()) ;
+	}
 	SampleValue *sv1 = v1->getSampleValue(idx1) ;
 	SampleValue *sv2 = v2->getSampleValue(idx2) ;
 	Weight = sv1->calcDistance(sv2) ;
@@ -35,6 +38,22 @@ Edge::Edge (Vertex *v1, unsigned short idx1, Vertex *v2, unsigned short idx2, fl
 	: Vertex1(v1), Index1(idx1), Vertex2(v2), Index2(idx2), Weight(w)
 {
 	assert (v1->getLabel() != v2->getLabel()) ;
+}
+
+void Edge::swap (void)
+{
+	Vertex* v_tmp = Vertex1 ;
+	Vertex1 = Vertex2 ;
+	Vertex2 = v_tmp ;
+
+	unsigned short idx_tmp = Index1 ;
+	Index1 = Index2 ;
+	Index2 = idx_tmp ;
+}
+
+bool Edge::contains (const Vertex* v) const
+{
+	return (v == getVertex1() || v == getVertex2()) ;
 }
 
 Vertex *Edge::getOtherVertex (const Vertex *v) const
@@ -96,3 +115,19 @@ SampleValue *Edge::getReplacingSampleValue (Vertex *v) const
 	}
 	return retval ;
 }
+
+#ifdef DEBUG
+void Edge::print (unsigned short spc) const
+{
+	char* space = new char[spc + 1] ;
+	for (unsigned short i = 0 ; i < spc ; i++) {
+		space[i] = ' ' ;
+	}
+	space[spc] = '\0' ;
+
+	std::cerr << space << "Edge:" << std::endl ;
+	Vertex1->print (spc + 1) ;
+	Vertex2->print (spc + 1) ;
+	std::cerr << space << " Weight: " << getWeight() << std::endl ;
+}
+#endif

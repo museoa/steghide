@@ -32,7 +32,7 @@
 class Permutation {
 	public:
 	Permutation (void) ;
-	Permutation (unsigned long w, string pp) ;
+	Permutation (unsigned long w, std::string pp) ;
 
 	/**
 	 * increment the argument of the permutation
@@ -50,7 +50,7 @@ class Permutation {
 	void reset (void) ;
 
 	void setWidth (unsigned long w) ;
-	void setKey (string pp) ;
+	void setKey (std::string pp) ;
 
 	private:
 	unsigned long CurArg ;

@@ -68,9 +68,9 @@ BYTE RandomSource::getByte ()
 	return retval ;
 }
 
-vector<unsigned char> RandomSource::getBytes (unsigned int n)
+std::vector<unsigned char> RandomSource::getBytes (unsigned int n)
 {
-	vector<unsigned char> retval ;
+	std::vector<unsigned char> retval ;
 	for (unsigned int i = 0 ; i < n ; i++) {
 		retval.push_back (getByte()) ;
 	}

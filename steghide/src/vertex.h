@@ -21,9 +21,6 @@
 #ifndef SH_VERTEX_H
 #define SH_VERTEX_H
 
-#include <map>
-#include <vector>
-
 #include "common.h"
 #include "edge.h"
 #include "graph.h"
@@ -106,7 +103,7 @@ class Vertex : private GraphAccess {
 	void setLabel (VertexLabel l)
 		{ Label = l ; } ;
 
-	void setSampleOccurenceIt (unsigned short i, list<SampleOccurence>::iterator it)
+	void setSampleOccurenceIt (unsigned short i, std::list<SampleOccurence>::iterator it)
 		{ SampleOccurenceIts[i] = it ; }
 
 #ifdef DEBUG
@@ -124,11 +121,11 @@ class Vertex : private GraphAccess {
 	/// the content of this vertex
 	VertexContent* Content ;
 
-	/// points to an entry in the list of vertex occurences in the vertex content
-	list<Vertex*>::iterator VertexOccurenceIt ;
+	/// points to an entry in the std::list of vertex occurences in the vertex content
+	std::list<Vertex*>::iterator VertexOccurenceIt ;
 
-	/// point to entries in lists of sample occurences in the graph
-	list<SampleOccurence>::iterator* SampleOccurenceIts ;
+	/// point to entries in std::lists of sample occurences in the graph
+	std::list<SampleOccurence>::iterator* SampleOccurenceIts ;
 
 	/// the shortest edge of this vertex (as calculated by updateShortestEdge)
 	Edge *ShortestEdge ;

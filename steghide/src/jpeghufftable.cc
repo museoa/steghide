@@ -305,9 +305,9 @@ void JpegHuffmanTable::calcTables ()
 #ifdef DEBUG
 void JpegHuffmanTable::print ()
 {
-	cerr << "huffman table:" << endl ;
-	cerr << "tableclass: " << (unsigned int) tableclass << endl ;
-	cerr << "tabledestid: " << (unsigned int) tabledestid << endl ;
+	std::cerr << "huffman table:" << std::endl ;
+	std::cerr << "tableclass: " << (unsigned int) tableclass << std::endl ;
+	std::cerr << "tabledestid: " << (unsigned int) tabledestid << std::endl ;
 	printBits() ;
 	printHuffVal() ;
 	printHuffSize() ;
@@ -321,73 +321,73 @@ void JpegHuffmanTable::print ()
 
 void JpegHuffmanTable::printBits ()
 {
-	cerr << "bits:" << endl ;
+	std::cerr << "bits:" << std::endl ;
 	for (unsigned int i = 0 ; i < bits.size() ; i++) {
-		cerr << i << " " << bits[i] << endl ;
+		std::cerr << i << " " << bits[i] << std::endl ;
 	}
 }
 
 void JpegHuffmanTable::printHuffVal ()
 {
-	cerr << "huffval:" << endl ;
+	std::cerr << "huffval:" << std::endl ;
 	for (unsigned int i = 0 ; i < huffval.size() ; i++) {
-		cerr << i << " " << huffval[i] << endl ;
+		std::cerr << i << " " << huffval[i] << std::endl ;
 	}
 }
 
 void JpegHuffmanTable::printHuffSize ()
 {
-	cerr << "huffsize:" << endl ;
+	std::cerr << "huffsize:" << std::endl ;
 	for (unsigned int i = 0 ; i < huffsize.size() ; i++) {
-		cerr << i << " " << huffsize[i] << endl ;
+		std::cerr << i << " " << huffsize[i] << std::endl ;
 	}
 }
 
 void JpegHuffmanTable::printHuffCode ()
 {
-	cerr << "huffcode:" << endl ;
+	std::cerr << "huffcode:" << std::endl ;
 	for (unsigned int i = 0 ; i < huffcode.size() ; i++) {
-		cerr << i << " " << huffcode[i] << endl ;
+		std::cerr << i << " " << huffcode[i] << std::endl ;
 	}
 }
 
 void JpegHuffmanTable::printMinCode ()
 {
-	cerr << "mincode:" << endl ;
+	std::cerr << "mincode:" << std::endl ;
 	for (unsigned int i = 0 ; i < mincode.size() ; i++) {
-		cerr << i << " " << mincode[i] << endl ;
+		std::cerr << i << " " << mincode[i] << std::endl ;
 	}
 }
 
 void JpegHuffmanTable::printMaxCode ()
 {
-	cerr << "maxcode:" << endl ;
+	std::cerr << "maxcode:" << std::endl ;
 	for (unsigned int i = 0 ; i < maxcode.size() ; i++) {
-		cerr << i << " " << maxcode[i] << endl ;
+		std::cerr << i << " " << maxcode[i] << std::endl ;
 	}
 }
 
 void JpegHuffmanTable::printValPtr ()
 {
-	cerr << "valptr:" << endl ;
+	std::cerr << "valptr:" << std::endl ;
 	for (unsigned int i = 0 ; i < valptr.size() ; i++) {
-		cerr << i << " " << valptr[i] << endl ;
+		std::cerr << i << " " << valptr[i] << std::endl ;
 	}
 }
 
 void JpegHuffmanTable::printEHuffSize ()
 {
-	cerr << "ehuffsize:" << endl ;
+	std::cerr << "ehuffsize:" << std::endl ;
 	for (unsigned int i = 0 ; i < ehuffsize.size() ; i++) {
-		cerr << i << " " << ehuffsize[i] << endl ;
+		std::cerr << i << " " << ehuffsize[i] << std::endl ;
 	}
 }
 
 void JpegHuffmanTable::printEHuffCode ()
 {
-	cerr << "ehuffcode:" << endl ;
+	std::cerr << "ehuffcode:" << std::endl ;
 	for (unsigned int i = 0 ; i < ehuffcode.size() ; i++) {
-		cerr << i << " " << ehuffcode[i] << endl ;
+		std::cerr << i << " " << ehuffcode[i] << std::endl ;
 	}
 }
 #endif

@@ -28,7 +28,7 @@
 #include "svalueoppneigh.h"
 #include "wavsamplevalue.h"
 
-SampleValueOppositeNeighbourhood::SampleValueOppositeNeighbourhood (Graph *g, const vector<SampleValue*> &svalues)
+SampleValueOppositeNeighbourhood::SampleValueOppositeNeighbourhood (Graph *g, const std::vector<SampleValue*> &svalues)
 	: GraphAccess(g)
 {
 	if (svalues.size() > 0) { // graph contains at least one vertex
@@ -44,14 +44,14 @@ SampleValueOppositeNeighbourhood::SampleValueOppositeNeighbourhood (Graph *g, co
 	}
 }
 
-void SampleValueOppositeNeighbourhood::calcOppNeighs_generic (const vector<SampleValue*> &svalues)
+void SampleValueOppositeNeighbourhood::calcOppNeighs_generic (const std::vector<SampleValue*> &svalues)
 {
 	// partition samples into those with getBit() == 0 and with getBit() == 1
 	unsigned long numsvs = svalues.size() ;
 
-	vector<SampleValue*> svalues0 ;
+	std::vector<SampleValue*> svalues0 ;
 	svalues0.reserve (numsvs / 2) ;
-	vector<SampleValue*> svalues1 ;
+	std::vector<SampleValue*> svalues1 ;
 	svalues1.reserve (numsvs / 2) ;
 
 	for (unsigned long l = 0 ; l < numsvs ; l++) {
@@ -64,7 +64,7 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_generic (const vector<Sampl
 	}
 
 	// fill OppNeighs data structure
-	OppNeighs = vector<vector<SampleValue*> > (numsvs) ;
+	OppNeighs = std::vector<std::vector<SampleValue*> > (numsvs) ;
 	for (unsigned long i0 = 0 ; i0 < svalues0.size() ; i0++) {
 		for (unsigned long i1 = 0 ; i1 < svalues1.size() ; i1++) {
 			if (svalues0[i0]->isNeighbour(svalues1[i1])) {
@@ -80,11 +80,11 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_generic (const vector<Sampl
 	}
 }
 
-void SampleValueOppositeNeighbourhood::calcOppNeighs_rgb (const vector<SampleValue*> &svalues)
+void SampleValueOppositeNeighbourhood::calcOppNeighs_rgb (const std::vector<SampleValue*> &svalues)
 {
 	unsigned long numsvs = svalues.size() ;
 
-	vector<BmpRGBSampleValue*> svalues0 ;
+	std::vector<BmpRGBSampleValue*> svalues0 ;
 	svalues0.reserve (numsvs / 2) ;
 
 	unsigned short numcubes = 0 ;
@@ -97,7 +97,7 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_rgb (const vector<SampleVal
 	}
 
 	// init cubes
-	vector<BmpRGBSampleValue*> cubes[numcubes][numcubes][numcubes] ;
+	std::vector<BmpRGBSampleValue*> cubes[numcubes][numcubes][numcubes] ;
 
 	// fill svalues0 and cubes
 	for (unsigned long l = 0 ; l < numsvs ; l++) {
@@ -115,7 +115,7 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_rgb (const vector<SampleVal
 	}
 
 	// fill OppNeighs data structure
-	OppNeighs = vector<vector<SampleValue*> > (numsvs) ;
+	OppNeighs = std::vector<std::vector<SampleValue*> > (numsvs) ;
 	unsigned long numsv0 = svalues0.size() ;
 
 	for (unsigned long i = 0 ; i < numsv0 ; i++) {
@@ -135,7 +135,7 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_rgb (const vector<SampleVal
 		for (short i_red = start_red ; i_red <= end_red ; i_red++) {
 			for (short i_green = start_green ; i_green <= end_green ; i_green++) {
 				for (short i_blue = start_blue ; i_blue <= end_blue ; i_blue++) {
-					const vector<BmpRGBSampleValue*> &thiscube = cubes[i_red][i_green][i_blue] ;
+					const std::vector<BmpRGBSampleValue*> &thiscube = cubes[i_red][i_green][i_blue] ;
 					for (unsigned int j = 0 ; j < thiscube.size() ; j++) {
 						if (svalues0[i]->isNeighbour (thiscube[j])) {
 							OppNeighs[thissv_label].push_back (thiscube[j]) ;
@@ -153,14 +153,14 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_rgb (const vector<SampleVal
 	}
 }
 
-void SampleValueOppositeNeighbourhood::calcOppNeighs_wav (const vector<SampleValue*> &svalues)
+void SampleValueOppositeNeighbourhood::calcOppNeighs_wav (const std::vector<SampleValue*> &svalues)
 {
 	// partition samples into those with getBit() == 0 and with getBit() == 1
 	unsigned long n = svalues.size() ;
 
-	vector<WavPCMSampleValue*> svalues0 ;
+	std::vector<WavPCMSampleValue*> svalues0 ;
 	svalues0.reserve (n / 2) ;
-	vector<WavPCMSampleValue*> svalues1 ;
+	std::vector<WavPCMSampleValue*> svalues1 ;
 	svalues1.reserve (n / 2) ;
 
 	for (unsigned long l = 0 ; l < n ; l++) {
@@ -178,9 +178,9 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_wav (const vector<SampleVal
 	sort (svalues0.begin(), svalues0.end(), smaller) ;
 	sort (svalues1.begin(), svalues1.end(), smaller) ;
 
-	// fill the OppNeighs vectors
+	// fill the OppNeighs std::vectors
 	int r_ub = roundup (svalues[0]->getRadius()) ;
-	OppNeighs = vector<vector<SampleValue*> > (n) ;
+	OppNeighs = std::vector<std::vector<SampleValue*> > (n) ;
 	unsigned long n0 = svalues0.size() ;
 	unsigned long n1 = svalues1.size() ;
 	unsigned long start1 = 0 ;
@@ -228,12 +228,12 @@ bool SampleValueOppositeNeighbourhood::check_soundness (void) const
 	bool err_nonopp = false ;
 	bool err_nonneigh = false ;
 
-	cerr << "checking SampleValueOppositeNeighbourhood: sample values are opposite neighbours" << endl ;
+	std::cerr << "checking SampleValueOppositeNeighbourhood: sample values are opposite neighbours" << std::endl ;
 	unsigned long numsvs = TheGraph->getNumSampleValues() ;
 	for (SampleValueLabel srclbl = 0 ; srclbl < numsvs ; srclbl++) {
 		SampleValue* srcsv = TheGraph->getSampleValue(srclbl) ;
-		const vector<SampleValue*> &oppneighs = OppNeighs[srclbl] ;
-		for (vector<SampleValue*>::const_iterator destsv = oppneighs.begin() ; destsv != oppneighs.end() ; destsv++) {
+		const std::vector<SampleValue*> &oppneighs = OppNeighs[srclbl] ;
+		for (std::vector<SampleValue*>::const_iterator destsv = oppneighs.begin() ; destsv != oppneighs.end() ; destsv++) {
 			if (srcsv->getBit() == (*destsv)->getBit()) {
 				err_nonopp = true ;
 			}
@@ -245,10 +245,10 @@ bool SampleValueOppositeNeighbourhood::check_soundness (void) const
 	}
 
 	if (err_nonopp) {
-		cerr << "FAILED: SampleOppositeNeighbourhood contains a non-opposite sample value" << endl ;
+		std::cerr << "FAILED: SampleOppositeNeighbourhood contains a non-opposite sample value" << std::endl ;
 	}
 	if (err_nonneigh) {
-		cerr << "FAILED: SampleValueOppositeNeighbourhood contains a non-neighbour value" << endl ;
+		std::cerr << "FAILED: SampleValueOppositeNeighbourhood contains a non-neighbour value" << std::endl ;
 	}
 
 	return !(err_nonopp || err_nonneigh) ;
@@ -258,7 +258,7 @@ bool SampleValueOppositeNeighbourhood::check_completeness (void) const
 {
 	bool err = false ;
 
-	cerr << "checking SampleValueOppositeNeighbourhood: all oppneighs are in this list" << endl ;
+	std::cerr << "checking SampleValueOppositeNeighbourhood: all oppneighs are in this std::list" << std::endl ;
 	unsigned long numsvs = TheGraph->getNumSampleValues() ;
 	for (unsigned long i = 0 ; i < numsvs ; i++) {
 		SampleValue *sv1 = TheGraph->getSampleValue(i) ;
@@ -269,9 +269,9 @@ bool SampleValueOppositeNeighbourhood::check_completeness (void) const
 				if (sv1->isNeighbour (sv2)) {
 					// ...and they are neighbours => there must be an entry in SampleOppositeNeighbourhood
 					assert (sv2->isNeighbour (sv1)) ;
-					const vector<SampleValue*> &oppneighs = OppNeighs[i] ;
+					const std::vector<SampleValue*> &oppneighs = OppNeighs[i] ;
 					bool found = false ;
-					for (vector<SampleValue*>::const_iterator k = oppneighs.begin() ; k != oppneighs.end() ; k++) {
+					for (std::vector<SampleValue*>::const_iterator k = oppneighs.begin() ; k != oppneighs.end() ; k++) {
 						if ((*k)->getLabel() == j) {
 							found = true ;
 						}
@@ -285,7 +285,7 @@ bool SampleValueOppositeNeighbourhood::check_completeness (void) const
 	}
 
 	if (err) {
-		cerr << "FAILED: SampleOppositeNeighbourhood does not contain all opposite neighbours" << endl ;
+		std::cerr << "FAILED: SampleOppositeNeighbourhood does not contain all opposite neighbours" << std::endl ;
 	}
 
 	return !err ;

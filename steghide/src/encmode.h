@@ -46,8 +46,8 @@ class EncryptionMode {
 	EncryptionMode (void) ;
 	EncryptionMode (IRep irep) ;
 	/**
-	 * construct a new EncryptionMode object from a string representation
-	 * \param srep a valid(!) string representation
+	 * construct a new EncryptionMode object from a std::string representation
+	 * \param srep a valid(!) std::string representation
 	 **/
 	EncryptionMode (std::string srep) ;
 

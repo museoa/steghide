@@ -103,7 +103,7 @@ void Message::printMessage ()
 {
 	if (Args.Verbosity.getValue() == NORMAL ||
 		Args.Verbosity.getValue() == VERBOSE) {
-		std::cerr << getMessage() << endl ;
+		std::cerr << getMessage() << std::endl ;
 	}
 }
 
@@ -122,7 +122,7 @@ VerboseMessage::VerboseMessage (const char *msgfmt, ...)
 void VerboseMessage::printMessage ()
 {
 	if (Args.Verbosity.getValue() == VERBOSE) {
-		std::cerr << getMessage() << endl ;
+		std::cerr << getMessage() << std::endl ;
 	}
 }
 
@@ -142,7 +142,7 @@ void Warning::printMessage ()
 {
 	if (Args.Verbosity.getValue() == NORMAL ||
 		Args.Verbosity.getValue() == VERBOSE) {
-		std::cerr << PROGNAME << _(": warning: ") << getMessage() << endl ;
+		std::cerr << PROGNAME << _(": warning: ") << getMessage() << std::endl ;
 	}
 }
 
@@ -210,7 +210,7 @@ bool Question::getAnswer ()
 	input[1] = '\0' ;
 	bool retval = (std::string (input) == yeschar) ;
 	term.reset() ;
-	std::cerr << endl ;
+	std::cerr << std::endl ;
 
 	return retval ;
 }

@@ -54,13 +54,13 @@ class WavFile : public CvrStgFile {
 	WavFormatChunk *FormatChunk ;
 
 	WavChunkHeader *datachhdr ;
-	/// this vector contains the wav data if BitsPerSample <= 8
-	vector<unsigned char> data_small ;
-	/// this vector contains the wav data if BitsPerSample >8
-	vector<int> data_large ;	// it is assumed that an int can hold 32 bits
+	/// this std::vector contains the wav data if BitsPerSample <= 8
+	std::vector<unsigned char> data_small ;
+	/// this std::vector contains the wav data if BitsPerSample >8
+	std::vector<int> data_large ;	// it is assumed that an int can hold 32 bits
 	
-	vector<WavChunkUnused*> UnusedBeforeData ;
-	vector<WavChunkUnused*> UnusedAfterData ;
+	std::vector<WavChunkUnused*> UnusedBeforeData ;
+	std::vector<WavChunkUnused*> UnusedAfterData ;
 
 	void readheaders (void) ;
 	void readdata (void) ;

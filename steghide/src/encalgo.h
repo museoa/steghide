@@ -58,8 +58,8 @@ class EncryptionAlgorithm {
 	EncryptionAlgorithm (void) ;
 	EncryptionAlgorithm (IRep irep) ;
 	/**
-	 * construct a new EncryptionAlgorithm object from a string representation
-	 * \param srep a valid(!) string representation
+	 * construct a new EncryptionAlgorithm object from a std::string representation
+	 * \param srep a valid(!) std::string representation
 	 **/
 	EncryptionAlgorithm (std::string srep) ;
 
@@ -69,8 +69,8 @@ class EncryptionAlgorithm {
 	IRep getIntegerRep (void) const ;
 
 	/**
-	 * check if srep is a valid string representation (w.r.t the Translations array)
-	 * \param srep a string that maybe represents an encryption algorithm fron the Translations table
+	 * check if srep is a valid std::string representation (w.r.t the Translations array)
+	 * \param srep a std::string that maybe represents an encryption algorithm fron the Translations table
 	 * \return true iff the Translations table contains srep
 	 **/
 	static bool isValidStringRep (std::string srep) ;
@@ -78,12 +78,12 @@ class EncryptionAlgorithm {
 	static bool isValidIntegerRep (unsigned int irep) ;
 
 	/**
-	 * translate an integer representation into the corresponding string representation
+	 * translate an integer representation into the corresponding std::string representation
 	 **/
 	static std::string translate (IRep irep) ;
 
 	/**
-	 * translate a valid string representation into the corresponding integer representation
+	 * translate a valid std::string representation into the corresponding integer representation
 	 **/
 	static IRep translate (std::string srep) ;
 

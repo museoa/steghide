@@ -38,7 +38,7 @@ class WavChunkUnused : public WavChunk {
 	void write (BinaryIO *io) ;
 
 	private:
-	vector<BYTE> Data ;
+	std::vector<BYTE> Data ;
 } ;
 
 #endif // ndef SH_WAVCHUNKUNUSED_H

@@ -99,7 +99,7 @@ float WavPCMSampleValue::calcDistance (const SampleValue *s) const
 {
 	const WavPCMSampleValue *sample = dynamic_cast<const WavPCMSampleValue*> (s) ;
 	assert (sample != NULL) ;
-	return (abs ((float) Value - (float) sample->getValue())) ;
+	return (fabs ((float) Value - (float) sample->getValue())) ;
 }
 
 int WavPCMSampleValue::getValue() const

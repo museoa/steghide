@@ -40,6 +40,9 @@
 
 // every class can have debugging output
 extern void printDebug (unsigned int level, const char *msgfmt, ...) ;
+#ifdef DEBUG
+#include <iostream>
+#endif
 
 // every class has access to the command line arguments
 #include "arguments.h"

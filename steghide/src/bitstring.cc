@@ -40,17 +40,17 @@ BitString::BitString (unsigned long l)
 		nbytes = (l / 8) + 1 ;
 	}
 
-	data = vector<unsigned char> (nbytes) ; // is initialized to zeros in vector's constructor
+	data = std::vector<unsigned char> (nbytes) ; // is initialized to zeros in std::vector's constructor
 	length = l ;
 }
 
-BitString::BitString (const vector<unsigned char> &d)
+BitString::BitString (const std::vector<unsigned char> &d)
 {
 	data = d ;
 	length = 8 * data.size() ;
 }
 
-BitString::BitString (const string &d)
+BitString::BitString (const std::string &d)
 {
 	length = 0 ;
 	for (unsigned int i = 0 ; i < d.size() ; i++) {
@@ -125,17 +125,17 @@ BitString& BitString::append (const BitString &v)
 	return *this ;
 }
 
-BitString& BitString::append (const vector<unsigned char> &v)
+BitString& BitString::append (const std::vector<unsigned char> &v)
 {
-	for (vector<unsigned char>::const_iterator i = v.begin() ; i != v.end() ; i++) {
+	for (std::vector<unsigned char>::const_iterator i = v.begin() ; i != v.end() ; i++) {
 		append (*i) ;
 	}
 	return *this ;
 }
 
-BitString& BitString::append (const string &v)
+BitString& BitString::append (const std::string &v)
 {
-	for (string::const_iterator i = v.begin() ; i != v.end() ; i++) {
+	for (std::string::const_iterator i = v.begin() ; i != v.end() ; i++) {
 		append ((unsigned char) *i) ;
 	}
 	return *this ;
@@ -167,10 +167,10 @@ unsigned long BitString::getValue (unsigned long s, unsigned int l) const
 	return retval ;
 }
 
-vector<unsigned char> BitString::getBytes() const
+std::vector<unsigned char> BitString::getBytes() const
 {
 	assert (length % 8 == 0) ;
-	return data ; // FIXME - ? vector as reference
+	return data ; // FIXME - ? std::vector as reference
 }
 
 BitString& BitString::pad (unsigned long mult, Bit v)

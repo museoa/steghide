@@ -27,8 +27,8 @@ ConstructionHeuristic::ConstructionHeuristic (Graph *g)
 	unsigned long nvertices = g->getNumVertices() ;
 
 	// fill the VerticesDeg1 and VerticesDegG priority queues
-	VerticesDeg1 = priority_queue<Vertex*, vector<Vertex*>, LongerShortestEdge> () ;
-	VerticesDegG = priority_queue<Vertex*, vector<Vertex*>, LongerShortestEdge> () ;
+	VerticesDeg1 = std::priority_queue<Vertex*, std::vector<Vertex*>, LongerShortestEdge> () ;
+	VerticesDegG = std::priority_queue<Vertex*, std::vector<Vertex*>, LongerShortestEdge> () ;
 
 	for (VertexLabel l = 0 ; l < nvertices ; l++) {	
 		Vertex *v = g->getVertex(l) ;
@@ -94,14 +94,14 @@ void ConstructionHeuristic::insertInMatching (Edge *e)
 void ConstructionHeuristic::checkNeighboursDeg1 (Vertex *v)
 {
 	for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
-		const vector<SampleValue*> oppneighs = TheGraph->getOppNeighs(v->getSampleValue(i)) ;
-		for (vector<SampleValue*>::const_iterator it = oppneighs.begin() ; it != oppneighs.end() ; it++) {
-			const list<VertexContent*> vcontents = TheGraph->getVertexContents(*it) ;
-			for (list<VertexContent*>::const_iterator jt = vcontents.begin() ; jt != vcontents.end() ; jt++) {
+		const std::vector<SampleValue*> oppneighs = TheGraph->getOppNeighs(v->getSampleValue(i)) ;
+		for (std::vector<SampleValue*>::const_iterator it = oppneighs.begin() ; it != oppneighs.end() ; it++) {
+			const std::list<VertexContent*> vcontents = TheGraph->getVertexContents(*it) ;
+			for (std::list<VertexContent*>::const_iterator jt = vcontents.begin() ; jt != vcontents.end() ; jt++) {
 				if ((*jt)->hasOccurences()) {
 					if ((*jt)->getDegree() == 1) {
-						list<Vertex*> occ = (*jt)->getOccurences() ;
-						for (list<Vertex*>::iterator kt = occ.begin() ; kt != occ.end() ; kt++) {
+						std::list<Vertex*> occ = (*jt)->getOccurences() ;
+						for (std::list<Vertex*>::iterator kt = occ.begin() ; kt != occ.end() ; kt++) {
 							(*kt)->updateShortestEdge() ;
 							VerticesDeg1.push (*kt) ;
 						}
@@ -117,7 +117,7 @@ Vertex* ConstructionHeuristic::findVertexDegG (unsigned int k)
 	Vertex *v = NULL ;
 	bool usethisvertex = false ;
 	// buffer for the top k-1 vertices in the priority queue
-	vector<Vertex*> topk ;
+	std::vector<Vertex*> topk ;
 
 	// get the vertex that is the k-nearest to top (with updated len of shortest edge) and has degree > 1
 	do {
@@ -167,7 +167,7 @@ Vertex* ConstructionHeuristic::findVertexDegG (unsigned int k)
 Vertex *ConstructionHeuristic::findVertexDeg1 (unsigned int k)
 {
 	Vertex *v = NULL ;
-	vector<Vertex*> topk ;
+	std::vector<Vertex*> topk ;
 	bool usethisvertex = false ;
 
 	// get the vertex that is the k-nearest to top and still has degree 1

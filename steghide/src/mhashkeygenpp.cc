@@ -50,7 +50,7 @@ MHashKeyGenpp::~MHashKeyGenpp ()
 	}
 }
 
-vector<unsigned char> MHashKeyGenpp::createKey (string password)
+std::vector<unsigned char> MHashKeyGenpp::createKey (std::string password)
 {
 	// FIXME - assert (ready) ;
 
@@ -63,7 +63,7 @@ vector<unsigned char> MHashKeyGenpp::createKey (string password)
 		throw SteghideError (_("could not generate key using libmhash.")) ;
 	}
 
-	vector<unsigned char> retval (KeySize) ;
+	std::vector<unsigned char> retval (KeySize) ;
 	for (unsigned int i = 0 ; i < KeySize ; i++) {
 		retval[i] = key[i] ;
 	}
@@ -89,7 +89,7 @@ void MHashKeyGenpp::setHashAlgorithm (hashid hashalgo)
 	AlgorithmData.hash_algorithm[0] = hashalgo ;
 }
 
-void MHashKeyGenpp::setHashAlgorithms (vector<hashid> hashalgos)
+void MHashKeyGenpp::setHashAlgorithms (std::vector<hashid> hashalgos)
 {
 	assert (hashalgos.size() <= 2) ;
 	for (unsigned int i = 0 ; i < hashalgos.size() ; i++) {
@@ -97,7 +97,7 @@ void MHashKeyGenpp::setHashAlgorithms (vector<hashid> hashalgos)
 	}
 }
 
-void MHashKeyGenpp::setSalt (vector<unsigned char> salt)
+void MHashKeyGenpp::setSalt (std::vector<unsigned char> salt)
 {
 	AlgorithmData.salt_size = salt.size() ;
 	if (AlgorithmData.salt != NULL) {

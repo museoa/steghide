@@ -72,7 +72,7 @@ std::string EncryptionAlgorithm::translate (EncryptionAlgorithm::IRep irep)
 	bool found = false ;
 	for (unsigned int i = 0 ; i < NumValues ; i++) {
 		if (Translations[i].irep == irep) {
-			retval = string (Translations[i].srep) ;
+			retval = std::string (Translations[i].srep) ;
 			found = true ;
 		}
 	}

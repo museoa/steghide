@@ -52,7 +52,10 @@ EdgeIterator& EdgeIterator::operator++ ()
 	SampleValue* srcsv = SrcVertex->getSampleValue(SrcIndex) ;
 	SampleValue* destsv = TheGraph->getOppNeighs(srcsv)[SVOppNeighsIndices[SrcIndex]] ;
 
-	SampleOccurenceIt++ ;
+	do { // to avoid looping edge (SrcVertex,SrcVertex)
+		SampleOccurenceIt++ ;
+	} while ((SampleOccurenceIt != TheGraph->getSampleOccurences(destsv).end()) && (*(SampleOccurenceIt->getVertex()) == *SrcVertex)) ;
+
 	if (SampleOccurenceIt == TheGraph->getSampleOccurences(destsv).end()) {
 		// search new destination sample value
 		SVOppNeighsIndices[SrcIndex]++ ;
@@ -104,7 +107,7 @@ void EdgeIterator::findNextEdge ()
 		SrcIndex = idx_mindist ;
 		SampleValue* srcsv = SrcVertex->getSampleValue(SrcIndex) ;
 		SampleValue* destsv = (TheGraph->getOppNeighs(srcsv))[SVOppNeighsIndices[SrcIndex]] ;
-		list<SampleOccurence>::const_iterator it  = TheGraph->getSampleOccurences(destsv).begin() ;
+		std::list<SampleOccurence>::const_iterator it  = TheGraph->getSampleOccurences(destsv).begin() ;
 		while (*(it->getVertex()) == *SrcVertex) {
 			it++ ;
 		}
@@ -115,8 +118,8 @@ void EdgeIterator::findNextEdge ()
 bool EdgeIterator::isDestSampleValueOK (const SampleValue *sv)
 {
 	bool found = false ;
-	list<SampleOccurence> socc = TheGraph->getSampleOccurences(sv) ;
-	list<SampleOccurence>::const_iterator it = socc.begin() ;
+	std::list<SampleOccurence> socc = TheGraph->getSampleOccurences(sv) ;
+	std::list<SampleOccurence>::const_iterator it = socc.begin() ;
 	while (!found && it != socc.end()) {
 		if (*(it->getVertex()) == *SrcVertex) {
 			it++ ;

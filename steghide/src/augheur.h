@@ -41,7 +41,7 @@ class AugmentingPathHeuristic : private GraphAccess {
 	/**
 	 * \param v0 an exposed vertex
 	 **/
-	vector<Edge*>* searchAugmentingPath (Vertex* v0) ;
+	std::vector<Edge*>* searchAugmentingPath (Vertex* v0) ;
 
 	Edge* getNextEdge (Vertex *v) ;
 
@@ -58,9 +58,9 @@ class AugmentingPathHeuristic : private GraphAccess {
 	Matching *TheMatching ;
 
 	UWORD32 TimeCounter ;
-	vector<UWORD32> TimeCounters ;
-	vector<bool> VertexOnPath ;
-	vector<EdgeIterator> EdgeIterators ;
+	std::vector<UWORD32> TimeCounters ;
+	std::vector<bool> VertexOnPath ;
+	std::vector<EdgeIterator> EdgeIterators ;
 } ;
 
 #endif // ndef SH_AUGHEUR_H

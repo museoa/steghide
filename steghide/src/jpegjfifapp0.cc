@@ -68,7 +68,7 @@ void JpegJFIFAPP0::read (BinaryIO *io)
 
 	unsigned int n = Xthumbnail * Ythumbnail ; 
 	thumbnail.clear() ;
-	thumbnail = vector<unsigned char> (3 * n) ;
+	thumbnail = std::vector<unsigned char> (3 * n) ;
 	for (unsigned int i = 0 ; i < n ; i++) {
 		// R, G and B component
 		thumbnail[3 * i] = io->read8() ;

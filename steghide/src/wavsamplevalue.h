@@ -21,7 +21,7 @@
 #ifndef SH_WAVSAMPLE_H
 #define SH_WAVSAMPLE_H
 
-#include<functional>
+#include <functional>
 
 #include "samplevalue.h"
 #include "common.h"
@@ -51,7 +51,7 @@ class WavPCMSampleValue : public SampleValue {
 	int MinValue ;
 } ;
 
-class WavPCMSmaller : public binary_function<WavPCMSampleValue*,WavPCMSampleValue*,bool> {
+class WavPCMSmaller : public std::binary_function<WavPCMSampleValue*,WavPCMSampleValue*,bool> {
 	public:
 	bool operator() (const WavPCMSampleValue *v, const WavPCMSampleValue *w) { return v->getValue() < w->getValue() ; } ;
 } ;

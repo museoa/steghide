@@ -56,7 +56,7 @@ class JpegJFIFAPP0 : public JpegSegment {
 	unsigned int Ydensity ;
 	unsigned char Xthumbnail ;
 	unsigned char Ythumbnail ;
-	vector<unsigned char> thumbnail ;
+	std::vector<unsigned char> thumbnail ;
 } ;
 
 #endif // ndef SH_JPEGJFIFAPP0_H

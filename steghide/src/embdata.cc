@@ -30,7 +30,7 @@ EmbData::EmbData ()
 	Mode = UNDEF ;
 }
 
-EmbData::EmbData (MODE m, string fn)
+EmbData::EmbData (MODE m, std::string fn)
 {
 	Mode = m ;
 	FileName = fn ;
@@ -135,7 +135,7 @@ void EmbData::addBits (BitString bits)
 
 			unsigned int lenoffilename = (unsigned int) decrypted.getValue (pos, NBitsLenOfFileName) ;
 			pos += 8 ;
-			string filename = "" ;
+			std::string filename = "" ;
 			for (unsigned int i = 0 ; i < lenoffilename ; i++) {
 				filename += (char) decrypted.getValue (pos, 8) ;
 				pos += 8 ;
@@ -174,7 +174,7 @@ void EmbData::addBits (BitString bits)
 			if (Checksum) {
 				// test if checksum is ok
 				MHashpp hash (MHASH_CRC32) ;
-				for (vector<unsigned char>::iterator i = Data.begin() ; i != Data.end() ; i++) {
+				for (std::vector<unsigned char>::iterator i = Data.begin() ; i != Data.end() ; i++) {
 					hash << *i ;
 				}
 				hash << endhash ;
@@ -257,7 +257,7 @@ void EmbData::write ()
 	assert (Mode == EXTRACT) ;
 
 	BinaryIO io (FileName, BinaryIO::WRITE) ;
-	for (vector<unsigned char>::iterator i = Data.begin() ; i != Data.end() ; i++) {
+	for (std::vector<unsigned char>::iterator i = Data.begin() ; i != Data.end() ; i++) {
 		io.write8 (*i) ;
 	}
 	io.close() ;
@@ -274,7 +274,7 @@ BitString EmbData::getBitString ()
 	main.append (Checksum) ;
 	if (Checksum) {
 		MHashpp hash (MHASH_CRC32) ;
-		for (vector<unsigned char>::iterator i = Data.begin() ; i != Data.end() ; i++) {
+		for (std::vector<unsigned char>::iterator i = Data.begin() ; i != Data.end() ; i++) {
 			hash << *i ;
 		}
 		hash << endhash ;
@@ -286,7 +286,7 @@ BitString EmbData::getBitString ()
 		main.append ((unsigned char) 0, NBitsLenOfFileName) ;
 	}
 	else {
-		string tmp = stripDir (FileName) ;
+		std::string tmp = stripDir (FileName) ;
 		if (tmp.size() > EmbFileNameMaxSize) {
 			throw SteghideError (_("the maximum length for the embedded file name is %d characters."), EmbFileNameMaxSize) ;
 		}
@@ -316,16 +316,16 @@ BitString EmbData::getBitString ()
 	return hdr.append(main) ;
 }
 
-string EmbData::stripDir (string s)
+std::string EmbData::stripDir (std::string s)
 {
 	unsigned int start = 0 ;
-	if ((start = s.find_last_of ("/\\")) == string::npos) {
+	if ((start = s.find_last_of ("/\\")) == std::string::npos) {
 		start = 0 ;
 	}
 	else {
 		start += 1 ;
 	}
-	return s.substr (start, string::npos) ;
+	return s.substr (start, std::string::npos) ;
 }
 
 unsigned int EmbData::nbits (unsigned long x)

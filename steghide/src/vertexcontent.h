@@ -22,13 +22,12 @@
 #define SH_DEGREE_H
 
 #include <functional>
-#include <hash_set>
 #include <list>
-#include <vector>
 
 #include "common.h"
 #include "graphaccess.h"
 #include "samplevalue.h"
+#include "wrapper_hash_set.h"
 // declared here to prevent circulating includes
 class Graph ;
 class Vertex ;
@@ -54,11 +53,11 @@ class VertexContent : private GraphAccess {
 	bool operator!= (const VertexContent& vc) const
 		{ return !(operator==(vc)) ; } ;
 
-	// FIXME - ev. stattdessen operator [] - ev. const return value
+	// FIXME - ? operator [] - ? const return value
 	SampleValue *getSampleValue (unsigned short i) const
 		{ return SampleValues[i] ; } ; 
 
-	// FIXME - konstante Rückgabe
+	// FIXME - const return value
 	SampleValue **getSampleValues (void) const
 		{ return SampleValues ; } ;
 
@@ -67,22 +66,22 @@ class VertexContent : private GraphAccess {
 	unsigned long getDegree (void) const ;
 
 	/**
-	 * add a vertex to the Occurences list of this vertex content
+	 * add a vertex to the Occurences std::list of this vertex content
 	 * \param v the vertex to add
-	 * \return the iterator pointing to the added vertex in the Occurences list (should be used as argument to deleteFromOccurences)
+	 * \return the iterator pointing to the added vertex in the Occurences std::list (should be used as argument to deleteFromOccurences)
 	 **/
-	list<Vertex*>::iterator addOccurence (Vertex *v)
+	std::list<Vertex*>::iterator addOccurence (Vertex *v)
 		{ return Occurences.insert (Occurences.end(), v) ; } ;
 
 	/**
-	 * delete a vertex from the Occurences list
+	 * delete a vertex from the Occurences std::list
 	 * \param it the iterator pointing to the vertex to be deleted
 	 **/
-	list<Vertex*>::iterator markDeletedFromOccurences (list<Vertex*>::iterator it) ;
+	std::list<Vertex*>::iterator markDeletedFromOccurences (std::list<Vertex*>::iterator it) ;
 
-	list<Vertex*>::iterator unmarkDeletedFromOccurences (list<Vertex*>::iterator it) ;
+	std::list<Vertex*>::iterator unmarkDeletedFromOccurences (std::list<Vertex*>::iterator it) ;
 	
-	const list<Vertex*>& getOccurences (void) const
+	const std::list<Vertex*>& getOccurences (void) const
 		{ return Occurences ; } ;
 
 	bool hasOccurences (void) const
@@ -98,17 +97,22 @@ class VertexContent : private GraphAccess {
 	/// the number of loop edges vertices with this content _would_ have
 	unsigned long SelfDegree ;
 	/// the vertices whose content is this vertex content
-	list<Vertex*> Occurences ;
+	std::list<Vertex*> Occurences ;
 	/// the vertices that have been delted from Occurences
-	list<Vertex*> DeletedOccurences ;
+	std::list<Vertex*> DeletedOccurences ;
 } ;
 
-struct VertexContentsEqual : binary_function<VertexContent*, VertexContent*, bool> {
+struct VertexContentsEqual : std::binary_function<VertexContent*, VertexContent*, bool> {
 	bool operator() (const VertexContent *vc1, const VertexContent* vc2) const ;
 } ;
+
+namespace __gnu_cxx
+{
 
 struct hash<VertexContent*> {
 	size_t operator() (const VertexContent *vc) const ;
 } ;
+
+}
 
 #endif // ndef SH_DEGREE_H

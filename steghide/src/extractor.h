@@ -28,8 +28,8 @@ class Extractor {
 	void extract (void) ;
 
 	private:
-	string StegoFileName ;
-	string ExtractFileName ;
+	std::string StegoFileName ;
+	std::string ExtractFileName ;
 } ;
 
 #endif // ndef SH_EXTRACTOR_H

@@ -59,7 +59,7 @@ float JpegSampleValue::calcDistance (const SampleValue *s) const
 {
 	const JpegSampleValue *sample = dynamic_cast<const JpegSampleValue*> (s) ;
 	assert (sample != NULL) ;
-	return (abs (((float) DctCoeff) - ((float) sample->getDctCoeff()))) ;
+	return (fabs (((float) DctCoeff) - ((float) sample->getDctCoeff()))) ;
 }
 
 float JpegSampleValue::getRadius () const

@@ -34,13 +34,13 @@ class MHashpp {
 
 	void init (hashid a) ;
 
-	vector<unsigned char> end (void) ;
+	std::vector<unsigned char> end (void) ;
 
 	/**
-	 * feed the string v to the hashing algorithm
-	 * \param v the string to be feeded to the hashing algorithm (without '\0' at the end)
+	 * feed the std::string v to the hashing algorithm
+	 * \param v the std::string to be feeded to the hashing algorithm (without '\0' at the end)
 	 **/
-	MHashpp& operator<< (string v) ;
+	MHashpp& operator<< (std::string v) ;
 
 	/**
 	 * feed the BitString v to the hashing algorithm
@@ -66,7 +66,7 @@ class MHashpp {
 	 **/
 	BitString getHashBits (void) ;
 
-	vector<unsigned char> getHashBytes (void) ;
+	std::vector<unsigned char> getHashBytes (void) ;
 
 	/**
 	 * get the hash size
@@ -81,10 +81,10 @@ class MHashpp {
 
 	/// true iff HashBytes contains a valid hash value
 	bool HashBytesValid ;
-	vector<unsigned char> HashBytes ;
+	std::vector<unsigned char> HashBytes ;
 
-	string getAlgorithmName (void) ;
-	static string getAlgorithmName (hashid id) ;
+	std::string getAlgorithmName (void) ;
+	static std::string getAlgorithmName (hashid id) ;
 } ;
 
 #endif // ndef SH_MHASHPP_H

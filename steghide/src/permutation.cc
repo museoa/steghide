@@ -28,7 +28,7 @@ Permutation::Permutation ()
 	CurValue = 0 ;
 }
 
-Permutation::Permutation (unsigned long w, string pp)
+Permutation::Permutation (unsigned long w, std::string pp)
 {
 	CurArg = 0 ;
 	CurValue = 0 ;
@@ -139,7 +139,7 @@ void Permutation::setWidth (unsigned long w)
 	}
 }
 
-void Permutation::setKey (string pp)
+void Permutation::setKey (std::string pp)
 {
 	MHashpp hash (MHASH_MD5) ;
 	hash << pp << endhash ;
@@ -164,7 +164,7 @@ unsigned long Permutation::keyhash (unsigned long key, unsigned long arg)
 		hash << (unsigned char) ((arg >> i) & 0xFF) ;
 	}
 	hash << endhash ;
-	vector<unsigned char> hashbytes = hash.getHashBytes() ;
+	std::vector<unsigned char> hashbytes = hash.getHashBytes() ;
 	assert (hashbytes.size() == 16) ;
 
 	// compose a 16 bit return value from the 128 bit md5 hash

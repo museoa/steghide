@@ -30,12 +30,12 @@
 class SampleValueOppositeNeighbourhood : private GraphAccess {
 	public:
 	SampleValueOppositeNeighbourhood (void) {} ;
-	SampleValueOppositeNeighbourhood (Graph *g, const vector<SampleValue*> &svalues) ;
+	SampleValueOppositeNeighbourhood (Graph *g, const std::vector<SampleValue*> &svalues) ;
 
-	const vector<SampleValue*>& operator[] (const SampleValueLabel lbl) const
+	const std::vector<SampleValue*>& operator[] (const SampleValueLabel lbl) const
 		{ return OppNeighs[lbl] ; } ;
 
-	const vector<SampleValue*>& operator[] (const SampleValue* sv) const
+	const std::vector<SampleValue*>& operator[] (const SampleValue* sv) const
 		{ return OppNeighs[sv->getLabel()] ; } ;
 
 	private:
@@ -54,11 +54,11 @@ class SampleValueOppositeNeighbourhood : private GraphAccess {
 		SampleValue* SrcSampleValue ;
 	} ;
 
-	vector<vector<SampleValue*> > OppNeighs ;
+	std::vector<std::vector<SampleValue*> > OppNeighs ;
 
-	void calcOppNeighs_generic (const vector<SampleValue*> &svalues) ;
-	void calcOppNeighs_rgb (const vector<SampleValue*> &svalues) ;
-	void calcOppNeighs_wav (const vector<SampleValue*> &svalues) ;
+	void calcOppNeighs_generic (const std::vector<SampleValue*> &svalues) ;
+	void calcOppNeighs_rgb (const std::vector<SampleValue*> &svalues) ;
+	void calcOppNeighs_wav (const std::vector<SampleValue*> &svalues) ;
 
 	/**
 	 * return the smallest integer that is >= x

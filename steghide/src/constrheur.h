@@ -34,7 +34,7 @@ class ConstructionHeuristic : private GraphAccess {
 		{ return TheMatching ; } ;
 
 	private:
-	class LongerShortestEdge : public binary_function<Vertex*,Vertex*,bool> {
+	class LongerShortestEdge : public std::binary_function<Vertex*,Vertex*,bool> {
 		public:
 		bool operator() (const Vertex *v1, const Vertex *v2) 
 			{ return (v1->getShortestEdge()->getWeight() > v2->getShortestEdge()->getWeight()) ; } ;
@@ -65,9 +65,9 @@ class ConstructionHeuristic : private GraphAccess {
 	void checkNeighboursDeg1 (Vertex *v) ;
 
 	/// contains all vertices of degree 1 - every vertex in this queue has a correct shortest edge if it still has degree 1
-	priority_queue<Vertex*, vector<Vertex*>, LongerShortestEdge> VerticesDeg1 ;
+	std::priority_queue<Vertex*, std::vector<Vertex*>, LongerShortestEdge> VerticesDeg1 ;
 	/// contains all vertices with degree greater than 1
-	priority_queue<Vertex*, vector<Vertex*>, LongerShortestEdge> VerticesDegG ;
+	std::priority_queue<Vertex*, std::vector<Vertex*>, LongerShortestEdge> VerticesDegG ;
 } ;
 
 #endif // ndef SH_CONSTRHEUR_H

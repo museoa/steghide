@@ -62,18 +62,18 @@ class Matching : private GraphAccess {
 	unsigned long getCardinality (void) const
 		{ return Cardinality ; } ;
 
-	const list<Vertex*>& getExposedVertices (void) const
+	const std::list<Vertex*>& getExposedVertices (void) const
 		{ return ExposedVertices ; } ;
 
 	/**
-	 * get access to the list of exposed vertices
-	 * \return a pointer to the list of exposed vertices in this matching.
+	 * get access to the std::list of exposed vertices
+	 * \return a pointer to the std::list of exposed vertices in this matching.
 	 *
-	 * The list that is pointed to by return value contains the exposed vertices
+	 * The std::list that is pointed to by return value contains the exposed vertices
 	 * even after augment has been called (it is the ExposedVertices member) an
 	 * arbitrary number of times.
 	 **/
-	const list<Vertex*> *getExposedVerticesLink (void) const
+	const std::list<Vertex*> *getExposedVerticesLink (void) const
 		{ return &ExposedVertices ; } ;
 
 	/**
@@ -94,9 +94,9 @@ class Matching : private GraphAccess {
 	Matching &removeEdge (Edge *e) ;
 
 	/**
-	 * get the list of all edges in this matching
+	 * get the std::list of all edges in this matching
 	 **/
-	const list<Edge*>& getEdges (void) const
+	const std::list<Edge*>& getEdges (void) const
 		{ return MatchingEdges ; } ;
 
 	/**
@@ -110,7 +110,9 @@ class Matching : private GraphAccess {
 	 * The Edge objects in path may be deleted at a later time
 	 * by the Matching object.
 	 **/
-	Matching &augment (const vector<Edge*>& path) ;
+	Matching &augment (const std::vector<Edge*>& path) ;
+
+	void printVerboseInfo (void) const ;
 
 	private:
 	/**
@@ -119,11 +121,11 @@ class Matching : private GraphAccess {
 	 **/
 	class VertexInfo {
 		public:
-		VertexInfo (list<Edge*>::iterator mit)
+		VertexInfo (std::list<Edge*>::iterator mit)
 			{ setMatched (mit) ; } ;
 
-		VertexInfo (list<Vertex*>::iterator eit)
-			{ setUnmatched (eit) ; } ;
+		VertexInfo (std::list<Vertex*>::iterator eit)
+			{ setExposed (eit) ; } ;
 
 		bool isExposed (void) const
 			{ return !Matched ; } ;
@@ -134,29 +136,32 @@ class Matching : private GraphAccess {
 		Edge *getMatchingEdge (void) const
 			{ return *MatchedIterator ; } ;
 
-		list<Vertex*>::iterator getExposedIterator (void) const
+		std::list<Edge*>::iterator getMatchedIterator (void) const
+			{ return MatchedIterator ; } ;
+
+		std::list<Vertex*>::iterator getExposedIterator (void) const
 			{ return ExposedIterator ; } ;
 
-		void setMatched (list<Edge*>::iterator mit)
+		void setMatched (std::list<Edge*>::iterator mit)
 			{ Matched = true ; MatchedIterator = mit ; } ;
 
-		void setUnmatched (list<Vertex*>::iterator eit)
+		void setExposed (std::list<Vertex*>::iterator eit)
 			{ Matched = false ; ExposedIterator = eit ; } ;
 
 		private:
 		bool Matched ;
-		list<Edge*>::iterator MatchedIterator ;
-		list<Vertex*>::iterator ExposedIterator ;
+		std::list<Edge*>::iterator MatchedIterator ;
+		std::list<Vertex*>::iterator ExposedIterator ;
 	} ;
 
 	/// contains a VertexInfo object for every vertex
-	vector<VertexInfo> VertexInformation ;
+	std::vector<VertexInfo> VertexInformation ;
 
-	/// the list of all exposed vertices
-	list<Vertex*> ExposedVertices ;
+	/// the std::list of all exposed vertices
+	std::list<Vertex*> ExposedVertices ;
 
-	/// the list of all edges in the matching
-	list<Edge*> MatchingEdges ;
+	/// the std::list of all edges in the matching
+	std::list<Edge*> MatchingEdges ;
 
 	unsigned long Cardinality ;
 
@@ -165,6 +170,9 @@ class Matching : private GraphAccess {
 	bool check (void) const ;
 	bool check_MatchingEdges_vs_VertexInformation (void) const ;
 	bool check_ExposedVertices_vs_VertexInformation (void) const ;
+	bool check_VertexInformation_Integrity (void) const ;
+
+	bool check_ValidAugPath (const std::vector<Edge*>& path) const ;
 #endif
 } ;
 

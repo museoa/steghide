@@ -55,7 +55,7 @@ MCryptpp::~MCryptpp ()
 
 void MCryptpp::open (EncryptionAlgorithm a, EncryptionMode m)
 {
-	string tmp1 = a.getStringRep(), tmp2 = m.getStringRep() ;
+	std::string tmp1 = a.getStringRep(), tmp2 = m.getStringRep() ;
 	char algo[tmp1.size() + 1], mode[tmp2.size() + 1] ;
 	strcpy (algo, tmp1.c_str()) ;
 	strcpy (mode, tmp2.c_str()) ;
@@ -72,40 +72,40 @@ void MCryptpp::close ()
 	ModuleOpen = false ;
 }
 
-BitString MCryptpp::encrypt (BitString p, string pp)
+BitString MCryptpp::encrypt (BitString p, std::string pp)
 {
 	p.padRandom (8 * mcrypt_enc_get_block_size (MCryptD)) ; // blocksize is 1 for stream algorithms
-	vector<unsigned char> ciphertext = _encrypt (p.getBytes(), pp) ;
+	std::vector<unsigned char> ciphertext = _encrypt (p.getBytes(), pp) ;
 	return BitString (ciphertext) ;
 }
 
-BitString MCryptpp::decrypt (BitString c, string pp)
+BitString MCryptpp::decrypt (BitString c, std::string pp)
 {
 	assert (c.getLength() % (8 * mcrypt_enc_get_block_size (MCryptD)) == 0) ;
-	vector<unsigned char> plaintext = _decrypt (c.getBytes(), pp) ;
+	std::vector<unsigned char> plaintext = _decrypt (c.getBytes(), pp) ;
 	return BitString (plaintext) ;
 }
 
 // TODO - ? compatibility of keygen_mcrypt in different versions of mhash
-void* MCryptpp::createKey (string pp)
+void* MCryptpp::createKey (std::string pp)
 {
 	unsigned int keysize = mcrypt_enc_get_key_size (MCryptD) ;
 	MHashKeyGenpp keygen (KEYGEN_MCRYPT, MHASH_MD5, keysize) ;
-	vector<unsigned char> key = keygen.createKey (pp) ;
+	std::vector<unsigned char> key = keygen.createKey (pp) ;
 	unsigned char *retval = (unsigned char *) s_malloc (keysize) ;
 	for (unsigned int i = 0 ; i < keysize ; i++) {
 		retval[i] = key[i] ;
 	}
 	return retval ;
 }
-vector<unsigned char> MCryptpp::_encrypt (vector<unsigned char> p, string pp)
+std::vector<unsigned char> MCryptpp::_encrypt (std::vector<unsigned char> p, std::string pp)
 {
 	// genereate key and IV (if needed)
 	void *key = createKey (pp) ;
 	unsigned char *IV = NULL ;
 	if (mcrypt_enc_mode_has_iv (MCryptD)) {
 		unsigned int ivsize = mcrypt_enc_get_iv_size (MCryptD) ;
-		vector<unsigned char> rndIV = RndSrc.getBytes (ivsize) ;
+		std::vector<unsigned char> rndIV = RndSrc.getBytes (ivsize) ;
 		IV = (unsigned char *) s_malloc (ivsize) ;
 		for (unsigned int i = 0 ; i < ivsize ; i++) {
 			IV[i] = rndIV[i] ;
@@ -134,17 +134,17 @@ vector<unsigned char> MCryptpp::_encrypt (vector<unsigned char> p, string pp)
 	}
 
 	// create the return value
-	vector<unsigned char> retval ;
+	std::vector<unsigned char> retval ;
 	unsigned int i = 0 ;
 	if (mcrypt_enc_mode_has_iv (MCryptD)) {
 		unsigned int ivsize = mcrypt_enc_get_iv_size (MCryptD) ;
-		retval = vector<unsigned char> (ivsize + plntextlen) ;
+		retval = std::vector<unsigned char> (ivsize + plntextlen) ;
 		for ( ; i < ivsize ; i++) {
 			retval[i] = IV[i] ;
 		}
 	}
 	else {
-		retval = vector<unsigned char> (plntextlen) ;
+		retval = std::vector<unsigned char> (plntextlen) ;
 	}
 	for (unsigned int j = 0 ; j < plntextlen ; i++, j++) {
 		retval[i] = plntext[j] ;
@@ -163,7 +163,7 @@ vector<unsigned char> MCryptpp::_encrypt (vector<unsigned char> p, string pp)
 	return retval ;
 }
 
-vector<unsigned char> MCryptpp::_decrypt (vector<unsigned char> c, string pp)
+std::vector<unsigned char> MCryptpp::_decrypt (std::vector<unsigned char> c, std::string pp)
 {
 	// generate key
 	void *key = createKey (pp) ;
@@ -200,7 +200,7 @@ vector<unsigned char> MCryptpp::_decrypt (vector<unsigned char> c, string pp)
 	}
 
 	// create return value
-	vector<unsigned char> retval (ciphertextlen) ;
+	std::vector<unsigned char> retval (ciphertextlen) ;
 	for (unsigned int i = 0 ; i < ciphertextlen ; i++) {
 		retval[i] = ciphertext[i] ;
 	}
@@ -240,7 +240,7 @@ unsigned long MCryptpp::getEncryptedSize (EncryptionAlgorithm a, EncryptionMode 
 		retval = plnsize ;
 	}
 	else {
-		string tmp1 = a.getStringRep(), tmp2 = m.getStringRep() ;
+		std::string tmp1 = a.getStringRep(), tmp2 = m.getStringRep() ;
 		char algo[tmp1.size() + 1], mode[tmp2.size() + 1] ;
 		strcpy (algo, tmp1.c_str()) ;
 		strcpy (mode, tmp2.c_str()) ;
@@ -270,28 +270,28 @@ unsigned long MCryptpp::getEncryptedSize (EncryptionAlgorithm a, EncryptionMode 
 	return retval ;
 }
 
-vector<string> MCryptpp::getListAlgorithms ()
+std::vector<std::string> MCryptpp::getListAlgorithms ()
 {
 	int size = 0 ;
 	char **list = mcrypt_list_algorithms (MCRYPTPP_LIBDIR, &size) ;
 
-	vector<string> retval ;
+	std::vector<std::string> retval ;
 	for (int i = 0 ; i < size ; i++) {
-		retval.push_back (string (list[i])) ;
+		retval.push_back (std::string (list[i])) ;
 	}
 	mcrypt_free_p (list, size) ;
 
 	return retval ;
 }
 
-vector<string> MCryptpp::getListModes ()
+std::vector<std::string> MCryptpp::getListModes ()
 {
 	int size = 0 ;
 	char **list = mcrypt_list_modes (MCRYPTPP_LIBDIR, &size) ;
 
-	vector<string> retval ;
+	std::vector<std::string> retval ;
 	for (int i = 0 ; i < size ; i++) {
-		retval.push_back (string (list[i])) ;
+		retval.push_back (std::string (list[i])) ;
 	}
 	mcrypt_free_p (list, size) ;
 
@@ -300,7 +300,7 @@ vector<string> MCryptpp::getListModes ()
 
 bool MCryptpp::AlgoSupportsMode (EncryptionAlgorithm a, EncryptionMode m)
 {
-	string tmp1 = a.getStringRep(), tmp2 = m.getStringRep() ;
+	std::string tmp1 = a.getStringRep(), tmp2 = m.getStringRep() ;
 	char algo[tmp1.size() + 1], mode[tmp2.size() + 1] ;
 	strcpy (algo, tmp1.c_str()) ;
 	strcpy (mode, tmp2.c_str()) ;

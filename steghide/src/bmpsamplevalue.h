@@ -126,7 +126,7 @@ class BmpRGBSampleValue : public BmpSampleValue {
 	/**
 	 * add a candidate for the nearest opposite sample to cands
 	 **/
-	void BmpRGBSampleValue::addNOSCandidate (vector<RGBTriple>& cands, unsigned char r, unsigned char g, unsigned char b) const ;
+	void BmpRGBSampleValue::addNOSCandidate (std::vector<RGBTriple>& cands, unsigned char r, unsigned char g, unsigned char b) const ;
 } ;
 
 #endif // ndef SH_BMPSAMPLE_H

@@ -18,20 +18,28 @@
  *
  */
 
-#include "wavchunkunused.h"
+#ifndef SH_SGI_HASH_SET_H
+#define SH_SGI_HASH_SET_H
 
-void WavChunkUnused::read (BinaryIO *io)
-{
-	Data = std::vector<BYTE> (ChunkHeader->getChunkLength()) ;
-	for (unsigned int i = 0 ; i < ChunkHeader->getChunkLength() ; i++) {
-		Data[i] = io->read8() ;
-	}
-}
+// FIXME - fill in all NAMESPACE_SGI definitions
 
-void WavChunkUnused::write (BinaryIO *io)
-{
-	WavChunk::write (io) ;
-	for (std::vector<BYTE>::const_iterator i = Data.begin() ; i != Data.end() ; i++) {
-		io->write8 (*i) ;
-	}
-}
+// this file is included to get access to a sgi::hash_set implementation
+// NAMESPACE_SGI is used for writing hash<...> specializations
+#ifdef __GNUC__
+# if __GNUC__ < 3
+#  include <hash_set.h>
+    namespace sgi { using ::hash_set ; } ;
+# else
+#  include <ext/hash_set>
+#  if __GNUC_MINOR__ == 0
+    namespace sgi = std ;			// GCC 3.0
+#  else
+    namespace sgi = ::__gnu_cxx ;	// GCC 3.1 and later
+#   define NAMESPACE_SGI __gnu_cxx
+#  endif
+# endif
+#else
+  namespace sgi = std ;
+#endif
+
+#endif // ndef SH_SGI_HASH_SET_H

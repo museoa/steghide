@@ -25,7 +25,7 @@
 #include <string>
 
 // common.h is not included here because randomsource.h is included in common.h
-// and bitstring.h is included in randomsource.h
+// and bitstd::string.h is included in randomsource.h
 typedef int Bit ;
 
 class BitString {
@@ -50,7 +50,7 @@ class BitString {
 	unsigned long getLength (void) const ;
 
 	/**
-	 * delete the contents of this Bitstring
+	 * delete the contents of this Bitstd::string
 	 **/
 	BitString& clear (void) ;
 
@@ -83,12 +83,12 @@ class BitString {
 	BitString& append (unsigned long v, unsigned int n = 32) ;
 	
 	/**
-	 * append the string v to this BitString
+	 * append the std::string v to this BitString
 	 **/
 	BitString& append (const std::string &v) ;
 
 	/**
-	 * append the vector v byte-wise to this BitString
+	 * append the std::vector v byte-wise to this BitString
 	 **/
 	BitString& append (const std::vector<unsigned char> &v) ;
 
@@ -115,8 +115,8 @@ class BitString {
 	unsigned long getValue (unsigned long s, unsigned int l) const ;
 
 	/**
-	 * get the contents of this BitString as vector of unsigned char
-	 * \return the contents of this BitString as vector of unsigned char
+	 * get the contents of this BitString as std::vector of unsigned char
+	 * \return the contents of this BitString as std::vector of unsigned char
 	 *
 	 * getLength() % 8 must be 0 to call this function
 	 **/
@@ -140,7 +140,7 @@ class BitString {
 	Bit operator[] (unsigned long i) const ;
 
 	/**
-	 * xor v with this BitString, saving the result in this Bitstring - the result has the same length as this BitString
+	 * xor v with this BitString, saving the result in this Bitstd::string - the result has the same length as this BitString
 	 **/
 	BitString& operator^= (const BitString &v) ;
 

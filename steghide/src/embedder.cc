@@ -35,7 +35,7 @@
 
 Embedder::Embedder ()
 {
-	// create bitstring to be embedded
+	// create bitstd::string to be embedded
 	EmbData embdata (EmbData::EMBED, Args.EmbFn.getValue()) ;
 	embdata.setEncAlgo (Args.EncAlgo.getValue()) ;
 	embdata.setEncMode (Args.EncMode.getValue()) ;
@@ -47,7 +47,7 @@ Embedder::Embedder ()
 	TheCvrStgFile = CvrStgFile::readFile (Args.CvrFn.getValue()) ;
 	
 	// create graph
-	vector<SamplePos*> sampleposs ;
+	std::vector<SamplePos*> sampleposs ;
 	Permutation perm (TheCvrStgFile->getNumSamples(), Args.Passphrase.getValue()) ;
 	unsigned long n = ToEmbed.getLength() ;
 	unsigned int sam_ebit = TheCvrStgFile->getSamplesPerEBit() ;
@@ -85,16 +85,17 @@ void Embedder::embed ()
 	vmsg.printMessage() ;
 
 	const Matching* M = calculateMatching() ;
+	M->printVerboseInfo() ;
 
 	// embed matched edges
-	const list<Edge*> medges = M->getEdges() ;
-	for (list<Edge*>::const_iterator it = medges.begin() ; it != medges.end() ; it++) {
+	const std::list<Edge*> medges = M->getEdges() ;
+	for (std::list<Edge*>::const_iterator it = medges.begin() ; it != medges.end() ; it++) {
 		embedEdge (*it) ;
 	}
 
 	// embed exposed vertices
-	const list<Vertex*> *expvertices = M->getExposedVerticesLink() ;
-	for (list<Vertex*>::const_iterator it = expvertices->begin() ; it != expvertices->end() ; it++) {
+	const std::list<Vertex*> *expvertices = M->getExposedVerticesLink() ;
+	for (std::list<Vertex*>::const_iterator it = expvertices->begin() ; it != expvertices->end() ; it++) {
 		embedExposedVertex (*it) ;
 	}
 
@@ -124,10 +125,11 @@ const Matching *Embedder::calculateMatching ()
 			bestmatching = ch.getMatching() ;
 		}
 
+		TheGraph->unmarkDeletedAllVertices() ;
 	}
 
 	// do augmenting path heuristic
-	if (false) { // TODO - make augmenting path heuristic optional ?
+	if (true) { // TODO - make augmenting path heuristic optional ?
 		AugmentingPathHeuristic aph (TheGraph, bestmatching) ;
 		aph.run() ;
 		bestmatching = aph.getMatching() ;
@@ -135,7 +137,7 @@ const Matching *Embedder::calculateMatching ()
 
 #if 0
 	if (!bestmatching->check()) {
-		cerr << "check of matching to be embedded FAILED" << endl ;
+		std::cerr << "check of matching to be embedded FAILED" << std::endl ;
 	}
 #endif
 

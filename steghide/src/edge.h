@@ -44,6 +44,16 @@ class Edge {
 		{ return Weight ; } ;
 
 	/**
+	 * swap vertices 1 and 2 in this edge (weight is not altered)
+	 **/
+	void swap (void) ;
+
+	/**
+	 * \return true iff this edge contains the vertex v
+	 **/
+	bool contains (const Vertex *v) const ;
+
+	/**
 	 * get the vertex on this edge that is not equal to v
 	 **/
 	Vertex *getOtherVertex (const Vertex *v) const ;
@@ -64,6 +74,10 @@ class Edge {
 	 * warning: this function must be used before the sample has been replaced in the cvrstgfile
 	 **/
 	SampleValue *getReplacingSampleValue (Vertex *v) const ;
+
+#ifdef DEBUG
+	void print (unsigned short spc = 0) const ;
+#endif
 	
 	private:
 	Vertex *Vertex1 ;

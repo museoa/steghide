@@ -23,10 +23,10 @@
 #define SH_SAMPLEVALUE_H
 
 #include <functional>
-#include <hash_set>
 #include <list>
 
 #include "common.h"
+#include "wrapper_hash_set.h"
 // declared here to prevent circulating #includes
 class CvrStgFile ;
 
@@ -165,12 +165,17 @@ struct SampleValuesEqual : std::binary_function<SampleValue*, SampleValue*, bool
 	}
 } ;
 
-struct hash<SampleValue*> {
+namespace NAMESPACE_SGI
+{
+
+struct sgi::hash<SampleValue*> {
 	size_t operator() (const SampleValue *s) const
 	{
-		hash<unsigned long> h ;
+		sgi::hash<unsigned long> h ;
 		return h (s->getKey()) ;
 	}
 } ;
+
+}
 
 #endif // ndef SH_CVRSTGSAMPLE_H

@@ -21,7 +21,6 @@
 #ifndef SH_GRAPH_H
 #define SH_GRAPH_H
 
-#include <hash_set>
 #include <list>
 #include <map>
 #include <queue>
@@ -32,6 +31,7 @@
 #include "svalueoppneigh.h"
 #include "vertex.h"
 #include "vertexcontent.h"
+#include "wrapper_hash_set.h"
 
 /**
  * \class Graph
@@ -44,9 +44,9 @@ class Graph {
 	/**
 	 * construct a graph
 	 * \param f the underlying cover file
-	 * \param sposs the vector of k-tuples of sample positions that will make up the vertices
+	 * \param sposs the std::vector of k-tuples of sample positions that will make up the vertices
 	 **/
-	Graph (CvrStgFile *f, vector<SamplePos*>& sposs) ;
+	Graph (CvrStgFile *f, std::vector<SamplePos*>& sposs) ;
 
 	/**
 	 * construct sample-related data structures
@@ -54,7 +54,7 @@ class Graph {
 	 * needs: sposs(unsorted)
 	 * provides: svalues(unsorted), SampleValues
 	 **/
-	void constructSamples (const vector<SamplePos*> &sposs, vector<SampleValue**>& svalues) ;
+	void constructSamples (const std::vector<SamplePos*> &sposs, std::vector<SampleValue**>& svalues) ;
 
 	/**
 	 * construct vertex-related data structures
@@ -62,8 +62,8 @@ class Graph {
 	 * needs: sposs(unsorted), svalues(unsorted), SampleValues
 	 * provides: sposs(sorted), svalues(sorted), vc_set, VertexContents (values), Vertices (except SampleOccurenceIts)
 	 **/
-	void constructVertices (vector<SamplePos*>& sposs, vector<SampleValue**>& svalues,
-		hash_set<VertexContent*,hash<VertexContent*>,VertexContentsEqual>& vc_set) ;
+	void constructVertices (std::vector<SamplePos*>& sposs, std::vector<SampleValue**>& svalues,
+		sgi::hash_set<VertexContent*,sgi::hash<VertexContent*>,VertexContentsEqual>& vc_set) ;
 
 	/**
 	 * construct edge-related data structures
@@ -71,7 +71,7 @@ class Graph {
 	 * needs: vc_set, SampleValues, Vertices (except SampleOccurenceIts)
 	 * provides: SValueOppNeighs, SampleOccurences, VertexContents (degrees), Vertices (SampleOccurenceIts)
 	 **/
-	void constructEdges (const hash_set<VertexContent*,hash<VertexContent*>,VertexContentsEqual>& vc_set) ;
+	void constructEdges (const sgi::hash_set<VertexContent*,sgi::hash<VertexContent*>,VertexContentsEqual>& vc_set) ;
 
 	~Graph (void) ;
 
@@ -103,10 +103,10 @@ class Graph {
 	unsigned long getNumOppNeighs (const SampleValue* sv) const
 		{ return SValueOppNeighs[sv].size() ; } ;
 
-	const vector<SampleValue*>& getOppNeighs (const SampleValue *sv) const
+	const std::vector<SampleValue*>& getOppNeighs (const SampleValue *sv) const
 		{ return SValueOppNeighs[sv] ; } ;
 
-	const list<VertexContent*>& getVertexContents (const SampleValue *sv) const
+	const std::list<VertexContent*>& getVertexContents (const SampleValue *sv) const
 		{ return VertexContents[sv->getLabel()] ; } ;
 
 	/**
@@ -118,11 +118,11 @@ class Graph {
 	unsigned long getNumSampleOccurences (SampleValue *sv) const
 		{ return SampleOccurences[sv->getLabel()].size() ; } ;
 
-	const list<SampleOccurence>& getSampleOccurences (const SampleValue *sv) const
+	const std::list<SampleOccurence>& getSampleOccurences (const SampleValue *sv) const
 		{ return SampleOccurences[sv->getLabel()] ; } ;
 
-	list<SampleOccurence>::iterator markDeletedSampleOccurence (list<SampleOccurence>::iterator it) ;
-	list<SampleOccurence>::iterator unmarkDeletedSampleOccurence (list<SampleOccurence>::iterator it) ;
+	std::list<SampleOccurence>::iterator markDeletedSampleOccurence (std::list<SampleOccurence>::iterator it) ;
+	std::list<SampleOccurence>::iterator unmarkDeletedSampleOccurence (std::list<SampleOccurence>::iterator it) ;
 
 	void undeleteAllVertices (void) ;
 
@@ -133,26 +133,25 @@ class Graph {
 
 	private:
 	/// contains the vertices in this graph - Vertices[i] is the vertex with label i
-	vector<Vertex*> Vertices ;
+	std::vector<Vertex*> Vertices ;
 
-	/// contains the unique sample list - SampleValues[i] is the sample value with label i
-	vector<SampleValue*> SampleValues ;
+	/// contains the unique sample std::list - SampleValues[i] is the sample value with label i
+	std::vector<SampleValue*> SampleValues ;
 
 	SampleValueOppositeNeighbourhood SValueOppNeighs ;
 
 	/**
-	 * contains the unique vertex contents - the size of the vector is the number of unique samples (indexed by sample labels)
-	 * for a sample label lbl the list UniqueVertexContents[lbl] contains all UniqueVertextContent objects that contain
+	 * contains the unique vertex contents - the size of the std::vector is the number of unique samples (indexed by sample labels)
+	 * for a sample label lbl the std::list UniqueVertexContents[lbl] contains all UniqueVertextContent objects that contain
 	 * the sample described by lbl.
 	 * The main purpose of this data structure is to hold the vertex degrees.
 	 **/
-	vector<list<VertexContent*> > VertexContents ; // FIXME - ?? use vector instead of list - performance in time/memory ??
+	std::vector<std::list<VertexContent*> > VertexContents ; // FIXME - ?? use std::vector instead of std::list - performance in time/memory ??
 
-	vector<list<SampleOccurence> > SampleOccurences ;
+	std::vector<std::list<SampleOccurence> > SampleOccurences ;
 
 	/// contains those sample occurences that have been deleted from SampleOccurences
-	vector<list<SampleOccurence> > DeletedSampleOccurences ;
-
+	std::vector<std::list<SampleOccurence> > DeletedSampleOccurences ;
 
 	CvrStgFile *File ;
 	unsigned short SamplesPerEBit ;
@@ -175,7 +174,7 @@ class Graph {
 
 	unsigned long check_degree (Vertex *v) const ;
 
-	bool check_matching (vector<Edge*> *m) const ;
+	bool check_matching (std::vector<Edge*> *m) const ;
 
 	bool check_ds (void) const ;
 	bool check_sizes (void) const ;

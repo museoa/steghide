@@ -154,7 +154,7 @@ BmpRGBSampleValue::BmpRGBSampleValue (CvrStgFile *f, RGBTriple t)
 
 SampleValue *BmpRGBSampleValue::getNearestOppositeSampleValue () const
 {
-	vector<RGBTriple> candidates ;
+	std::vector<RGBTriple> candidates ;
 
 	addNOSCandidate (candidates, plus(Color.Red, 1), Color.Green, Color.Blue) ;
 	addNOSCandidate (candidates, minus(Color.Red, 1), Color.Green, Color.Blue) ;
@@ -167,7 +167,7 @@ SampleValue *BmpRGBSampleValue::getNearestOppositeSampleValue () const
 	return ((SampleValue*) new BmpRGBSampleValue (getFile(), candidates[rnd])) ;
 }
 
-void BmpRGBSampleValue::addNOSCandidate (vector<RGBTriple>& cands, unsigned char r, unsigned char g, unsigned char b) const
+void BmpRGBSampleValue::addNOSCandidate (std::vector<RGBTriple>& cands, unsigned char r, unsigned char g, unsigned char b) const
 {
 	RGBTriple cand (r, g, b) ;
 	if (cand != Color) {

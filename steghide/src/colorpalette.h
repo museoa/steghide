@@ -50,7 +50,7 @@ class ColorPalette {
 	void setBlue (unsigned int i, unsigned char b) ;
 	
 	private:
-	vector<RGBTriple> RGBTriples ;
+	std::vector<RGBTriple> RGBTriples ;
 } ;
 
 #endif // ndef SH_COLORPALETTE_H

@@ -50,8 +50,8 @@ VertexContent::VertexContent (Graph* g, SampleValue**& svs, SamplePos*& sposs)
 		SampleValues[i] = svs[i] ;
 	}
 
-	Occurences = list<Vertex*>() ;
-	DeletedOccurences = list<Vertex*>() ;
+	Occurences = std::list<Vertex*>() ;
+	DeletedOccurences = std::list<Vertex*>() ;
 
 	// calculate SelfDegree
 	SelfDegree = 0 ;
@@ -96,13 +96,13 @@ unsigned long VertexContent::getDegree (void) const
 	return retval ;
 }
 
-list<Vertex*>::iterator VertexContent::markDeletedFromOccurences (list<Vertex*>::iterator it)
+std::list<Vertex*>::iterator VertexContent::markDeletedFromOccurences (std::list<Vertex*>::iterator it)
 {
 	Occurences.erase (it) ;
 	return DeletedOccurences.insert (DeletedOccurences.end(), *it) ;
 }
 
-list<Vertex*>::iterator VertexContent::unmarkDeletedFromOccurences (list<Vertex*>::iterator it)
+std::list<Vertex*>::iterator VertexContent::unmarkDeletedFromOccurences (std::list<Vertex*>::iterator it)
 {
 	DeletedOccurences.erase (it) ;
 	return Occurences.insert (Occurences.end(), *it) ;
@@ -146,22 +146,22 @@ void VertexContent::print (unsigned short spc) const
 		space[i] = ' ' ;
 	}
 	space[spc] = '\0' ;
-	cerr << space << "VertexContent:" << endl ;
+	std::cerr << space << "VertexContent:" << std::endl ;
 	for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
 		SampleValues[i]->print (spc + 1) ;
 	}
 
-	cerr << space << " Occurences (Labels):"  ;
-	for (list<Vertex*>::const_iterator it = Occurences.begin() ; it != Occurences.end() ; it++) {
-		cerr << " " << (*it)->getLabel() ;
+	std::cerr << space << " Occurences (Labels):"  ;
+	for (std::list<Vertex*>::const_iterator it = Occurences.begin() ; it != Occurences.end() ; it++) {
+		std::cerr << " " << (*it)->getLabel() ;
 	}
-	cerr << endl ;
+	std::cerr << std::endl ;
 	
-	cerr << space << " DeletedOccurences (Labels):" ;
-	for (list<Vertex*>::const_iterator it = DeletedOccurences.begin() ; it != DeletedOccurences.end() ; it++) {
-		cerr << " " << (*it)->getLabel() ;
+	std::cerr << space << " DeletedOccurences (Labels):" ;
+	for (std::list<Vertex*>::const_iterator it = DeletedOccurences.begin() ; it != DeletedOccurences.end() ; it++) {
+		std::cerr << " " << (*it)->getLabel() ;
 	}
-	cerr << endl ;
+	std::cerr << std::endl ;
 }
 #endif
 
@@ -176,7 +176,7 @@ bool VertexContentsEqual::operator() (const VertexContent *vc1, const VertexCont
 //
 // struct hash<VertexContent*>
 //
-size_t hash<VertexContent*>::operator() (const VertexContent *vc) const
+size_t sgi::hash<VertexContent*>::operator() (const VertexContent *vc) const
 {
 	return vc->getHash() ;
 }

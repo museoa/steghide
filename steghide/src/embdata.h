@@ -30,7 +30,7 @@ class EmbData {
 	enum MODE { EMBED, EXTRACT, UNDEF } ;
 	enum STATE { READCRYPT, READLENOFNEMBBITS, READNEMBBITS, READENCRYPTED, END } ;
 	EmbData (void) ;
-	EmbData (MODE m, string fn = "") ;
+	EmbData (MODE m, std::string fn = "") ;
 
 	BitString getBitString (void) ;
 
@@ -61,7 +61,7 @@ class EmbData {
 	void write (void) ;
 
 	protected:
-	string stripDir (string s) ;
+	std::string stripDir (std::string s) ;
 	/**
 	 * return minimal number of bits needed to save x
 	 **/
@@ -87,9 +87,9 @@ class EmbData {
 	EncryptionMode EncMode ;
 	bool Compression ;
 	bool Checksum ;
-	string FileName ;
+	std::string FileName ;
 	/// contains the actual message to be embedded
-	vector<unsigned char> Data ;
+	std::vector<unsigned char> Data ;
 } ;
 
 #endif // ndef SH_EMBDATA_H

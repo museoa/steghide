@@ -46,10 +46,10 @@ WavFile::~WavFile ()
 	delete riffchhdr ;
 	delete FormatChunk ;
 	delete datachhdr ;
-	for (vector<WavChunkUnused*>::iterator i = UnusedBeforeData.begin() ; i != UnusedBeforeData.end() ; i++) {
+	for (std::vector<WavChunkUnused*>::iterator i = UnusedBeforeData.begin() ; i != UnusedBeforeData.end() ; i++) {
 		delete (*i) ;
 	}
-	for (vector<WavChunkUnused*>::iterator i = UnusedAfterData.begin() ; i != UnusedAfterData.end() ; i++) {
+	for (std::vector<WavChunkUnused*>::iterator i = UnusedAfterData.begin() ; i != UnusedAfterData.end() ; i++) {
 		delete (*i) ;
 	}
 }
@@ -237,7 +237,7 @@ void WavFile::writedata (void)
 			writepos += bytespersample ;
 		}
 
-		for (vector<WavChunkUnused*>::const_iterator i = UnusedAfterData.begin() ; i != UnusedAfterData.end() ; i++) {
+		for (std::vector<WavChunkUnused*>::const_iterator i = UnusedAfterData.begin() ; i != UnusedAfterData.end() ; i++) {
 			(*i)->write (getBinIO()) ;
 		}
 	}
@@ -320,7 +320,7 @@ void WavFile::writeheaders ()
 
 		FormatChunk->write (getBinIO()) ;
 
-		for (vector<WavChunkUnused*>::const_iterator i = UnusedBeforeData.begin() ; i != UnusedBeforeData.end() ; i++) {
+		for (std::vector<WavChunkUnused*>::const_iterator i = UnusedBeforeData.begin() ; i != UnusedBeforeData.end() ; i++) {
 			(*i)->write (getBinIO()) ;
 		}
 

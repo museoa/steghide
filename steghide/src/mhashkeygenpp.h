@@ -34,10 +34,10 @@ class MHashKeyGenpp {
 	void setKeySize (unsigned int KeySize) ;
 	void setKeyGenAlgorithm (keygenid algo) ;
 	void setHashAlgorithm (hashid hashalgo) ;
-	void setHashAlgorithms (vector<hashid> hashalgos) ;
-	void setSalt (vector<unsigned char> salt) ;
+	void setHashAlgorithms (std::vector<hashid> hashalgos) ;
+	void setSalt (std::vector<unsigned char> salt) ;
 
-	vector<unsigned char> createKey (string password) ;
+	std::vector<unsigned char> createKey (std::string password) ;
 
 	private:
 	bool ready ;

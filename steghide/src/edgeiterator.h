@@ -81,7 +81,7 @@ class EdgeIterator : private GraphAccess {
 	 * contains the iterator pointing to the sample occurence that constitutes
 	 * the edge together with SourceVertex/SourceSamleValueIndex
 	 **/
-	list<SampleOccurence>::const_iterator SampleOccurenceIt ;
+	std::list<SampleOccurence>::const_iterator SampleOccurenceIt ;
 
 	/// is true iff there are no more edges for this source vertex
 	bool Finished ;

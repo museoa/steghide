@@ -29,7 +29,7 @@ Vertex::Vertex (Graph* g, VertexLabel l, SamplePos* sposs, VertexContent *vc)
 	SamplePositions = sposs ;
 	Content = vc ;
 	VertexOccurenceIt = Content->addOccurence (this) ;
-	SampleOccurenceIts = new list<SampleOccurence>::iterator[SamplesPerVertex] ;
+	SampleOccurenceIts = new std::list<SampleOccurence>::iterator[SamplesPerVertex] ;
 	ShortestEdge = NULL ;
 	valid = true ;
 }
@@ -46,7 +46,7 @@ void Vertex::markDeleted ()
 	if (valid) {
 		// decrement neighbour degrees
 		for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
-			const vector<SampleValue*> oppneighs = TheGraph->getOppNeighs(getSampleValue(i)) ;
+			const std::vector<SampleValue*> oppneighs = TheGraph->getOppNeighs(getSampleValue(i)) ;
 			for (unsigned long j = 0 ; j < oppneighs.size() ; j++) {
 				oppneighs[j]->decNumEdges() ;
 			}
@@ -78,7 +78,7 @@ void Vertex::unmarkDeleted ()
 
 		// increment neighbour degrees
 		for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
-			const vector<SampleValue*> oppneighs = TheGraph->getOppNeighs(getSampleValue(i)) ;
+			const std::vector<SampleValue*> oppneighs = TheGraph->getOppNeighs(getSampleValue(i)) ;
 			for (unsigned long j = 0 ; j < oppneighs.size() ; j++) {
 				oppneighs[j]->incNumEdges() ;
 			}
@@ -111,22 +111,22 @@ void Vertex::print (unsigned short spc) const
 	}
 	space[spc] = '\0' ;
 
-	cerr << space << "Vertex:" << endl ;
-	cerr << space << " Label: " << getLabel() << endl ;
+	std::cerr << space << "Vertex:" << std::endl ;
+	std::cerr << space << " Label: " << getLabel() << std::endl ;
 	for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
-		cerr << space << " SamplePosition: " << getSamplePos(i) << endl ;
+		std::cerr << space << " SamplePosition: " << getSamplePos(i) << std::endl ;
 		getSampleValue(i)->print (spc + 1) ;
 	}
 }
 
 void Vertex::printEdges() const
 {
-	cerr << "edges of vertex with label " << getLabel() << endl ;
+	std::cerr << "edges of vertex with label " << getLabel() << std::endl ;
 	EdgeIterator edgeit (TheGraph, TheGraph->getVertex(getLabel())) ;
 	while (*edgeit != NULL) {
 		Edge* e = *edgeit ;
-		cerr << "  label of other vertex: " << e->getOtherVertex(this)->getLabel() << endl ;
-		cerr << "  weight: " << e->getWeight() << endl ;
+		std::cerr << "  label of other vertex: " << e->getOtherVertex(this)->getLabel() << std::endl ;
+		std::cerr << "  weight: " << e->getWeight() << std::endl ;
 		++edgeit ;
 	}
 }

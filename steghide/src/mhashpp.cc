@@ -48,13 +48,13 @@ void MHashpp::init (hashid id)
 	HashBytesValid = false ;
 }
 
-vector<unsigned char> MHashpp::end ()
+std::vector<unsigned char> MHashpp::end ()
 {
 	assert (hashing) ;
 
 	unsigned char *hash = (unsigned char*) mhash_end (HashD) ;
 	unsigned int n = getHashSize() ;
-	HashBytes = vector<unsigned char> (n) ;
+	HashBytes = std::vector<unsigned char> (n) ;
 	for (unsigned int i = 0 ; i < n ; i++) {
 		HashBytes[i] = hash[i] ;
 	}
@@ -71,7 +71,7 @@ unsigned int MHashpp::getHashSize (void)
 	return ((unsigned int) mhash_get_block_size (mhash_get_mhash_algo (HashD))) ;
 }
 
-MHashpp& MHashpp::operator<< (string v)
+MHashpp& MHashpp::operator<< (std::string v)
 {
 	assert (hashing) ;
 	mhash (HashD, v.data(), v.size()) ;
@@ -112,21 +112,21 @@ MHashpp& MHashpp::operator<< (MHashppCommand c)
 	return *this ;
 }
 
-string MHashpp::getAlgorithmName ()
+std::string MHashpp::getAlgorithmName ()
 {
 	assert (hashing) ;
 	return getAlgorithmName (mhash_get_mhash_algo (HashD)) ;
 }
 
-string MHashpp::getAlgorithmName (hashid id)
+std::string MHashpp::getAlgorithmName (hashid id)
 {
 	char *name = mhash_get_hash_name (id) ;
-	string retval ;
+	std::string retval ;
 	if (name == NULL) {
-		retval = string ("<algorithm not found>") ;
+		retval = std::string ("<algorithm not found>") ;
 	}
 	else {
-		retval = string (name) ;
+		retval = std::string (name) ;
 	}
 	free (name) ;
 	return retval ;
@@ -138,7 +138,7 @@ BitString MHashpp::getHashBits ()
 	return BitString (HashBytes) ;
 }
 
-vector<unsigned char> MHashpp::getHashBytes()
+std::vector<unsigned char> MHashpp::getHashBytes()
 {
 	assert (HashBytesValid) ;
 	return HashBytes ;

@@ -65,23 +65,23 @@ void Session::run ()
 void Session::printEncInfo ()
 {
 #ifdef USE_LIBMCRYPT
-	vector<string> algos = MCryptpp::getListAlgorithms() ;
-	vector<string> modes = MCryptpp::getListModes() ;
+	std::vector<std::string> algos = MCryptpp::getListAlgorithms() ;
+	std::vector<std::string> modes = MCryptpp::getListModes() ;
 
 	printf (_("encryption algorithms:\n"
 		"<algorithm>: <supported modes>...\n")) ;
 
-	for (vector<string>::iterator a = algos.begin() ; a != algos.end() ; a++) {
+	for (std::vector<std::string>::iterator a = algos.begin() ; a != algos.end() ; a++) {
 		if (EncryptionAlgorithm::isValidStringRep (*a)) { // invalid if supported by libmcrypt but not by steghide, e.g. blowfish-compat
-			cout << *a << ":" ;
-			for (vector<string>::iterator m = modes.begin() ; m != modes.end() ; m++) {
+			std::cout << *a << ":" ;
+			for (std::vector<std::string>::iterator m = modes.begin() ; m != modes.end() ; m++) {
 				if (EncryptionMode::isValidStringRep (*m)) {
 					if (MCryptpp::AlgoSupportsMode (*a, *m)) {
-						cout << " " << *m ;
+						std::cout << " " << *m ;
 					}
 				}
 			}
-			cout << endl ;
+			std::cout << std::endl ;
 		}
 	}
 #else
@@ -93,7 +93,7 @@ void Session::printEncInfo ()
 
 void Session::printVersion ()
 {
-	cout << "steghide version " << VERSION << endl ;
+	std::cout << "steghide version " << VERSION << std::endl ;
 }
 
 // TODO - test short und long arguments
@@ -105,7 +105,7 @@ void Session::printHelp ()
 		"the first argument must be one of the following:\n"
 		" embed, --embed          embed data\n"
 		" extract, --extract      extract data\n"
-		" encinfo, --encinfo      display a list of supported encryption algorithms\n"
+		" encinfo, --encinfo      display a std::list of supported encryption algorithms\n"
 		" version, --version      display version information\n"
 		" license, --license      display steghide's license\n"
 		" help, --help            display this usage information\n"

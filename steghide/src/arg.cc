@@ -18,7 +18,6 @@
  *
  */
 
-#include <string>
 #include "arg.h"
 
 template<class T> Arg<T>::Arg (void)

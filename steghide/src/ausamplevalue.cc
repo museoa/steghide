@@ -59,7 +59,7 @@ float AuSampleValue::calcDistance (const SampleValue *s) const
 {
 	const AuSampleValue* sample = dynamic_cast<const AuSampleValue*> (s) ;
 	assert (sample != NULL) ;
-	return (abs (((float) Value) - ((float) sample->getValue()))) ;
+	return (fabs (((float) Value) - ((float) sample->getValue()))) ;
 }
 
 float AuSampleValue::getRadius () const

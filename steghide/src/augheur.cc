@@ -27,12 +27,11 @@ AugmentingPathHeuristic::AugmentingPathHeuristic (Graph *g, Matching *m)
 	TheMatching = m ;
 
 	unsigned long numvertices = g->getNumVertices() ;
-	VertexOnPath = vector<bool> (numvertices, false) ;
+	VertexOnPath = std::vector<bool> (numvertices, false) ;
 
 	TimeCounter = 0 ;
-	TimeCounters = vector<UWORD32> (numvertices, 0) ;
+	TimeCounters = std::vector<UWORD32> (numvertices, 0) ;
 
-	// FIXME - eigentlich hier kein init nötig, wird in getNextEdge dann ohnehin gemacht
 	EdgeIterators.reserve (numvertices) ;
 	for (VertexLabel l = 0 ; l < numvertices ; l++) {
 		EdgeIterators.push_back (EdgeIterator (g, g->getVertex(l))) ;
@@ -41,10 +40,10 @@ AugmentingPathHeuristic::AugmentingPathHeuristic (Graph *g, Matching *m)
 
 void AugmentingPathHeuristic::run ()
 {
-	const list<Vertex*> ExposedVertices = TheMatching->getExposedVertices() ;
-	for (list<Vertex*>::const_iterator expv = ExposedVertices.begin() ; expv != ExposedVertices.end() ; expv++) {
+	const std::list<Vertex*> ExposedVertices = TheMatching->getExposedVertices() ;
+	for (std::list<Vertex*>::const_iterator expv = ExposedVertices.begin() ; expv != ExposedVertices.end() ; expv++) {
 		if (TheMatching->isExposed (*expv)) {
-			vector<Edge*>* path = searchAugmentingPath (*expv) ;
+			std::vector<Edge*>* path = searchAugmentingPath (*expv) ;
 			if (!path->empty()) {
 				TheMatching->augment (*path) ;
 				delete path ;
@@ -53,11 +52,11 @@ void AugmentingPathHeuristic::run ()
 	}
 }
 
-vector<Edge*>* AugmentingPathHeuristic::searchAugmentingPath (Vertex *v0)
+std::vector<Edge*>* AugmentingPathHeuristic::searchAugmentingPath (Vertex *v0)
 {
 	TimeCounter++ ;
 
-	vector<Edge*>* path = new vector<Edge*>() ;
+	std::vector<Edge*>* path = new std::vector<Edge*>() ;
 	Edge *e = NULL ;
 
 	markVisited (v0) ;
@@ -87,7 +86,7 @@ vector<Edge*>* AugmentingPathHeuristic::searchAugmentingPath (Vertex *v0)
 				path->push_back (e_next) ;
 				w = e_next->getOtherVertex (w_next) ;
 				markVisited (w) ;
-				VertexOnPath[w->getLabel()] ;
+				VertexOnPath[w->getLabel()] = true ;
 			}
 			else {
 				path->pop_back() ;
@@ -111,19 +110,19 @@ Edge *AugmentingPathHeuristic::getNextEdge (Vertex *v)
 	bool found = false ;
 	do {
 		e = *EdgeIterators[v->getLabel()] ;
-		++EdgeIterators[v->getLabel()] ;
-
 		if (e == NULL) {
 			// no more unexamined edges for this vertex
 			found = true ;
-			e = NULL ;
-		}
-		else if (isVisited (e->getOtherVertex (v)) && VertexOnPath[e->getOtherVertex(v)->getLabel()]) {
-			delete e ;
 		}
 		else {
-			// edge is admissible
-			found = true ;
+			if (isVisited (e->getOtherVertex (v)) && VertexOnPath[e->getOtherVertex(v)->getLabel()]) {
+				delete e ;
+			}
+			else {
+				// edge is admissible
+				found = true ;
+			}
+			++EdgeIterators[v->getLabel()] ;
 		}
 	} while (!found) ;
 	return e ;
