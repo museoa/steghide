@@ -1,0 +1,25 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(bufmanag.c)
+AM_INIT_AUTOMAKE(steghide, 0.4.1)
+
+dnl Checks for programs.
+AC_PROG_CC
+AC_PROG_INSTALL
+
+dnl Checks for libraries.
+
+dnl Checks for header files.
+AC_HEADER_STDC
+AC_HEADER_SYS_WAIT
+AC_CHECK_HEADERS(mcrypt.h mhash.h limits.h)
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+
+dnl Checks for library functions.
+AC_CHECK_LIB(mhash, mhash_init)
+AC_CHECK_LIB(dld, dld_init)
+AC_CHECK_LIB(ltdl, lt_dlinit)
+AC_CHECK_LIB(mcrypt, mcrypt_module_open, , , -lltdl)
+
+AC_OUTPUT(Makefile)
