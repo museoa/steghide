@@ -32,9 +32,22 @@ EdgeIterator::EdgeIterator (Graph *g, Vertex *v)
 	reset() ;
 }
 
+EdgeIterator::EdgeIterator (const EdgeIterator& eit)
+	: GraphAccess (eit)
+{
+	SrcVertex = eit.SrcVertex ;
+	SrcIndex = eit.SrcIndex ;
+	SVOppNeighsIndices = new unsigned long[eit.SamplesPerVertex] ;
+	for (unsigned short i = 0 ; i < eit.SamplesPerVertex ; i++) {
+		SVOppNeighsIndices[i] = eit.SVOppNeighsIndices[i] ;
+	}
+	Finished = eit.Finished ;
+	SampleOccurenceIt = eit.SampleOccurenceIt ;
+}
+
 EdgeIterator::~EdgeIterator ()
 {
-	// TODO delete[] SVOppNeighsIndices ;
+	delete[] SVOppNeighsIndices ;
 }
 
 Edge* EdgeIterator::operator* ()

@@ -49,6 +49,11 @@ class Vertex : private GraphAccess {
 	 **/
 	Vertex (Graph* g, VertexLabel l, SamplePos* sposs, VertexContent* vc) ;
 
+	/**
+	 * copy constructor
+	 **/
+	Vertex (const Vertex& v) ;
+
 	~Vertex (void) ;
 
 	/**

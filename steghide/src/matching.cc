@@ -86,7 +86,10 @@ Matching& Matching::augment (const std::vector<Edge*> &path)
 			VertexLabel v2lbl = v2->getLabel() ;
 
 			// remove old edge from matching
-			MatchingEdges.erase (VertexInformation[v2lbl].getMatchedIterator()) ; // FIXME - delete this edge
+			// FIXME - delete edge - doesn't work on Sun (?)
+			MatchingEdges.erase (VertexInformation[v2lbl].getMatchedIterator()) ;
+			//std::list<Edge*>::iterator delme = MatchingEdges.erase (VertexInformation[v2lbl].getMatchedIterator()) ;
+			//delete *delme ;
 
 			// v2 is exposed now (for one iteration)
 			std::list<Vertex*>::iterator expvit2 = ExposedVertices.insert (ExposedVertices.end(), v2) ;
@@ -130,7 +133,7 @@ void Matching::printVerboseInfo (void) const
 		VerboseMessage vmsg8 (_("size of the matching: %lu"), getCardinality()) ;
 		vmsg8.printMessage() ;
 		unsigned long expvertices = TheGraph->getNumVertices() - (2 * getCardinality()) ;
-		VerboseMessage vmsg9 (_("number of unmatched vertices: %lu (%.1f%)"), expvertices, 100.0 * ((float) expvertices / (float) TheGraph->getNumVertices())) ;
+		VerboseMessage vmsg9 (_("number of unmatched vertices: %lu (%.1f%%)"), expvertices, 100.0 * ((float) expvertices / (float) TheGraph->getNumVertices())) ;
 		vmsg9.printMessage() ;
 
 		float sumweights = 0 ;

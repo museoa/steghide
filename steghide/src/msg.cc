@@ -80,7 +80,9 @@ std::string MessageBase::vcompose (const char *msgfmt, va_list ap) const
 {
 	char *str = new char[MsgMaxSize] ;
 	vsnprintf (str, MsgMaxSize, msgfmt, ap) ;
-	return std::string (str) ;
+	std::string retval (str) ;
+	delete[] str ;
+	return retval ;
 }
 
 //

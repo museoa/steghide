@@ -48,18 +48,19 @@ void MHashpp::init (hashid id)
 	HashBytesValid = false ;
 }
 
-std::vector<unsigned char> MHashpp::end ()
+const std::vector<BYTE>& MHashpp::end ()
 {
 	assert (hashing) ;
 
-	unsigned char *hash = (unsigned char*) mhash_end (HashD) ;
 	unsigned int n = getHashSize() ;
 	HashBytes = std::vector<unsigned char> (n) ;
+	unsigned char *hash = (unsigned char*) mhash_end (HashD) ;
+	hashing = false ;
 	for (unsigned int i = 0 ; i < n ; i++) {
 		HashBytes[i] = hash[i] ;
 	}
+	free (hash) ;
 
-	hashing = false ;
 	HashBytesValid = true ;
 
 	return HashBytes ;
@@ -138,7 +139,7 @@ BitString MHashpp::getHashBits ()
 	return BitString (HashBytes) ;
 }
 
-std::vector<unsigned char> MHashpp::getHashBytes()
+const std::vector<BYTE>& MHashpp::getHashBytes()
 {
 	assert (HashBytesValid) ;
 	return HashBytes ;

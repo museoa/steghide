@@ -84,14 +84,21 @@ void CvrStgFile::write (void)
 	}
 }
 
-/* 'creates' a stego file from a cover file */
 void CvrStgFile::transform (std::string stgfn)
 {
 	delete getBinIO() ;
 	setBinIO (new BinaryIO (stgfn, BinaryIO::WRITE)) ;
 }
 
-// guesses the file format by looking for magic values in the first few bytes
+// FIXME - implement this in ...File to save some time - include tests: implementation in ...File is equivalent to getSample(pos)-> getBit()
+Bit CvrStgFile::getSampleBit (SamplePos pos)
+{
+	SampleValue* sv = getSampleValue(pos) ;
+	Bit retval = sv->getBit() ;
+	delete sv ;
+	return retval ;
+}
+
 int CvrStgFile::guessff (BinaryIO *io)
 {
 	char buf[4] = { '\0', '\0', '\0', '\0' } ;

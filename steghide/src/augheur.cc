@@ -46,8 +46,8 @@ void AugmentingPathHeuristic::run ()
 			std::vector<Edge*>* path = searchAugmentingPath (*expv) ;
 			if (!path->empty()) {
 				TheMatching->augment (*path) ;
-				delete path ;
 			}
+			delete path ;
 		}
 	}
 }
@@ -59,15 +59,9 @@ std::vector<Edge*>* AugmentingPathHeuristic::searchAugmentingPath (Vertex *v0)
 	std::vector<Edge*>* path = new std::vector<Edge*>() ;
 	Edge *e = NULL ;
 
-	markVisited (v0) ;
-	VertexOnPath[v0->getLabel()] = true ;
-
 	while ((e = getNextEdge(v0)) != NULL) {
-		path->push_back (e) ;
-
+		pushOnPath (path, e) ;
 		Vertex *w = e->getOtherVertex (v0) ;
-		markVisited (w) ;
-		VertexOnPath[w->getLabel()] = true ;
 
 		while (!path->empty()) {
 			if (TheMatching->isExposed(w)) {
@@ -75,24 +69,28 @@ std::vector<Edge*>* AugmentingPathHeuristic::searchAugmentingPath (Vertex *v0)
 			}
 
 			// w is matched
+			markVisited (w) ;
 			e = TheMatching->getMatchingEdge (w) ;
-			path->push_back (e) ;
 			Vertex *w_next = e->getOtherVertex (w) ;
-			markVisited (w_next) ;
-			VertexOnPath[w_next->getLabel()] = true ;
+			pushOnPath (path, e) ;
 
 			Edge* e_next = getNextEdge (w_next) ;
 			if (e_next != NULL) {
-				path->push_back (e_next) ;
+				pushOnPath (path, e_next) ;
 				w = e_next->getOtherVertex (w_next) ;
-				markVisited (w) ;
-				VertexOnPath[w->getLabel()] = true ;
 			}
 			else {
-				path->pop_back() ;
-				path->pop_back() ;
 				VertexOnPath[e->getVertex1()->getLabel()] = false ;
 				VertexOnPath[e->getVertex2()->getLabel()] = false ;
+				
+				// matched edge: pop from path
+				assert (path->back() == e) ;
+				path->pop_back() ;
+
+				// unmatched edge: pop from path and delete (has been created only for path)
+				Edge *delme = path->back() ;
+				path->pop_back() ;
+				// FIXME do this - delete delme ;
 			}
 		}
 	}
@@ -100,10 +98,18 @@ std::vector<Edge*>* AugmentingPathHeuristic::searchAugmentingPath (Vertex *v0)
 	return path ;
 }
 
+void AugmentingPathHeuristic::pushOnPath (std::vector<Edge*>* path, Edge* e)
+{
+	path->push_back (e) ;
+	VertexOnPath[e->getVertex1()->getLabel()] = true ;
+	VertexOnPath[e->getVertex2()->getLabel()] = true ;
+}
+
 Edge *AugmentingPathHeuristic::getNextEdge (Vertex *v)
 {
 	if (!isVisited(v)) {
 		EdgeIterators[v->getLabel()].reset() ;
+		markVisited(v) ;
 	}
 
 	Edge *e = NULL ;
@@ -122,7 +128,7 @@ Edge *AugmentingPathHeuristic::getNextEdge (Vertex *v)
 				// edge is admissible
 				found = true ;
 			}
-			++EdgeIterators[v->getLabel()] ;
+			++(EdgeIterators[v->getLabel()]) ;
 		}
 	} while (!found) ;
 	return e ;

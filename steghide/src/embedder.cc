@@ -87,6 +87,8 @@ void Embedder::embed ()
 		embedExposedVertex (*it) ;
 	}
 
+	delete M ;
+
 	TheCvrStgFile->transform (Args.StgFn.getValue()) ;
 	TheCvrStgFile->write() ;
 }
@@ -109,6 +111,9 @@ const Matching *Embedder::calculateMatching ()
 		ch.run() ;
 
 		if ((bestmatching == NULL) || (ch.getMatching()->getCardinality() > bestmatching->getCardinality())) {
+			if (bestmatching != NULL) {
+				delete bestmatching ;
+			}
 			bestmatching = ch.getMatching() ;
 		}
 
@@ -141,13 +146,11 @@ const Matching *Embedder::calculateMatching ()
  
 void Embedder::embedEdge (Edge *e)
 {
-	SamplePos samplepos1 = e->getSamplePos (e->getVertex1()) ;
-	SamplePos samplepos2 = e->getSamplePos (e->getVertex2()) ;
-	printDebug (1, "embedding edge with sample positions %lu and %lu.", samplepos1, samplepos2) ;
+	Vertex* v1 = e->getVertex1() ;
+	Vertex* v2 = e->getVertex2() ;
 
-	SampleValue *tmp = TheCvrStgFile->getSampleValue (samplepos1) ;
-	TheCvrStgFile->replaceSample (samplepos1, TheCvrStgFile->getSampleValue (samplepos2)) ;
-	TheCvrStgFile->replaceSample (samplepos2, tmp) ;
+	TheCvrStgFile->replaceSample (e->getSamplePos(v1), e->getReplacingSampleValue (v1)) ;
+	TheCvrStgFile->replaceSample (e->getSamplePos(v2), e->getReplacingSampleValue (v2)) ;
 }
 
 void Embedder::embedExposedVertex (Vertex *v)

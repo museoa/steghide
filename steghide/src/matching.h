@@ -107,8 +107,8 @@ class Matching : private GraphAccess {
 	 * in the matching and edges with even indices are and the path has
 	 * an odd length.
 	 *
-	 * The Edge objects in path may be deleted at a later time
-	 * by the Matching object.
+	 * The Edge objects in path must not be deleted by the caller, they
+	 * will be deleted later by the Matching object.
 	 **/
 	Matching &augment (const std::vector<Edge*>& path) ;
 

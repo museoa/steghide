@@ -24,6 +24,7 @@
 #include <mhash.h>
 
 #include "bitstring.h"
+#include "common.h"
 
 enum MHashppCommand { endhash } ;
 
@@ -34,7 +35,7 @@ class MHashpp {
 
 	void init (hashid a) ;
 
-	std::vector<unsigned char> end (void) ;
+	const std::vector<BYTE>& end (void) ;
 
 	/**
 	 * feed the std::string v to the hashing algorithm
@@ -66,7 +67,7 @@ class MHashpp {
 	 **/
 	BitString getHashBits (void) ;
 
-	std::vector<unsigned char> getHashBytes (void) ;
+	const std::vector<BYTE>& getHashBytes (void) ;
 
 	/**
 	 * get the hash size

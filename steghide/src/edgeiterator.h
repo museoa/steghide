@@ -46,6 +46,11 @@ class EdgeIterator : private GraphAccess {
 	 **/
 	EdgeIterator (Graph *g, Vertex *v) ;
 
+	/**
+	 * the copy constructor
+	 **/
+	EdgeIterator (const EdgeIterator& eit) ;
+
 	~EdgeIterator (void) ;
 
 	/**
@@ -77,14 +82,14 @@ class EdgeIterator : private GraphAccess {
 	/// contains (for every sample value) an index to the current opposite neighbour
 	unsigned long* SVOppNeighsIndices ;
 
+	/// is true iff there are no more edges for this source vertex
+	bool Finished ;
+
 	/**
 	 * contains the iterator pointing to the sample occurence that constitutes
 	 * the edge together with SourceVertex/SourceSamleValueIndex
 	 **/
 	std::list<SampleOccurence>::const_iterator SampleOccurenceIt ;
-
-	/// is true iff there are no more edges for this source vertex
-	bool Finished ;
 
 	/**
 	 * find the shortest edge, starting the search at SVOppNeighsIndices[0...k]

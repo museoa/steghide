@@ -66,6 +66,12 @@ Graph::Graph (CvrStgFile *cvr, const BitString& emb)
 	constructSamples (sposs, svalues) ;
 	constructVertices (sposs, svalues, vc_set) ;
 	constructEdges (vc_set) ;
+
+	// free svalues
+	unsigned long nvertices = sposs.size() ;
+	for (unsigned long i = 0 ; i < nvertices ; i++) {
+		delete[] svalues[i] ;
+	}
 }
 
 void Graph::constructSamples (const std::vector<SamplePos*>& sposs,

@@ -65,13 +65,11 @@ class Edge {
 
 	/**
 	 * get the old sample value that will be replaced to embed the bit represented by the vertex v
-	 * warning: this function must be used before the sample has been replaced in the cvrstgfile
 	 **/
 	SampleValue *getOriginalSampleValue (Vertex *v) const ;
 
 	/**
 	 * get the sample value that should replace the previous sample value to embed the bit represented by the vertex v
-	 * warning: this function must be used before the sample has been replaced in the cvrstgfile
 	 **/
 	SampleValue *getReplacingSampleValue (Vertex *v) const ;
 

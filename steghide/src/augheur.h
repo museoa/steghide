@@ -45,6 +45,8 @@ class AugmentingPathHeuristic : private GraphAccess {
 
 	Edge* getNextEdge (Vertex *v) ;
 
+	void pushOnPath (std::vector<Edge*>* path, Edge* e) ;
+
 	void markVisited (Vertex *v)
 		{ TimeCounters[v->getLabel()] = TimeCounter ; } ;
 

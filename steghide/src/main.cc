@@ -62,17 +62,17 @@ int main (int argc, char *argv[])
 {
 	try {
 		gettext_init () ;
-        Args.parse (argc, argv) ;
+		Args.parse (argc, argv) ;
 
-        Session s ;
-        s.run() ;
-    }
-    catch (SteghideError& e) {
-        e.printMessage() ;
-        exit(EXIT_FAILURE) ;
-    }
+		Session s ;
+		s.run() ;
+	}
+	catch (SteghideError& e) {
+		e.printMessage() ;
+		exit(EXIT_FAILURE) ;
+	}
 
-    exit(EXIT_SUCCESS) ;
+	exit(EXIT_SUCCESS) ;
 }
 
 static void gettext_init (void)

@@ -34,9 +34,17 @@ Vertex::Vertex (Graph* g, VertexLabel l, SamplePos* sposs, VertexContent *vc)
 	valid = true ;
 }
 
+Vertex::Vertex (const Vertex& v)
+{
+	// the copy constructor should never be called because
+	// Vertex Occurences in corresponding VertexContent would be inconsistent
+	assert (0) ;
+}
+
 Vertex::~Vertex ()
 {
-	// TODO delete[] SampleOccurenceIts ;
+	delete[] SampleOccurenceIts ;
+	delete[] SamplePositions ;
 }
 
 void Vertex::markDeleted ()
@@ -90,10 +98,14 @@ void Vertex::unmarkDeleted ()
 
 void Vertex::updateShortestEdge ()
 {
+#if 0
+FIXME - do this
+	if (ShortestEdge != NULL) {
+		delete ShortestEdge ;
+	}
+#endif
+
 	if (getDegree() == 0) {
-		if (ShortestEdge != NULL) {
-			delete ShortestEdge ;
-		}
 		ShortestEdge = NULL ;
 	}
 	else {
