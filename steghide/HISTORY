@@ -1,3 +1,9 @@
+steghide 0.4.4 :
+================
+
+* performance rewrite of memory management code
+
+
 steghide 0.4.3 :
 ================
 

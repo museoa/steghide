@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.3 - a steganography program
+ * steghide 0.4.4 - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -561,7 +561,7 @@ static void fillsthdr (unsigned long nbytescvrbuf, unsigned long nbytesplain, un
 	}
 
 	/* compression is not yet implemented but included
-	   to enable 0.4.3 to read not compressed post 0.4.3 files */
+	   to enable 0.4.4 to read not compressed post 0.4.4 files */
 	sthdr.compression = COMPR_NONE ;
 
 	if (args.checksum.value) {
@@ -574,14 +574,14 @@ static void fillsthdr (unsigned long nbytescvrbuf, unsigned long nbytesplain, un
 
 static void version (void)
 {
-	printf ("steghide version 0.4.3\n") ;
+	printf ("steghide version 0.4.4\n") ;
 
 	return ;
 }
 
 static void usage (void)
 {
-	printf ("steghide version 0.4.3\n\n") ;
+	printf ("steghide version 0.4.4\n\n") ;
 
 	printf ("the first argument must be one of the following:\n") ;
 	printf (" embed, --embed          embed plain data in cover data\n") ;

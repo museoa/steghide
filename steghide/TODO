@@ -17,4 +17,7 @@ These are things that I plan to implement in the future:
 
 * take random data from /dev/random or /dev/urandom if available
 
+* support for RLE-encoded bmps
+
+
 ? allow PGP encryption of data and/or stego header

@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.3 - a steganography program
+ * steghide 0.4.4 - a steganography program
  * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -340,7 +340,7 @@ CVRFILE *readcvrfile (char *filename)
 	readheaders (cvrfile) ;
 
 	/* read the file (this fills the rest of cvrfile) */
-	cvrfile->cvrdata = bufcreate (0) ; /* FIXME - length should be set intelligently in ???_readfile */
+	cvrfile->cvrdata = bufcreate (0) ; /* FIXME - length should be set intelligently in *_readfile */
 	if (noncvrbufuse[cvrfile->fileformat]) {
 		cvrfile->noncvrdata = bufcreate (0) ;
 	}
