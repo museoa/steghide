@@ -31,6 +31,11 @@ class Matching ;
 
 /**
  * \class AugmentingPathHeuristic
+ * \brief a matching algorithm implementing a heuristic search for augmenting paths
+ *
+ * This class implements the heuristic augmenting path search presented by
+ * Rolf H. Moehring and Matthias Mueller-Hannemann in their paper: "Cardinality
+ * Matching: Heuristic Search for Augmenting Paths".
  **/
 class AugmentingPathHeuristic : public MatchingAlgorithm {
 	public:

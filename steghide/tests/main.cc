@@ -21,11 +21,13 @@
 #include "TestSuite.h"
 
 #include "AuFileTest.h"
+#include "AugmentingPathHeuristicTest.h"
 #include "BitStringTest.h"
 #include "BmpRGBSampleValueTest.h"
 #include "BmpPaletteSampleValueTest.h"
 #include "BmpOS2FileTest.h"
 #include "BmpWinFileTest.h"
+#include "ColorPaletteTest.h"
 #include "GraphTest.h"
 #include "MatchingTest.h"
 #include "MHashPPTest.h"
@@ -56,6 +58,9 @@ int main (int argc, char *argv[])
 
 	SelectorTest st (&ts) ;
 	ts.addUnitTest (&st) ;
+
+	ColorPaletteTest cpt  (&ts) ;
+	ts.addUnitTest (&cpt) ;
 
 	// SampleValues
 	BmpRGBSampleValueTest rgbsvt (&ts) ;
@@ -89,6 +94,9 @@ int main (int argc, char *argv[])
 
 	MatchingTest mt (&ts) ;
 	ts.addUnitTest (&mt) ;
+
+	AugmentingPathHeuristicTest apht (&ts) ;
+	ts.addUnitTest (&apht) ;
 
 	ts.run() ;
 

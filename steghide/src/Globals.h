@@ -29,7 +29,7 @@ class Graph ;
  * \brief some useful pointers that should be global
  *
  * This class provides some useful global variables. They are not static,
- * instead there exists a GlobVars pointer to make it easy to use
+ * instead there exists a global Globs object to make it easy to use
  * different Globals objects during one execution (this is necessary for
  * some unit-tests).
  *
