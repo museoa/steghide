@@ -36,6 +36,7 @@ class BmpOS2FileTest : public CvrStgFileTest {
 	void testReadEmbedExtract (void) ;
 	void testReadEmbedWriteReadExtract (void) ;
 	void testPosition (void) ;
+	void testReadExtractCompare (void) ;
 
 	private:
 	BitString *bs1, *bs2, *bs3, *bs4 ;

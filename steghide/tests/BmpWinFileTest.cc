@@ -123,7 +123,7 @@ void BmpWinFileTest::testPosition()
 	addTestResult (genericTestPosition (f4, 2303, new BmpRGBSampleValue (75, 107, 158))) ;
 }
 
-void BmpWinFileTest::TestReadExtractCompare()
+void BmpWinFileTest::testReadExtractCompare()
 {
 	// TODO
 }

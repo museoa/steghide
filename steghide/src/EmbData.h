@@ -34,7 +34,7 @@ class BitString ;
 class EmbData {
 	public:
 	enum MODE { EMBED, EXTRACT } ;
-	enum STATE { READ_ENCINFO, READ_NPLAINBITS, READ_ENCRYPTED, END } ;
+	enum STATE { READ_VERSION, READ_ENCINFO, READ_NPLAINBITS, READ_ENCRYPTED, END } ;
 
 	/**
 	 * construct a new EmbData object
@@ -84,6 +84,8 @@ class EmbData {
 	static const unsigned int NBitsNUncompressedBits = 32 ;
 	/// size of a crc32 checksum in bits
 	static const unsigned int NBitsCrc32 = 32 ;
+	/// version of this steghide embedding (stego compatibility of EmbData)
+	static const unsigned short CodeVersion = 0 ;
 
 	MODE Mode ;
 	STATE State ;
@@ -93,6 +95,9 @@ class EmbData {
 	unsigned long NumBitsNeeded ;
 
 	std::string Passphrase ;
+
+	/// version read from input bitstring
+	unsigned short Version ;
 
 	EncryptionAlgorithm EncAlgo ;
 	EncryptionMode EncMode ;

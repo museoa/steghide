@@ -45,6 +45,7 @@ void EmbDataTest::testEmbedding ()
 		emb.setData (data) ;
 
 		BitString shouldbe ;
+		shouldbe.append (false) ; // version
 		shouldbe.append ((BYTE) 0, 5) ; // encalgo
 		shouldbe.append ((BYTE) 0, 3) ; // encmode
 		shouldbe.append ((UWORD32) 82, 32) ; // nplainbits
@@ -62,6 +63,7 @@ void EmbDataTest::testExtracting ()
 {
 	{
 		BitString bs ;
+		bs.append (false) ; // version
 		bs.append ((BYTE) 0, 5) ; // encalgo
 		bs.append ((BYTE) 1, 3) ; // encmode
 		bs.append ((UWORD32) 82, 32) ; // nplainbits

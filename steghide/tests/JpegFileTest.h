@@ -36,6 +36,7 @@ class JpegFileTest : public CvrStgFileTest {
 	void testReadEmbedExtract (void) ;
 	void testReadEmbedWriteReadExtract (void) ;
 	void testPosition (void) ;
+	void testReadExtractCompare (void) ;
 
 	private:
 #if 0

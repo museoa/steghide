@@ -45,15 +45,14 @@ ProgressOutput::ProgressOutput ()
 void ProgressOutput::update (float rate, bool done)
 {
 	if (done) {
-		printf (_("embedding %s in %s...%.1f%% done\n"), EmbString.c_str(), CvrString.c_str(), rate * 100.0) ;
+		printf (_("\rembedding %s in %s...%.1f%% done\n"), EmbString.c_str(), CvrString.c_str(), rate * 100.0) ;
 		fflush (stdout) ;
 	}
 	else {
 		time_t now = time(NULL) ;
-		std::cerr << "update with " << rate << " at " << now << std::endl ;
 		if (LastUpdate < now) {
 			LastUpdate = now ;
-			printf (_("embedding %s in %s...%.1f%%"), EmbString.c_str(), CvrString.c_str(), rate * 100.0) ;
+			printf (_("\rembedding %s in %s...%.1f%%"), EmbString.c_str(), CvrString.c_str(), rate * 100.0) ;
 			fflush (stdout) ;
 		}
 	}

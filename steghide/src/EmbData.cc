@@ -30,8 +30,9 @@ EmbData::EmbData (MODE m, std::string pp, std::string fn)
 	: Mode(m), Passphrase(pp), FileName(fn)
 {
 	if (m == EXTRACT) {
-		NumBitsNeeded = EncryptionAlgorithm::IRep_size + EncryptionMode::IRep_size ;
-		State = READ_ENCINFO ;
+		NumBitsNeeded = 1 ;
+		Version = 0 ;
+		State = READ_VERSION ;
 	}
 }
 
@@ -53,12 +54,31 @@ void EmbData::addBits (BitString bits)
 	myassert (bits.getLength() == NumBitsNeeded) ;
 
 #ifdef DEBUG
-	printDebug (1, "EmbData::addBits called with\n") ;
+	printDebug (1, "EmbData::addBits called with") ;
 	printDebug (1, " bits:") ;
 	bits.printDebug (1, 2) ;
 #endif
 
 	switch (State) {
+		case READ_VERSION:
+		{
+#ifdef DEBUG
+			printDebug (1, "in the READ_VERSION state") ;
+#endif
+			if (bits[0] == true) {
+				Version++ ;
+				// leave NumBitsNeeded at value 1 and State at READ_VERSION
+			}
+			else {
+				if (Version > CodeVersion) {
+					throw SteghideError (_("attempting to read an embedding of version %d but steghide %s only supports embeddings of version %d."), Version, VERSION, CodeVersion) ;
+				}
+				NumBitsNeeded = EncryptionAlgorithm::IRep_size + EncryptionMode::IRep_size ;
+				State = READ_ENCINFO ;
+			}
+			break ;
+		}
+
 		case READ_ENCINFO: {
 #ifdef DEBUG
 			printDebug (1, "in the READ_ENCINFO state") ;
@@ -240,7 +260,7 @@ BitString EmbData::getBitString ()
 	compr.append (Checksum) ;
 	if (Checksum) {
 		MHashPP hash (MHASH_CRC32) ;
-		for (std::vector<unsigned char>::iterator i = Data.begin() ; i != Data.end() ; i++) {
+		for (std::vector<BYTE>::iterator i = Data.begin() ; i != Data.end() ; i++) {
 			hash << *i ;
 		}
 		hash << MHashPP::endhash ;
@@ -263,6 +283,10 @@ BitString EmbData::getBitString ()
 
 	// put it all together
 	BitString main ;
+	for (unsigned short i = 0 ; i < CodeVersion ; i++) {
+		main.append(true) ;
+	}
+	main.append(false) ; // end of version
 	main.append((UWORD16) EncAlgo.getIntegerRep(), EncryptionAlgorithm::IRep_size) ;
 	main.append((UWORD16) EncMode.getIntegerRep(), EncryptionMode::IRep_size) ;
 	main.append(plain.getLength(), NBitsNPlainBits) ;
