@@ -28,8 +28,9 @@
 #include "support.h"
 #include "crypto.h"
 #include "msg.h"
+#include "main.h"
 
-STEGOHEADER sthdr = { 0, 0, { { 0 } }, '\0', 0, 0, 0, NULL } ;
+STEGOHEADER sthdr = { 0, 0, { { 0 } }, '\0', 0, 0, 0 } ;
 
 static int setbits (int cvrbyte, int plnbits) ;
 static int getbits (int stgbyte) ;
@@ -54,6 +55,8 @@ void embeddata (BUFFER *cvrbuflhead, unsigned long firstcvrpos, BUFFER *plnbuflh
 	int i = 0 ;
 	unsigned long plnpos_byte = 0, plnpos_bit = 0 ;
 	unsigned long cvrpos_byte = firstcvrpos ;
+
+	pverbose ("embedding plain data.") ;
 
 	dmtd_reset (sthdr.dmtd, sthdr.dmtdinfo, cvrpos_byte) ;
 
@@ -93,6 +96,8 @@ BUFFER *extractdata (BUFFER *stgbuflhead, unsigned long firststgpos)
 	unsigned long plnpos_byte = 0, plnpos_bit = 0 ;
 	unsigned long size = 0 ;
 	unsigned long stgpos_byte = firststgpos ;
+
+	pverbose ("extracting plain data.") ;
 
 	dmtd_reset (sthdr.dmtd, sthdr.dmtdinfo, stgpos_byte) ;
 
@@ -142,6 +147,8 @@ void embedsthdr (BUFFER *cvrbuflhead, int dmtd, DMTDINFO dmtdinfo, int enc, char
 	unsigned int bit = 0, sthdrbuflen = 0 ;
 	unsigned int bitval = 0 ;
 	unsigned long cvrbytepos = 0 ;
+
+	pverbose ("embedding stego header.") ;
 
 	hdrbuf = s_calloc (STHDR_NBYTES_BLOWFISH, 1) ;
 
@@ -222,6 +229,8 @@ void extractsthdr (BUFFER *stgbuflhead, int dmtd, DMTDINFO dmtdinfo, int enc, ch
 	unsigned int bit = 0 ;
 	int i = 0 ;
 
+	pverbose ("extracting stego header.") ;
+
 	dmtd_reset (dmtd, dmtdinfo, 0) ;
 
 	for (i = 0 ; i < BLOCKSIZE_BLOWFISH * STHDR_NBLOCKS_BLOWFISH ; i++) {
@@ -283,6 +292,9 @@ void extractsthdr (BUFFER *stgbuflhead, int dmtd, DMTDINFO dmtdinfo, int enc, ch
 			exit_err ("the mask saved in the stego header is zero (file corruption ?).") ;
 		}
 		sthdr.mask = (unsigned int) tmp ;
+	}
+	else {
+		sthdr.mask = 1 ;
 	}
 
 	bit = cp_bits_from_buf_le (hdrbuf, bit, &tmp, SIZE_ENCRYPTION) ;
@@ -414,12 +426,13 @@ void setmaxilen (unsigned long cvrbytes, unsigned long plnbytes, unsigned long f
 {
 	unsigned int maxilen = 0 ;
 
-	switch (sthdr.dmtd) {
+	switch (args.dmtd.dmtd) {
 		case DMTD_CNSTI:
 		maxilen = findmaxilen_cnsti (cvrbytes, plnbytes, firstplnpos) ;
 		if (maxilen > DMTD_CNSTI_MAX_ILEN) {
 			maxilen = DMTD_CNSTI_MAX_ILEN ;
 		}
+		pverbose ("setting interval length to %d.", maxilen) ;
 		sthdr.dmtdinfo.cnsti.interval_len = maxilen ;
 		break ;
 
@@ -428,6 +441,7 @@ void setmaxilen (unsigned long cvrbytes, unsigned long plnbytes, unsigned long f
 		if (maxilen > DMTD_PRNDI_MAX_IMLEN) {
 			maxilen = DMTD_PRNDI_MAX_IMLEN ;
 		}
+		pverbose ("setting maximum interval length to %d.", maxilen) ;
 		sthdr.dmtdinfo.prndi.interval_maxlen = maxilen ;
 		break;
 
@@ -511,7 +525,7 @@ static int simprndi_ok (unsigned long cvrbytes, unsigned long plnbits, unsigned 
 
 /* calculates an upper bound for the first postion of a plain data bit in the cover file
    by simulating the sthdr embedding (with maximal values for the interval length) */
-unsigned long calc_ubfirstplnpos (int dmtd, DMTDINFO dmtdinfo, int enc, char *passphrase)
+unsigned long calc_ubfirstplnpos (int dmtd, DMTDINFO dmtdinfo, int enc, unsigned long nbytesplain)
 {
 	unsigned int bit = 0, sthdrbuflen = 0 ;
 	unsigned long cvrbytepos = 0 ;
@@ -521,10 +535,10 @@ unsigned long calc_ubfirstplnpos (int dmtd, DMTDINFO dmtdinfo, int enc, char *pa
 	}
 	else {
 		bit += SIZE_NBITS_NBYTESPLAIN ;
-		bit += nbits (sthdr.nbytesplain) ;
+		bit += nbits (nbytesplain) ;
 	
 		bit += SIZE_DMTD ;
-		switch (sthdr.dmtd) {
+		switch (args.dmtd.dmtd) {
 			case DMTD_CNSTI:
 				bit += SIZE_DMTDINFO_CNSTI_NBITS_ILEN ;
 				bit += MAXSIZE_DMTDINFO_CNSTI_ILEN ;
@@ -541,17 +555,13 @@ unsigned long calc_ubfirstplnpos (int dmtd, DMTDINFO dmtdinfo, int enc, char *pa
 			break ;
 		}
 
-		bit += SIZE_MASKUSED ;
-		if (sthdr.mask != DEFAULTMASK) {
-			bit += SIZE_MASK ;
-		}
-
+		bit += SIZE_MASKUSED ;	/* backwards compatibility - mask is always default */
 		bit += SIZE_ENCRYPTION ;	
 		bit += SIZE_COMPRESSION ;
 		bit += SIZE_CHECKSUM ;
 	}
 
-	/* embed the buffer */
+	/* simulate embedding of the buffer */
 	sthdrbuflen = bit ;
 	dmtd_reset (dmtd, dmtdinfo, 0) ;
 	for (bit = 0 ; bit < sthdrbuflen ; bit++) {

@@ -5,7 +5,7 @@ These are things that I plan to implement in the future:
 
 * compress plain data before embedding (zlib)
 
-* preserve color frequency to prevent detection by statical tests
+* preserve color/sample frequencies to prevent detection by color frequency based statistical tests
 
 * support for other file formats (mp3, gif, jpeg, png)
 

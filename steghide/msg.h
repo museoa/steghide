@@ -21,6 +21,7 @@
 #ifndef SH_MSG_H
 #define SH_MSG_H
 
+void pverbose (char *fmt, ...) ;
 void pmsg (char *fmt, ...) ;
 int pquestion (char *fmt, ...) ;
 void pwarn (char *fmt, ...) ;

@@ -151,15 +151,15 @@ typedef struct struct_PLNFILE {
 
 /* general io function prototypes */
 void readheaders (CVRFILE *file) ;
-CVRFILE *createstgfile(CVRFILE *cvrfile, const char *stgfilename) ;
+CVRFILE *createstgfile(CVRFILE *cvrfile, char *stgfilename) ;
 PLNFILE *createplnfile(void) ;
 void assemble_plndata (PLNFILE *plnfile) ;
 void deassemble_plndata (PLNFILE *plnfile) ;
 void cleanupcvrfile(CVRFILE *cvrfile, int freesubstructs) ;
 void cleanupplnfile(PLNFILE *plnfile) ;
-CVRFILE *readcvrfile(const char *filename) ;
-void writecvrfile(CVRFILE *cvrfile) ;
-PLNFILE *readplnfile(const char *filename) ;
+CVRFILE *readcvrfile(char *filename) ;
+void writestgfile(CVRFILE *cvrfile) ;
+PLNFILE *readplnfile(char *filename) ;
 void writeplnfile(PLNFILE *plnfile) ;
 
 /* au file format function prototypes */

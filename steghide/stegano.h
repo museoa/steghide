@@ -47,7 +47,7 @@ typedef union union_DMTDINFO {
 /* stego header structure
    this structure describes the plaindata and how it is embedded */
 typedef struct struct_STEGOHEADER {
-	/* length of plain data (as embedded) in bytes */
+	/* length of plain data (before encryption with name and crc) in bytes */
 	unsigned long	nbytesplain ;
 
 	/* distribution method (how to calculate positions of secret bits) */
@@ -68,9 +68,11 @@ typedef struct struct_STEGOHEADER {
 	/* checksum */
 	unsigned int	checksum ;
 
+#if 0
 	/* the plain file name is not embedded together with the other fields of
 	   the stego header, it is embedded as start of the plain data - see embed/extractdata */
 	char			*plnfilename ;
+#endif
 } STEGOHEADER ;
 
 /* size of stego header and components when embedded in stego file */
@@ -132,7 +134,7 @@ void extractsthdr (BUFFER *stgbuflhead, int dmtd, DMTDINFO dmtdinfo, int enc, ch
 void dmtd_reset (unsigned int dmtd, DMTDINFO dmtdinfo, unsigned long resetpos) ;
 unsigned long dmtd_nextpos (void) ;
 #endif
-unsigned long calc_ubfirstplnpos (int dmtd, DMTDINFO dmtdinfo, int enc, char *passphrase) ;
+unsigned long calc_ubfirstplnpos (int dmtd, DMTDINFO dmtdinfo, int enc, unsigned long nbytesplain) ;
 void setmaxilen (unsigned long cvrbytes, unsigned long plnbytes, unsigned long firstplnpos) ;
 
 #endif /* ndef SH_STEGANO_H */

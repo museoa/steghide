@@ -28,12 +28,27 @@
 #include "support.h"
 #include "main.h"
 
-void pmsg (char *fmt, ...)
+void pverbose (char *fmt, ...)
 {
-	if (!args_quiet) {
+	if (args.verbosity.value == ARGS_VERBOSITY_VERBOSE) {
 		va_list ap ;
 
-		va_start(ap, fmt) ;
+		va_start (ap, fmt) ;
+		vfprintf (stderr, fmt, ap) ;
+		va_end (ap) ;
+
+		putc ('\n', stderr) ;
+	}
+
+	return ;
+}
+
+void pmsg (char *fmt, ...)
+{
+	if (args.verbosity.value != ARGS_VERBOSITY_QUIET) {
+		va_list ap ;
+
+		va_start (ap, fmt) ;
 		vfprintf (stderr, fmt, ap) ;
 		va_end (ap) ;
 
@@ -68,7 +83,7 @@ int pquestion (char *fmt, ...)
 
 void pwarn (char *fmt, ...)
 {
-	if (!args_quiet) {
+	if (args.verbosity.value != ARGS_VERBOSITY_QUIET) {
 		va_list ap ;
 
 		fprintf (stderr, "%s: warning: ", PROGNAME) ;

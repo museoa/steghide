@@ -88,9 +88,16 @@ void readheaders (CVRFILE *file)
 }
 
 /* creates a CVRFILE structure that is used to save the stego data to disk */
-CVRFILE *createstgfile (CVRFILE *cvrfile, const char *stgfilename)
+CVRFILE *createstgfile (CVRFILE *cvrfile, char *stgfilename)
 {
 	CVRFILE *stgfile = NULL ;
+
+	if (stgfilename == NULL) {
+		pverbose ("writing stego file to standard output.") ;
+	}
+	else {
+		pverbose ("writing stego file \"%s\".", stgfilename) ;
+	}
 
 	stgfile = s_malloc (sizeof *stgfile) ;
 	
@@ -98,8 +105,7 @@ CVRFILE *createstgfile (CVRFILE *cvrfile, const char *stgfilename)
 		stgfile->filename = NULL ;
 	}
 	else {
-		stgfile->filename = s_malloc (strlen (stgfilename) + 1) ;
-		strcpy (stgfile->filename, stgfilename) ;
+		stgfile->filename = stgfilename ;
 	}
 	
 	stgfile->fileformat = cvrfile->fileformat ;
@@ -129,26 +135,26 @@ void assemble_plndata (PLNFILE *plnfile)
 
 	buf = createbuflist () ;
 	
-	if (sthdr.plnfilename == NULL) {
+	if (args.plnfn.value == NULL) {
 		/* standard input is used */
 		bufsetbyte (buf, pos++, 0) ;
 	}
 	else {
-		tmp = stripdir (sthdr.plnfilename) ;
-		free (sthdr.plnfilename) ;
-		sthdr.plnfilename = tmp ;
+		assert (args.plnfn.is_set) ;
 
-		if ((nbytes_plnfilename = strlen (sthdr.plnfilename)) > PLNFILENAME_MAXLEN) {
+		tmp = stripdir (args.plnfn.value) ;
+
+		if ((nbytes_plnfilename = strlen (tmp)) > PLNFILENAME_MAXLEN) {
 			exit_err ("the maximum length for the plain file name is %d characters.", PLNFILENAME_MAXLEN) ;
 		}
 		bufsetbyte (buf, pos++, nbytes_plnfilename) ;
 		
 		for (i = 0 ; i < nbytes_plnfilename ; i++) {
-			bufsetbyte (buf, pos++, sthdr.plnfilename[i]) ;
+			bufsetbyte (buf, pos++, tmp[i]) ;
 		}
 	}
 
-	if (sthdr.checksum == CHECKSUM_CRC32) {
+	if (args.checksum.value) {
 		unsigned char *uc_crc32 = getcrc32 (plnfile) ;
 		bufsetbyte (buf, pos++, (int) uc_crc32[0]) ;
 		bufsetbyte (buf, pos++, (int) uc_crc32[1]) ;
@@ -161,7 +167,7 @@ void assemble_plndata (PLNFILE *plnfile)
 	buffree (buf) ;
 	plnfile->plnbuflhead = tmpbuf ;
 
-	sthdr.nbytesplain = buflength (plnfile->plnbuflhead) ;
+	return ;
 }
 
 void deassemble_plndata (PLNFILE *plnfile)
@@ -173,25 +179,56 @@ void deassemble_plndata (PLNFILE *plnfile)
 	int i = 0 ;
 	unsigned char *uc_crc32 = NULL ;
 
+	/* read plain file name embedded in stego file */
+	nbytes_plnfilename = bufgetbyte (plnfile->plnbuflhead, pos++) ;
+	for (i = 0 ; i < nbytes_plnfilename ; i++) {
+		plnfilename[i] = (char) bufgetbyte (plnfile->plnbuflhead, pos++) ;
+	}
+	plnfilename[i] = '\0' ;
+
+	if (args.plnfn.is_set) {
+		if (args.plnfn.value == NULL) {
+			/* write pln data to stdout */
+			plnfile->filename = NULL ;
+		}
+		else {
+			/* write pln data to file with given name */
+			plnfile->filename = s_malloc (strlen (args.plnfn.value) + 1) ;
+			strcpy (plnfile->filename, args.plnfn.value) ;
+		}
+	}
+	else {
+		/* write pln data to file with name stored in stego file */
+		assert (args.plnfn.value == NULL) ;
+
+		if (nbytes_plnfilename == 0) {
+			exit_err ("please specify a name for the plain file (there is none embedded in the stego file).") ;
+		}
+
+		plnfile->filename = s_malloc (strlen (plnfilename) + 1) ;
+		strcpy (plnfile->filename, plnfilename) ;
+	}
+
+#if 0
 	nbytes_plnfilename = bufgetbyte (plnfile->plnbuflhead, pos++) ;
 	if (nbytes_plnfilename == 0) {
-		/* standard input was used for plnfile during embedding */
-		if (args_fn_pln == NULL) {
+		/* no file name embedded in stego file */
+		if (args.plnfn.value == NULL) {
 			/* no -pf argument was given on command line */
 			exit_err ("please specify a name for the plain file (there is none embedded in the stego file).") ;
 		}
 		else {
-			if (strcmp (args_fn_pln, "-") == 0) {
+			if (strcmp (args.plnfn.value, "-") == 0) {
 				/* a -pf - argument was given on command line */
 				plnfile->filename = NULL ;
 			}
 			else {
 				/* a name for the plain file has been specified on the command line */
-				plnfile->filename = s_malloc (strlen (args_fn_pln) + 1) ;
-				strcpy (plnfile->filename, args_fn_pln) ;
+				plnfile->filename = s_malloc (strlen (args.plnfn.value) + 1) ;
+				strcpy (plnfile->filename, args.plnfn.value) ;
 
-				sthdr.plnfilename = s_malloc (strlen (args_fn_pln) + 1) ;
-				strcpy (sthdr.plnfilename, args_fn_pln) ;
+				sthdr.plnfilename = s_malloc (strlen (args.plnfn.value) + 1) ;
+				strcpy (sthdr.plnfilename, args.plnfn.value) ;
 			}
 		}
 	}
@@ -201,7 +238,7 @@ void deassemble_plndata (PLNFILE *plnfile)
 		}
 		plnfilename[i] = '\0' ;
 
-		if (args_fn_pln == NULL) {
+		if (args.plnfn.value == NULL) {
 			/* no -pf argument was given on command line */
 			plnfile->filename = s_malloc (strlen (plnfilename) + 1) ;
 			strcpy (plnfile->filename, plnfilename) ;
@@ -210,20 +247,21 @@ void deassemble_plndata (PLNFILE *plnfile)
 			strcpy (sthdr.plnfilename, plnfilename) ;
 		}
 		else {
-			if (strcmp (args_fn_pln, "-") == 0) {
+			if (strcmp (args.plnfn.value, "-") == 0) {
 				/* a -pf - argument was given on command line */
 				plnfile->filename = NULL ;
 			}
 			else {
 				/* a name for the plain file has been specified on the command line */
-				plnfile->filename = s_malloc (strlen (args_fn_pln) + 1) ;
-				strcpy (plnfile->filename, args_fn_pln) ;
+				plnfile->filename = s_malloc (strlen (args.plnfn.value) + 1) ;
+				strcpy (plnfile->filename, args.plnfn.value) ;
 
-				sthdr.plnfilename = s_malloc (strlen (args_fn_pln) + 1) ;
-				strcpy (sthdr.plnfilename, args_fn_pln) ;
+				sthdr.plnfilename = s_malloc (strlen (args.plnfn.value) + 1) ;
+				strcpy (sthdr.plnfilename, args.plnfn.value) ;
 			}
 		}
 	}
+#endif
 
 	if (sthdr.checksum == CHECKSUM_CRC32) {
 		uc_crc32 = s_malloc (4) ;
@@ -231,15 +269,19 @@ void deassemble_plndata (PLNFILE *plnfile)
 		uc_crc32[1] = (unsigned char) bufgetbyte (plnfile->plnbuflhead, pos++) ;
 		uc_crc32[2] = (unsigned char) bufgetbyte (plnfile->plnbuflhead, pos++) ;
 		uc_crc32[3] = (unsigned char) bufgetbyte (plnfile->plnbuflhead, pos++) ;
-
-		if (!checkcrc32 (plnfile, uc_crc32)) {
-			pwarn ("crc32 checksum failed! extracted data is probably corrupted.") ;
-		}
 	}
 
 	tmp = bufcut (plnfile->plnbuflhead, pos, buflength (plnfile->plnbuflhead) + 1) ;
 	buffree (plnfile->plnbuflhead) ;
 	plnfile->plnbuflhead = tmp ;
+
+	if (sthdr.checksum == CHECKSUM_CRC32) {
+		if (!checkcrc32 (plnfile, uc_crc32)) {
+			pwarn ("crc32 checksum failed! extracted data is probably corrupted.") ;
+		}
+	}
+
+	return ;
 }
 
 /* creates a PLNFILE structure that is used to save the plaindata to disk */
@@ -297,9 +339,29 @@ void cleanupplnfile (PLNFILE *plnfile)
 }
 
 /* reads a cover data file into a CVRFILE structure */
-CVRFILE *readcvrfile (const char *filename)
+CVRFILE *readcvrfile (char *filename)
 {
 	CVRFILE *cvrfile = NULL ;
+
+	if (args.action.value == ARGS_ACTION_EMBED) {
+		if (filename == NULL) {
+			pverbose ("reading cover file from standard input.") ;
+		}
+		else {
+			pverbose ("reading cover file \"%s\".", filename) ;
+		}
+	}
+	else if (args.action.value == ARGS_ACTION_EXTRACT) {
+		if (filename == NULL) {
+			pverbose ("reading stego file from standard input.") ;
+		}
+		else {
+			pverbose ("reading stego file \"%s\".", filename) ;
+		}
+	}
+	else {
+		assert (0) ;
+	}
 
 	/* fill cvrfile structure */
 	cvrfile = s_malloc (sizeof *cvrfile) ;
@@ -313,8 +375,7 @@ CVRFILE *readcvrfile (const char *filename)
 			free (cvrfile) ;
 			exit_err ("could not open the file \"%s\".", filename) ;
 		}
-		cvrfile->filename = s_malloc (strlen (filename) + 1) ;
-		strcpy (cvrfile->filename, filename) ;
+		cvrfile->filename = filename ;
 	}
 
 	cvrfile->headers = s_malloc (sizeof *cvrfile->headers) ;
@@ -352,42 +413,43 @@ CVRFILE *readcvrfile (const char *filename)
 }
 
 /* writes the file described in the cvrfile structure to disk */
-void writecvrfile (CVRFILE *cvrfile)
+void writestgfile (CVRFILE *stgfile)
 {
-	if (cvrfile->filename == NULL) {
-		cvrfile->stream = stdout ;
+	if (stgfile->filename == NULL) {
+		stgfile->stream = stdout ;
 	}
 	else {
-		if (!args_force) {
+		if (!args.force.value) {
 			/* check if file already exists */
-			if (fileexists (cvrfile->filename)) {
-				if ((args_fn_cvr == NULL) || ((args_fn_pln == NULL) || (strcmp (args_fn_pln, "-") == 0))) {
-					exit_err ("file \"%s\" does already exist.", cvrfile->filename) ;
+			if (fileexists (stgfile->filename)) {
+				/* FIXME - wieso bei std verwendung kein pquestion ? */
+				if ((args.cvrfn.value == NULL) || ((args.plnfn.value == NULL) || (strcmp (args.plnfn.value, "-") == 0))) {
+					exit_err ("file \"%s\" does already exist.", stgfile->filename) ;
 				}
 				else {
-					if (!pquestion ("file \"%s\" does already exist. overwrite ?", cvrfile->filename)) {
-						exit_err ("did not write to file \"%s\".", cvrfile->filename) ;
+					if (!pquestion ("file \"%s\" does already exist. overwrite ?", stgfile->filename)) {
+						exit_err ("did not write to file \"%s\".", stgfile->filename) ;
 					}
 				}
 			}
 		}
 
-		if ((cvrfile->stream = fopen (cvrfile->filename, "wb")) == NULL) {
-			exit_err ("could not create stego file \"%s\".", cvrfile->filename) ;
+		if ((stgfile->stream = fopen (stgfile->filename, "wb")) == NULL) {
+			exit_err ("could not create stego file \"%s\".", stgfile->filename) ;
 		}
 	}
 	
-	switch (cvrfile->fileformat) {
+	switch (stgfile->fileformat) {
 		case FF_BMP:
-		bmp_writefile (cvrfile) ;
+		bmp_writefile (stgfile) ;
 		break ;
 
 		case FF_WAV:
-		wav_writefile (cvrfile) ;
+		wav_writefile (stgfile) ;
 		break ;
 
 		case FF_AU:
-		au_writefile (cvrfile) ;
+		au_writefile (stgfile) ;
 		break ;
 
 		default:
@@ -395,14 +457,12 @@ void writecvrfile (CVRFILE *cvrfile)
 		break ;
 	}
 
-	if (args_action == ACTN_EMBED) {
-		if (cvrfile->filename == NULL) {
-			if (args_verbose) {
-				pmsg ("wrote stego file to standard output.") ;
-			}
+	if (args.action.value == ARGS_ACTION_EMBED) {
+		if (stgfile->filename == NULL) {
+			pverbose ("wrote stego file to standard output.") ;
 		}
 		else {
-			pmsg ("wrote stego file to \"%s\".", cvrfile->filename) ;
+			pmsg ("wrote stego file to \"%s\".", stgfile->filename) ;
 		}
 	}
 	else {
@@ -413,15 +473,22 @@ void writecvrfile (CVRFILE *cvrfile)
 }
 	
 /* reads a plain data file into a PLNFILE structure */
-PLNFILE *readplnfile (const char *filename)
+PLNFILE *readplnfile (char *filename)
 {
 	PLNFILE *plnfile = NULL ;
 	int c = EOF ;
 	unsigned long bufpos = 0 ;
 
+	if (filename == NULL) {
+		pverbose ("reading plain file from standard input.") ;
+	}
+	else {
+		pverbose ("reading plain file \"%s\".", filename) ;
+	}
+
 	plnfile = s_malloc (sizeof *plnfile) ;
 
-	if ((filename == NULL) || (strcmp (filename, "-") == 0)) {
+	if (filename == NULL) {
 		plnfile->stream = stdin ;
 		plnfile->filename = NULL ;
 	}
@@ -429,8 +496,7 @@ PLNFILE *readplnfile (const char *filename)
 		if ((plnfile->stream = fopen (filename, "rb")) == NULL) {
 			exit_err ("could not open file \"%s\".", filename) ;
 		}
-		plnfile->filename = s_malloc (strlen (filename) + 1) ;
-		strcpy (plnfile->filename, filename) ;
+		plnfile->filename = filename ;
 	}
 
 	plnfile->plnbuflhead = createbuflist () ;
@@ -441,7 +507,7 @@ PLNFILE *readplnfile (const char *filename)
 	}
 
 	if (ferror (plnfile->stream)) {
-		if ((plnfile->filename == NULL) || (strcmp (plnfile->filename, "-") == 0)) {
+		if (plnfile->filename == NULL) {
 			exit_err ("an error occured while reading the plain data from standard input.") ;
 		}
 		else {
@@ -459,13 +525,20 @@ void writeplnfile (PLNFILE *plnfile)
 	unsigned long bufpos = 0 ;
 
 	if (plnfile->filename == NULL) {
+		pverbose ("writing plain file to standard output.") ;
+	}
+	else {
+		pmsg ("writing plain file to \"%s\".", plnfile->filename) ;
+	}
+
+	if (plnfile->filename == NULL) {
 		plnfile->stream = stdout ;
 	}
 	else {
-		if (!args_force) {
+		if (!args.force.value) {
 			/* check if file already exists */
 			if (fileexists (plnfile->filename)) {
-				if (args_fn_stg == NULL) {
+				if (args.stgfn.value == NULL) {
 					exit_err ("file \"%s\" does already exist.", plnfile->filename) ;
 				}
 				else {
@@ -486,17 +559,8 @@ void writeplnfile (PLNFILE *plnfile)
 		bufpos++ ;
 	}
 
-	if ((plnfile->filename == NULL) || (strcmp (plnfile->filename, "-") == 0)) {
-		if (args_verbose) {
-			pmsg ("wrote plain file to standard output.") ;
-		}
-	}
-	else {
-		pmsg ("wrote plain file to \"%s\".", plnfile->filename) ;
-	}
-
 	if (ferror (plnfile->stream)) {
-		if ((plnfile->filename == NULL) || (strcmp (plnfile->filename, "-") == 0)) {
+		if (plnfile->filename == NULL) {
 			exit_err ("an error occured while writing the plain data to standard output.") ;
 		}
 		else {
