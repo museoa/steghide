@@ -226,6 +226,7 @@ void printDebug (unsigned int level, const char *msgfmt, ...)
 		va_start (ap, msgfmt) ;
 		vfprintf (stderr, msgfmt, ap) ;
 		va_end (ap) ;
+		fprintf (stderr, "\n") ;
 	}
 #endif
 }

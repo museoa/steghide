@@ -133,6 +133,12 @@ const Matching *Embedder::calculateMatching ()
 		bestmatching = aph.getMatching() ;
 	}
 
+#if 0
+	if (!bestmatching->check()) {
+		cerr << "check of matching to be embedded FAILED" << endl ;
+	}
+#endif
+
 	return bestmatching ;
 }
  
@@ -140,6 +146,7 @@ void Embedder::embedEdge (Edge *e)
 {
 	SamplePos samplepos1 = e->getSamplePos (e->getVertex1()) ;
 	SamplePos samplepos2 = e->getSamplePos (e->getVertex2()) ;
+	printDebug (1, "embedding edge with sample positions %lu and %lu.", samplepos1, samplepos2) ;
 
 	SampleValue *tmp = TheCvrStgFile->getSampleValue (samplepos1) ;
 	TheCvrStgFile->replaceSample (samplepos1, TheCvrStgFile->getSampleValue (samplepos2)) ;
@@ -163,6 +170,8 @@ void Embedder::embedExposedVertex (Vertex *v)
 			delete curnew ;
 		}
 	}
+
+	printDebug (1, "embedding vertex with sample position %lu.", samplepos) ;
 
 	Bit oldbit = TheCvrStgFile->getSampleBit (samplepos) ;
 	TheCvrStgFile->replaceSample (samplepos, newsample) ;

@@ -22,15 +22,9 @@
 #include "graph.h"
 #include "graphaccess.h"
 
-//DEBUG
-
-GraphAccess::GraphAccess ()
-{
-	cerr << "uninitialized graph access constructor call" << endl ;
-}
-
 GraphAccess::GraphAccess (Graph *g)
 {
+	// FIXME - should be static to save memory
 #if 0
 	if (TheGraph == NULL) {
 //		cerr << "graph access first time" << endl ;

@@ -29,7 +29,7 @@ Matching::Matching (Graph *g)
 	}
 
 	VertexInformation.reserve (nvertices) ;
-	for (list<Vertex*>::const_iterator i = ExposedVertices.begin() ; i != ExposedVertices.end() ; i++) {
+	for (list<Vertex*>::iterator i = ExposedVertices.begin() ; i != ExposedVertices.end() ; i++) {
 		VertexInformation.push_back (VertexInfo (i)) ;
 	}
 
@@ -39,12 +39,14 @@ Matching::Matching (Graph *g)
 Matching& Matching::addEdge (Edge *e)
 {
 	VertexLabel vlbl1 = e->getVertex1()->getLabel() ;
-	VertexLabel vlbl2 = e->getVertex1()->getLabel() ;
+	VertexLabel vlbl2 = e->getVertex2()->getLabel() ;
 
 	assert (VertexInformation[vlbl1].isExposed()) ;
 	assert (VertexInformation[vlbl2].isExposed()) ;
+	list<Edge*>::iterator edgeit = MatchingEdges.insert (MatchingEdges.end(), e) ;
 
-	list<Edge*>::const_iterator edgeit = MatchingEdges.insert (MatchingEdges.end(), e) ;
+	ExposedVertices.erase (VertexInformation[vlbl1].getExposedIterator()) ;
+	ExposedVertices.erase (VertexInformation[vlbl2].getExposedIterator()) ;
 	VertexInformation[vlbl1].setMatched (edgeit) ;
 	VertexInformation[vlbl2].setMatched (edgeit) ;
 
@@ -57,7 +59,7 @@ Matching& Matching::augment (const vector<Edge*> &path)
 	assert (path.size() & 2 == 1) ;
 	for (unsigned int i = 0 ; i < path.size() ; i += 2) {
 		Edge* e_add = path[i] ;
-		list<Edge*>::const_iterator edgeit = MatchingEdges.insert (MatchingEdges.end(), e_add) ;
+		list<Edge*>::iterator edgeit = MatchingEdges.insert (MatchingEdges.end(), e_add) ;
 		VertexInformation[e_add->getVertex1()->getLabel()].setMatched (edgeit) ;
 		VertexInformation[e_add->getVertex2()->getLabel()].setMatched (edgeit) ;
 	}
@@ -67,6 +69,50 @@ Matching& Matching::augment (const vector<Edge*> &path)
 #ifdef DEBUG
 bool Matching::check () const
 {
-	return false ;
+	cerr << "checking Matching" << endl ;
+	bool retval = true ;
+	retval = check_MatchingEdges_vs_VertexInformation() && retval ;
+	retval = check_ExposedVertices_vs_VertexInformation() && retval ;
+	return retval ;
 }
+
+bool Matching::check_MatchingEdges_vs_VertexInformation () const
+{
+	bool err = false ;
+	// for every e = (v1,v2) in MatchingEdges: isMatched(v1) && isMatched(v2)
+	for (list<Edge*>::const_iterator it = MatchingEdges.begin() ; it != MatchingEdges.end() ; it++) {
+		Vertex *v1 = (*it)->getVertex1() ;
+		Vertex *v2 = (*it)->getVertex2() ;
+		if (VertexInformation[v1->getLabel()].isExposed() || VertexInformation[v2->getLabel()].isExposed()) {
+			err = true ;
+			break ;
+		}
+	}
+
+	if (err) {
+		cerr << "FAILED: There is an edge in MatchingEdges that is adjacent to a vertex marked as exposed." << endl ;
+	}
+
+	return !err ;
+}
+
+bool Matching::check_ExposedVertices_vs_VertexInformation () const
+{
+	bool err = false ;
+
+	// for every exposed vertex v: isExposed(v)
+	for (list<Vertex*>::const_iterator it = ExposedVertices.begin() ; it != ExposedVertices.end() ; it++) {
+		if (VertexInformation[(*it)->getLabel()].isMatched()) {
+			err = true ;
+			break ;
+		}
+	}
+
+	if (err) {
+		cerr << "FAILED: There is a vertex in ExposedVertices that is marked matched." << endl ;
+	}
+
+	return !err ;
+}
+
 #endif

@@ -119,10 +119,10 @@ class Matching : private GraphAccess {
 	 **/
 	class VertexInfo {
 		public:
-		VertexInfo (list<Edge*>::const_iterator mit)
+		VertexInfo (list<Edge*>::iterator mit)
 			{ setMatched (mit) ; } ;
 
-		VertexInfo (list<Vertex*>::const_iterator eit)
+		VertexInfo (list<Vertex*>::iterator eit)
 			{ setUnmatched (eit) ; } ;
 
 		bool isExposed (void) const
@@ -134,16 +134,19 @@ class Matching : private GraphAccess {
 		Edge *getMatchingEdge (void) const
 			{ return *MatchedIterator ; } ;
 
-		void setMatched (list<Edge*>::const_iterator mit)
+		list<Vertex*>::iterator getExposedIterator (void) const
+			{ return ExposedIterator ; } ;
+
+		void setMatched (list<Edge*>::iterator mit)
 			{ Matched = true ; MatchedIterator = mit ; } ;
 
-		void setUnmatched (list<Vertex*>::const_iterator eit)
+		void setUnmatched (list<Vertex*>::iterator eit)
 			{ Matched = false ; ExposedIterator = eit ; } ;
 
 		private:
 		bool Matched ;
-		list<Edge*>::const_iterator MatchedIterator ;
-		list<Vertex*>::const_iterator ExposedIterator ;
+		list<Edge*>::iterator MatchedIterator ;
+		list<Vertex*>::iterator ExposedIterator ;
 	} ;
 
 	/// contains a VertexInfo object for every vertex
@@ -159,12 +162,9 @@ class Matching : private GraphAccess {
 
 #ifdef DEBUG
 	public:
-	/**
-	 * checks if the following conditions are met:
-	 * 1) For every e \in MatchingEdges: For both of its vertices v1 and v2
-	 *    VertexInformation[v1] and VertexInformation[v2] point to e
-	 **/
 	bool check (void) const ;
+	bool check_MatchingEdges_vs_VertexInformation (void) const ;
+	bool check_ExposedVertices_vs_VertexInformation (void) const ;
 #endif
 } ;
 

@@ -54,7 +54,7 @@ class VertexContent : private GraphAccess {
 
 	// FIXME - ev. stattdessen operator [] - ev. const return value
 	SampleValue *getSampleValue (unsigned short i) const
-		{ if (i != 0) cerr << "getSampleValue called with i = " << i << endl ; return SampleValues[i] ; } ; 
+		{ return SampleValues[i] ; } ; 
 
 	// FIXME - konstante Rückgabe
 	SampleValue **getSampleValues (void) const

@@ -21,14 +21,11 @@
 #ifndef SH_GRAPHACCESS_H
 #define SH_GRAPHACCESS_H
 
-// DEBUG
-#include <iostream>
-
 class Graph ;
 
 class GraphAccess {
 	public:
-	GraphAccess (void) ;
+	GraphAccess (void) {} ;
 	GraphAccess (Graph* g) ;
 
 	protected:

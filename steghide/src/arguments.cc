@@ -467,6 +467,10 @@ void Arguments::parse (int argc, char *argv[])
 				sscanf (argv[i], "%u", &tmp) ;
 				NConstrHeur.setValue (tmp) ;
 			}
+
+			else {
+				throw SteghideError (_("unknown argument \"%s\". type \"%s --help\" for help."), argv[i], PROGNAME) ;
+			}
 		}
 #endif
 		

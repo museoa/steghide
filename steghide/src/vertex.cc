@@ -22,14 +22,12 @@
 #include "edgeiterator.h"
 #include "vertex.h"
 
-//DEBUG
 Vertex::Vertex (Graph* g, VertexLabel l, SamplePos* sposs, VertexContent *vc)
 	: GraphAccess(g)
 {
 	setLabel (l) ;
 	SamplePositions = sposs ;
 	Content = vc ;
-	assert (SamplesPerVertex == 1) ; // DEBUG
 	SampleOccurenceIts = new list<SampleOccurence>::iterator[SamplesPerVertex] ;
 	ShortestEdge = NULL ;
 	valid = true ;
@@ -42,7 +40,7 @@ Vertex::~Vertex ()
 
 void Vertex::markDeleted ()
 {
-	printdebug (2, "marking vertex with label %ul as deleted.", getLabel()) ;
+	printDebug (2, "marking vertex with label %ul as deleted.", getLabel()) ;
 
 	if (valid) {
 		// decrement neighbour degrees
