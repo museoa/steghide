@@ -59,6 +59,11 @@ class ConstructionHeuristic : private GraphAccess {
 	 **/
 	void insertInMatching (Edge *e) ;
 
+	/**
+	 * copy all Neighbours of v that have degree 1 to VerticesDeg1
+	 **/
+	void checkNeighboursDeg1 (Vertex *v) ;
+
 	/// contains all vertices of degree 1
 	priority_queue<Vertex*, vector<Vertex*>, LongerShortestEdge> VerticesDeg1 ;
 	/// contains all vertices with degree greater than 1

@@ -50,9 +50,7 @@ VertexContent::VertexContent (Graph* g, SampleValue**& svs, SamplePos*& sposs)
 		SampleValues[i] = svs[i] ;
 	}
 
-#if 0
 	Occurences = list<Vertex*>() ;
-#endif
 
 	// calculate SelfDegree
 	SelfDegree = 0 ;
@@ -90,7 +88,6 @@ unsigned long VertexContent::getDegree (void) const
 	return retval ;
 }
 
-#if 0
 list<Vertex*>::iterator VertexContent::markDeletedFromOccurences (list<Vertex*>::iterator it)
 {
 	Occurences.erase (it) ;
@@ -102,7 +99,6 @@ list<Vertex*>::iterator VertexContent::unmarkDeletedFromOccurences (list<Vertex*
 	DeletedOccurences.erase (it) ;
 	return Occurences.insert (Occurences.end(), *it) ;
 }
-#endif
 
 // FIXME - ? pre-compute hash in constructor (to gain speed) - similar to Key of SampleValue->...
 // TODO - this should be tested

@@ -123,10 +123,8 @@ class Vertex : private GraphAccess {
 	/// the content of this vertex
 	VertexContent* Content ;
 
-#if 0
 	/// points to an entry in the list of vertex occurences in the vertex content
 	list<Vertex*>::iterator VertexOccurenceIt ;
-#endif
 
 	/// point to entries in lists of sample occurences in the graph
 	list<SampleOccurence>::iterator* SampleOccurenceIts ;

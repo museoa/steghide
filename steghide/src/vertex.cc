@@ -28,6 +28,7 @@ Vertex::Vertex (Graph* g, VertexLabel l, SamplePos* sposs, VertexContent *vc)
 	setLabel (l) ;
 	SamplePositions = sposs ;
 	Content = vc ;
+	Content->addOccurence (this) ;
 	SampleOccurenceIts = new list<SampleOccurence>::iterator[SamplesPerVertex] ;
 	ShortestEdge = NULL ;
 	valid = true ;
@@ -51,10 +52,8 @@ void Vertex::markDeleted ()
 			}
 		}
 
-#if 0
 		// delete from vertex occurences in vertex content
 		VertexOccurenceIt = Content->markDeletedFromOccurences (VertexOccurenceIt) ;
-#endif
 
 		// delete from sample occurences in graph
 		for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
@@ -74,10 +73,8 @@ void Vertex::unmarkDeleted ()
 			SampleOccurenceIts[i] = TheGraph->unmarkDeletedSampleOccurence (SampleOccurenceIts[i]) ;
 		}
 
-#if 0
 		// undelete into sample occurences in graph
 		VertexOccurenceIt = Content->unmarkDeletedFromOccurences (VertexOccurenceIt) ;
-#endif
 
 		// increment neighbour degrees
 		for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
@@ -102,33 +99,6 @@ void Vertex::updateShortestEdge ()
 	else {
 		EdgeIterator edgeit (TheGraph, this) ;
 		ShortestEdge = *edgeit ;
-#if 0
-		bool found = false ;
-		for (unsigned short i = 0 ; i < SamplesPerVertex && !found ; i++) {
-			SampleValue* srcsv = getSampleValue(i) ;
-			for (unsigned long j = 0 ; j < TheGraph->getNumOppNeighs(srcsv) && !found ; j++) {
-				SampleValue *destsv = (TheGraph->getOppNeighs(srcsv))[j] ;
-				if (TheGraph->getNumSampleOccurences(destsv) > 0) {
-					list<SampleOccurence> socc = TheGraph->getSapmleOccurences(destsv) ;
-					list<SampleOccurence>::iteartor it = socc.begin() ;
-
-					// eliminate loop edges
-					while ((*it)->getVertex()->getLabel() == getLabel() && it != socc.end()) {
-						it++ ;
-					}
-
-					if (it != socc.end()) {
-						// a valid edge has been found
-						if (ShortestEdge != NULL) {
-							delete ShortestEdge ;
-						}
-						ShortestEdge = new Edge (this, i, (*it)->getVertex(), (*it)->getIndex()) ;
-						found = true ;
-					}
-				}
-			}
-		}
-#endif
 	}
 }
 

@@ -21,6 +21,8 @@
 #include "constrheur.h"
 #include "randomsource.h"
 
+// FIXME - wie werden nach Einfügeoperation alle Knoten mit Grad 1 erkannt ?
+
 ConstructionHeuristic::ConstructionHeuristic (Graph *g)
 	: GraphAccess(g)
 {
@@ -35,9 +37,11 @@ ConstructionHeuristic::ConstructionHeuristic (Graph *g)
 		v->updateShortestEdge() ;
 		if (v->getDegree() != 0) {
 			if (v->getDegree() == 1) {
+				assert (v->getShortestEdge() != NULL) ;
 				VerticesDeg1.push (v) ;
 			}
 			else {
+				assert (v->getShortestEdge() != NULL) ;
 				VerticesDegG.push (v) ;
 			}
 		}
@@ -85,6 +89,26 @@ void ConstructionHeuristic::insertInMatching (Edge *e)
 
 	v1->markDeleted() ;
 	v2->markDeleted() ;
+	checkNeighboursDeg1 (v1) ;
+	checkNeighboursDeg1 (v2) ;
+}
+
+void ConstructionHeuristic::checkNeighboursDeg1 (Vertex *v)
+{
+	for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
+		const vector<SampleValue*> oppneighs = TheGraph->getOppNeighs(v->getSampleValue(i)) ;
+		for (vector<SampleValue*>::const_iterator it = oppneighs.begin() ; it != oppneighs.end() ; it++) {
+			const list<VertexContent*> vcontents = TheGraph->getVertexContents(*it) ;
+			for (list<VertexContent*>::const_iterator jt = vcontents.begin() ; jt != vcontents.end() ; jt++) {
+				if ((*jt)->getDegree() == 1) {
+					list<Vertex*> occ = (*jt)->getOccurences() ;
+					for (list<Vertex*>::iterator kt = occ.begin() ; kt != occ.end() ; kt++) {
+						VerticesDeg1.push (*kt) ;
+					}
+				}
+			}
+		}
+	}
 }
 
 Vertex* ConstructionHeuristic::findVertexDegG (unsigned int k)

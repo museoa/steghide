@@ -91,9 +91,7 @@ void Graph::constructVertices (vector<SamplePos*>& sposs, vector<SampleValue**>&
 	hash_set<VertexContent*,hash<VertexContent*>,VertexContentsEqual>& vc_set)
 {
 	const VertexLabel numvertices = sposs.size() ;
-#if 0
 	VertexContents = vector<list<VertexContent*> > (SampleValues.size()) ;
-#endif
 	Vertices = vector<Vertex*> (numvertices) ;
 	vc_set = hash_set<VertexContent*,hash<VertexContent*>,VertexContentsEqual>() ;
 
@@ -111,11 +109,9 @@ void Graph::constructVertices (vector<SamplePos*>& sposs, vector<SampleValue**>&
 
 		// fill Vertices and VertexContents
 		Vertices[i] = new Vertex (this, i, sposs[i], vc) ;
-#if 0
 		for (unsigned short j = 0 ; j < SamplesPerEBit ; i++) {
 			VertexContents[vc->getSampleValue(j)->getLabel()].push_back (vc) ;
 		}
-#endif
 	}
 
 #ifdef DEBUG

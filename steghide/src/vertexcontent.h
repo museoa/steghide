@@ -64,7 +64,6 @@ class VertexContent : private GraphAccess {
 
 	unsigned long getDegree (void) const ;
 
-#if 0
 	/**
 	 * add a vertex to the Occurences list of this vertex content
 	 * \param v the vertex to add
@@ -80,19 +79,19 @@ class VertexContent : private GraphAccess {
 	list<Vertex*>::iterator markDeletedFromOccurences (list<Vertex*>::iterator it) ;
 
 	list<Vertex*>::iterator unmarkDeletedFromOccurences (list<Vertex*>::iterator it) ;
-#endif
 	
+	const list<Vertex*>& getOccurences (void) const
+		{ return Occurences ; } ;
+
 	private:
 	/// the sample values of this vertex content
 	SampleValue** SampleValues ;
 	/// the number of loop edges vertices with this content _would_ have
 	unsigned long SelfDegree ;
-#if 0
 	/// the vertices whose content is this vertex content
 	list<Vertex*> Occurences ;
 	/// the vertices that have been delted from Occurences
 	list<Vertex*> DeletedOccurences ;
-#endif
 } ;
 
 struct VertexContentsEqual : binary_function<VertexContent*, VertexContent*, bool> {

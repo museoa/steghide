@@ -106,6 +106,9 @@ class Graph {
 	const vector<SampleValue*>& getOppNeighs (const SampleValue *sv) const
 		{ return SValueOppNeighs[sv] ; } ;
 
+	const list<VertexContent*>& getVertexContents (const SampleValue *sv) const
+		{ return VertexContents[sv->getLabel()] ; } ;
+
 	/**
 	 * get the number of occurences of a given sample value
 	 **/
@@ -137,7 +140,6 @@ class Graph {
 
 	SampleValueOppositeNeighbourhood SValueOppNeighs ;
 
-#if 0
 	/**
 	 * contains the unique vertex contents - the size of the vector is the number of unique samples (indexed by sample labels)
 	 * for a sample label lbl the list UniqueVertexContents[lbl] contains all UniqueVertextContent objects that contain
@@ -145,7 +147,6 @@ class Graph {
 	 * The main purpose of this data structure is to hold the vertex degrees.
 	 **/
 	vector<list<VertexContent*> > VertexContents ; // FIXME - ?? use vector instead of list - performance in time/memory ??
-#endif
 
 	vector<list<SampleOccurence> > SampleOccurences ;
 
