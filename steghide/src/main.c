@@ -45,14 +45,23 @@
 #include <windows.h>
 
 LCIDENTRY LCIDTable[] = {
+	/* french */
+	{ 0x040c, "fr" },	/* France */
+	{ 0x080c, "fr" },	/* Belgium */
+	{ 0x0c0c, "fr" },	/* Canada */
+	{ 0x100c, "fr" },	/* Switzerland */
+	{ 0x140c, "fr" },	/* Luxembourg */
+	{ 0x180c, "fr" },	/* Monaco */
+	/* german */
 	{ 0x0407, "de" },	/* Germany */
 	{ 0x0807, "de" },	/* Switzerland */
 	{ 0x0c07, "de" },	/* Austria */
 	{ 0x1007, "de" },	/* Luxembourg */
-	{ 0x1407, "de" }	/* Liechtenstein */
+	{ 0x1407, "de" },	/* Liechtenstein */
+	/* end of LCIDTable */
+	{ 0x0000, "__" }
 	} ;
 
-int LCIDTable_size = 5 ;
 #endif /* WIN32 */
  
 #ifdef DEBUG
@@ -79,7 +88,9 @@ static void cleanup (void) ;
 
 int main (int argc, char *argv[])
 {
+#ifndef DEBUG
 	gettext_init () ;
+#endif /* DEBUG */
 
 	/* 	the C "rand" generator is used if random numbers need not be reproduceable,
 		the random number generator in support.c "rnd" is used if numbers must be reproduceable */
@@ -165,7 +176,7 @@ static void parsearguments (int argc, char* argv[])
 	}
 #endif
 	else {
-		exit_err (_("unknown command \"%s\". type \"%s --help\" for help."), argv[1], argv[0]) ;
+		exit_err (_("unknown command \"%s\". type \"%s --help\" for help."), argv[1], PROGNAME) ;
 	}
 
 	/* check rest of arguments */
@@ -174,18 +185,18 @@ static void parsearguments (int argc, char* argv[])
 			unsigned int tmp = 0 ;
 
 			if (args.action.value != ARGS_ACTION_EMBED) {
-				exit_err (_("the argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], argv[0]) ;
+				exit_err (_("the argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
 
 			if (args.dmtd.dmtd_is_set) {
-				exit_err (_("the distribution argument can be used only once. type \"%s --help\" for help."), argv[0]) ;
+				exit_err (_("the distribution argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
 			else {
 				args.dmtd.dmtd_is_set = 1 ;
 			}
 
 			if (++i == argc) {
-				exit_err (_("the argument \"%s\" is incomplete. type \"%s --help\" for help."), argv[i - 1], argv[0]) ;
+				exit_err (_("the argument \"%s\" is incomplete. type \"%s --help\" for help."), argv[i - 1], PROGNAME) ;
 			}
 
 			if (strncmp (argv[i], "cnsti\0", 6) == 0) {
@@ -223,17 +234,17 @@ static void parsearguments (int argc, char* argv[])
 				}
 			}
 			else {
-				exit_err (_("unknown distribution method \"%s\". type \"%s --help\" for help."), argv[i], argv[0]) ;
+				exit_err (_("unknown distribution method \"%s\". type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
 		}
 
 		else if ((strncmp (argv[i], "-e\0", 3) == 0) || (strncmp (argv[i], "--encryption\0", 13) == 0)) {
 			if (args.action.value != ARGS_ACTION_EMBED) {
-				exit_err (_("the argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], argv[0]) ;
+				exit_err (_("the argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
 
 			if (args.encryption.is_set) {
-				exit_err (_("the encryption argument can be used only once. type \"%s --help\" for help."), argv[0]) ;
+				exit_err (_("the encryption argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
 			else {
 				args.encryption.is_set = 1 ;
@@ -244,11 +255,11 @@ static void parsearguments (int argc, char* argv[])
 
 		else if ((strncmp (argv[i], "-E\0", 3) == 0) || (strncmp (argv[i], "--noencryption\0", 15) == 0)) {
 			if (args.action.value != ARGS_ACTION_EMBED) {
-				exit_err (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], argv[0]) ;
+				exit_err (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
 
 			if (args.encryption.is_set) {
-				exit_err (_("the encryption argument can be used only once. type \"%s --help\" for help."), argv[0]) ;
+				exit_err (_("the encryption argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
 			else {
 				args.encryption.is_set = 1 ;
@@ -259,7 +270,7 @@ static void parsearguments (int argc, char* argv[])
 
 		else if ((strncmp (argv[i], "-h\0", 3) == 0) || (strncmp (argv[i], "--sthdrencryption\0", 18) == 0)) {
 			if (args.sthdrencryption.is_set) {
-				exit_err (_("the stego header encryption argument can be used only once. type \"%s --help\" for help."), argv[0]) ;
+				exit_err (_("the stego header encryption argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
 			else {
 				args.sthdrencryption.is_set = 1 ;
@@ -270,7 +281,7 @@ static void parsearguments (int argc, char* argv[])
 
 		else if ((strncmp (argv[i], "-H\0", 3) == 0) || (strncmp (argv[i], "--nosthdrencryption\0", 20) == 0)) {
 			if (args.sthdrencryption.is_set) {
-				exit_err (_("the stego header encryption argument can be used only once. type \"%s --help\" for help."), argv[0]) ;
+				exit_err (_("the stego header encryption argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
 			else {
 				args.sthdrencryption.is_set = 1 ;
@@ -281,11 +292,11 @@ static void parsearguments (int argc, char* argv[])
 
 		else if ((strncmp (argv[i], "-k\0", 3) == 0) || (strncmp (argv[i], "--checksum\0", 11) == 0)) {
 			if (args.action.value != ARGS_ACTION_EMBED) {
-				exit_err (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], argv[0]) ;
+				exit_err (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
 
 			if (args.checksum.is_set) {
-				exit_err (_("the checksum argument can be used only once. type \"%s --help\" for help."), argv[0]) ;
+				exit_err (_("the checksum argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
 			else {
 				args.checksum.is_set = 1 ;
@@ -296,11 +307,11 @@ static void parsearguments (int argc, char* argv[])
 
 		else if ((strncmp (argv[i], "-K\0", 3) == 0) || (strncmp (argv[i], "--nochecksum\0", 13) == 0)) {
 			if (args.action.value != ARGS_ACTION_EMBED) {
-				exit_err (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], argv[0]) ;
+				exit_err (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
 
 			if (args.checksum.is_set) {
-				exit_err (_("the checksum argument can be used only once. type \"%s --help\" for help."), argv[0]) ;
+				exit_err (_("the checksum argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
 			else {
 				args.checksum.is_set = 1 ;
@@ -311,11 +322,11 @@ static void parsearguments (int argc, char* argv[])
 
 		else if ((strncmp (argv[i], "-n\0", 3) == 0) || (strncmp (argv[i], "--embedplainname\0", 17) == 0)) {
 			if (args.action.value != ARGS_ACTION_EMBED) {
-				exit_err (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], argv[0]) ;
+				exit_err (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
 
 			if (args.embedplnfn.is_set) {
-				exit_err (_("the plain file name embedding argument can be used only once. type \"%s --help\" for help."), argv[0]) ;
+				exit_err (_("the plain file name embedding argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
 			else {
 				args.embedplnfn.is_set = 1 ;
@@ -326,11 +337,11 @@ static void parsearguments (int argc, char* argv[])
 
 		else if ((strncmp (argv[i], "-N\0", 3) == 0) || (strncmp (argv[i], "--notembedplainname\0", 20) == 0)) {
 			if (args.action.value != ARGS_ACTION_EMBED) {
-				exit_err (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], argv[0]) ;
+				exit_err (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
 
 			if (args.embedplnfn.is_set) {
-				exit_err (_("the plain file name embedding argument can be used only once. type \"%s --help\" for help."), argv[0]) ;
+				exit_err (_("the plain file name embedding argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
 			else {
 				args.embedplnfn.is_set = 1 ;
@@ -341,7 +352,7 @@ static void parsearguments (int argc, char* argv[])
 
 		else if ((strncmp (argv[i], "-c\0", 3) == 0) || (strncmp (argv[i], "--compatibility\0", 16) == 0)) {
 			if (args.compatibility.is_set) {
-				exit_err (_("the compatibility argument can be used only once. type \"%s --help\" for help."), argv[0]) ;
+				exit_err (_("the compatibility argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
 			else {
 				args.compatibility.is_set = 1 ;
@@ -354,14 +365,14 @@ static void parsearguments (int argc, char* argv[])
 			int j = 0 ;
 
 			if (args.passphrase.is_set) {
-				exit_err (_("the passphrase argument can be used only once. type \"%s --help\" for help."), argv[0]) ;
+				exit_err (_("the passphrase argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
 			else {
 				args.passphrase.is_set = 1 ;
 			}
 
 			if (++i == argc) {
-				exit_err (_("the \"%s\" argument must be followed by the passphrase. type \"%s --help\" for help."), argv[i], argv[0]) ;
+				exit_err (_("the \"%s\" argument must be followed by the passphrase. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
 
 			if (strlen (argv[i]) > PASSPHRASE_MAXLEN) {
@@ -378,15 +389,15 @@ static void parsearguments (int argc, char* argv[])
 
 		else if ((strncmp (argv[i], "-cf\0", 4) == 0) || (strncmp (argv[i], "--coverfile\0", 16) == 0)) {
 			if (args.action.value != ARGS_ACTION_EMBED) {
-				exit_err (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], argv[0]) ;
+				exit_err (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
 
 			if (++i == argc) {
-				exit_err (_("the \"%s\" argument must be followed by the cover file name. type \"%s --help\" for help."), argv[i - 1], argv[0]) ;
+				exit_err (_("the \"%s\" argument must be followed by the cover file name. type \"%s --help\" for help."), argv[i - 1], PROGNAME) ;
 			}
 
 			if (args.cvrfn.is_set) {
-				exit_err (_("the cover file name argument can be used only once. type \"%s --help\" for help."), argv[0]) ;
+				exit_err (_("the cover file name argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
 			else {
 				args.cvrfn.is_set = 1 ;
@@ -403,11 +414,11 @@ static void parsearguments (int argc, char* argv[])
 
 		else if ((strncmp (argv[i], "-sf\0", 4) == 0) || (strncmp (argv[i], "--stegofile\0", 12) == 0)) {
 			if (++i == argc) {
-				exit_err (_("the \"%s\" argument must be followed by the stego file name. type \"%s --help\" for help."), argv[i - 1], argv[0]) ;
+				exit_err (_("the \"%s\" argument must be followed by the stego file name. type \"%s --help\" for help."), argv[i - 1], PROGNAME) ;
 			}
 
 			if (args.stgfn.is_set) {
-				exit_err (_("the stego file name argument can be used only once. type \"%s --help\" for help."), argv[0]) ;
+				exit_err (_("the stego file name argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
 			args.stgfn.is_set = 1 ;
 
@@ -422,11 +433,11 @@ static void parsearguments (int argc, char* argv[])
 
 		else if ((strncmp (argv[i], "-pf\0", 4) == 0) || (strncmp (argv[i], "--plainfile\0", 12) == 0)) {
 			if (++i == argc) {
-				exit_err (_("the \"%s\" argument must be followed by the plain file name. type \"%s --help\" for help."), argv[i - 1], argv[0]) ;
+				exit_err (_("the \"%s\" argument must be followed by the plain file name. type \"%s --help\" for help."), argv[i - 1], PROGNAME) ;
 			}
 
 			if (args.plnfn.is_set) {
-				exit_err (_("the plain file name argument can be used only once. type \"%s --help\" for help."), argv[0]) ;
+				exit_err (_("the plain file name argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
 			args.plnfn.is_set = 1 ;
 
@@ -441,7 +452,7 @@ static void parsearguments (int argc, char* argv[])
 
 		else if ((strncmp (argv[i], "-f\0", 3) == 0) || (strncmp (argv[i], "--force\0", 8) == 0)) {
 			if (args.force.is_set) {
-				exit_err (_("the force argument can be used only once. type \"%s --help\" for help."), argv[0]) ;
+				exit_err (_("the force argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
 			else {
 				args.force.is_set = 1 ;
@@ -473,14 +484,14 @@ static void parsearguments (int argc, char* argv[])
 		}
 
 		else {
-			exit_err (_("unknown argument \"%s\". type \"%s --help\" for help."), argv[i], argv[0]) ;
+			exit_err (_("unknown argument \"%s\". type \"%s --help\" for help."), argv[i], PROGNAME) ;
 		}
 	}
 
 	/* argument post-processing */
 	if (args.action.value == ARGS_ACTION_EMBED) {
 		if ((args.cvrfn.value == NULL) && (args.plnfn.value == NULL)) {
-			exit_err (_("standard input cannot be used for cover AND plain data. type \"%s --help\" for help."), argv[0]) ;
+			exit_err (_("standard input cannot be used for cover AND plain data. type \"%s --help\" for help."), PROGNAME) ;
 		}
 	}
 
@@ -505,7 +516,6 @@ static void parsearguments (int argc, char* argv[])
 
 static void gettext_init (void)
 {
-#ifndef DEBUG
 	/* initialize gettext */
 	setlocale (LC_ALL, "") ;
 	bindtextdomain (PACKAGE, LOCALEDIR) ;
@@ -518,7 +528,7 @@ static void gettext_init (void)
 		LCID localeID = GetThreadLocale () ;	
 		int i = 0 ;
 
-		for (i = 0 ; i < LCIDTable_size ; i++) {
+		while (LCIDTable[i].localeID != 0x0000) {
 			if (localeID == LCIDTable[i].localeID) {
 				setenv ("LANG", LCIDTable[i].language, 1) ;
 				/* Make Change known (see gettext manual) */
@@ -528,10 +538,11 @@ static void gettext_init (void)
 				}
 				break ;
 			}
+
+			i++ ;
 		}
 	}
 #endif /* WIN32 */
-#endif /* DEBUG */
 
 	return ;
 }

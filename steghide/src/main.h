@@ -90,7 +90,7 @@ extern ARGS args ;
 
 typedef struct struct_LCIDENTRY {
 	LCID localeID ;
-	char *language ;
+	char language[3] ;
 } LCIDENTRY ;
 #endif
 

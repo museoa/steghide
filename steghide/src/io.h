@@ -57,7 +57,7 @@ typedef struct struct_BITMAPFILEHEADER {
 	unsigned short	bfReserved2 ;
 	unsigned long	bfOffBits ;
 } BITMAPFILEHEADER ;
-#endif /* _WINGDI_H_ */
+#endif /* WIN32 */
 
 typedef struct struct_BITMAPXHEADER { /* stores data from BITMAPINFO- and BITMAPCORE- HEADER */
 	unsigned long	Size ;
