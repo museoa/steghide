@@ -21,6 +21,7 @@
 #include <cstring>
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include "MCryptPP.h"
 #include "Terminal.h"
@@ -81,7 +82,14 @@ void Arguments::parse ()
 		if (parse_Verbosity(curarg)) continue ;
 		if (parse_Debug(curarg)) continue ; // TODO - rename Debug -> Undocumented
 
-		throw ArgError (_("unknown argument \"%s\"."), curarg->c_str()) ;
+		if (Command.getValue() == INFO) {
+			// if none of the parse_* functions recognizes curarg as argument, assume it's a filename for info
+			RestOfArguments.push_back (*curarg) ;
+			curarg++ ;
+		}
+		else {
+			throw ArgError (_("unknown argument \"%s\"."), curarg->c_str()) ;
+		}
 	}
 
 	// (command-specific) argument post-processing 
@@ -135,22 +143,7 @@ void Arguments::parse_Command (ArgIt& curarg)
 		++curarg ;
 
 		if (curarg == TheArguments.end()) {
-			throw ArgError (_("you have to suppy a filename to the \"%s\" command."), CommandString.c_str()) ;
-		}
-		else {
-			parse_Passphrase (curarg) ; // try: maybe -p is first argument
-
-			if (*curarg == "-") {
-				CvrFn.setValue ("") ;
-			}
-			else {
-				CvrFn.setValue (*curarg) ;
-			}
-			++curarg ;
-
-			if (curarg != TheArguments.end()) {
-				parse_Passphrase (curarg) ;
-			}
+			throw ArgError (_("you have to supply at least a filename to the \"%s\" command."), CommandString.c_str()) ;
 		}
 	}
 	else if (*curarg == "encinfo" || *curarg == "--encinfo") {

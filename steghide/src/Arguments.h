@@ -84,6 +84,9 @@ class Arguments {
 	ArgUInt			GmlGraphRecDepth ;
 	ArgUInt			GmlStartVertex ;
 
+	/// for the info command all unknown arguments are put herein
+	std::vector<std::string> RestOfArguments ;
+
 	std::string getPassphrase (bool doublecheck = false) ;
 
 	private:

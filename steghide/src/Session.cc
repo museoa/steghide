@@ -43,58 +43,7 @@ void Session::run ()
 		case EXTRACT: {
 			Extractor ext (Args.StgFn.getValue(), Args.Passphrase.getValue()) ;
 			EmbData* embdata = ext.extract() ;
-
-			// write data
-			std::string fn ;
-			if (Args.ExtFn.is_set()) {
-				if (Args.ExtFn.getValue() == "") {
-					// write extracted data to stdout
-					fn = "" ;
-				}
-				else {
-					// file name given by extracting user overrides embedded file name
-					fn = Args.ExtFn.getValue() ;
-				}
-			}
-			else {
-				// write extracted data to file with embedded file name
-				myassert (Args.ExtFn.getValue() == "") ;
-				fn = embdata->getFileName() ;
-				if (fn.length() == 0) {
-					throw SteghideError (_("please specify a file name for the extracted data (there is no name embedded in the stego file).")) ;
-				}
-			}
-
-			VerboseMessage vwe ;
-			bool printdone = true ;
-			if (fn == "") {
-				vwe.setMessage (_("writing extracted data to standard output...")) ;
-				printdone = false ;
-			}
-			else {
-				vwe.setMessage (_("writing extracted data to \"%s\"..."), fn.c_str()) ;
-				vwe.setNewline (false) ;
-			}
-			vwe.printMessage() ;
-
-			BinaryIO io (fn, BinaryIO::WRITE) ;
-			std::vector<BYTE> data = embdata->getData() ;
-			for (std::vector<BYTE>::iterator i = data.begin() ; i != data.end() ; i++) {
-				io.write8 (*i) ;
-			}
-			io.close() ;
-
-			if (printdone) {
-				VerboseMessage vdone (_(" done")) ;
-				vdone.printMessage() ;
-			}
-
-			if (Args.Verbosity.getValue() < VERBOSE) {
-				if (fn != "") {
-					Message m (_("wrote extracted data to \"%s\"."), fn.c_str()) ;
-					m.printMessage() ;
-				}
-			}
+			writeExtData (*embdata) ;
 		break ; }
 
 		case INFO: {
@@ -131,64 +80,138 @@ void Session::run ()
 
 void Session::printInfo ()
 {
-	// if file format not supported: exception will be catched in main
-	CvrStgFile* file = CvrStgFile::readFile (Args.CvrFn.getValue()) ;
+	for (std::vector<std::string>::iterator fnit = Args.RestOfArguments.begin() ;
+			fnit != Args.RestOfArguments.end() ; fnit++) { // go through all unknown command line arguments
+		try {
+			if (*fnit == "-") { // stdin is "-" for user but "" internally
+				*fnit = "";
+			}
 
-	if (Args.CvrFn.getValue() == "") {
-		printf (_("data from standard input:\n")) ;
+			CvrStgFile* file = CvrStgFile::readFile (*fnit) ;
+
+			if (*fnit == "") {
+				printf (_("data from standard input:\n")) ;
+			}
+			else {
+				printf ("\"%s\":\n", stripDir(*fnit).c_str()) ;
+			}
+
+			std::list<CvrStgFile::Property> props = file->getProperties() ;
+			props.push_back (CvrStgFile::Property (_("capacity"), file->getHRCapacity())) ;
+			for (std::list<CvrStgFile::Property>::const_iterator it = props.begin() ; it != props.end() ; it++) {
+				printf ("  %s: %s\n", it->getKey().c_str(), it->getValue().c_str()) ;
+			}
+
+			bool printembinfo = Args.Passphrase.is_set() ;
+			if (!printembinfo && !(Args.Verbosity.getValue() == QUIET)) {
+				Question q (_("Try to get information about embedded data ?")) ;
+				q.printMessage() ;
+				printembinfo = q.getAnswer() ;
+			}
+
+			if (printembinfo) {
+				try {
+					std::string pp ;
+					if (Args.Passphrase.is_set()) {
+						pp = Args.Passphrase.getValue() ;
+					}
+					else {
+						pp = Args.getPassphrase() ; // ask user for it
+					}
+
+					Extractor e (*fnit, pp) ;
+					EmbData* embdata = e.extract() ;
+
+					if (embdata->getFileName() == "") {
+						printf (_("  embedded data:\n")) ;
+					}
+					else {
+						printf (_("  embedded file \"%s\":\n"), embdata->getFileName().c_str()) ;
+					}
+
+					printf (_("    size: %s\n"), Utils::formatHRSize(embdata->getData().size()).c_str()) ;
+					std::string encstring ;
+					if (embdata->getEncAlgo() == EncryptionAlgorithm(EncryptionAlgorithm::NONE)) {
+						encstring += _("no") ;
+					}
+					else {
+						encstring += embdata->getEncAlgo().getStringRep() + ", " + embdata->getEncMode().getStringRep() ;
+					}
+					printf (_("    encrypted: %s\n"), encstring.c_str()) ;
+					printf (_("    compressed: %s\n"), ((embdata->getCompression() > 0) ? _("yes") : _("no"))) ;
+
+					if (Args.Verbosity.getValue() != QUIET) {
+						Question q (_("Do you want to extract the embedded data ?")) ;
+						q.printMessage() ;
+						if (q.getAnswer()) {
+							writeExtData (*embdata) ;
+						}
+					}
+
+					delete embdata ;
+				}
+				catch (CorruptDataError e) {
+					printf (_("could not extract any data with that passphrase!\n")) ;
+				}
+			}
+		}
+		catch (SteghideError e) { // catch exceptions in loop to be able to continue with the next file if an error occurs
+			e.printMessage() ;
+		}
+	}
+}
+
+void Session::writeExtData (const EmbData& ed) const
+{
+	// write data
+	std::string fn ;
+	if (Args.ExtFn.is_set()) {
+		if (Args.ExtFn.getValue() == "") {
+			// write extracted data to stdout
+			fn = "" ;
+		}
+		else {
+			// file name given by extracting user overrides embedded file name
+			fn = Args.ExtFn.getValue() ;
+		}
 	}
 	else {
-		printf ("\"%s\":\n", stripDir(Args.CvrFn.getValue()).c_str()) ;
-	}
-
-	std::list<CvrStgFile::Property> props = file->getProperties() ;
-	props.push_back (CvrStgFile::Property (_("capacity"), file->getHRCapacity())) ;
-	for (std::list<CvrStgFile::Property>::const_iterator it = props.begin() ; it != props.end() ; it++) {
-		printf ("  %s: %s\n", it->getKey().c_str(), it->getValue().c_str()) ;
-	}
-
-	bool printembinfo = Args.Passphrase.is_set() ;
-	if (!printembinfo && !(Args.Verbosity.getValue() == QUIET)) {
-		Question q (_("Try to get information about embedded data ?")) ;
-		q.printMessage() ;
-		printembinfo = q.getAnswer() ;
-	}
-
-	if (printembinfo) {
-		try {
-			std::string pp ;
-			if (Args.Passphrase.is_set()) {
-				pp = Args.Passphrase.getValue() ;
-			}
-			else {
-				pp = Args.getPassphrase() ; // ask user for it
-			}
-
-			Extractor e (Args.CvrFn.getValue(), pp) ;
-			EmbData* embdata = e.extract() ;
-
-			if (embdata->getFileName() == "") {
-				printf (_("  embedded data:\n")) ;
-			}
-			else {
-				printf (_("  embedded file \"%s\":\n"), embdata->getFileName().c_str()) ;
-			}
-
-			printf (_("    size: %s\n"), Utils::formatHRSize(embdata->getData().size()).c_str()) ;
-			std::string encstring ;
-			if (embdata->getEncAlgo() == EncryptionAlgorithm(EncryptionAlgorithm::NONE)) {
-				encstring += _("no") ;
-			}
-			else {
-				encstring += embdata->getEncAlgo().getStringRep() + ", " + embdata->getEncMode().getStringRep() ;
-			}
-			printf (_("    encrypted: %s\n"), encstring.c_str()) ;
-			printf (_("    compressed: %s\n"), ((embdata->getCompression() > 0) ? _("yes") : _("no"))) ;
-
-			delete embdata ;
+		// write extracted data to file with embedded file name
+		myassert (Args.ExtFn.getValue() == "") ;
+		fn = ed.getFileName() ;
+		if (fn.length() == 0) {
+			throw SteghideError (_("please specify a file name for the extracted data (there is no name embedded in the stego file).")) ;
 		}
-		catch (CorruptDataError e) {
-			printf (_("could not extract any data with that passphrase!\n")) ;
+	}
+
+	VerboseMessage vwe ;
+	bool printdone = true ;
+	if (fn == "") {
+		vwe.setMessage (_("writing extracted data to standard output...")) ;
+		printdone = false ;
+	}
+	else {
+		vwe.setMessage (_("writing extracted data to \"%s\"..."), fn.c_str()) ;
+		vwe.setNewline (false) ;
+	}
+	vwe.printMessage() ;
+
+	BinaryIO io (fn, BinaryIO::WRITE) ;
+	std::vector<BYTE> data = ed.getData() ;
+	for (std::vector<BYTE>::iterator i = data.begin() ; i != data.end() ; i++) {
+		io.write8 (*i) ;
+	}
+	io.close() ;
+
+	if (printdone) {
+		VerboseMessage vdone (_(" done")) ;
+		vdone.printMessage() ;
+	}
+
+	if (Args.Verbosity.getValue() < VERBOSE) {
+		if (fn != "") {
+			Message m (_("wrote extracted data to \"%s\"."), fn.c_str()) ;
+			m.printMessage() ;
 		}
 	}
 }
@@ -247,7 +270,7 @@ void Session::printHelp ()
 		" embed, --embed          embed data\n"
 		" extract, --extract      extract data\n"
 		" info, --info            display information about a cover- or stego-file\n"
-		"   info <filename>       display information about <filename>\n"
+		"   info <filenames>      display information about <filenames>\n"
 		" encinfo, --encinfo      display a list of supported encryption algorithms\n"
 		" version, --version      display version information\n"
 		" license, --license      display steghide's license\n"
@@ -286,6 +309,7 @@ void Session::printHelp ()
 		" -v, --verbose           display detailed information\n"
 
 		"\noptions for the info command:\n"
+		" -q, --quiet             be non-interactive (do not ask the user anything)\n"
 		" -p, --passphrase        specify passphrase\n"
 		"   -p <passphrase>       use <passphrase> to get info about embedded data\n"
 

@@ -24,6 +24,7 @@
 #include <map>
 #include <string>
 
+#include "EmbData.h"
 #include "common.h"
 
 class Session {
@@ -33,12 +34,15 @@ class Session {
 	void run (void) ;
 
 	private:
+	void writeExtData (const EmbData& ed) const ;
+
 	std::string stripDir (std::string s) const ;
 	void printInfo (void) ;
 	void printEncInfo (void) ;
 	void printVersion (void) ;
 	void printHelp (void) ;
 	void printLicense (void) ;
+
 #ifdef DEBUG
 	void printFrequencies (void) ;
 	/**
