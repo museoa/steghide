@@ -1042,4 +1042,3 @@ msgstr "Mit dem \"license\" Kommando können keine Argumente verwendet werden."
 #: arguments.cc:67
 msgid "you cannot use arguments with the \"version\" command"
 msgstr "Mit dem \"version\" Kommando können keine Argumente verwendet werden."
-
