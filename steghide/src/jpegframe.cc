@@ -19,6 +19,7 @@
  */
 
 #include <climits>
+#include <vector>
 
 #include "common.h"
 #include "error.h"
@@ -33,8 +34,8 @@ JpegFrame::JpegFrame ()
 {
 	File = NULL ;
 	framehdr = NULL ;
-	ACTables = vector<JpegHuffmanTable*> (4) ;
-	DCTables = vector<JpegHuffmanTable*> (4) ;
+	ACTables = std::vector<JpegHuffmanTable*> (4) ;
+	DCTables = std::vector<JpegHuffmanTable*> (4) ;
 }
 
 JpegFrame::JpegFrame (JpegFile *f, BinaryIO *io)
@@ -42,8 +43,8 @@ JpegFrame::JpegFrame (JpegFile *f, BinaryIO *io)
 {
 	File = f ;
 	framehdr = NULL ;
-	ACTables = vector<JpegHuffmanTable*> (4) ;
-	DCTables = vector<JpegHuffmanTable*> (4) ;
+	ACTables = std::vector<JpegHuffmanTable*> (4) ;
+	DCTables = std::vector<JpegHuffmanTable*> (4) ;
 
 	read (io) ;
 }
@@ -169,24 +170,24 @@ void JpegFrame::write (BinaryIO *io)
 	JpegContainer::write (io) ;
 }
 
-void JpegFrame::recalcACTables (vector<vector <unsigned long> > freqs)
+void JpegFrame::recalcACTables (std::vector<std::vector <unsigned long> > freqs)
 {
-	for (vector<JpegHuffmanTable*>::iterator ht = ACTables.begin() ; ht != ACTables.end() ; ht++) {	
+	for (std::vector<JpegHuffmanTable*>::iterator ht = ACTables.begin() ; ht != ACTables.end() ; ht++) {	
 		if (*ht != NULL) {
-			vector<unsigned int> codesize = calcCodeSize (freqs[(*ht)->getDestId()]) ;
-			vector<unsigned int> bits = calcBits (codesize) ;
-			vector<unsigned int> huffval = calcHuffVal (codesize) ;
+			std::vector<unsigned int> codesize = calcCodeSize (freqs[(*ht)->getDestId()]) ;
+			std::vector<unsigned int> bits = calcBits (codesize) ;
+			std::vector<unsigned int> huffval = calcHuffVal (codesize) ;
 
 			(*ht)->reset (bits, huffval) ;
 		}
 	}
 }
 
-vector<unsigned int> JpegFrame::calcCodeSize (vector<unsigned long> freq)
+std::vector<unsigned int> JpegFrame::calcCodeSize (std::vector<unsigned long> freq)
 {
-	vector<unsigned int> codesize(257) ;
-	vector<long int> others(257) ;
-	for (vector<long int>::iterator j = others.begin() ; j != others.end() ; j++) {
+	std::vector<unsigned int> codesize(257) ;
+	std::vector<long int> others(257) ;
+	for (std::vector<long int>::iterator j = others.begin() ; j != others.end() ; j++) {
 		*j = -1 ;
 	}
 
@@ -235,9 +236,9 @@ vector<unsigned int> JpegFrame::calcCodeSize (vector<unsigned long> freq)
 	return codesize ;
 }
 
-vector<unsigned int> JpegFrame::calcBits (vector<unsigned int> codesize)
+std::vector<unsigned int> JpegFrame::calcBits (std::vector<unsigned int> codesize)
 {
-	vector<unsigned int> bits (33) ;
+	std::vector<unsigned int> bits (33) ;
 
 	for (unsigned int i = 0 ; i < 257 ; i++) {
 		if (codesize[i] > 0) {
@@ -280,9 +281,9 @@ vector<unsigned int> JpegFrame::calcBits (vector<unsigned int> codesize)
 	return bits ;
 }
 
-vector<unsigned int> JpegFrame::calcHuffVal (vector<unsigned int> codesize)
+std::vector<unsigned int> JpegFrame::calcHuffVal (std::vector<unsigned int> codesize)
 {
-	vector<unsigned int> huffval ;
+	std::vector<unsigned int> huffval ;
 	for (unsigned int i = 1 ; i <= 32 ; i++) {
 		for (unsigned j = 0 ; j <= 255 ; j++) {
 			if (codesize[j] == i) {

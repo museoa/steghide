@@ -40,12 +40,12 @@ class BitString {
 	/**
 	 * construct a BitString containing the data in d
 	 **/
-	BitString (const vector<unsigned char> &d) ;
+	BitString (const std::vector<unsigned char> &d) ;
 	
 	/**
 	 * construct a BitString containing the characters in d as 8 bit unsigned chars
 	 **/
-	BitString (const string &d) ;
+	BitString (const std::string &d) ;
 	
 	unsigned long getLength (void) const ;
 
@@ -85,12 +85,12 @@ class BitString {
 	/**
 	 * append the string v to this BitString
 	 **/
-	BitString& append (const string &v) ;
+	BitString& append (const std::string &v) ;
 
 	/**
 	 * append the vector v byte-wise to this BitString
 	 **/
-	BitString& append (const vector<unsigned char> &v) ;
+	BitString& append (const std::vector<unsigned char> &v) ;
 
 	/**
 	 * append the BitString v to this BitString
@@ -120,7 +120,7 @@ class BitString {
 	 *
 	 * getLength() % 8 must be 0 to call this function
 	 **/
-	vector<unsigned char> getBytes (void) const ;
+	std::vector<unsigned char> getBytes (void) const ;
 
 	/**
 	 * pad this BitString with the value in v
@@ -155,7 +155,7 @@ class BitString {
 
 	private:
 	unsigned long length ;
-	vector<unsigned char> data ;
+	std::vector<unsigned char> data ;
 } ;
 
 #endif // ndef SH_BITSTRING_H

@@ -34,16 +34,16 @@ class BinaryIO {
 	 * \param fn the filename (can be "" to indicate stdin/stdout)
 	 * \m the Mode (BinaryIO::READ or BinaryIO::WRITE)
 	 **/
-	BinaryIO (string fn, MODE m) ;
+	BinaryIO (std::string fn, MODE m) ;
 	~BinaryIO (void) ;
 
-	string getName (void) ;
+	std::string getName (void) ;
 	bool is_open (void) ;
 	bool is_std (void) ;
 	bool eof (void) ;
 	unsigned long getPos (void) const ;
 
-	void open (string fn, MODE m) ;	
+	void open (std::string fn, MODE m) ;	
 	void close (void) ;
 
 	unsigned char read8 (void) ;
@@ -56,7 +56,7 @@ class BinaryIO {
 	 * \param n the number of bytes to read (must be <= 4)
 	 **/
 	unsigned long read_le (unsigned short n) ;
-	string readstring (unsigned int len) ;
+	std::string readstring (unsigned int len) ;
 
 	void write8 (unsigned char val) ;
 	void write16_le (unsigned int val) ;
@@ -69,21 +69,21 @@ class BinaryIO {
 	 * \param val the value
 	 **/
 	void write_le (unsigned long val, unsigned short n) ;
-	void writestring (string s) ;
+	void writestring (std::string s) ;
 
 	protected:
 	void setStream (FILE *s) ;
 	FILE *getStream (void) ;
-	void setName (string fn) ;
+	void setName (std::string fn) ;
 	void set_open (bool fo) ;
 	MODE getMode (void) ;
 	void setMode (BinaryIO::MODE m) ;
 
-	void checkForce (string fn) ;
-	bool Fileexists (string fn) ;
+	void checkForce (std::string fn) ;
+	bool Fileexists (std::string fn) ;
 
 	private:
-	string filename ;
+	std::string filename ;
 	FILE *stream ;
 	bool fileopen ;
 	MODE mode ;

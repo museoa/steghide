@@ -44,11 +44,11 @@ class JpegScan : public JpegContainer {
 
 	JpegMarker getTerminatingMarker (void) ;
 	JpegScanHeader *getScanHeader (void) ;
-	vector<vector <unsigned long> > getFreqs (void) ;
+	std::vector<std::vector <unsigned long> > getFreqs (void) ;
 
 	private:
 	JpegScanHeader *scanhdr ;
-	vector<JpegEntropyCoded*> ECSegs ;
+	std::vector<JpegEntropyCoded*> ECSegs ;
 	JpegMarker termmarker ;
 } ;
 

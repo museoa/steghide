@@ -22,6 +22,7 @@
 #include <cstdarg>
 #include <cstdio>
 #include <iostream>
+#include <string>
 
 #include "common.h"
 #include "msg.h"
@@ -35,7 +36,7 @@ MessageBase::MessageBase ()
 	setMessage (_("__no_message_defined__")) ;
 }
 
-MessageBase::MessageBase (string msg)
+MessageBase::MessageBase (std::string msg)
 {
 	setMessage (msg) ;
 }
@@ -52,12 +53,12 @@ MessageBase::~MessageBase ()
 {
 }
 
-string MessageBase::getMessage ()
+std::string MessageBase::getMessage ()
 {
 	return message ;
 }
 
-void MessageBase::setMessage (string msg)
+void MessageBase::setMessage (std::string msg)
 {
 	message = msg ;
 }
@@ -70,20 +71,20 @@ void MessageBase::setMessage (const char *msgfmt, ...)
 	va_end (ap) ;
 }
 
-string MessageBase::compose (const char *msgfmt, ...)
+std::string MessageBase::compose (const char *msgfmt, ...)
 {
 	va_list ap ;
 	va_start (ap, msgfmt) ;
-	string retval = vcompose (msgfmt, ap) ;
+	std::string retval = vcompose (msgfmt, ap) ;
 	va_end (ap) ;
 	return retval ;
 }
 
-string MessageBase::vcompose (const char *msgfmt, va_list ap)
+std::string MessageBase::vcompose (const char *msgfmt, va_list ap)
 {
 	char *str = new char[MsgMaxSize] ;
 	vsnprintf (str, MsgMaxSize, msgfmt, ap) ;
-	return string (str) ;
+	return std::string (str) ;
 }
 
 //
@@ -102,7 +103,7 @@ void Message::printMessage ()
 {
 	if (Args.Verbosity.getValue() == NORMAL ||
 		Args.Verbosity.getValue() == VERBOSE) {
-		cerr << getMessage() << endl ;
+		std::cerr << getMessage() << endl ;
 	}
 }
 
@@ -121,7 +122,7 @@ VerboseMessage::VerboseMessage (const char *msgfmt, ...)
 void VerboseMessage::printMessage ()
 {
 	if (Args.Verbosity.getValue() == VERBOSE) {
-		cerr << getMessage() << endl ;
+		std::cerr << getMessage() << endl ;
 	}
 }
 
@@ -141,7 +142,7 @@ void Warning::printMessage ()
 {
 	if (Args.Verbosity.getValue() == NORMAL ||
 		Args.Verbosity.getValue() == VERBOSE) {
-		cerr << PROGNAME << _(": warning: ") << getMessage() << endl ;
+		std::cerr << PROGNAME << _(": warning: ") << getMessage() << endl ;
 	}
 }
 
@@ -159,7 +160,7 @@ CriticalWarning::CriticalWarning (const char *msgfmt, ...)
 
 void CriticalWarning::printMessage ()
 {
-	cerr << PROGNAME << _(": warning: ") << getMessage() << endl ;
+	std::cerr << PROGNAME << _(": warning: ") << getMessage() << std::endl ;
 }
 
 //
@@ -168,22 +169,22 @@ void CriticalWarning::printMessage ()
 Question::Question (void)
 	: MessageBase()
 {
-	yeschar = string (_("y")) ;
-	nochar = string (_("n")) ;
+	yeschar = std::string (_("y")) ;
+	nochar = std::string (_("n")) ;
 }
 
-Question::Question (string msg)
+Question::Question (std::string msg)
 	: MessageBase (msg)
 {
-	yeschar = string (_("y")) ;
-	nochar = string (_("n")) ;
+	yeschar = std::string (_("y")) ;
+	nochar = std::string (_("n")) ;
 }
 
 Question::Question (const char *msgfmt, ...)
 	: MessageBase()
 {
-	yeschar = string (_("y")) ;
-	nochar = string (_("n")) ;
+	yeschar = std::string (_("y")) ;
+	nochar = std::string (_("n")) ;
 
 	va_list ap ;
 	va_start (ap, msgfmt) ;
@@ -195,7 +196,7 @@ void Question::printMessage ()
 {
 	assert (!Args.stdin_isused()) ;
 
-	cerr << getMessage() << " (" << yeschar << "/" << nochar << ") " ;
+	std::cerr << getMessage() << " (" << yeschar << "/" << nochar << ") " ;
 }
 
 bool Question::getAnswer ()
@@ -205,11 +206,26 @@ bool Question::getAnswer ()
 	Terminal term ;
 	term.SingleKeyOn() ;
 	char input[2] ;
-	input[0] = cin.get() ;
+	input[0] = std::cin.get() ;
 	input[1] = '\0' ;
-	bool retval = (string (input) == yeschar) ;
+	bool retval = (std::string (input) == yeschar) ;
 	term.reset() ;
-	cerr << endl ;
+	std::cerr << endl ;
 
 	return retval ;
+}
+
+//
+// debugging output
+//
+void printDebug (unsigned int level, const char *msgfmt, ...)
+{
+#ifdef DEBUG
+	if (level <= Args.DebugLevel.getValue()) {
+		va_list ap ;
+		va_start (ap, msgfmt) ;
+		vfprintf (stderr, msgfmt, ap) ;
+		va_end (ap) ;
+	}
+#endif
 }

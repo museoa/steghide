@@ -41,6 +41,7 @@ class Arguments {
 	ArgVerbosity	Verbosity ;
 #ifdef DEBUG
 	ArgDebugCommand	DebugCommand ;
+	ArgUInt			DebugLevel ;
 	ArgFloat		Radius ;
 	ArgUInt			PriorityQueueRange ;
 	ArgUInt			NConstrHeur ;
@@ -62,6 +63,7 @@ class Arguments {
 	static const VERBOSITY	Default_Verbosity = NORMAL ;
 #ifdef DEBUG
 	static const DEBUGCOMMAND	Default_DebugCommand = NONE ;
+	static const unsigned int	Default_DebugLevel = 0 ;
 	static const float			Default_Radius = 0.0 ; // there is no default radius for all file formats
 	static const unsigned int	Default_PriorityQueueRange = 0 ; // is never used
 	static const unsigned int	Default_NConstrHeur = 0 ; // is never used
@@ -69,7 +71,7 @@ class Arguments {
 
 	static const unsigned int	PassphraseMaxLen = 255 ;
 
-	string getPassphrase (bool doublecheck = false) ;
+	std::string getPassphrase (bool doublecheck = false) ;
 	void setDefaults (void) ;
 } ;
 

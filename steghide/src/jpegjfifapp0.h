@@ -49,7 +49,7 @@ class JpegJFIFAPP0 : public JpegSegment {
 	void write (BinaryIO *io) ;
 
 	private:
-	string identifier ;	
+	std::string identifier ;	
 	unsigned int version ;
 	unsigned char units ;
 	unsigned int Xdensity ;

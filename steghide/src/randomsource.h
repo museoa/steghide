@@ -46,7 +46,7 @@ class RandomSource {
 	 * \param n the number of requested random bytes
 	 * \return n random bytes
 	 **/
-	vector<unsigned char> getBytes (unsigned int n) ;
+	std::vector<unsigned char> getBytes (unsigned int n) ;
 
 	/**
 	 * get n random bits

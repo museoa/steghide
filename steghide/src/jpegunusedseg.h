@@ -41,7 +41,7 @@ class JpegUnusedSegment : public JpegSegment {
 	void write (BinaryIO *io) ;
 
 	private:
-	vector<unsigned char> data ;
+	std::vector<unsigned char> data ;
 } ;
 
 #endif //ndef SH_JPEGUNSUPSEG_H

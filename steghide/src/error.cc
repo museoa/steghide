@@ -34,7 +34,7 @@ SteghideError::SteghideError (void)
 {
 }
 
-SteghideError::SteghideError(string msg)
+SteghideError::SteghideError(std::string msg)
 	: MessageBase(msg)
 {
 }
@@ -50,13 +50,13 @@ SteghideError::SteghideError (const char *msgfmt, ...)
 
 void SteghideError::printMessage (void)
 {
-	cerr << PROGNAME << ": " << getMessage() << endl ;
+	std::cerr << PROGNAME << ": " << getMessage() << std::endl ;
 }
 
 //
 // class BinaryInputError
 //
-BinaryInputError::BinaryInputError (string fn, FILE* s)
+BinaryInputError::BinaryInputError (std::string fn, FILE* s)
 	: SteghideError()
 {
 	if (feof (s)) {
@@ -94,7 +94,7 @@ void BinaryInputError::setType (BinaryInputError::TYPE t)
 //
 // class BinaryOutputError
 //
-BinaryOutputError::BinaryOutputError (string fn)
+BinaryOutputError::BinaryOutputError (std::string fn)
 	: SteghideError()
 {
 	if (fn == "") {
@@ -139,12 +139,12 @@ CorruptJpegError::CorruptJpegError (BinaryIO *io, const char *msgfmt, ...)
 {
 	va_list ap ;
 	va_start (ap, msgfmt) ;
-	string auxmsg = vcompose (msgfmt, ap) ;
+	std::string auxmsg = vcompose (msgfmt, ap) ;
 	va_end (ap) ;
 
-	string mainmsg ;
+	std::string mainmsg ;
 	if (io->is_std()) {
-		mainmsg = string (_("corrupt jpeg file on standard input:")) ;
+		mainmsg = std::string (_("corrupt jpeg file on standard input:")) ;
 	}
 	else {
 		mainmsg = compose (_("corrupt jpeg file \"%s\":"), io->getName().c_str()) ;

@@ -78,7 +78,7 @@ class JpegHuffmanTable : public JpegSegment {
 	 * \param b the bits array (going from 0 to 15)
 	 * \param hv the huffval array (starting at 0)
 	 **/
-	void reset (vector<unsigned int> b, vector<unsigned int> hv) ;
+	void reset (std::vector<unsigned int> b, std::vector<unsigned int> hv) ;
 
 	/**
 	 * get the number of codes with length l
@@ -179,22 +179,22 @@ class JpegHuffmanTable : public JpegSegment {
 
 	unsigned char tableclass ;
 	unsigned char tabledestid ;
-	vector<unsigned int> bits ;
-	vector<unsigned int> huffval ;
+	std::vector<unsigned int> bits ;
+	std::vector<unsigned int> huffval ;
 	/// contains a list of code lengths
-	vector<unsigned int> huffsize ;
+	std::vector<unsigned int> huffsize ;
 	/// contains the codes corresponding to the code lengths in huffsize 
-	vector<unsigned int> huffcode ;
+	std::vector<unsigned int> huffcode ;
 	/// mincode[l] contains the smallest code value for the length l
-	vector<int> mincode ;
+	std::vector<int> mincode ;
 	/// maxcode[l] contains the largest code value for the length l
-	vector<int> maxcode ;
+	std::vector<int> maxcode ;
 	/// valptr[l] contains the index to the start of the list of values in huffval which are decoded by code word of length l
-	vector<int> valptr ;
+	std::vector<int> valptr ;
 	/// ehuffsize[v] contains the size of the huffman code representing the value v
-	vector<unsigned int> ehuffsize ;
+	std::vector<unsigned int> ehuffsize ;
 	/// ehuffcode[v] contains the huffman code representing the value v
-	vector<unsigned int> ehuffcode ;
+	std::vector<unsigned int> ehuffcode ;
 } ;
 
 #endif // ndef SH_JPEGHUFFTABLE_H

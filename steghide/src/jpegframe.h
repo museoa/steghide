@@ -21,6 +21,8 @@
 #ifndef SH_JPEGFRAME_H
 #define SH_JPEGFRAME_H
 
+#include <vector>
+
 #include "binaryio.h"
 #include "jpegbase.h"
 #include "jpegframehdr.h"
@@ -70,16 +72,16 @@ class JpegFrame : public JpegContainer {
 	JpegFile *getFile (void) ;
 
 	private:
-	void recalcACTables (vector<vector <unsigned long> > freqs) ;
-	vector<unsigned int> calcCodeSize (vector<unsigned long> freq) ;
-	vector<unsigned int> calcBits (vector<unsigned int> codesize) ;
-	vector<unsigned int> calcHuffVal (vector<unsigned int> codesize) ;
+	void recalcACTables (std::vector<std::vector <unsigned long> > freqs) ;
+	std::vector<unsigned int> calcCodeSize (std::vector<unsigned long> freq) ;
+	std::vector<unsigned int> calcBits (std::vector<unsigned int> codesize) ;
+	std::vector<unsigned int> calcHuffVal (std::vector<unsigned int> codesize) ;
 
 	JpegFile *File ;
 	JpegFrameHeader *framehdr ;
 	JpegScan *scan ;
-	vector<JpegHuffmanTable*> DCTables ;
-	vector<JpegHuffmanTable*> ACTables ;
+	std::vector<JpegHuffmanTable*> DCTables ;
+	std::vector<JpegHuffmanTable*> ACTables ;
 } ;
 
 #endif // ndef SH_JEPGFRAME_H

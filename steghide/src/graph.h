@@ -130,6 +130,7 @@ class Graph {
 	void print (void) const ;
 
 	void printUnmatchedVertices (void) const ;
+	void printUnmatchedVerticescontaining (unsigned long samplekey) const ;
 
 	unsigned long check_degree (Vertex *v) const ;
 

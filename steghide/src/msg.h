@@ -27,29 +27,29 @@
 class MessageBase {
 	public:
 	MessageBase (void) ;
-	MessageBase (string msg) ;
+	MessageBase (std::string msg) ;
 	MessageBase (const char *msgfmt, ...) ;
 	virtual ~MessageBase (void) ;
 
-	string getMessage (void) ;
-	void setMessage (string msg) ;
+	std::string getMessage (void) ;
+	void setMessage (std::string msg) ;
 	void setMessage (const char *msgfmt, ...) ;
 	virtual void printMessage (void) = 0 ;
 
 	protected:
 	static const unsigned int MsgMaxSize = 512 ;
 
-	string compose (const char *msgfmt, ...) ;
-	string vcompose (const char *msgfmt, va_list ap) ;
+	std::string compose (const char *msgfmt, ...) ;
+	std::string vcompose (const char *msgfmt, va_list ap) ;
 
 	private:
-	string message ;
+	std::string message ;
 } ;
 
 class Message : public MessageBase {
 	public:
 	Message (void) : MessageBase() {} ;
-	Message (string msg) : MessageBase (msg) {} ;
+	Message (std::string msg) : MessageBase (msg) {} ;
 	Message (const char *msgfmt, ...) ;
 
 	void printMessage (void) ;
@@ -58,7 +58,7 @@ class Message : public MessageBase {
 class VerboseMessage : public MessageBase {
 	public:
 	VerboseMessage (void) : MessageBase() {} ;
-	VerboseMessage (string msg) : MessageBase (msg) {} ;
+	VerboseMessage (std::string msg) : MessageBase (msg) {} ;
 	VerboseMessage (const char *msgfmt, ...) ;
 
 	void printMessage (void) ;
@@ -67,7 +67,7 @@ class VerboseMessage : public MessageBase {
 class Warning : public MessageBase {
 	public:
 	Warning (void) : MessageBase() {} ;
-	Warning (string msg) : MessageBase (msg) {} ;
+	Warning (std::string msg) : MessageBase (msg) {} ;
 	Warning (const char *msgfmt, ...) ;
 
 	void printMessage (void) ;
@@ -76,7 +76,7 @@ class Warning : public MessageBase {
 class CriticalWarning : public MessageBase {
 	public:
 	CriticalWarning (void) : MessageBase() {} ;
-	CriticalWarning (string msg) : MessageBase (msg) {} ;
+	CriticalWarning (std::string msg) : MessageBase (msg) {} ;
 	CriticalWarning (const char *msgfmt, ...) ;
 
 	void printMessage (void) ;
@@ -85,15 +85,15 @@ class CriticalWarning : public MessageBase {
 class Question : public MessageBase {
 	public:
 	Question (void) ;
-	Question (string msg) ;
+	Question (std::string msg) ;
 	Question (const char *msgfmt, ...) ;
 
 	void printMessage (void) ;
 	bool getAnswer (void) ;
 
 	private:
-	string yeschar ;
-	string nochar ;
+	std::string yeschar ;
+	std::string nochar ;
 } ;
 
 #endif	/* ndef SH_MSG_H */

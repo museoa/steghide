@@ -38,6 +38,9 @@
 // every class should (be able to) do assertions
 #include <cassert>
 
+// every class can have debugging output
+extern void printDebug (unsigned int level, const char *msgfmt, ...) ;
+
 // every class has access to the command line arguments
 #include "arguments.h"
 extern Arguments Args ;

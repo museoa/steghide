@@ -47,13 +47,13 @@ AuFile::~AuFile (void)
 }
 
 // FIXME - use reference to vector not vector
-vector<unsigned char> AuFile::getData (void)
+std::vector<unsigned char> AuFile::getData (void)
 {
 	return data ;
 }
 
 // FIXME - use reference to vector not vector
-void AuFile::setData (vector<unsigned char> d)
+void AuFile::setData (std::vector<unsigned char> d)
 {
 	data = d ;
 }
@@ -235,7 +235,7 @@ void AuFile::readdata (void)
 void AuFile::writedata (void)
 {
 	try {
-		for (vector<unsigned char>::iterator i = data.begin() ; i != data.end() ; i++) {
+		for (std::vector<unsigned char>::iterator i = data.begin() ; i != data.end() ; i++) {
 			getBinIO()->write8 (*i) ;
 		}
 	}

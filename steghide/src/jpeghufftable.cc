@@ -27,7 +27,7 @@
 #include "jpegbase.h"
 #include "jpeghufftable.h"
 
-JpegHuffmanTable::JpegHuffmanTable (unsigned int lr = UINT_MAX)
+JpegHuffmanTable::JpegHuffmanTable (unsigned int lr)
 	: JpegSegment (JpegElement::MarkerDHT)
 {
 	tableclass = 0xFF ;
@@ -35,7 +35,7 @@ JpegHuffmanTable::JpegHuffmanTable (unsigned int lr = UINT_MAX)
 	lengthremaining = lr ;
 }
 
-JpegHuffmanTable::JpegHuffmanTable (BinaryIO *io, unsigned int lr = UINT_MAX)
+JpegHuffmanTable::JpegHuffmanTable (BinaryIO *io, unsigned int lr)
 	: JpegSegment (JpegElement::MarkerDHT)
 {
 	tableclass = 0xFF ;
@@ -80,7 +80,7 @@ unsigned int JpegHuffmanTable::getDestId ()
 	return tabledestid ;
 }
 
-void JpegHuffmanTable::reset (vector<unsigned int> b, vector<unsigned int> hv)
+void JpegHuffmanTable::reset (std::vector<unsigned int> b, std::vector<unsigned int> hv)
 {
 	assert (b.size() == 16) ;
 
@@ -235,7 +235,7 @@ void JpegHuffmanTable::write (BinaryIO *io)
 	for (unsigned int l = 1 ; l <= Len_bits ; l++) {
 		io->write8 ((unsigned char) getBits(l)) ;
 	}
-	vector<unsigned int>::iterator p = huffval.begin() ;
+	std::vector<unsigned int>::iterator p = huffval.begin() ;
 	for (unsigned int l = 1 ; l <= Len_bits ; l++) {
 		for (unsigned int j = 0 ; j < getBits (l) ; j++) {
 			io->write8 (*p) ;

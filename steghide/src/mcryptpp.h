@@ -90,7 +90,7 @@ class MCryptpp {
 	 * \param algo the name of an algorithm to be used for en/decryption
 	 * \param mode the name of a mode to be used for en/decryption
 	 **/
-	MCryptpp (string algo, string mode) ;
+	MCryptpp (std::string algo, std::string mode) ;
 
 	~MCryptpp (void) ;
 
@@ -99,25 +99,25 @@ class MCryptpp {
 	 * \param a the name of an encryption algorithm supported by libmcrypt
 	 * \param m the name of a mode supported by libmcrypt and the given encryption algorithm
 	 **/
-	void open (string a, string m) ;
+	void open (std::string a, std::string m) ;
 
 	/**
 	 * close the opened libmcrypt module
 	 **/
 	void close (void) ;
 
-	BitString encrypt (BitString p, string pp) ;
-	BitString decrypt (BitString c, string pp) ;
+	BitString encrypt (BitString p, std::string pp) ;
+	BitString decrypt (BitString c, std::string pp) ;
 
-	string getAlgorithmName (void) ;
-	string getModeName (void) ;
-	static string getAlgorithmName (Algorithm a) ;
-	static string getModeName (Mode m) ;
+	std::string getAlgorithmName (void) ;
+	std::string getModeName (void) ;
+	static std::string getAlgorithmName (Algorithm a) ;
+	static std::string getModeName (Mode m) ;
 
 	Algorithm getAlgorithm (void) ;
 	Mode getMode (void) ;
-	static Algorithm getAlgorithm (string name) ;
-	static Mode getMode (string name) ;
+	static Algorithm getAlgorithm (std::string name) ;
+	static Mode getMode (std::string name) ;
 
 	/**
 	 * get the size of an encryption result
@@ -128,13 +128,13 @@ class MCryptpp {
 	 **/
 	static unsigned long getEncryptedSize (Algorithm a, Mode m, unsigned long plnsize) ;
 
-	static vector<string> getListModes (void) ;
-	static vector<string> getListAlgorithms (void) ;
+	static std::vector<std::string> getListModes (void) ;
+	static std::vector<std::string> getListAlgorithms (void) ;
 
-	static bool isValidAlgorithm (string s) ;
-	static bool isValidMode (string s) ;
+	static bool isValidAlgorithm (std::string s) ;
+	static bool isValidMode (std::string s) ;
 
-	static bool AlgoSupportsMode (string algo, string mode) ;
+	static bool AlgoSupportsMode (std::string algo, std::string mode) ;
 
 	// ? - macht das sinn ?
 	// TODO wenn einmal so funktioniert: salt (unverändert durch verstecken !!) verwenden,
@@ -144,7 +144,7 @@ class MCryptpp {
 	// auch für permutation!
 
 	protected:
-	void *createKey (string pp) ;
+	void *createKey (std::string pp) ;
 
 	/**
 	 * do the actual encryption
@@ -154,7 +154,7 @@ class MCryptpp {
 	 *
 	 * The size of p must be a multiple of the blocksize of the encryption algorithm.
 	 **/
-	vector<unsigned char> _encrypt (vector<unsigned char> p, string pp) ;
+	std::vector<unsigned char> _encrypt (std::vector<unsigned char> p, std::string pp) ;
 
 	/**
 	 * do the actual decryption
@@ -164,7 +164,7 @@ class MCryptpp {
 	 *
 	 * The size of c must be a multiple of the blocksize of the encryption algorithm.
 	 **/
-	vector<unsigned char> _decrypt (vector<unsigned char> c, string pp) ;
+	std::vector<unsigned char> _decrypt (std::vector<unsigned char> c, std::string pp) ;
 
 	private:
 	/// true iff CryptD contains a valid encryption descriptor

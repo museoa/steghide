@@ -21,6 +21,8 @@
 #ifndef SH_JPEGENTROPYCODED_H
 #define SH_JPEGENTROPYCODED_H
 
+#include <vector>
+
 #include "binaryio.h"
 #include "cvrstgobject.h"
 #include "jpegbase.h"
@@ -51,7 +53,7 @@ class JpegEntropyCoded : public JpegObject, public CvrStgObject {
 	 * of the value v in the part of the entropy coded segment that is encoded using
 	 * the AC table with destination specifier d.
 	 **/
-	vector<vector<unsigned long> > getFreqs (void) ;
+	std::vector<std::vector<unsigned long> > getFreqs (void) ;
 
 	JpegMarker getTerminatingMarker (void) ;
 
@@ -108,7 +110,7 @@ class JpegEntropyCoded : public JpegObject, public CvrStgObject {
 	void writebits (BinaryIO *io, unsigned long v, unsigned int n) ;
 
 	// contains the DCT coefficients; for i % 64 == 0 we have a DC, else an AC coefficient in dctcoeffs[i]
-	vector<int> dctcoeffs ;
+	std::vector<int> dctcoeffs ;
 	/// contains (the rest of) a byte read in readbit
 	unsigned char readbyte ;
 	/// the number of (original jpeg) bits in readbyte

@@ -105,13 +105,13 @@ class BmpFile : public CvrStgFile {
 	typedef struct struct_BMPINFO_WIN {
 		BITMAPINFOHEADER	bmih ;
 		unsigned int		ncolors ;
-		vector<RGBQUAD>		colors ;
+		std::vector<RGBQUAD>		colors ;
 	} BMPINFO_WIN ;
 
 	typedef struct struct_BMPINFO_OS2 {
 		BITMAPCOREHEADER	bmch ;
 		unsigned int		ncolors ;
-		vector<RGBTRIPLE>	colors ;
+		std::vector<RGBTRIPLE>	colors ;
 	} BMPINFO_OS2 ;
 #endif
 
@@ -133,9 +133,9 @@ class BmpFile : public CvrStgFile {
 	BITMAPINFOHEADER bmih ;
 	BITMAPCOREHEADER bmch ;
 	ColorPalette *Palette ;
-	vector<vector <unsigned char> > bitmap ;
+	std::vector<std::vector <unsigned char> > bitmap ;
 	/// contains bytes that are appended at the end of the bitmap data (some image editors apparently do this)
-	vector<unsigned char> atend ;
+	std::vector<unsigned char> atend ;
 
 	void readheaders () ;
 	void bmpwin_readheaders () ;

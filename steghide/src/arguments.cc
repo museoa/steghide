@@ -19,6 +19,7 @@
  */
 
 #include <iostream>
+#include <string>
 
 #include "arguments.h"
 #include "common.h"
@@ -57,23 +58,23 @@ void Arguments::parse (int argc, char *argv[])
 
 #ifdef DEBUG
 	bool debugmode = false ;
-	if (string (argv[i]) == "debug") {
+	if (std::string (argv[i]) == "debug") {
 		debugmode = true ;
 		i++ ;
 	}
 #endif
 
-	if (string (argv[i]) == "embed" || string (argv[i]) == "--embed") {
+	if (std::string (argv[i]) == "embed" || std::string (argv[i]) == "--embed") {
 		Command.setValue (EMBED) ;
 		setDefaults () ;
 		i++ ;
 	}
-	else if (string (argv[i]) == "extract" || string (argv[i]) == "--extract") {
+	else if (std::string (argv[i]) == "extract" || std::string (argv[i]) == "--extract") {
 		Command.setValue (EXTRACT) ;
 		setDefaults () ;
 		i++ ;
 	}
-	else if (string (argv[i]) == "encinfo" || string (argv[i]) == "--encinfo") {
+	else if (std::string (argv[i]) == "encinfo" || std::string (argv[i]) == "--encinfo") {
 		Command.setValue (ENCINFO) ;
 		if (argc > 2) {
 			Warning w (_("you cannot use arguments with the \"encinfo\" command.")) ;
@@ -81,7 +82,7 @@ void Arguments::parse (int argc, char *argv[])
 		}
 		return ;
 	}
-	else if (string (argv[i]) == "version" || string (argv[i]) == "--version") {
+	else if (std::string (argv[i]) == "version" || std::string (argv[i]) == "--version") {
 		Command.setValue (SHOWVERSION) ;
 		if (argc > 2) {
 			Warning w (_("you cannot use arguments with the \"version\" command.")) ;
@@ -89,7 +90,7 @@ void Arguments::parse (int argc, char *argv[])
 		}
 		return ;
 	}
-	else if (string (argv[i]) == "license" || string (argv[i]) == "--license") {
+	else if (std::string (argv[i]) == "license" || std::string (argv[i]) == "--license") {
 		Command.setValue (SHOWLICENSE) ;
 		if (argc > 2) {
 			Warning w (_("you cannot use arguments with the \"license\" command.")) ;
@@ -97,7 +98,7 @@ void Arguments::parse (int argc, char *argv[])
 		}
 		return ;
 	}
-	else if (string (argv[i]) == "help" || string (argv[i]) == "--help") {
+	else if (std::string (argv[i]) == "help" || std::string (argv[i]) == "--help") {
 		Command.setValue (SHOWHELP) ;
 		if (argc > 2) {
 			Warning w (_("you cannot use arguments with the \"help\" command.")) ;
@@ -106,7 +107,7 @@ void Arguments::parse (int argc, char *argv[])
 		return ;
 	}
 #ifdef DEBUG
-	else if (debugmode && (string (argv[i]) == "test")) {
+	else if (debugmode && (std::string (argv[i]) == "test")) {
 		steghide_test_all () ;
 		exit (EXIT_SUCCESS) ;
 	}
@@ -117,7 +118,7 @@ void Arguments::parse (int argc, char *argv[])
 
 	// parse rest of arguments
 	for ( ; i < argc; i++) {
-		if (string (argv[i]) == "-e" || string (argv[i]) == "--encryption") {
+		if (std::string (argv[i]) == "-e" || std::string (argv[i]) == "--encryption") {
 			if (Command.getValue() != EMBED) {
 				throw SteghideError (_("the argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
@@ -130,18 +131,18 @@ void Arguments::parse (int argc, char *argv[])
 				throw SteghideError (_("the \"%s\" argument must be followed by encryption information. type \"%s --help\" for help."), argv[i - 1], PROGNAME) ;
 			}
 
-			string s1, s2 ;
+			std::string s1, s2 ;
 			if (argv[i][0] == '-') {
 				throw SteghideError (_("the \"%s\" argument must be followed by encryption information. type \"%s --help\" for help."), argv[i - 1], PROGNAME) ;
 			}
 			else {
-				s1 = string (argv[i]) ;
+				s1 = std::string (argv[i]) ;
 				if (i + 1 == argc) {
 					s2 = "" ;
 				}
 				else {
 					if (argv[i + 1][0] != '-') {
-						s2 = string (argv[i + 1]) ;
+						s2 = std::string (argv[i + 1]) ;
 						i++ ;
 					}
 				}
@@ -199,7 +200,7 @@ void Arguments::parse (int argc, char *argv[])
 			}
 		}
 
-		else if (string (argv[i]) == "-k" || string (argv[i]) == "--checksum") {
+		else if (std::string (argv[i]) == "-k" || std::string (argv[i]) == "--checksum") {
 			if (Command.getValue() != EMBED) {
 				throw SteghideError (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
@@ -211,7 +212,7 @@ void Arguments::parse (int argc, char *argv[])
 			Checksum.setValue (true) ;
 		}
 
-		else if (string (argv[i]) == "-K" || string (argv[i]) == "--nochecksum") {
+		else if (std::string (argv[i]) == "-K" || std::string (argv[i]) == "--nochecksum") {
 			if (Command.getValue() != EMBED) {
 				throw SteghideError (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
@@ -223,7 +224,7 @@ void Arguments::parse (int argc, char *argv[])
 			Checksum.setValue (false) ;
 		}
 
-		else if (string (argv[i]) == "-n" || string (argv[i]) == "--embedname") {
+		else if (std::string (argv[i]) == "-n" || std::string (argv[i]) == "--embedname") {
 			if (Command.getValue() != EMBED) {
 				throw SteghideError (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
@@ -235,7 +236,7 @@ void Arguments::parse (int argc, char *argv[])
 			EmbedEmbFn.setValue (true) ;
 		}
 
-		else if (string (argv[i]) == "-N" || string (argv[i]) == "--dontembedname") {
+		else if (std::string (argv[i]) == "-N" || std::string (argv[i]) == "--dontembedname") {
 			if (Command.getValue() != EMBED) {
 				throw SteghideError (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
@@ -247,7 +248,7 @@ void Arguments::parse (int argc, char *argv[])
 			EmbedEmbFn.setValue (false) ;
 		}
 
-		else if (string (argv[i]) == "-p" || string (argv[i]) == "--passphrase") {
+		else if (std::string (argv[i]) == "-p" || std::string (argv[i]) == "--passphrase") {
 			if (Passphrase.is_set()) {
 				throw SteghideError (_("the passphrase argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
@@ -267,7 +268,7 @@ void Arguments::parse (int argc, char *argv[])
 			}
 		}
 
-		else if (string (argv[i]) == "-cf" || string (argv[i]) == "--coverfile") {
+		else if (std::string (argv[i]) == "-cf" || std::string (argv[i]) == "--coverfile") {
 			if (Command.getValue() != EMBED) {
 				throw SteghideError (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
@@ -280,7 +281,7 @@ void Arguments::parse (int argc, char *argv[])
 				throw SteghideError (_("the \"%s\" argument must be followed by the cover file name. type \"%s --help\" for help."), argv[i - 1], PROGNAME) ;
 			}
 
-			if (string (argv[i]) == "-") {
+			if (std::string (argv[i]) == "-") {
 				CvrFn.setValue ("") ;
 			}
 			else {
@@ -288,7 +289,7 @@ void Arguments::parse (int argc, char *argv[])
 			}
 		}
 
-		else if (string (argv[i]) == "-sf" || string (argv[i]) == "--stegofile") {
+		else if (std::string (argv[i]) == "-sf" || std::string (argv[i]) == "--stegofile") {
 			if (StgFn.is_set()) {
 				throw SteghideError (_("the stego file name argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
@@ -297,7 +298,7 @@ void Arguments::parse (int argc, char *argv[])
 				throw SteghideError (_("the \"%s\" argument must be followed by the stego file name. type \"%s --help\" for help."), argv[i - 1], PROGNAME) ;
 			}
 
-			if (string (argv[i]) == "-") {
+			if (std::string (argv[i]) == "-") {
 				StgFn.setValue ("") ;
 			}
 			else {
@@ -305,7 +306,7 @@ void Arguments::parse (int argc, char *argv[])
 			}
 		}
 
-		else if (string (argv[i]) == "-ef" || string (argv[i]) == "--embedfile") {
+		else if (std::string (argv[i]) == "-ef" || std::string (argv[i]) == "--embedfile") {
 			if (Command.getValue() != EMBED) {
 				throw SteghideError (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
@@ -318,7 +319,7 @@ void Arguments::parse (int argc, char *argv[])
 				throw SteghideError (_("the \"%s\" argument must be followed by the embed file name. type \"%s --help\" for help."), argv[i - 1], PROGNAME) ;
 			}
 
-			if (string (argv[i]) == "-") {
+			if (std::string (argv[i]) == "-") {
 				EmbFn.setValue ("") ;
 			}
 			else {
@@ -326,7 +327,7 @@ void Arguments::parse (int argc, char *argv[])
 			}
 		}
 
-		else if (string (argv[i]) == "-xf" || string (argv[i]) == "--extractfile") {
+		else if (std::string (argv[i]) == "-xf" || std::string (argv[i]) == "--extractfile") {
 			if (Command.getValue() != EXTRACT) {
 				throw SteghideError (_("argument \"%s\" can only be used with the \"extract\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
@@ -339,7 +340,7 @@ void Arguments::parse (int argc, char *argv[])
 				throw SteghideError (_("the \"%s\" argument must be followed by the plain file name. type \"%s --help\" for help."), argv[i - 1], PROGNAME) ;
 			}
 
-			if (string (argv[i]) == "-") {
+			if (std::string (argv[i]) == "-") {
 				ExtFn.setValue ("") ;
 			}
 			else {
@@ -347,7 +348,7 @@ void Arguments::parse (int argc, char *argv[])
 			}
 		}
 
-		else if (string (argv[i]) == "-f" || string (argv[i]) == "--force") {
+		else if (std::string (argv[i]) == "-f" || std::string (argv[i]) == "--force") {
 			if (Force.is_set()) {
 				throw SteghideError (_("the force argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
 			}
@@ -355,7 +356,7 @@ void Arguments::parse (int argc, char *argv[])
 			Force.setValue (true);
 		}
 
-		else if (string (argv[i]) == "-q" || string (argv[i]) == "--quiet") {
+		else if (std::string (argv[i]) == "-q" || std::string (argv[i]) == "--quiet") {
 			if (Verbosity.is_set()) {
 				throw SteghideError (_("the \"%s\" argument cannot be used here because the verbosity has already been set."), argv[i]) ;
 			}
@@ -363,7 +364,7 @@ void Arguments::parse (int argc, char *argv[])
 			Verbosity.setValue (QUIET) ;
 		}
 
-		else if (string (argv[i]) == "-v" || string (argv[i]) == "--verbose") {
+		else if (std::string (argv[i]) == "-v" || std::string (argv[i]) == "--verbose") {
 			if (Verbosity.is_set()) {
 				throw SteghideError (_("the \"%s\" argument cannot be used here because the verbosity has already been set."), argv[i]) ;
 			}
@@ -373,7 +374,7 @@ void Arguments::parse (int argc, char *argv[])
 		
 #ifdef DEBUG
 		else if (debugmode) {
-			if (string (argv[i]) == "--printgraph") {
+			if (std::string (argv[i]) == "--printgraph") {
 				if (DebugCommand.is_set()) {
 					throw SteghideError (_("you cannot use more than one debug command at a time.")) ;
 				}
@@ -381,7 +382,7 @@ void Arguments::parse (int argc, char *argv[])
 				DebugCommand.setValue (PRINTGRAPH) ;
 			}
 
-			else if (string (argv[i]) == "--printstats")  {
+			else if (std::string (argv[i]) == "--printstats")  {
 				if (DebugCommand.is_set()) {
 					throw SteghideError (_("you cannot use more than one debug command at a time.")) ;
 				}
@@ -389,7 +390,21 @@ void Arguments::parse (int argc, char *argv[])
 				DebugCommand.setValue (PRINTSTATS) ;
 			}
 
-			else if (string (argv[i]) == "--priorityqueuerange") {
+			else if (std::string (argv[i]) == "--debuglevel") {
+				if (DebugLevel.is_set()) {
+					throw SteghideError (_("the priority queue range argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
+				}
+
+				if (++i == argc) {
+					throw SteghideError (_("the \"%s\" argument must be followed by the debug level. type \"%s --help\" for help."), argv[i - 1], PROGNAME) ;
+				}
+
+				unsigned int tmp = 0 ;
+				sscanf (argv[i], "%u", &tmp) ;
+				DebugLevel.setValue (tmp) ;
+			}
+
+			else if (std::string (argv[i]) == "--priorityqueuerange") {
 				if (Command.getValue() != EMBED) {
 					throw SteghideError (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 				}
@@ -407,7 +422,7 @@ void Arguments::parse (int argc, char *argv[])
 				PriorityQueueRange.setValue (tmp) ;
 			}
 
-			else if (string (argv[i]) == "--nconstrheur") {
+			else if (std::string (argv[i]) == "--nconstrheur") {
 				if (Command.getValue() != EMBED) {
 					throw SteghideError (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 				}
@@ -425,7 +440,7 @@ void Arguments::parse (int argc, char *argv[])
 				NConstrHeur.setValue (tmp) ;
 			}
 
-			else if (string (argv[i]) == "-r" || string (argv[i]) == "--radius") {
+			else if (std::string (argv[i]) == "-r" || std::string (argv[i]) == "--radius") {
 				if (Command.getValue() != EMBED) {
 					throw SteghideError (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 				}
@@ -478,33 +493,33 @@ void Arguments::parse (int argc, char *argv[])
 	}
 }
 
-string Arguments::getPassphrase (bool doublecheck)
+std::string Arguments::getPassphrase (bool doublecheck)
 {
     int c = EOF ;
 
-	cerr << _("Enter passphrase: ") ;
+	std::cerr << _("Enter passphrase: ") ;
 	Terminal term ;
 	term.EchoOff() ;
 	
-    string s1 = "" ;
-    while ((c = cin.get()) != '\n') {
+    std::string s1 = "" ;
+    while ((c = std::cin.get()) != '\n') {
         s1 += c ;
     }
 
 	term.reset() ;
-	cerr << endl ;
+	std::cerr << std::endl ;
 
 	if (doublecheck) {
-		cerr << _("Re-Enter passphrase: ") ;
+		std::cerr << _("Re-Enter passphrase: ") ;
 		term.EchoOff() ;
 
-		string s2 = "" ;
-		while ((c = cin.get()) != '\n') {
+		std::string s2 = "" ;
+		while ((c = std::cin.get()) != '\n') {
 			s2 += c ;
 		}
 
 		term.reset() ;
-		cerr << endl ;
+		std::cerr << std::endl ;
 
 		if (s1 != s2) {
 			throw SteghideError (_("the passphrases do not match.")) ;
@@ -546,6 +561,7 @@ void Arguments::setDefaults (void)
 	Verbosity.setValue (Default_Verbosity, false) ;
 #ifdef DEBUG
 	DebugCommand.setValue (Default_DebugCommand, false) ;
+	DebugLevel.setValue (Default_DebugLevel, false) ;
 	Radius.setValue (Default_Radius, false) ;
 	PriorityQueueRange.setValue (Default_PriorityQueueRange, false) ;
 	NConstrHeur.setValue (Default_NConstrHeur, false) ;

@@ -29,7 +29,7 @@
 
 class CvrStgFile : public CvrStgObject {
 	public:
-	static CvrStgFile *readFile (string fn) ;
+	static CvrStgFile *readFile (std::string fn) ;
 
 	CvrStgFile (void) ;
 	CvrStgFile (BinaryIO *io) ;
@@ -37,7 +37,7 @@ class CvrStgFile : public CvrStgObject {
 
 	virtual void read (BinaryIO *io) ;
 	virtual void write (void) ;
-	void transform (string fn) ;
+	void transform (std::string fn) ;
 
 	virtual unsigned int getSamplesPerEBit (void) = 0 ;
 

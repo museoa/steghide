@@ -238,15 +238,15 @@ class JpegContainer : public JpegObject, public CvrStgObject {
 
 	/**
 	 * get all objects of this container
-	 * \return a vector containing all JpegObjects of this container
+	 * \return a std::vector containing all JpegObjects of this container
 	 **/
-	vector<JpegObject*> getJpegObjects (void) ;
+	std::vector<JpegObject*> getJpegObjects (void) ;
 
 	/**
 	 * get all objects that can hold embedded data of this container
-	 * \return a vector containing all CvrStgObjects of this container
+	 * \return a std::vector containing all CvrStgObjects of this container
 	 **/
-	vector<CvrStgObject*> getCvrStgObjects (void) ;
+	std::vector<CvrStgObject*> getCvrStgObjects (void) ;
 
 	void read (BinaryIO *io) ;
 	void write (BinaryIO *io) ;
@@ -260,13 +260,13 @@ class JpegContainer : public JpegObject, public CvrStgObject {
 	 * appends a JpegObject
 	 * \param o the jpeg object to append
 	 *
-	 * This function appends o to the vector jpegobjs and if o is a CvrStgObject
-	 * also appends it to the vector cvrstgobjs.
+	 * This function appends o to the std::vector jpegobjs and if o is a CvrStgObject
+	 * also appends it to the std::vector cvrstgobjs.
 	 **/
 	void appendObj (JpegObject *o) ;
 
 	/**
-	 * clears the vector of jpeg objects and the vector of cvrstg objects
+	 * clears the std::vector of jpeg objects and the std::vector of cvrstg objects
 	 **/
 	void clearObjs (void) ;
 
@@ -277,13 +277,13 @@ class JpegContainer : public JpegObject, public CvrStgObject {
 	 * contains all JpegObjects in this JpegContainer
 	 * (in the same order as they appeared in the original file)
 	 **/
-	vector<JpegObject*> jpegobjs ;
+	std::vector<JpegObject*> jpegobjs ;
 
 	/**
 	 * contains all CvrStgObjects in this JpegContainer
 	 * (in the same order as they appeared in the original file)
 	 **/
-	vector<CvrStgObject*> cvrstgobjs ;
+	std::vector<CvrStgObject*> cvrstgobjs ;
 } ;
 
 #endif // ndef SH_JPEGBASE_H

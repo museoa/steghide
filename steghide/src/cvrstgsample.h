@@ -74,7 +74,7 @@ class CvrStgSample {
 	 * be used in this file. It does not matter if these samples really occure in this file.
 	 * A superset of the opposite neighbours which occur in the file is returned.
 	 **/
-	virtual list<CvrStgSample*> *getOppositeNeighbours (void) const = 0 ;
+	virtual std::list<CvrStgSample*> *getOppositeNeighbours (void) const = 0 ;
 
 	/**
 	 * get the nearest (with the least distance) opposite sample that can be used in this file
@@ -117,27 +117,13 @@ class CvrStgSample {
 	Bit SBit ;
 	// the key of this sample - must be different for two different samples - must be set in constructor of derived class
 	unsigned long Key ;
-#if 0
-	/**
-	 * get the default value for the neighbourhood radius
-	 **/
-	virtual float getDefaultRadius (void) const = 0 ;
 
-	/**
-	 * every pair of samples whose distance (as calculated by calcDistance)
-	 * is smaller or equal than this value are neighbours
-	 **/
-	static float Radius ;
-
-	private:
-	void setRadius (void) ;
-#endif
 	private:
 	CvrStgFile *File ;
 	unsigned long Label ;
 } ;
 
-struct SamplesEqual : binary_function<CvrStgSample*, CvrStgSample*, bool> {
+struct SamplesEqual : std::binary_function<CvrStgSample*, CvrStgSample*, bool> {
 	bool operator() (CvrStgSample* s1, CvrStgSample *s2) const
 	{
 		return (s1->getKey() == s2->getKey()) ;

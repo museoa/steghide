@@ -137,6 +137,8 @@ Vertex *Graph::getVertex(unsigned long i) const
 
 void Graph::updateShortestEdge (Vertex *v1)
 {
+	printDebug (3, "updating shortest edge for vertex %lu\n", v1->getLabel()) ;
+
 	if (v1->getDegree() == 0) {
 		if (v1->getShortestEdge() != NULL) {
 			delete v1->getShortestEdge() ;
@@ -241,6 +243,7 @@ void Graph::insertInMatching (vector<Edge*> *m, Edge *e)
 {
 	Vertex *v1 = e->getVertex1() ;
 	Vertex *v2 = e->getVertex2() ;
+	printDebug (2, "inserting vertices %lu and %lu in matching\n", v1->getLabel(), v2->getLabel()) ;
 
 	assert (!v1->isMatched() && !v2->isMatched()) ;
 
@@ -254,13 +257,13 @@ void Graph::insertInMatching (vector<Edge*> *m, Edge *e)
 	}
 
 	// get all opposite neighbour samples of these two vertices
-	vector<SampleLabel> oppneighbours ;	// duplicates are valid(!)
+	vector<SampleLabel> oppneighbours ;	// duplicates are necessary(!)
 	for (unsigned short i = 0 ; i < SamplesPerEBit ; i++) {
 		// FIXME - rewrite this! - don't use copy - use references
 		vector<SampleLabel> tmp = SampleOppositeNeighbourhood[v1->getSample(i)->getLabel()] ; // copy for Vertex1
-		copy (tmp.begin(), tmp.end(), back_inserter(tmp)) ;
+		copy (tmp.begin(), tmp.end(), back_inserter(oppneighbours)) ;
 		tmp = SampleOppositeNeighbourhood[v2->getSample(i)->getLabel()] ;	// copy for Vertex2
-		copy (tmp.begin(), tmp.end(), back_inserter(tmp)) ;
+		copy (tmp.begin(), tmp.end(), back_inserter(oppneighbours)) ;
 	}
 
 	// for all neighbour samples decrement the degree of all vertex contents
@@ -972,5 +975,16 @@ bool Graph::check_sampleoccurences (void) const
 	}
 
 	return retval ;
+}
+
+void Graph::printUnmatchedVerticescontaining (unsigned long samplekey) const
+{
+	for (unsigned long i = 0 ; i < Vertices.size() ; i++) {
+		for (unsigned int j = 0 ; j < SamplesPerEBit ; j++) {
+			if (!Vertices[i]->isMatched() && Vertices[i]->getSample(j)->getKey() == samplekey) {
+				std::cerr << Vertices[i]->getLabel() << " at pos " << j << std::endl ;
+			}
+		}
+	}
 }
 #endif

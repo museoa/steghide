@@ -50,16 +50,16 @@ class AuFile : public CvrStgFile {
 		unsigned long	channels ;
 	} AuHeader ;
 
-	vector<unsigned char> getData (void) ;
-	void setData (vector<unsigned char> d) ;
+	std::vector<unsigned char> getData (void) ;
+	void setData (std::vector<unsigned char> d) ;
 
 	private:
 	static const int HeaderSize = 24 ;
 
 	AuHeader header ;
 	unsigned long len_infofield ;
-	vector<unsigned char> infofield ;
-	vector<unsigned char> data ;
+	std::vector<unsigned char> infofield ;
+	std::vector<unsigned char> data ;
 
 	void readheaders (void) ;
 	void readdata (void) ;

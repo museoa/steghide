@@ -30,7 +30,7 @@
 class SteghideError : public MessageBase {
 	public:
 	SteghideError (void) ;
-	SteghideError (string msg) ;
+	SteghideError (std::string msg) ;
 	SteghideError (const char *msgfmt, ...) ;
 
 	void printMessage (void) ;	
@@ -40,7 +40,7 @@ class BinaryInputError : public SteghideError {
 	public:
 	enum TYPE { FILE_ERR, FILE_EOF, STDIN_ERR, STDIN_EOF } ;
 
-	BinaryInputError (string fn, FILE* s) ;
+	BinaryInputError (std::string fn, FILE* s) ;
 
 	TYPE getType (void) ;
 
@@ -55,7 +55,7 @@ class BinaryOutputError : public SteghideError {
 	public:
 	enum TYPE { FILE_ERR, STDOUT_ERR } ;
 
-	BinaryOutputError (string fn) ;
+	BinaryOutputError (std::string fn) ;
 
 	TYPE getType (void) ;
 

@@ -46,7 +46,7 @@ enum DEBUGCOMMAND { NONE, PRINTSTATS, PRINTGRAPH } ;
 typedef Arg<COMMAND> ArgCommand ;
 typedef Arg<VERBOSITY> ArgVerbosity ;
 typedef Arg<bool> ArgBool ;
-typedef Arg<string> ArgString ;
+typedef Arg<std::string> ArgString ;
 #ifdef DEBUG
 typedef Arg<float> ArgFloat ;
 typedef Arg<unsigned int> ArgUInt ;

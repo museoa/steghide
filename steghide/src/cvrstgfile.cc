@@ -98,7 +98,7 @@ void CvrStgFile::write (void)
 }
 
 /* 'creates' a stego file from a cover file */
-void CvrStgFile::transform (string stgfn)
+void CvrStgFile::transform (std::string stgfn)
 {
 	delete getBinIO() ;
 	setBinIO (new BinaryIO (stgfn, BinaryIO::WRITE)) ;

@@ -546,7 +546,7 @@ void BmpFile::readdata ()
 			paddinglength = 4 - (linelength % 4) ;
 		}
 
-		bitmap = vector<vector<unsigned char> > (height) ;
+		bitmap = std::vector<std::vector<unsigned char> > (height) ;
 		for (long line = height - 1 ; line >= 0 ; line--) {
 			for (long posinline = 0 ; posinline < linelength ; posinline++) {
 				bitmap[line].push_back (getBinIO()->read8()) ;
@@ -610,7 +610,7 @@ void BmpFile::writedata ()
 			}
 		}
 
-		for (vector<unsigned char>::iterator i = atend.begin() ; i != atend.end() ; i++) {
+		for (std::vector<unsigned char>::iterator i = atend.begin() ; i != atend.end() ; i++) {
 			getBinIO()->write8 (*i) ;
 		}
 	}

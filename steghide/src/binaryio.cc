@@ -32,7 +32,7 @@ BinaryIO::BinaryIO (void)
 	set_open (false) ;
 }
 
-BinaryIO::BinaryIO (string fn, MODE m)
+BinaryIO::BinaryIO (std::string fn, MODE m)
 {
 	BinaryIO () ;
 	open (fn, m) ;
@@ -55,12 +55,12 @@ void BinaryIO::setStream (FILE *s)
 	stream = s ;
 }
 
-string BinaryIO::getName (void)
+std::string BinaryIO::getName (void)
 {
 	return filename ;
 }
 
-void BinaryIO::setName (string fn)
+void BinaryIO::setName (std::string fn)
 {
 	filename = fn ;
 }
@@ -124,7 +124,7 @@ void BinaryIO::checkForce (string fn)
 	}
 }
 
-void BinaryIO::open (string fn, MODE m)
+void BinaryIO::open (std::string fn, MODE m)
 {
 	if (fn == "") {
 		switch (m) {
@@ -280,9 +280,9 @@ unsigned long BinaryIO::read_le (unsigned short n)
 	return retval ;
 }
 
-string BinaryIO::readstring (unsigned int len)
+std::string BinaryIO::readstring (unsigned int len)
 {
-	ostringstream ost ;
+	std::ostringstream ost ;
 	for (unsigned int i = 0 ; i < len ; i++) {
 		ost << read8() ;
 	}
@@ -360,7 +360,7 @@ void BinaryIO::write_le (unsigned long val, unsigned short n)
 	}
 }
 
-void BinaryIO::writestring (string s)
+void BinaryIO::writestring (std::string s)
 {
 	if (fputs (s.c_str(), getStream()) == EOF) {
 		throw BinaryOutputError (getName()) ;

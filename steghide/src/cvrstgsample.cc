@@ -61,21 +61,3 @@ void CvrStgSample::setLabel (unsigned long l)
 {
 	Label = l ;
 }
-
-#if 0
-void CvrStgSample::setRadius (void)
-{
-#ifdef DEBUG
-	if (Args.Radius.is_set()) {
-		Radius = Args.Radius.getValue() ;
-	}
-	else {
-		Radius = getDefaultRadius() ;
-	}
-#else
-	Radius = getDefaultRadius() ;
-#endif
-}
-
-float CvrStgSample::Radius = 0.0 ;
-#endif

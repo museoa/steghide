@@ -18,6 +18,8 @@
  *
  */
 
+#include <vector>
+
 #include "binaryio.h"
 #include "common.h"
 #include "jpegbase.h"
@@ -175,17 +177,17 @@ JpegContainer::JpegContainer (JpegObject *p)
 
 JpegContainer::~JpegContainer ()
 {
-	for (vector<JpegObject*>::iterator i = jpegobjs.begin() ; i != jpegobjs.end() ; i++) {
+	for (std::vector<JpegObject*>::iterator i = jpegobjs.begin() ; i != jpegobjs.end() ; i++) {
 		delete (*i) ;
 	}
 }
 
-vector<JpegObject*> JpegContainer::getJpegObjects ()
+std::vector<JpegObject*> JpegContainer::getJpegObjects ()
 {
 	return jpegobjs ;
 }
 
-vector<CvrStgObject*> JpegContainer::getCvrStgObjects ()
+std::vector<CvrStgObject*> JpegContainer::getCvrStgObjects ()
 {
 	return cvrstgobjs ;
 }
@@ -212,7 +214,7 @@ void JpegContainer::read (BinaryIO *io)
 void JpegContainer::write (BinaryIO *io)
 {
 	// writing is only done here, not in derived classes
-	for (vector<JpegObject*>::iterator i = jpegobjs.begin() ; i != jpegobjs.end() ; i++) {
+	for (std::vector<JpegObject*>::iterator i = jpegobjs.begin() ; i != jpegobjs.end() ; i++) {
 		(*i)->write (io) ;
 	}
 }
@@ -220,7 +222,7 @@ void JpegContainer::write (BinaryIO *io)
 unsigned long JpegContainer::getNumSamples ()
 {
 	unsigned long sum = 0 ;
-	for (vector<CvrStgObject*>::const_iterator i = cvrstgobjs.begin() ; i != cvrstgobjs.end() ; i++) {
+	for (std::vector<CvrStgObject*>::const_iterator i = cvrstgobjs.begin() ; i != cvrstgobjs.end() ; i++) {
 		sum += (*i)->getNumSamples() ;
 	}
 	return sum ;
@@ -240,7 +242,7 @@ CvrStgSample *JpegContainer::getSample (SamplePos pos)
 
 CvrStgObject *JpegContainer::calcCvrStgObject (SamplePos *pos) const
 {
-	vector<CvrStgObject*>::const_iterator i = cvrstgobjs.begin() ;
+	std::vector<CvrStgObject*>::const_iterator i = cvrstgobjs.begin() ;
 	unsigned long curNumSamples = (*i)->getNumSamples() ;
 	while (*pos >= curNumSamples) {
 		*pos -= curNumSamples ;
