@@ -109,6 +109,35 @@ void AugmentingPathHeuristicTest::setup ()
 		aph4 = new AugmentingPathHeuristic (g4, m4, 100.0) ;
 		gl4 = Globs ;
 	}
+
+	// another counterexample where the existing augmenting path will not be found no matter which start vertex is chosen
+	{
+		Globs.reset() ;
+		std::vector<std::list<UWORD16> > adjlist (14) ;
+		adjlist[0].push_back(2) ; adjlist[0].push_back(4) ;
+		adjlist[1].push_back(3) ; adjlist[1].push_back(5) ;
+		adjlist[2].push_back(3) ; adjlist[2].push_back(12) ;
+		adjlist[3].push_back(13) ;
+		adjlist[4].push_back(6) ; adjlist[4].push_back(12) ;
+		adjlist[5].push_back(7) ; adjlist[5].push_back(13) ;
+		adjlist[6].push_back(8) ;
+		adjlist[7].push_back(9) ;
+		adjlist[8].push_back(10) ;
+		adjlist[9].push_back(11) ;
+		adjlist[10].push_back(12) ;
+		adjlist[11].push_back(13) ;
+		DummyFile::createGraph (adjlist, &bs5, &f5, &s5) ;
+		g5 = new Graph (f5, *bs5, *s5) ;
+		m5 = new Matching (g5) ;
+		m5->addEdge (CREATEEDGE (g5, 2, 12)) ;
+		m5->addEdge (CREATEEDGE (g5, 3, 13)) ;
+		m5->addEdge (CREATEEDGE (g5, 4, 6)) ;
+		m5->addEdge (CREATEEDGE (g5, 5, 7)) ;
+		m5->addEdge (CREATEEDGE (g5, 8, 10)) ;
+		m5->addEdge (CREATEEDGE (g5, 9, 11)) ;
+		aph5 = new AugmentingPathHeuristic (g5, m5, 100.0) ;
+		gl5 = Globs ;
+	}
 }
 
 void AugmentingPathHeuristicTest::cleanup ()
@@ -119,6 +148,7 @@ void AugmentingPathHeuristicTest::cleanup ()
 	delete aph2 ; delete m2 ; delete g2 ; delete s2 ; delete bs2 ; delete f2 ;
 	delete aph3 ; delete m3 ; delete g3 ; delete s3 ; delete bs3 ; delete f3 ;
 	delete aph4 ; delete m4 ; delete g4 ; delete s4 ; delete bs4 ; delete f4 ;
+	delete aph5 ; delete m5 ; delete g5 ; delete s5 ; delete bs5 ; delete f5 ;
 }
 
 void AugmentingPathHeuristicTest::testAlgorithm ()
@@ -158,5 +188,23 @@ void AugmentingPathHeuristicTest::testAlgorithm ()
 		Globs = gl4 ;
 		std::vector<Edge*>* path = aph4->searchAugmentingPath (g4->getVertex(0)) ;
 		addTestResult (path->empty()) ;
+	}
+
+	{
+		Globs = gl5 ;
+		Edge* e2_12 = CREATEEDGE (g5, 2, 12) ;
+		Edge* e3_13 = CREATEEDGE (g5, 3, 13) ;
+		Edge* e4_6 = CREATEEDGE (g5, 4, 6) ;
+		Edge* e5_7 = CREATEEDGE (g5, 5, 7) ;
+		Edge* e8_10 = CREATEEDGE (g5, 8, 10) ;
+		Edge* e9_11 = CREATEEDGE (g5, 9, 11) ;
+		aph5->run() ;
+		addTestResult ( m5->getCardinality() == 6 &&
+						m5->includesEdge(e2_12) &&
+						m5->includesEdge(e3_13) &&
+						m5->includesEdge(e4_6) &&
+						m5->includesEdge(e5_7) &&
+						m5->includesEdge(e8_10) &&
+						m5->includesEdge(e9_11)) ;
 	}
 }
