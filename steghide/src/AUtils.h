@@ -35,6 +35,11 @@ class AUtils {
 	template<class T> static T max (T a, T b) ;
 
 	/**
+	 * return the minimum of a and b (needs <)
+	 **/
+	template<class T> static T min (T a, T b) ;
+
+	/**
 	 * returns a divided through b rounded up to nearest "integer" (needs =, --, +, /)
 	 **/
 	template<class T> static T div_roundup (T a, T b) ;
@@ -47,6 +52,7 @@ class AUtils {
 	/**
 	 * addition with the modification to return top for sums that are larger than top
 	 **/
+	template<class T, T top> static T bplus (T a, T b) ;
 	template<class T> static T bplus (T a, T b, T top) ;
 
 	/**
@@ -82,6 +88,17 @@ T AUtils::max (T a, T b)
 }
 
 template<class T>
+T AUtils::min (T a, T b)
+{
+	if (a < b) {
+		return a ;
+	}
+	else {
+		return b ;
+	}
+}
+
+template<class T>
 T AUtils::div_roundup (T a, T b)
 {
 	T c = b-- ;
@@ -96,6 +113,18 @@ T AUtils::bminus (T a, T b)
 	}
 	else {
 		return T() ;
+	}
+}
+
+template<class T, T top>
+T AUtils::bplus (T a, T b)
+{
+	a += b ;
+	if (a > top) {
+		return top ;
+	}
+	else {
+		return a ;
 	}
 }
 

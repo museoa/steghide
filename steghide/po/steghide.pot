@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2003-06-13 15:37+0200\n"
+"POT-Creation-Date: 2003-09-16 12:27+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -268,80 +268,80 @@ msgstr ""
 msgid "assertion failed in %s at line number %d."
 msgstr ""
 
-#: src/AuFile.cc:92
+#: src/AuFile.cc:94
 #, c-format
 msgid "the au file on standard input uses the unkown encoding %d."
 msgstr ""
 
-#: src/AuFile.cc:95
+#: src/AuFile.cc:97
 #, c-format
 msgid "the au file \"%s\" uses the unknown encoding %d."
 msgstr ""
 
-#: src/AuFile.cc:105
+#: src/AuFile.cc:107
 #, c-format
 msgid "an error occured while reading the au headers from the file \"%s\"."
 msgstr ""
 
-#: src/AuFile.cc:111
+#: src/AuFile.cc:113
 #, c-format
 msgid "premature end of file \"%s\" while reading au headers."
 msgstr ""
 
-#: src/AuFile.cc:117
+#: src/AuFile.cc:119
 msgid "an error occured while reading the au headers from standard input."
 msgstr ""
 
-#: src/AuFile.cc:123
+#: src/AuFile.cc:125
 msgid "premature end of data from standard input while reading au headers."
 msgstr ""
 
-#: src/AuFile.cc:163
+#: src/AuFile.cc:165
 #, c-format
 msgid "an error occured while writing the au headers to the file \"%s\"."
 msgstr ""
 
-#: src/AuFile.cc:169
+#: src/AuFile.cc:171
 msgid "an error occured while writing the au headers to standard output."
 msgstr ""
 
-#: src/AuFile.cc:186
+#: src/AuFile.cc:188
 msgid ", mu-law encoding"
 msgstr ""
 
-#: src/AuFile.cc:191
+#: src/AuFile.cc:193
 msgid ", PCM encoding"
 msgstr ""
 
 #. format
-#: src/AuFile.cc:194 src/BmpFile.cc:83 src/JpegFile.cc:61 src/WavFile.cc:79
+#: src/AuFile.cc:196 src/BmpFile.cc:88 src/JpegFile.cc:61 src/WavFile.cc:81
 msgid "format"
 msgstr ""
 
-#: src/AudioData.h:94 src/WavFile.cc:239
+#: src/AudioData.h:94 src/WavFile.cc:249
 #, c-format
 msgid "an error occured while reading the audio data from the file \"%s\"."
 msgstr ""
 
-#: src/AudioData.h:100 src/WavFile.cc:243
+#: src/AudioData.h:100 src/WavFile.cc:253
 #, c-format
 msgid "premature end of file \"%s\" while reading audio data."
 msgstr ""
 
-#: src/AudioData.h:106 src/WavFile.cc:247
+#: src/AudioData.h:106 src/WavFile.cc:257
 msgid "an error occured while reading the audio data from standard input."
 msgstr ""
 
-#: src/AudioData.h:112 src/WavFile.cc:251
+#: src/AudioData.h:112 src/WavFile.cc:261
 msgid "premature end of data from standard input while reading audio data."
 msgstr ""
 
-#: src/AudioData.h:134 src/WavFile.cc:292
+#: src/AudioData.h:134 src/WavFile.cc:302
 #, c-format
 msgid "an error occured while writing the audio data to the file \"%s\"."
 msgstr ""
 
-#: src/AudioData.h:140 src/WavFile.cc:296
+#: src/AudioData.h:140 src/WavFile.cc:306
 msgid "an error occured while writing the audio data to standard output."
 msgstr ""
 
@@ -389,161 +389,134 @@ msgstr ""
 msgid "error %d while calling zlib's uncompress."
 msgstr ""
 
-#: src/BmpFile.cc:76
+#: src/BmpFile.cc:81
 msgid "Windows 3.x bitmap"
 msgstr ""
 
-#: src/BmpFile.cc:80
+#: src/BmpFile.cc:85
 msgid "OS/2 1.x bitmap"
 msgstr ""
 
-#: src/BmpFile.cc:350
+#: src/BmpFile.cc:367
 #, c-format
 msgid ""
 "the bmp data from standard input has a format that is not supported (biSize: "
 "%lu)."
 msgstr ""
 
-#: src/BmpFile.cc:353
+#: src/BmpFile.cc:370
 #, c-format
 msgid "the bmp file \"%s\" has a format that is not supported (biSize: %lu)."
 msgstr ""
 
-#: src/BmpFile.cc:361
+#: src/BmpFile.cc:378
 #, c-format
 msgid "an error occured while reading the bmp headers from the file \"%s\"."
 msgstr ""
 
-#: src/BmpFile.cc:365
+#: src/BmpFile.cc:382
 #, c-format
 msgid "premature end of file \"%s\" while reading bmp headers."
 msgstr ""
 
-#: src/BmpFile.cc:369
+#: src/BmpFile.cc:386
 msgid "an error occured while reading the bmp headers from standard input."
 msgstr ""
 
-#: src/BmpFile.cc:373
+#: src/BmpFile.cc:390
 msgid "premature end of data from standard input while reading bmp headers."
 msgstr ""
 
-#: src/BmpFile.cc:410
+#: src/BmpFile.cc:427
 #, c-format
 msgid ""
 "the bmp data from standard input has a format that is not supported "
 "(biBitCount: %d)."
 msgstr ""
 
-#: src/BmpFile.cc:413
+#: src/BmpFile.cc:430
 #, c-format
 msgid ""
 "the bmp file \"%s\" has a format that is not supported (biBitCount: %d)."
 msgstr ""
 
-#: src/BmpFile.cc:420
+#: src/BmpFile.cc:437
 msgid ""
 "the bitmap data from standard input is compressed which is not supported."
 msgstr ""
 
-#: src/BmpFile.cc:423
+#: src/BmpFile.cc:440
 #, c-format
 msgid "the bitmap data in \"%s\" is compressed which is not supported."
 msgstr ""
 
-#: src/BmpFile.cc:439 src/BmpFile.cc:524
+#: src/BmpFile.cc:456 src/BmpFile.cc:541
 msgid "using a black/white bitmap as cover is very insecure!"
 msgstr ""
 
-#: src/BmpFile.cc:447 src/BmpFile.cc:532
+#: src/BmpFile.cc:464 src/BmpFile.cc:549
 msgid "using a 16-color bitmap as cover is very insecure!"
 msgstr ""
 
-#: src/BmpFile.cc:470
+#: src/BmpFile.cc:487
 msgid "maybe corrupted windows bmp data (Reserved in RGBQUAD is non-zero)."
 msgstr ""
 
-#: src/BmpFile.cc:509
+#: src/BmpFile.cc:526
 #, c-format
 msgid ""
 "the bmp data from standard input has a format that is not supported "
 "(bcBitCount: %d)."
 msgstr ""
 
-#: src/BmpFile.cc:512
+#: src/BmpFile.cc:529
 #, c-format
 msgid ""
 "the bmp file \"%s\" has a format that is not supported (bcBitCount: %d)."
 msgstr ""
 
-#: src/BmpFile.cc:583
+#: src/BmpFile.cc:600
 #, c-format
 msgid "an error occured while writing the bmp headers to the file \"%s\"."
 msgstr ""
 
-#: src/BmpFile.cc:587
+#: src/BmpFile.cc:604
 msgid "an error occured while writing the bmp headers to standard output."
 msgstr ""
 
-#: src/BmpFile.cc:690
+#: src/BmpFile.cc:707
 #, c-format
 msgid "maybe corrupted bmp data (padding byte at 0x%lx set to non-zero)."
 msgstr ""
 
-#: src/BmpFile.cc:704
+#: src/BmpFile.cc:721
 #, c-format
 msgid "an error occured while reading the bmp data from the file \"%s\"."
 msgstr ""
 
-#: src/BmpFile.cc:708
+#: src/BmpFile.cc:725
 #, c-format
 msgid "premature end of file \"%s\" while reading bmp data."
 msgstr ""
 
-#: src/BmpFile.cc:712
+#: src/BmpFile.cc:729
 msgid "an error occured while reading the bmp data from standard input."
 msgstr ""
 
-#: src/BmpFile.cc:716
+#: src/BmpFile.cc:733
 msgid "premature end of bmp data from standard input."
 msgstr ""
 
-#: src/BmpFile.cc:754
+#: src/BmpFile.cc:771
 #, c-format
 msgid "an error occured while writing the bitmap data to the file \"%s\"."
 msgstr ""
 
-#: src/BmpFile.cc:758
+#: src/BmpFile.cc:775
 msgid "an error occured while writing the bitmap data to standard output."
 msgstr ""
 
-#: src/CvrStgFile.cc:69
-msgid "reading cover file from standard input."
-msgstr ""
-
-#: src/CvrStgFile.cc:73
-#, c-format
-msgid "reading cover file \"%s\"."
-msgstr ""
-
-#: src/CvrStgFile.cc:79
-msgid "reading stego file from standard input."
-msgstr ""
-
-#: src/CvrStgFile.cc:83
-#, c-format
-msgid "reading stego file \"%s\"."
-msgstr ""
-
-#: src/CvrStgFile.cc:92
-msgid "writing stego file to standard output."
-msgstr ""
-
-#: src/CvrStgFile.cc:96
-#, c-format
-msgid "writing stego file \"%s\"."
-msgstr ""
-
-#: src/CvrStgFile.cc:240
+#: src/CvrStgFile.cc:211
 msgid ""
 "can not read input file. steghide has been compiled without support for jpeg "
 "files."
@@ -562,69 +535,110 @@ msgid ""
 "encryption support."
 msgstr ""
 
-#: src/EmbData.cc:209
+#: src/EmbData.cc:208
 msgid "the embedded data has an invalid length."
 msgstr ""
 
-#: src/EmbData.cc:228
-msgid "crc32 checksum test ok."
+#: src/Embedder.cc:48
+msgid "reading secret data from standard input..."
 msgstr ""
 
-#: src/EmbData.cc:232
-msgid "crc32 checksum failed! extracted data is probably corrupted."
+#: src/Embedder.cc:51
+#, c-format
+msgid "reading secret file \"%s\"..."
 msgstr ""
 
-#: src/Embedder.cc:71
+#: src/Embedder.cc:63 src/Extractor.cc:46 src/Session.cc:85
+msgid " done"
+msgstr ""
+
+#: src/Embedder.cc:82
+msgid "reading cover file from standard input..."
+msgstr ""
+
+#: src/Embedder.cc:85
+#, c-format
+msgid "reading cover file \"%s\"..."
+msgstr ""
+
+#: src/Embedder.cc:96
 msgid "the cover file is too short to embed the data."
 msgstr ""
 
-#: src/Embedder.cc:134
-msgid "calculating the matching..."
+#: src/Embedder.cc:102
+msgid "creating the graph..."
 msgstr ""
 
-#: src/Extractor.cc:45
+#: src/Embedder.cc:140 src/Embedder.cc:146
+msgid "standard input"
+msgstr ""
+
+#: src/Embedder.cc:152
+#, c-format
+msgid "embedding %s in %s..."
+msgstr ""
+
+#: src/Embedder.cc:181
+msgid "writing stego file to standard output... "
+msgstr ""
+
+#: src/Embedder.cc:184
+#, c-format
+msgid "writing stego file \"%s\"... "
+msgstr ""
+
+#: src/Embedder.cc:191
+msgid "done"
+msgstr ""
+
+#: src/Embedder.cc:232
+#, c-format
+msgid "executing %s..."
+msgstr ""
+
+#: src/Extractor.cc:36
+msgid "reading stego file from standard input..."
+msgstr ""
+
+#: src/Extractor.cc:39
+#, c-format
+msgid "reading stego file \"%s\"..."
+msgstr ""
+
+#: src/Extractor.cc:52
+msgid "extracting data..."
+msgstr ""
+
+#: src/Extractor.cc:62
 msgid ""
 "the stego data from standard input is too short to contain the embedded data."
 msgstr ""
 
-#: src/Extractor.cc:48
+#: src/Extractor.cc:65
 #, c-format
 msgid "the stego file \"%s\" is too short to contain the embedded data."
 msgstr ""
 
-#: src/Graph.cc:38
-msgid "creating the graph..."
+#: src/Extractor.cc:81
+msgid "checking crc32 checksum..."
+msgstr ""
+
+#: src/Extractor.cc:85
+msgid " ok"
+msgstr ""
+
+#: src/Extractor.cc:89
+msgid " FAILED!"
+msgstr ""
+
+#: src/Extractor.cc:92
+msgid "crc32 checksum failed! extracted data is probably corrupted."
 msgstr ""
 
 #. Verbosity is VERBOSE
-#: src/Graph.cc:256
+#: src/Graph.cc:253
 #, c-format
-msgid "number of distinct sample values: %lu"
-msgstr ""
-
-#: src/Graph.cc:259
-#, c-format
-msgid "number of vertices: %lu"
-msgstr ""
-
-#: src/Graph.cc:262
-#, c-format
-msgid "average vertex degree: %.1f"
-msgstr ""
-
-#: src/Graph.cc:264
-#, c-format
-msgid "minimum vertex degree: %lu"
-msgstr ""
-
-#: src/Graph.cc:266
-#, c-format
-msgid "maximum vertex degree: %lu"
-msgstr ""
-
-#: src/Graph.cc:269
-#, c-format
-msgid "number of edges: %lu"
+msgid " %lu sample values, %lu vertices, %lu edges"
 msgstr ""
 
 #: src/JpegFile.cc:73
@@ -671,34 +685,8 @@ msgstr ""
 msgid "could not initialize libmhash %s algorithm."
 msgstr ""
 
-#. Verbosity is VERBOSE
-#: src/Matching.cc:208
-#, c-format
-msgid "size of the matching: %lu"
-msgstr ""
-
-#: src/Matching.cc:211
-#, c-format
-msgid "number of unmatched vertices: %lu (%.1f%%)"
-msgstr ""
-
-#: src/Matching.cc:214
-#, c-format
-msgid "average edge weight: %.1f"
-msgstr ""
-
-#: src/ProgressOutput.cc:29 src/ProgressOutput.cc:36
-msgid "standard input"
-msgstr ""
-
-#: src/ProgressOutput.cc:48
-#, c-format
-msgid "\rembedding \"%s\" in \"%s\"...%.1f%% done\n"
-msgstr ""
-
-#: src/ProgressOutput.cc:55
-#, c-format
-msgid "\rembedding \"%s\" in \"%s\"...%.1f%%"
+#: src/ProgressOutput.cc:71
+msgid " done\n"
 msgstr ""
 
 #: src/RandomSource.cc:38
@@ -716,66 +704,75 @@ msgid ""
 "in the stego file)."
 msgstr ""
 
-#: src/Session.cc:75
-#, c-format
-msgid "wrote embedded data to \"%s\"."
+#: src/Session.cc:70
+msgid "writing extracted data to standard output..."
 msgstr ""
 
-#: src/Session.cc:117
+#: src/Session.cc:73
+#, c-format
+msgid "writing extracted data to \"%s\"..."
+msgstr ""
+
+#: src/Session.cc:89
+#, c-format
+msgid "wrote extracted data to \"%s\"."
+msgstr ""
+
+#: src/Session.cc:132
 msgid "data from standard input:\n"
 msgstr ""
 
-#: src/Session.cc:124
+#: src/Session.cc:139
 msgid "capacity"
 msgstr ""
 
-#: src/Session.cc:131
+#: src/Session.cc:146
 msgid "Try to get information about embedded data ?"
 msgstr ""
 
-#: src/Session.cc:150
+#: src/Session.cc:165
 msgid "  embedded data:\n"
 msgstr ""
 
-#: src/Session.cc:153
+#: src/Session.cc:168
 #, c-format
 msgid "  embedded file \"%s\":\n"
 msgstr ""
 
-#: src/Session.cc:156
+#: src/Session.cc:171
 #, c-format
 msgid "    size: %s\n"
 msgstr ""
 
-#: src/Session.cc:159 src/Session.cc:165
+#: src/Session.cc:174 src/Session.cc:180
 msgid "no"
 msgstr ""
 
-#: src/Session.cc:164
+#: src/Session.cc:179
 #, c-format
 msgid "    encrypted: %s\n"
 msgstr ""
 
-#: src/Session.cc:165
+#: src/Session.cc:180
 #, c-format
 msgid "    compressed: %s\n"
 msgstr ""
 
-#: src/Session.cc:165
+#: src/Session.cc:180
 msgid "yes"
 msgstr ""
 
-#: src/Session.cc:170
+#: src/Session.cc:185
 msgid "could not extract any data with that passphrase!\n"
 msgstr ""
 
-#: src/Session.cc:193
+#: src/Session.cc:208
 msgid ""
 "encryption algorithms:\n"
 "<algorithm>: <supported modes>...\n"
 msgstr ""
 
-#: src/Session.cc:210
+#: src/Session.cc:225
 msgid ""
 "steghide has been compiled without support for encryption.\n"
 "If you want to encrypt your data before embedding it, use an external "
@@ -784,7 +781,7 @@ msgid ""
 "steghide.\n"
 msgstr ""
 
-#: src/Session.cc:224
+#: src/Session.cc:239
 msgid ""
 "\n"
 "the first argument must be one of the following:\n"
@@ -856,30 +853,30 @@ msgstr ""
 msgid "could not set terminal attributes."
 msgstr ""
 
-#: src/WavFile.cc:336
+#: src/WavFile.cc:346
 #, c-format
 msgid "an error occured while reading the wav headers from the file \"%s\"."
 msgstr ""
 
-#: src/WavFile.cc:342
+#: src/WavFile.cc:352
 #, c-format
 msgid "premature end of file \"%s\" while reading wav headers."
 msgstr ""
 
-#: src/WavFile.cc:348
+#: src/WavFile.cc:358
 msgid "an error occured while reading the wav headers from standard input."
 msgstr ""
 
-#: src/WavFile.cc:354
+#: src/WavFile.cc:364
 msgid "premature end of data from standard input while reading wav headers."
 msgstr ""
 
-#: src/WavFile.cc:384
+#: src/WavFile.cc:394
 #, c-format
 msgid "an error occured while writing the wav headers to the file \"%s\"."
 msgstr ""
 
-#: src/WavFile.cc:390
+#: src/WavFile.cc:400
 msgid "an error occured while writing the wav headers to standard output."
 msgstr ""
 
@@ -974,18 +971,18 @@ msgstr ""
 msgid "__no_message_defined__"
 msgstr ""
 
-#: src/msg.cc:131 src/msg.cc:149
+#: src/msg.cc:135 src/msg.cc:153
 msgid "warning:"
 msgstr ""
 
-#: src/msg.cc:158 src/msg.cc:165 src/msg.cc:172
+#: src/msg.cc:162 src/msg.cc:169 src/msg.cc:176
 msgid "y"
 msgstr ""
 
-#: src/msg.cc:159 src/msg.cc:166 src/msg.cc:173
+#: src/msg.cc:163 src/msg.cc:170 src/msg.cc:177
 msgid "n"
 msgstr ""
 
-#: src/msg.cc:186
+#: src/msg.cc:190
 msgid "unknown terminal. you might need to press <Enter> after answering."
 msgstr ""

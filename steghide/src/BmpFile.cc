@@ -179,53 +179,90 @@ std::vector<SampleValueAdjacencyList*> BmpFile::calcSVAdjacencyLists (const std:
 			lists[i] = new SampleValueAdjacencyList (svs.size()) ;
 		}
 
-		int numcubes = 0 ;
-		int cubelen = AUtils::roundup<int,double> (sqrt ((double) getRadius())) ;
-		if (256 % cubelen == 0) {
-			numcubes = 256 / cubelen ;
-		}
-		else {
-			numcubes = (256 / cubelen) + 1 ;
+		// redmap contains all sample values in a 3-dimensional RGB-tree
+		typedef std::map<BYTE, BmpRGBSampleValue*>	BlueMap ;
+		typedef std::map<BYTE, BlueMap>				GreenMap ;
+		typedef std::map<BYTE, GreenMap>			RedMap ;
+		RedMap redmap ;
+		for (std::vector<SampleValue*>::const_iterator svit = svs.begin() ; svit != svs.end() ; svit++) {
+			BmpRGBSampleValue* rgbsv = (BmpRGBSampleValue*) (*svit) ;
+			redmap[rgbsv->getRed()][rgbsv->getGreen()][rgbsv->getBlue()] = rgbsv ;
 		}
 
-		// init cubes
-		std::vector<BmpRGBSampleValue*> cubes[numcubes][numcubes][numcubes] ;
-
-		// fill cubes
-		SampleValueLabel numsvs = svs.size() ;
-		for (SampleValueLabel l = 0 ; l < numsvs ; l++) {
-			BmpRGBSampleValue* s = (BmpRGBSampleValue*) svs[l] ;
-			int i_red = s->getRed() / cubelen ;
-			int i_green = s->getGreen() / cubelen ;
-			int i_blue = s->getBlue() / cubelen ;
-			cubes[i_red][i_green][i_blue].push_back (s) ;
+		// create hemisphere matrix (will contain a discrete hemisphere with radius getRadius())
+		unsigned short r_eucl = (unsigned short) sqrt (getRadius()) ; // the euclidean radius (not squared) - rounded to next lower natural number 
+		short hemisphere[2 * r_eucl + 1][2 * r_eucl + 1] ;
+		for (short dr = -r_eucl ; dr <= r_eucl ; dr++) {
+			for (short dg = -r_eucl ; dg <= r_eucl ; dg++) {
+				short db_sq = r_eucl*r_eucl - dr*dr - dg*dg ;
+				if (db_sq >= 0) {
+					// round hemishpere points to next lower natural numbers
+					hemisphere[dr + r_eucl][dg + r_eucl] = (short) sqrt (db_sq) ;
+				}
+				else {
+					hemisphere[dr + r_eucl][dg + r_eucl] = -1 ;
+				}
+			}
 		}
 
 		// fill adjacency lists
-		for (int sr = 0 ; sr < numcubes ; sr++) {
-			for (int sg = 0 ; sg < numcubes ; sg++) {
-				for (int sb = 0 ; sb < numcubes ; sb++) {
-					int start_red = AUtils::bminus (sr, 1) ;
-					int start_green = AUtils::bminus (sg, 1) ;
-					int start_blue = AUtils::bminus (sb, 1) ;
-					int end_red = AUtils::bplus (sr, 1, numcubes - 1) ;
-					int end_green = AUtils::bplus (sg, 1, numcubes - 1) ;
-					int end_blue = AUtils::bplus (sb, 1, numcubes - 1) ;
-					for (std::vector<BmpRGBSampleValue*>::const_iterator sit = cubes[sr][sg][sb].begin() ; sit != cubes[sr][sg][sb].end() ; sit++) {
-						for (int dr = start_red ; dr <= end_red ; dr++) {
-							for (int dg = start_green ; dg <= end_green ; dg++) {
-								for (int db = start_blue ; db <= end_blue ; db++) {
-									for (std::vector<BmpRGBSampleValue*>::const_iterator dit = cubes[dr][dg][db].begin() ; dit != cubes[dr][dg][db].end() ; dit++) {
-										if ((*sit)->isNeighbour(*dit) && ((*sit)->getLabel() != (*dit)->getLabel())) {
-											(*(lists[(*dit)->getEmbeddedValue()]))[(*sit)].push_back (*dit) ;
-										}
+		for (std::vector<SampleValue*>::const_iterator srcsvit = svs.begin() ; srcsvit != svs.end() ; srcsvit++) {
+			BmpRGBSampleValue* srcsv = (BmpRGBSampleValue*) (*srcsvit) ;
+			unsigned short r_abs_start = AUtils::bminus<unsigned short> (srcsv->getRed(), r_eucl) ;
+			unsigned short r_abs_end = AUtils::bplus<unsigned short, 255> (srcsv->getRed(), r_eucl) ;
+			unsigned short g_abs_start = AUtils::bminus<unsigned short> (srcsv->getGreen(), r_eucl) ;
+			unsigned short g_abs_end = AUtils::bplus<unsigned short, 255> (srcsv->getGreen(), r_eucl) ;
+
+			RedMap::iterator rit = redmap.lower_bound (r_abs_start) ;
+			while ((rit != redmap.end()) && (rit->first <= r_abs_end)) {
+				GreenMap& greenmap = rit->second ;
+				
+				if (greenmap.empty()) {
+					RedMap::iterator delme = rit ;
+					rit++ ;
+					redmap.erase (delme) ;
+				}
+				else {
+					GreenMap::iterator git = greenmap.lower_bound (g_abs_start) ;
+					while ((git != greenmap.end()) && (git->first <= g_abs_end)) {
+						unsigned short red_index = (rit->first - srcsv->getRed()) + r_eucl ;
+						unsigned short green_index = (git->first - srcsv->getGreen()) + r_eucl ;
+						short delta_b = hemisphere[red_index][green_index] ;
+
+						if (delta_b < 0) { // this blue map has no sample values in sphere
+							git++ ;
+						}
+						else {
+							BlueMap& bluemap = git->second ;
+							if (bluemap.empty()) {
+								GreenMap::iterator delme = git ;
+								git++ ;
+								greenmap.erase (delme) ;
+							}
+							else {
+								unsigned short b_abs_start = AUtils::bminus<unsigned short> (srcsv->getBlue(), delta_b) ;
+								unsigned short b_abs_end = AUtils::bplus<unsigned short,255> (srcsv->getBlue(), delta_b) ;
+								BlueMap::iterator bit = bluemap.lower_bound (b_abs_start) ;
+								while ((bit != bluemap.end()) && (bit->first <= b_abs_end)) {
+									if (srcsv->getLabel() < bit->second->getLabel()) {
+										(*(lists[bit->second->getEmbeddedValue()]))[srcsv].push_back (bit->second) ;
+										(*(lists[srcsv->getEmbeddedValue()]))[bit->second].push_back (srcsv) ;
+										bit++ ;
+									}
+									else {
+										BlueMap::iterator delme = bit ;
+										bit++ ;
+										bluemap.erase (delme) ;
 									}
 								}
+								git++ ;
 							}
 						}
-					}
+					}	// end of git loop
+
+					rit++ ;
 				}
-			}
+			}	// end of rit loop
 		}
 
 		// sort adjacency lists
@@ -239,7 +276,6 @@ std::vector<SampleValueAdjacencyList*> BmpFile::calcSVAdjacencyLists (const std:
 		return CvrStgFile::calcSVAdjacencyLists(svs) ;
 	}
 }
-
 
 void BmpFile::calcIndex (SamplePos pos, unsigned long* index, unsigned short* firstbit) const
 {

@@ -1,4 +1,4 @@
-# List of source files containing translatable strings.
+# List of source files containing translatable strings
 src/AUtils.h
 src/Arg.cc
 src/Arg.h
@@ -13,8 +13,8 @@ src/AuSampleValues.cc
 src/AuSampleValues.h
 src/AudioData.h
 src/AudioSampleValue.h
-src/AugmentingPathHeuristic.cc
-src/AugmentingPathHeuristic.h
+src/BFSAPHeuristic.cc
+src/BFSAPHeuristic.h
 src/BinaryIO.cc
 src/BinaryIO.h
 src/BitString.cc
@@ -31,8 +31,11 @@ src/ColorPalette.h
 src/CvrStgFile.cc
 src/CvrStgFile.h
 src/CvrStgObject.h
+src/DFSAPHeuristic.cc
+src/DFSAPHeuristic.h
 src/DMDConstructionHeuristic.cc
 src/DMDConstructionHeuristic.h
+src/DebugOutput.h
 src/Edge.cc
 src/Edge.h
 src/EdgeIterator.cc
@@ -72,6 +75,8 @@ src/RGBTriple.cc
 src/RGBTriple.h
 src/RandomSource.cc
 src/RandomSource.h
+src/SMDConstructionHeuristic.cc
+src/SMDConstructionHeuristic.h
 src/SampleOccurence.h
 src/SampleValue.cc
 src/SampleValue.h

@@ -32,7 +32,7 @@ class BmpSampleValue : public SampleValue {
 	public:
 	BmpSampleValue (void) : SampleValue() {} ;
 
-	UWORD32 calcDistance (const SampleValue *s) const ;
+	virtual UWORD32 calcDistance (const SampleValue *s) const ;
 
 	/**
 	 * get the red color component

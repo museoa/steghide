@@ -73,6 +73,9 @@ Graph::Graph (CvrStgFile *cvr, const BitString& emb, Selector& sel)
 	constructVertices (sposs, svalues, tvalues) ;
 
 	constructEdges () ;
+#if 0
+	std::cerr << "checking svalists... " << ((check_SVALists(true)) ? "OK" : "FAILED!") << std::endl ;	// FIXME DELME DEBUG
+#endif
 }
 
 void Graph::constructSamples (const std::vector<SamplePos*>& sposs, std::vector<SampleValue**>& svalues)
@@ -413,9 +416,19 @@ bool Graph::check_SVALists_soundness (bool verbose) const
 			for (std::vector<SampleValue*>::const_iterator destsv = row.begin() ; destsv != row.end() ; destsv++) {
 				if ((*destsv)->getEmbeddedValue() != t) {
 					target_ok = false ;
+					if (verbose) {
+						std::cerr << std::endl << "---- FAILED: check_SVALists_soundness ----" << std::endl ;
+						std::cerr << "in SVALists[" << (int) t << "][" << srclbl << "] is a sv with getEmbeddedValue() == " << (*destsv)->getEmbeddedValue() << std::endl ;
+						std::cerr << "-------------------------------------" << std::endl ;
+					}
 				}
 				if (!srcsv->isNeighbour(*destsv)) {
 					neigh_ok = false ;
+					if (verbose) {
+						std::cerr << std::endl << "---- FAILED: check_SVALists_soundness ----" << std::endl ;
+						std::cerr << "in SVALists[" << (int) t << "][" << srclbl << "] is a sv that is not a neighbour of " << srclbl << std::endl ;
+						std::cerr << "-------------------------------------" << std::endl ;
+					}
 				}
 			}
 		}
@@ -469,6 +482,12 @@ bool Graph::check_SVALists_uniqueness (bool verbose) const
 				for (unsigned int j = i + 1 ; j < (*(SVALists[t]))[srclbl].size() ; j++) {
 					if (*((*(SVALists[t]))[srclbl][i]) == *((*(SVALists[t]))[srclbl][j])) {
 						unique = false ;
+						if (verbose) {
+							std::cerr << std::endl << "---- FAILED: check_SVALists_uniqueness ----" << std::endl ;
+							std::cerr << "SVALists[" << (int) t << "][" << srclbl << "][" << i << "]->getLabel() == " << (*(SVALists[t]))[srclbl][i]->getLabel() << std::endl ;
+							std::cerr << "SVALists[" << (int) t << "][" << srclbl << "][" << j << "]->getLabel() == " << (*(SVALists[t]))[srclbl][j]->getLabel() << std::endl ;
+							std::cerr << "-------------------------------------" << std::endl ;
+						}
 					}
 				}
 			}
@@ -499,6 +518,12 @@ bool Graph::check_SVALists_completeness (bool verbose) const
 				}
 				if (!found) {
 					ok = false ;
+					if (verbose) {
+						std::cerr << std::endl << "---- FAILED: check_SVALists_completeness ----" << std::endl ;
+						std::cerr << "sample values "<< svsrc->getLabel() << " and " << svdest->getLabel() << " are neighbours..." << std::endl ;
+						std::cerr << "...but SVALists[" << (int) svdest->getEmbeddedValue() << "][" << i << "] does not contain " << j << std::endl ;
+						std::cerr << "-------------------------------------" << std::endl ;
+					}
 				}
 			}
 		}

@@ -56,11 +56,6 @@ class SampleValueAdjacencyList {
 	 **/
 	void sort (void) ;
 
-	/**
-	 * check the integrity of this data structure (only used for debugging and testing)
-	 **/
-	bool check (bool verbose = false) const ;
-
 	private:
 	std::vector<std::vector<SampleValue*> > AdjacencyList ;
 
@@ -71,12 +66,6 @@ class SampleValueAdjacencyList {
 	 **/
 	unsigned int partition (std::vector<SampleValue*>& oppneighs, UWORD32* distances, unsigned int l, unsigned int r, UWORD32 x) ;
 	void swap (std::vector<SampleValue*>& oppneighs, UWORD32* distances, unsigned int i, unsigned int j) ;
-
-	bool check_size (bool verbose = false) const ;
-	bool check_soundness (bool verbose = false) const ;
-	bool check_sorted (bool verbose = false) const ;
-	bool check_uniqueness (bool verbose = false) const ;
-	bool check_completeness (bool verbose = false) const ;
 } ;
 
 #endif // ndef SH_SAMPLEVALUEADJACENCYLIST_H

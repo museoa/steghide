@@ -34,6 +34,19 @@ BmpRGBSampleValue::BmpRGBSampleValue (RGBTriple t)
 	EValue = calcEValue (Color) ;
 }
 
+UWORD32 BmpRGBSampleValue::calcDistance (const SampleValue *s) const
+{
+	const BmpRGBSampleValue *sample = (const BmpRGBSampleValue*) s ;
+	/* If s is not a BmpRGBSampleValue then we get into real trouble here.
+	But calcDistance is called very often, a dynamic_cast costs a lot of time and
+	it does not make sense to pass anything but a BmpRGBSampleValue as s anyway. */
+
+	int dr = (int) Color.Red - (int) sample->Color.Red ;
+	int dg = (int) Color.Green - (int) sample->Color.Green ;
+	int db = (int) Color.Blue - (int) sample->Color.Blue ;
+	return (UWORD32) (dr*dr + dg*dg + db*db) ;
+}
+
 SampleValue *BmpRGBSampleValue::getNearestTargetSampleValue (EmbValue t) const
 {
 	std::vector<RGBTriple> candidates ;

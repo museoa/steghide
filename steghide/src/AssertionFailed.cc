@@ -23,6 +23,7 @@
 
 void AssertionFailed::printMessage () const
 {
+	printf ("\n") ;
 	SteghideError::printMessage() ;
 	printf (_("This means that you have found a bug. Please let me (shetzl@chello.at)\n"
 		"know this if you have a way to reproduce the error.\n"
