@@ -14,9 +14,14 @@ $DefSections = array (
 		"link" => "documentation.php",
 		"subsections" => array (
 			"manpage" => array (
-				"title" => "Steghide - man(ual) page",
-				"linkname" => "man page",
+				"title" => "Steghide - manual",
+				"linkname" => "manual",
 				"link" => "documentation/manpage.php"
+			),
+			"manpage_es" => array (
+				"title" => "Steghide - spanish manual",
+				"linkname" => "spanish manual",
+				"link" => "documentation/manpage_es.php"
 			)
 		)
 	),

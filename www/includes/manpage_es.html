@@ -1,0 +1,286 @@
+<!-- Manpage converted by man2html 3.0.1 -->
+<H2>SYNOPSIS</H2><PRE>
+       <B>steghide</B> <I>comando</I> [ <I>argumentos</I> ]
+
+
+</PRE>
+<H2>DESCRIPCIÓN</H2><PRE>
+       <B>Steghide</B>  es un programa de estenografía que permite ocul­
+       tar datos en varios tipos de imagen- y archivos de  audio.
+       Los respectivos muestreos de frecuencia de color no varían
+       lo que hace que el adjunto  soporte  pruebas  estadísticas
+       del primer orden.
+
+       Sus características incluyen el compactado y el encriptado
+       de los datos adjuntos, y revisión automática de integridad
+       usando  un  checksum. Se reconocen los formatos de archivo
+       JPEG, BMP, WAV y AU para usar como archivos de portada. No
+       existen  restricciones en el formato de los datos ocultos.
+
+       Steghide  aplica  un   enfoque   estenográfico   'gráfico-
+       teórico'(e.i.'graph-theoretic'). No necesitamos saber nada
+       sobre teorías gráficas para usar steghide.  Tranquilamente
+       podemos  saltearnos el resto del párrafo si no nos intere­
+       san los detalles técnicos. El algoritmo  de  adjunto  fun­
+       ciona así a groso modo: Primero, se compacta y encripta la
+       información secreta. Luego se crea una secuencia de  posi­
+       ciones de pixels en el archivo portada basado en un gener­
+       ador  pseudo-aleatorio  de  números  inicializado  con  un
+       salvoconducto  (los  datos  secretos  se adjuntarán en los
+       pixels  de  estas  posiciones).  En  estas   posiciones,se
+       excluyen  los que no necesitan cambiarse (porque ya tienen
+       el valor correcto, por casualidad).  Luego,  un  algoritmo
+       gráfico-teórico  de concordancia halla pares de posiciones
+       de forma que al intercambiar sus valores  dejemos  adjunta
+       la  parte  correspondiente a los datos secretos. Cuando el
+       algoritmo encuentra el último par, se realiza el intercam­
+       bio.   Los  pixels  de  las posiciones sobrantes(las posi­
+       ciones que no conforman dichos pares) también se modifican
+       para  llevar  los datos adjuntos(pero esto se hace sobree­
+       scribiéndolos, no intercambiándolos con otros pixels).  El
+       hecho de que (en su mayor parte) se adjunta intercambiando
+       valores de píxels implica que las estadísticas  de  primer
+       orden (x.e. las veces que se usa un color en la imagen) no
+       se alteran. En los archivos de audio se usa el mismo algo­
+       ritmo,  aunque  se usan muestras de audio en lugar de pix­
+       els.
+
+       El algoritmo de encriptado por omisión es el Rijndael  con
+       clave de 128 bits de tamaño (que es EAE (e.i.AES)- Encrip­
+       tado Avanzado Estandar) en la modalidad de  encadenado  de
+       bloques  de cifras. Si esta combinación, por el motivo que
+       sea, no nos da confianza, tenemos la  libertad  de  elegir
+       otra combinación de algoritmo/tipo (el comando <B>encinfo</B> nos
+       muestra información sobre todas las combinaciones de algo­
+       ritmos  y  tipos).  El checksum se calcula usando el algo­
+       <B>extract,</B> <B>--extract</B>
+              Extraer datos secretos de un archivo stego.
+
+       <B>info,</B> <B>--info</B>
+              Mostrar  información sobre un archivo portada o uno
+              stego.
+
+       <B>encinfo,</B> <B>--encinfo</B>
+              Mostrar una lista de algoritmos y tipos que  pueden
+              usarse. No necesita argumentos.
+
+       <B>version,</B> <B>--version</B>
+              Mostrar  una breve información sobre la version. No
+              necesita argumentos.
+
+       <B>license,</B> <B>--license</B>
+              Mostrar la licencia de steghide. No necesita  argu­
+              mentos.
+
+       <B>help,</B> <B>--help</B>
+              Mostrar una pantalla de ayuda. No necesita argumen­
+              tos.
+
+
+
+</PRE>
+<H2>ADJUNTO</H2><PRE>
+       Deberíamos usar el comando <B>embed</B> cuando queremos  adjuntar
+       datos  secretos  en  un archivo de portada. Con el comando
+       <B>embed</B> pueden usarse los siguientes argumentos:
+
+
+       <B>-ef,</B> <B>--embedfile</B> <I>nomArchivo</I>
+              Declarar el archivo a adjuntar(el archivo que tiene
+              el  mensaje secreto). Notar que steghide adjunta el
+              nombre original del archivo en  el  archivo  stego.
+              Cuando  extraemos los datos (ver más abajo) tiende,
+              por omisión, a grabar  el  archivo  adjunto  en  el
+              directorio actual y con su nombre de archivo origi­
+              nal.  Si se omite este argumento o <I>nomArchivo</I> es <B>-</B>,
+              steghide  leerá los datos secretos desde la entrada
+              estandar.
+
+
+       <B>-cf,</B> <B>--coverfile</B> <I>nomArchivo</I>
+              Declarar el  nombre  del  archivo  de  portada  que
+              usaremos  para  adjuntar  los  datos. El archivo de
+              portada debe tener uno de los siguientes  formatos:
+              AU,  BMP,  JPEG  o  WAV.  El formato del archivo se
+              detecta automáticamente basándose en la información
+              de su cabecera (no importa su extensión). Si omiti­
+              mos este argumento  o  <I>nomArchivo</I>  es  <B>-</B>,  steghide
+              leerá  el  archivo  de  portada  desde  la  entrada
+              estandar.
+              algoritmo de encriptado y/o un tipo. Los nombres de
+              todos los algoritmos y tipos posibles pueden obten­
+              erse  con  el  comando  <B>encinfo</B>.  El encriptado por
+              omisión es <B>rijndael-128</B> (EAE) de tipo <B>cbc</B>.   Si  no
+              quisiéramos  usar  ningún  encriptado, usaríamos <B>-e</B>
+              <B>none</B>.
+
+
+       <B>-z,</B> <B>--compress</B> <I>nivel</I>
+              Declarar el nivel de compactado. El nivel  de  com­
+              pactado  es  de  1...9.  Donde  1 representa el más
+              rápido y 9 representa el mejor compactado.
+
+
+       <B>-Z,</B> <B>--dontcompress</B>
+              No compactar la información secreta antes de adjun­
+              tarla.
+
+
+       <B>-K,</B> <B>--nochecksum</B>
+              No adjuntar el checksum CRC32. Podemos usar esto si
+              los datos secretos ya tienen algún tipo de checksum
+              o  si no queremos adjuntar esos 32 bits extras para
+              hacer el checksum.
+
+
+       <B>-N,</B> <B>--dontembedname</B>
+              No adjuntar el nombre del archivo  secreto.  Si  se
+              usa  esta opinión, el extractor necesitará declarar
+              un nombre de archivo para  decirle  a  steghide  en
+              donde escribiremos los datos adjuntos.
+
+
+
+</PRE>
+<H2>EXTRACCIÓN</H2><PRE>
+       Si  hemos recibido un archivo que tiene un mensaje adjunto
+       con steghide, usaremos el comando <B>extract</B> para  extraerlo.
+       Pueden  usarse los siguientes argumentos con este comando.
+
+
+       <B>-sf,</B> <B>--stegofile</B> <I>nomArchivo</I>
+              Declara el archivo stego (el archivo  que  contiene
+              los  datos  adjuntos). Si se omite este argumento o
+              <I>nomArchivo</I> es <B>-</B>, steghide leerá  un  archivo  stego
+              desde la entrada estandar.
+
+
+       <B>-xf,</B> <B>--extractfile</B> <I>nomArchivo</I>
+              Crear un archivo con nombre <I>nomArchivo</I> y grabar los
+              datos adjuntos del archivo stego en él. Esta opción
+              sobreescribe  el nombre del archivo adjuntado en el
+              archivo stego. Si  se  omite  este  argumento,  los
+              datos  adjuntos se grabarán en el directorio actual
+
+       ese archivo. Si respondemos 'yes' tendremos  que  escribir
+       el salvoconducto que se usó para adjuntar los datos en ese
+       archivo.
+
+       También podemos agregarle el  argumento  <B>-p,</B>  <B>--passphrase</B>
+       (ver  abajo)  al  comando  <B>info</B>  para que steghide intente
+       obtener automáticamente la información adjunta  usando  el
+       salvoconducto declarado.
+
+
+
+</PRE>
+<H2>OPCIONES COMUNES</H2><PRE>
+       Las  siguientes opciones pueden usarse en todos los coman­
+       dos (donde tenga algún sentido).
+
+
+       <B>-p,</B> <B>--passphrase</B>
+              Usar como salvoconducto, la cadena que le  sigue  a
+              este  argumento.  Si nuestro salvoconducto contiene
+              espacios en blanco, habremos de encerrar todo entre
+              comillas,  por  ejemplo:  <B>-p</B>  <B>"un</B> <B>salvoconducto</B> <B>muy</B>
+              <B>extenso"</B>.
+
+
+       <B>-v,</B> <B>--verbose</B>
+              Mostrar información muy detallada sobre  el  estado
+              del proceso de adjuntado o del de extracción.
+
+
+       <B>-q,</B> <B>--quiet</B>
+              Evitar mensajes informativos.
+
+
+       <B>-f,</B> <B>--force</B>
+              Siempre sobreescribir los archivos existentes.
+
+
+
+</PRE>
+<H2>OPCIONES DE NOMBRE DE ARCHIVO</H2><PRE>
+       Todos  los argumentos de nombre de archivo (<B>-cf</B>, <B>-ef</B>, <B>-sf</B>,
+       <B>-xf</B>) también aceptan <B>-</B> como nombre de archivo lo que  hará
+       que  steghide  use  la  entrada  o salida estandar (lo que
+       tenga sentido). Omitiendo el argumento  correspondiente  a
+       su nombre de archivo es lo mismo que escribir <B>-</B> excepto en
+       dos casos: Si se omite <B>-sf</B> en el comando embed,  se  harán
+       las   modificaciones  directamente  sobre  el  archivo  de
+       cubierta. Si se omite <B>-xf</B> para la  extracción,  los  datos
+       adjuntos  se  grabarán con el nombre de archivo que figura
+       en el archivo stego.  Así que cuando queramos  asegurarnos
+       de  que se use la entrada/salida estandar, usaremos <B>-</B> como
+       nombre de archivo.
+
+
+
+</PRE>
+<H2>EJEMPLOS</H2><PRE>
+
+         $ steghide extract -sf imagen.jpg
+         Ingrese salvoconducto:
+         los datos extraídos se grabaron en "secreto.txt".
+
+       Si el salvoconducto declarado es el correcto, el contenido
+       del  archivo  original secreto.txt se extraerá del archivo
+       stego imagen.jpg y se grabará en el directorio actual.
+
+       Si hemos recibido un archivo que contiene datos adjuntos y
+       quisiéramos  tener más información sobre el mismo antes de
+       extraerlo, usaremos el comando info:
+
+         $ steghide info archivo_recibido.wav
+         "archivo_recibido.wav":
+           formato: wave audio, PCM encoding
+           capacidad: 3.5 KB
+         ¿ Intento extraer información sobre los datos  adjuntos?
+       (y/n) y
+         Ingrese salvoconducto:
+           archivo adjunto "secreto.txt":
+             tamaño: 1.6 KB
+             encriptado: rijndael-128, cbc
+             comprimido: si
+
+       Luego  de  emitir algunos datos generales sobre el archivo
+       stego (formato, capacidad) se nos preguntará  si  queremos
+       que steghide obtenga información sobre los datos adjuntos.
+       Si respondemos con yes tendremos que declarar un salvocon­
+       ducto.  Steghide  entonces  intentará  extraer  los  datos
+       adjuntos con ese salvoconducto y - si tiene 'éxito -  emi­
+       tirá un informe sobre el mismo.
+
+
+
+</PRE>
+<H2>VALOR DE RESPUESTA</H2><PRE>
+       Steghide  devuelve 0 si tiene éxito 1 si ocurre un fallo y
+       debe terminar antes de terminar la  operación  solicitada.
+       Las  advertencias  no  tienen  efecto  en  los  valores de
+       respuesta.
+
+
+
+</PRE>
+<H2>AUTOR</H2><PRE>
+       Stefan Hetzl &lt;shetzl@chello.at&gt;
+
+
+
+</PRE>
+<H2>Traducción al castellano</H2><PRE>
+       versión 1 - Alberto Adrián  Schiano  &lt;chanio@users.source­
+       forge.net&gt;
+
+
+
+                           14 Mayo 2002               <B>steghide(1)</B>
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>

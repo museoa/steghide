@@ -2,7 +2,7 @@
 <?php
 ini_set("include_path", "../includes");
 include "generator.php";
-init("documentation/manpage");
+init("documentation/manpage_es");
 ?>
 <html>
 <head>
@@ -10,10 +10,10 @@ init("documentation/manpage");
 </head>
 <body>
 <?php pBodyPrologue();
-include "manpage.html"; ?>
+include "manpage_es.html"; ?>
 <hr>
-You can also download this manual as <a href="manual.pdf">pdf</a>, <a href="manual.ps">postscript</a> and
-<a href="manual.ps.gz">gzipped postscript</a>.
+You can also download this manual as <a href="manual_es.pdf">pdf</a>, <a href="manual_es.ps">postscript</a> and
+<a href="manual_es.ps.gz">gzipped postscript</a>.
 <? pBodyEpilogue(getlastmod()); ?>
 </body>
 </html>
