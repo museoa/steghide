@@ -41,6 +41,10 @@ void Session::run ()
 			ext.extract() ;
 		break ; }
 
+		case CAPACITY: {
+			printCapacity() ;
+		break ; }
+
 		case ENCINFO: {
 			printEncInfo() ;
 		break ; }
@@ -61,6 +65,40 @@ void Session::run ()
 			assert (0) ;
 		break ; }
 	}
+}
+
+void Session::printCapacity ()
+{
+	CvrStgFile* TheCvrStgFile = CvrStgFile::readFile (Args.CvrFn.getValue()) ;
+	float capacity = (float) TheCvrStgFile->getCapacity() ;
+
+	std::string unit = "Byte" ;
+	if (capacity > 1024.0) {
+		capacity /= 1024.0 ;
+		unit = "KB" ;
+	}
+	if (capacity > 1024.0) {
+		capacity /= 1024.0 ;
+		unit = "MB" ;
+	}
+	if (capacity > 1024.0) {
+		capacity /= 1024.0 ;
+		unit = "GB" ;
+	}
+
+	printf (_("the capacity of \"%s\" is approximately %.1f %s.\n"), stripDir(TheCvrStgFile->getName()).c_str(), capacity, unit.c_str()) ;
+}
+
+std::string Session::stripDir (std::string s) const
+{
+	unsigned int start = 0 ;
+	if ((start = s.find_last_of ("/\\")) == std::string::npos) {
+		start = 0 ;
+	}
+	else {
+		start += 1 ;
+	}
+	return s.substr (start, std::string::npos) ;
 }
 
 void Session::printEncInfo ()
@@ -106,7 +144,8 @@ void Session::printHelp ()
 		"the first argument must be one of the following:\n"
 		" embed, --embed          embed data\n"
 		" extract, --extract      extract data\n"
-		" encinfo, --encinfo      display a std::list of supported encryption algorithms\n"
+		" capacity, --capacity    calculate capacity of a cover file\n"
+		" encinfo, --encinfo      display a list of supported encryption algorithms\n"
 		" version, --version      display version information\n"
 		" license, --license      display steghide's license\n"
 		" help, --help            display this usage information\n"
@@ -142,15 +181,9 @@ void Session::printHelp ()
 		" -q, --quiet             suppress information messages\n"
 		" -v, --verbose           display detailed information\n"
 
-		"\nIf a <filename> is \"-\", stdin or stdout is used.\n\n"
-
-		"The arguments default to reasonable values.\n\n"
-
-		"For embedding the following line is enough:\n"
-		"steghide embed -cf cvr.jpg -sf stg.jpg -ef emb.txt\n\n"
-
-		"For extracting it is sufficient to use:\n"
-		"steghide extract -sf stg.jpg\n\n")) ;
+		"\nTo embed emb.txt in cvr.jpg: steghide embed -cf cvr.jpg -ef emb.txt\n"
+		"To extract embedded data from stg.jpg: steghide extract -sf stg.jpg\n"
+		"To calculate the capacity of cvr.jpg: steghide capacity -cf cvr.jpg\n")) ;
 }
 
 void Session::printLicense ()

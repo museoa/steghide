@@ -49,11 +49,7 @@ MessageBase::MessageBase (const char *msgfmt, ...)
 	va_end (ap) ;
 }
 
-MessageBase::~MessageBase ()
-{
-}
-
-std::string MessageBase::getMessage ()
+std::string MessageBase::getMessage () const
 {
 	return message ;
 }
@@ -71,7 +67,7 @@ void MessageBase::setMessage (const char *msgfmt, ...)
 	va_end (ap) ;
 }
 
-std::string MessageBase::compose (const char *msgfmt, ...)
+std::string MessageBase::compose (const char *msgfmt, ...) const
 {
 	va_list ap ;
 	va_start (ap, msgfmt) ;
@@ -80,7 +76,7 @@ std::string MessageBase::compose (const char *msgfmt, ...)
 	return retval ;
 }
 
-std::string MessageBase::vcompose (const char *msgfmt, va_list ap)
+std::string MessageBase::vcompose (const char *msgfmt, va_list ap) const
 {
 	char *str = new char[MsgMaxSize] ;
 	vsnprintf (str, MsgMaxSize, msgfmt, ap) ;
@@ -99,7 +95,7 @@ Message::Message (const char *msgfmt, ...)
 	va_end (ap) ;
 }
 
-void Message::printMessage ()
+void Message::printMessage () const
 {
 	if (Args.Verbosity.getValue() == NORMAL ||
 		Args.Verbosity.getValue() == VERBOSE) {
@@ -119,7 +115,7 @@ VerboseMessage::VerboseMessage (const char *msgfmt, ...)
 	va_end (ap) ;
 }
 
-void VerboseMessage::printMessage ()
+void VerboseMessage::printMessage () const
 {
 	if (Args.Verbosity.getValue() == VERBOSE) {
 		std::cerr << getMessage() << std::endl ;
@@ -138,11 +134,11 @@ Warning::Warning (const char *msgfmt, ...)
 	va_end (ap) ;
 }
 
-void Warning::printMessage ()
+void Warning::printMessage () const
 {
 	if (Args.Verbosity.getValue() == NORMAL ||
 		Args.Verbosity.getValue() == VERBOSE) {
-		std::cerr << PROGNAME << _(": warning: ") << getMessage() << std::endl ;
+		std::cerr << "steghide: " << _("warning:") << " " << getMessage() << std::endl ;
 	}
 }
 
@@ -158,9 +154,9 @@ CriticalWarning::CriticalWarning (const char *msgfmt, ...)
 	va_end (ap) ;
 }
 
-void CriticalWarning::printMessage ()
+void CriticalWarning::printMessage () const
 {
-	std::cerr << PROGNAME << _(": warning: ") << getMessage() << std::endl ;
+	std::cerr << "steghide: " << _("warning:") << " " << getMessage() << std::endl ;
 }
 
 //
@@ -192,7 +188,7 @@ Question::Question (const char *msgfmt, ...)
 	va_end (ap) ;
 }
 
-void Question::printMessage ()
+void Question::printMessage () const
 {
 	assert (!Args.stdin_isused()) ;
 

@@ -28,7 +28,7 @@ class JpegSampleValue : public SampleValue {
 	public:
 	JpegSampleValue (void)
 		: SampleValue(NULL) {} ;
-	JpegSampleValue (CvrStgFile *f, int c) ;
+	JpegSampleValue (const CvrStgFile* f, int c) ;
 
 	bool isNeighbour (const SampleValue *s) const ;
 	SampleValue* getNearestOppositeSampleValue (void) const ;

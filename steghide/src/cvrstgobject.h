@@ -41,7 +41,7 @@ class CvrStgObject {
 	/**
 	 * get the number of samples in this CvrStgObject
 	 **/
-	virtual unsigned long getNumSamples (void) = 0 ;
+	virtual unsigned long getNumSamples (void) const = 0 ;
 
 	/**
 	 * replace a sample thus (possibly) altering the value of the bit returned by SampleValue->getBit()
@@ -57,10 +57,10 @@ class CvrStgObject {
 	 * \param pos the position of a sample (must be in 0...getNumSamples()-1)
 	 * \return the sample at the given position
 	 *
-	 * The sample object is created in this function and can safely be deleted afterwards.
+	 * The sample object is created in this function and should be deleted by the caller.
 	 * The derived class should check the condition(s) given above in its Implementation of this function.
 	 **/
-	virtual SampleValue* getSampleValue (SamplePos pos) = 0 ;
+	virtual SampleValue* getSampleValue (SamplePos pos) const = 0 ;
 } ;
 
 #endif //ndef SH_CVRSTGOBJECT_H

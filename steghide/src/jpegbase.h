@@ -50,9 +50,9 @@ class JpegObject {
 	 **/
 	virtual void write (BinaryIO *io) = 0 ;
 
-	JpegObject *getParent (void) ;
+	JpegObject *getParent (void) const ;
 	void setParent (JpegObject *p) ;
-	bool issetParent (void) ;
+	bool issetParent (void) const ;
 
 	protected:
 	/**
@@ -251,9 +251,9 @@ class JpegContainer : public JpegObject, public CvrStgObject {
 	void read (BinaryIO *io) ;
 	void write (BinaryIO *io) ;
 
-	unsigned long getNumSamples (void) ;
+	unsigned long getNumSamples (void) const ;
 	void replaceSample (SamplePos pos, SampleValue *s) ;
-	SampleValue* getSampleValue (SamplePos pos) ;
+	SampleValue* getSampleValue (SamplePos pos) const ;
 
 	protected:
 	/**

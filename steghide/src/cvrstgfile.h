@@ -41,7 +41,20 @@ class CvrStgFile : public CvrStgObject {
 	virtual void write (void) ;
 	void transform (std::string fn) ;
 
-	virtual unsigned int getSamplesPerEBit (void) = 0 ;
+	/**
+	 * get the name of this cvrstgfile
+	 **/
+	std::string getName (void) const
+		{ return getBinIO()->getName() ; } ;
+
+	/**
+	 * get the capacity of this cvrstgfile
+	 * \return the capacity in bytes
+	 **/
+	unsigned long getCapacity (void) const
+		{ return (getNumSamples() / getSamplesPerEBit()) / 8 ; } ;
+
+	virtual unsigned int getSamplesPerEBit (void) const = 0 ;
 
 	/**
 	 * get the bit that is embedded in the Sample pos
@@ -54,8 +67,11 @@ class CvrStgFile : public CvrStgObject {
 	Bit getSampleBit (SamplePos pos) { return (getSampleValue(pos)->getBit()) ; }
 
 	protected:
-	void setBinIO (BinaryIO *io) ;
-	BinaryIO *getBinIO (void) ;
+	void setBinIO (BinaryIO *io)
+		{ BinIO = io ; } ;
+
+	BinaryIO *getBinIO (void) const
+		{ return BinIO ; } ;
 
 	private:
 	static int guessff (BinaryIO *io) ;

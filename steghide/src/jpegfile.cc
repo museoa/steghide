@@ -64,7 +64,7 @@ void JpegFile::write ()
 	EOI.write (getBinIO()) ;
 }
 
-unsigned long JpegFile::getNumSamples()
+unsigned long JpegFile::getNumSamples() const
 {
 	return frame->getNumSamples() ;
 }
@@ -74,12 +74,12 @@ void JpegFile::replaceSample (SamplePos pos, SampleValue *s)
 	frame->replaceSample (pos, s) ;
 }
 
-unsigned int JpegFile::getSamplesPerEBit()
+unsigned int JpegFile::getSamplesPerEBit() const
 {
 	return 2 ;
 }
 
-SampleValue *JpegFile::getSampleValue (SamplePos pos)
+SampleValue *JpegFile::getSampleValue (SamplePos pos) const
 {
 	return frame->getSampleValue(pos) ;
 }

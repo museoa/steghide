@@ -48,9 +48,26 @@ SteghideError::SteghideError (const char *msgfmt, ...)
 	va_end (ap) ;
 }
 
-void SteghideError::printMessage (void)
+void SteghideError::printMessage () const
 {
-	std::cerr << PROGNAME << ": " << getMessage() << std::endl ;
+	std::cerr << "steghide: " << getMessage() << std::endl ;
+}
+
+//
+// class ArgError
+//
+ArgError::ArgError (const char* msgfmt, ...)
+{
+	va_list ap ;
+	va_start (ap, msgfmt) ,
+	setMessage (vcompose (msgfmt, ap)) ;
+	va_end (ap) ;
+}
+
+void ArgError::printMessage () const
+{
+	SteghideError::printMessage() ;
+	std::cerr << "steghide: " << _("type \"steghide --help\" for help.") << std::endl ;
 }
 
 //
@@ -165,7 +182,7 @@ NotImplementedError::NotImplementedError (const char *msgfmt, ...)
 	va_end (ap) ;
 }
 
-void NotImplementedError::printMessage ()
+void NotImplementedError::printMessage () const
 {
 	SteghideError::printMessage() ;
 	printf (_("This feature is not implemented (yet). Please let me (shetzl@chello.at) know\n"

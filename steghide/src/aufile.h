@@ -35,10 +35,10 @@ class AuFile : public CvrStgFile {
 	void read (BinaryIO *io) ;
 	void write (void) ;
 
-	unsigned long getNumSamples (void) ;
+	unsigned long getNumSamples (void) const ;
 	void replaceSample (SamplePos pos, SampleValue *s) ;
-	SampleValue* getSampleValue (SamplePos pos) ;
-	unsigned int getSamplesPerEBit (void) ;
+	SampleValue* getSampleValue (SamplePos pos) const ;
+	unsigned int getSamplesPerEBit (void) const ;
 
 	protected:
 	typedef struct struct_AuHeader {

@@ -46,16 +46,6 @@ CvrStgFile::~CvrStgFile (void)
 	delete getBinIO() ;
 }
 
-BinaryIO *CvrStgFile::getBinIO (void) 
-{
-	return BinIO ;
-}
-
-void CvrStgFile::setBinIO (BinaryIO *io)
-{
-	BinIO = io ;
-}
-
 void CvrStgFile::read (BinaryIO *io)
 {
 	setBinIO (io) ;
@@ -79,9 +69,6 @@ void CvrStgFile::read (BinaryIO *io)
 			VerboseMessage v (_("reading stego file \"%s\"."), getBinIO()->getName().c_str()) ;
 			v.printMessage() ;
 		}
-	}
-	else {
-		assert (0) ;
 	}
 }
 

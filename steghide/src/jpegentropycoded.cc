@@ -284,7 +284,7 @@ void JpegEntropyCoded::write (BinaryIO *io)
 	}
 }
 
-unsigned long JpegEntropyCoded::getNumSamples()
+unsigned long JpegEntropyCoded::getNumSamples() const
 {
 	return ((unsigned long) dctcoeffs.size()) ;
 }
@@ -297,7 +297,7 @@ void JpegEntropyCoded::replaceSample (SamplePos pos, SampleValue *s)
 	dctcoeffs[pos] = sample->getDctCoeff() ;
 }
 
-SampleValue *JpegEntropyCoded::getSampleValue (SamplePos pos)
+SampleValue *JpegEntropyCoded::getSampleValue (SamplePos pos) const
 {
 	assert (pos < dctcoeffs.size()) ;
 	JpegScan *p_scan = (JpegScan *) getParent() ;

@@ -62,12 +62,12 @@ void AuFile::write()
 	writedata () ;
 }
 
-unsigned int AuFile::getSamplesPerEBit()
+unsigned int AuFile::getSamplesPerEBit() const
 {
 	return 2 ;
 }
 
-unsigned long AuFile::getNumSamples()
+unsigned long AuFile::getNumSamples () const
 {
 	return data.size() ;
 }
@@ -80,7 +80,7 @@ void AuFile::replaceSample (SamplePos pos, SampleValue *s)
 	data[pos] = sample->getValue() ;
 }
 
-SampleValue *AuFile::getSampleValue (SamplePos pos)
+SampleValue *AuFile::getSampleValue (SamplePos pos) const
 {
 	assert (pos < getNumSamples()) ;
 	return ((SampleValue *) new AuSampleValue (this, data[pos])) ;

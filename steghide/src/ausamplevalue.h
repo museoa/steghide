@@ -28,7 +28,7 @@ class AuSampleValue : public SampleValue {
 	public:
 	AuSampleValue (void)
 		: SampleValue(NULL) {} ;
-	AuSampleValue (CvrStgFile *f, unsigned char v)
+	AuSampleValue (const CvrStgFile* f, unsigned char v)
 		: SampleValue(f), Value(v)
 		{ SBit = (Bit) (Value & 1) ; Key = (unsigned long) Value ; } ;
 

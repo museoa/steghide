@@ -59,7 +59,7 @@ class CvrStgFile ;
 class SampleValue {
 	public:
 	SampleValue (void) {} ;
-	SampleValue (CvrStgFile *f)
+	SampleValue (const CvrStgFile* f)
 		: File(f) {} ;
 
 	/**
@@ -127,10 +127,10 @@ class SampleValue {
 	void incNumEdges (void)
 		{ NumEdges++ ; } ;
 
-	CvrStgFile *getFile (void) const
+	const CvrStgFile* getFile (void) const
 		{ return File ; } ;
 
-	void setFile (CvrStgFile *f)
+	void setFile (const CvrStgFile* f)
 		{ File = f ; } ;
 
 	unsigned long getLabel (void) const
@@ -151,7 +151,7 @@ class SampleValue {
 	unsigned long Key ;
 
 	private:
-	CvrStgFile *File ;
+	const CvrStgFile* File ;
 	unsigned long Label ;
 
 	/// the number of edges that are added to a vertex if this sample value is added to it

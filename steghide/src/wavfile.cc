@@ -70,7 +70,7 @@ void WavFile::write ()
 	writedata () ;
 }
 
-unsigned long WavFile::getNumSamples()
+unsigned long WavFile::getNumSamples() const
 {
 	unsigned long retval = 0 ;
 	if (FormatChunk->getBitsPerSample() <= 8) {
@@ -94,12 +94,12 @@ void WavFile::replaceSample (SamplePos pos, SampleValue *s)
 	}
 }
 
-unsigned int WavFile::getSamplesPerEBit()
+unsigned int WavFile::getSamplesPerEBit() const
 {
 	return 2 ;
 }
 
-SampleValue *WavFile::getSampleValue (SamplePos pos)
+SampleValue *WavFile::getSampleValue (SamplePos pos) const
 {
 	int value = 0 ;
 	if (FormatChunk->getBitsPerSample() <= 8) {
@@ -111,7 +111,7 @@ SampleValue *WavFile::getSampleValue (SamplePos pos)
 	return ((SampleValue *) new WavPCMSampleValue (this, value)) ;
 }
 
-unsigned short WavFile::getBitsPerSample()
+unsigned short WavFile::getBitsPerSample() const
 {
 	return FormatChunk->getBitsPerSample() ;
 }

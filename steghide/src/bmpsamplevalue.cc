@@ -38,7 +38,7 @@ BmpSampleValue::BmpSampleValue (void)
 	}
 }
 
-BmpSampleValue::BmpSampleValue (CvrStgFile *f)
+BmpSampleValue::BmpSampleValue (const CvrStgFile* f)
 		: SampleValue (f)
 {
 	if (Radius == 0.0) {
@@ -85,10 +85,10 @@ float BmpSampleValue::RadiusSquared = 0.0 ;
 //
 // class BmpPaletteSampleValue
 //
-BmpPaletteSampleValue::BmpPaletteSampleValue (CvrStgFile *f, unsigned char i)
+BmpPaletteSampleValue::BmpPaletteSampleValue (const CvrStgFile* f, unsigned char i)
 	: BmpSampleValue(f), Index(i)
 {
-	BmpFile *bmpfile = dynamic_cast<BmpFile*> (f) ;
+	const BmpFile* bmpfile = dynamic_cast<const BmpFile*> (f) ;
 	assert (bmpfile != NULL) ;
 	Palette = bmpfile->getPalette() ;
 	SBit = (Bit) (Index & 1) ;
@@ -138,14 +138,14 @@ unsigned char BmpPaletteSampleValue::getBlue() const
 //
 // class BmpRGBSampleValue
 //
-BmpRGBSampleValue::BmpRGBSampleValue (CvrStgFile *f, unsigned char r, unsigned char g, unsigned char b)
+BmpRGBSampleValue::BmpRGBSampleValue (const CvrStgFile* f, unsigned char r, unsigned char g, unsigned char b)
 	: BmpSampleValue(f), Color(r, g, b)
 {
 	SBit = (Bit) ((r & 1) ^ (g & 1) ^ (b & 1)) ;
 	Key = ((unsigned long) r << 16) | ((unsigned long) g << 8) | ((unsigned long) b) ;
 }
 
-BmpRGBSampleValue::BmpRGBSampleValue (CvrStgFile *f, RGBTriple t)
+BmpRGBSampleValue::BmpRGBSampleValue (const CvrStgFile* f, RGBTriple t)
 	: BmpSampleValue(f), Color(t)
 {
 	SBit = (Bit) ((t.Red & 1) ^ (t.Green & 1) ^ (t.Blue & 1)) ;

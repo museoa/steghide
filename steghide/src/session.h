@@ -28,6 +28,8 @@ class Session {
 	void run (void) ;
 
 	private:
+	std::string stripDir (std::string s) const ;
+	void printCapacity (void) ;
 	void printEncInfo (void) ;
 	void printVersion (void) ;
 	void printHelp (void) ;

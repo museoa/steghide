@@ -69,7 +69,7 @@ void BmpFile::write ()
 	writedata() ;
 }
 
-unsigned long BmpFile::getNumSamples()
+unsigned long BmpFile::getNumSamples() const
 {
 	unsigned long retval = 0 ;
 	switch (getSubformat()) {
@@ -113,7 +113,7 @@ void BmpFile::replaceSample (SamplePos pos, SampleValue *s)
 	}
 }
 
-unsigned int BmpFile::getSamplesPerEBit()
+unsigned int BmpFile::getSamplesPerEBit() const
 {
 	unsigned int retval = 0 ;
 	switch (getBitCount()) {
@@ -128,7 +128,7 @@ unsigned int BmpFile::getSamplesPerEBit()
 	return retval ;
 }
 
-SampleValue *BmpFile::getSampleValue (SamplePos pos)
+SampleValue *BmpFile::getSampleValue (SamplePos pos) const
 {
 	unsigned long row = 0, column = 0 ;
 	unsigned short firstbit = 0 ;

@@ -29,7 +29,7 @@
 class WavPCMSampleValue : public SampleValue {
 	public:
 	WavPCMSampleValue (void) : SampleValue(NULL) {} ;
-	WavPCMSampleValue (CvrStgFile *f, int v) ;
+	WavPCMSampleValue (const CvrStgFile* f, int v) ;
 
 	bool isNeighbour (const SampleValue *s) const ;
 	SampleValue* getNearestOppositeSampleValue (void) const ;

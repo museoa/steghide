@@ -27,10 +27,10 @@
 
 // TODO - ? derive WavPCMsmallSampleValue and WavPCMlargeSampleValue from WavPCMSampleValueValue
 
-WavPCMSampleValue::WavPCMSampleValue (CvrStgFile *f, int v)
+WavPCMSampleValue::WavPCMSampleValue (const CvrStgFile* f, int v)
 	: SampleValue(f), Value(v)
 {
-	WavFile *wavfile = dynamic_cast<WavFile*> (f) ;
+	const WavFile* wavfile = dynamic_cast<const WavFile*> (f) ;
 	assert (wavfile != NULL) ;
 	unsigned short samplesize = wavfile->getBitsPerSample() ;
 

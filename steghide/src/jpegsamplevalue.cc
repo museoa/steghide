@@ -24,7 +24,7 @@
 #include "common.h"
 #include "jpegsamplevalue.h"
 
-JpegSampleValue::JpegSampleValue (CvrStgFile *f, int c)
+JpegSampleValue::JpegSampleValue (const CvrStgFile* f, int c)
 	: SampleValue(f), DctCoeff (c)
 {
 	int dctcoeff = ((DctCoeff >= 0) ? DctCoeff : -DctCoeff) ;

@@ -32,7 +32,7 @@
 class BmpSampleValue : public SampleValue {
 	public:
 	BmpSampleValue (void) ;
-	BmpSampleValue (CvrStgFile *f) ;
+	BmpSampleValue (const CvrStgFile* f) ;
 
 	bool isNeighbour (const SampleValue *s) const ;
 	float calcDistance (const SampleValue *s) const ;
@@ -68,7 +68,7 @@ class BmpPaletteSampleValue : public BmpSampleValue {
 	public:
 	BmpPaletteSampleValue (void)
 		: BmpSampleValue() {} ;
-	BmpPaletteSampleValue (CvrStgFile *f, unsigned char i) ;
+	BmpPaletteSampleValue (const CvrStgFile* f, unsigned char i) ;
 
 	SampleValue* getNearestOppositeSampleValue (void) const ;
 
@@ -90,8 +90,8 @@ class BmpRGBSampleValue : public BmpSampleValue {
 	public:
 	BmpRGBSampleValue (void)
 		: BmpSampleValue() {} ;
-	BmpRGBSampleValue (CvrStgFile *f, unsigned char r, unsigned char g, unsigned char b) ;
-	BmpRGBSampleValue (CvrStgFile *f, RGBTriple t) ;
+	BmpRGBSampleValue (const CvrStgFile* f, unsigned char r, unsigned char g, unsigned char b) ;
+	BmpRGBSampleValue (const CvrStgFile* f, RGBTriple t) ;
 
 	SampleValue* getNearestOppositeSampleValue (void) const ;
 

@@ -38,12 +38,12 @@ class WavFile : public CvrStgFile {
 	void read (BinaryIO *io) ;
 	void write (void) ;
 
-	unsigned long getNumSamples (void) ;
+	unsigned long getNumSamples (void) const ;
 	void replaceSample (SamplePos pos, SampleValue *s) ;
-	SampleValue* getSampleValue (SamplePos pos) ;
-	unsigned int getSamplesPerEBit (void) ;
+	SampleValue* getSampleValue (SamplePos pos) const ;
+	unsigned int getSamplesPerEBit (void) const ;
 
-	unsigned short getBitsPerSample (void) ;
+	unsigned short getBitsPerSample (void) const ;
 
 	private:
 	static const signed short	FormatPCM = 1 ;

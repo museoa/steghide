@@ -29,18 +29,18 @@ class MessageBase {
 	MessageBase (void) ;
 	MessageBase (std::string msg) ;
 	MessageBase (const char *msgfmt, ...) ;
-	virtual ~MessageBase (void) ;
+	virtual ~MessageBase() {} ;
 
-	std::string getMessage (void) ;
+	std::string getMessage (void) const ;
 	void setMessage (std::string msg) ;
 	void setMessage (const char *msgfmt, ...) ;
-	virtual void printMessage (void) = 0 ;
+	virtual void printMessage (void) const = 0 ;
 
 	protected:
 	static const unsigned int MsgMaxSize = 512 ;
 
-	std::string compose (const char *msgfmt, ...) ;
-	std::string vcompose (const char *msgfmt, va_list ap) ;
+	std::string compose (const char *msgfmt, ...) const ;
+	std::string vcompose (const char *msgfmt, va_list ap) const ;
 
 	private:
 	std::string message ;
@@ -52,7 +52,7 @@ class Message : public MessageBase {
 	Message (std::string msg) : MessageBase (msg) {} ;
 	Message (const char *msgfmt, ...) ;
 
-	void printMessage (void) ;
+	void printMessage (void) const ;
 } ;
 
 class VerboseMessage : public MessageBase {
@@ -61,7 +61,7 @@ class VerboseMessage : public MessageBase {
 	VerboseMessage (std::string msg) : MessageBase (msg) {} ;
 	VerboseMessage (const char *msgfmt, ...) ;
 
-	void printMessage (void) ;
+	void printMessage (void) const ;
 } ;
 
 class Warning : public MessageBase {
@@ -70,7 +70,7 @@ class Warning : public MessageBase {
 	Warning (std::string msg) : MessageBase (msg) {} ;
 	Warning (const char *msgfmt, ...) ;
 
-	void printMessage (void) ;
+	void printMessage (void) const ;
 } ;
 
 class CriticalWarning : public MessageBase {
@@ -79,7 +79,7 @@ class CriticalWarning : public MessageBase {
 	CriticalWarning (std::string msg) : MessageBase (msg) {} ;
 	CriticalWarning (const char *msgfmt, ...) ;
 
-	void printMessage (void) ;
+	void printMessage (void) const ;
 } ;
 
 class Question : public MessageBase {
@@ -88,7 +88,7 @@ class Question : public MessageBase {
 	Question (std::string msg) ;
 	Question (const char *msgfmt, ...) ;
 
-	void printMessage (void) ;
+	void printMessage (void) const ;
 	bool getAnswer (void) ;
 
 	private:

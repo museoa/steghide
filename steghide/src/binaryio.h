@@ -39,7 +39,11 @@ class BinaryIO {
 	BinaryIO (std::string fn, MODE m) ;
 	~BinaryIO (void) ;
 
+	/**
+	 * get the name (with path) of this file
+	 **/
 	std::string getName (void) ;
+
 	bool is_open (void) ;
 	bool is_std (void) ;
 	bool eof (void) ;

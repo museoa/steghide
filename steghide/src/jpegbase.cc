@@ -37,13 +37,13 @@ JpegObject::JpegObject (JpegObject *p)
 	setParent (p) ;
 }
 
-JpegObject *JpegObject::getParent ()
+JpegObject *JpegObject::getParent () const
 {
 	assert (parent) ;
 	return parent ;
 }
 
-bool JpegObject::issetParent ()
+bool JpegObject::issetParent () const
 {
 	return (parent != NULL) ;
 }
@@ -219,7 +219,7 @@ void JpegContainer::write (BinaryIO *io)
 	}
 }
 
-unsigned long JpegContainer::getNumSamples ()
+unsigned long JpegContainer::getNumSamples () const
 {
 	unsigned long sum = 0 ;
 	for (std::vector<CvrStgObject*>::const_iterator i = cvrstgobjs.begin() ; i != cvrstgobjs.end() ; i++) {
@@ -234,7 +234,7 @@ void JpegContainer::replaceSample (SamplePos pos, SampleValue *s)
 	cso->replaceSample (pos, s) ;
 }
 
-SampleValue *JpegContainer::getSampleValue (SamplePos pos)
+SampleValue *JpegContainer::getSampleValue (SamplePos pos) const
 {
 	CvrStgObject *cso = calcCvrStgObject (&pos) ;
 	return cso->getSampleValue (pos) ;
