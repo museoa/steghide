@@ -45,6 +45,7 @@ class SampleValue ;
 class JpegFile : public CvrStgFile {
 	public:
 	JpegFile (BinaryIO* io) ;
+	~JpegFile (void) ;
 
 	void read (BinaryIO* io) ;
 	void write (void) ;
@@ -75,6 +76,8 @@ class JpegFile : public CvrStgFile {
 
 	struct jpeg_compress_struct CInfo ;
 	struct jpeg_decompress_struct DeCInfo ;
+	unsigned int* HeightInBlocks ;
+	unsigned int* WidthInBlocks ;
 	jvirt_barray_ptr* DctCoeffs ;
 
 	std::vector<SWORD16> LinDctCoeffs ;
