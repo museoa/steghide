@@ -169,8 +169,8 @@ class BitString {
 
 #ifdef DEBUG
 	void print (unsigned short spc = 0) const ;
-#endif
 	void printDebug (unsigned short level, unsigned short spc = 0) const ;
+#endif
 
 	protected:
 	void _append (BIT v) ;

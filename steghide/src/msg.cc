@@ -209,9 +209,9 @@ bool Question::getAnswer ()
 //
 // debugging output
 //
+#ifdef DEBUG
 void printDebug (unsigned short level, const char *msgfmt, ...)
 {
-#ifdef DEBUG
 	if (RUNDEBUGLEVEL(level)) {
 		va_list ap ;
 		va_start (ap, msgfmt) ;
@@ -219,5 +219,5 @@ void printDebug (unsigned short level, const char *msgfmt, ...)
 		va_end (ap) ;
 		fprintf (stderr, "\n") ;
 	}
-#endif
 }
+#endif

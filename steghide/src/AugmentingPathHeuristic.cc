@@ -59,7 +59,9 @@ void AugmentingPathHeuristic::run ()
 
 std::vector<Edge*>* AugmentingPathHeuristic::searchAugmentingPath (Vertex *v0)
 {
+#ifdef DEBUG
 	printDebug (3, "searching augmenting path for vertex with label %lu", v0->getLabel()) ;
+#endif
 
 	TimeCounter++ ;
 	std::vector<Edge*>* path = new std::vector<Edge*>() ;
@@ -94,7 +96,9 @@ std::vector<Edge*>* AugmentingPathHeuristic::searchAugmentingPath (Vertex *v0)
 				pushOnPath (path, e) ;
 			}
 			else { // could not find next edge
+#ifdef DEBUG
 				printDebug (4, "could not find next edge from vertex with label %lu", w_next->getLabel()) ;
+#endif
 
 				VertexOnPath[e->getVertex1()->getLabel()] = false ;
 				VertexOnPath[e->getVertex2()->getLabel()] = false ;
@@ -134,7 +138,10 @@ std::vector<Edge*>* AugmentingPathHeuristic::searchAugmentingPath (Vertex *v0)
 
 void AugmentingPathHeuristic::pushOnPath (std::vector<Edge*>* path, Edge* e)
 {
+#ifdef DEBUG
 	printDebug (4, "pushing edge on path: %lu - %lu", e->getVertex1()->getLabel(), e->getVertex2()->getLabel()) ;
+#endif
+
 	path->push_back (e) ;
 	VertexOnPath[e->getVertex1()->getLabel()] = true ;
 	VertexOnPath[e->getVertex2()->getLabel()] = true ;

@@ -224,13 +224,11 @@ void BitString::print (unsigned short spc) const
 	}
 	std::cerr << std::endl ;
 }
-#endif
 
 void BitString::printDebug (unsigned short level, unsigned short spc) const
 {
-#ifdef DEBUG
 	if (RUNDEBUGLEVEL(level)) {
 		print (spc) ;
 	}
-#endif
 }
+#endif

@@ -72,9 +72,9 @@ typedef UWORD32 SampleKey ;
 // every class can have debugging output
 #if DEBUG
 #include <iostream>
-#endif
 #define RUNDEBUGLEVEL(LEVEL) ((LEVEL) <= Args.DebugLevel.getValue())
 extern void printDebug (unsigned short level, const char *msgfmt, ...) ;
+#endif
 
 //
 // every class has access to the command line arguments

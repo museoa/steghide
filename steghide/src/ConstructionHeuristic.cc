@@ -85,7 +85,9 @@ void ConstructionHeuristic::insertInMatching (Edge *e)
 	Vertex *v1 = e->getVertex1() ;
 	Vertex *v2 = e->getVertex2() ;
 
+#ifdef DEBUG
 	printDebug (2, "inserting vertices %lu and %lu in matching", v1->getLabel(), v2->getLabel()) ;
+#endif
 	TheMatching->addEdge (e) ;
 
 	v1->markDeleted() ;

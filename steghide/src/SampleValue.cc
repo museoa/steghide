@@ -33,7 +33,6 @@ void SampleValue::decNumEdges ()
 	NumEdges-- ;
 }
 
-#ifdef DEBUG
 void SampleValue::print (unsigned short spc) const
 {
 	char* space = new char[spc + 1] ;
@@ -46,4 +45,3 @@ void SampleValue::print (unsigned short spc) const
 	std::cerr << space << " Key(hex): " << std::hex << getKey() << std::dec << std::endl ;
 	std::cerr << space << " Bit: " << getBit() << std::endl ;
 }
-#endif

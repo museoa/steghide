@@ -51,7 +51,9 @@ Vertex::~Vertex ()
 
 void Vertex::markDeleted ()
 {
+#ifdef DEBUG
 	printDebug (2, "marking vertex with label %lu as deleted.", getLabel()) ;
+#endif
 
 	if (valid) {
 		// decrement neighbour degrees
@@ -75,7 +77,9 @@ void Vertex::markDeleted ()
 
 void Vertex::unmarkDeleted ()
 {
+#ifdef DEBUG
 	printDebug (2, "unmarking deletion of vertex with label %lu.", getLabel()) ;
+#endif
 
 	if (!valid) {
 		// undelete into sample occurences in graph
@@ -100,7 +104,9 @@ void Vertex::unmarkDeleted ()
 
 void Vertex::updateShortestEdge ()
 {
+#ifdef DEBUG
 	printDebug (3, "updating shorted edge for vertex with label %lu", getLabel()) ;
+#endif
 
 	if (ShortestEdge != NULL) {
 		delete ShortestEdge ;

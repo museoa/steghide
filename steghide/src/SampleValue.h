@@ -136,9 +136,7 @@ class SampleValue {
 	void setLabel (unsigned long l)
 		{ Label = l ; } ;
 
-#ifdef DEBUG
 	void print (unsigned short spc = 0) const ;
-#endif
 
 	protected:
 	// FIXME - time/memory: use SBit, Key ?

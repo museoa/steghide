@@ -166,7 +166,9 @@ void Embedder::embedExposedVertex (Vertex *v)
 		}
 	}
 
+#ifdef DEBUG
 	printDebug (1, "embedding vertex with label %lu by changing sample position %lu.", v->getLabel(), samplepos) ;
+#endif
 
 	BIT oldbit = TheCvrStgFile->getSampleBit (samplepos) ;
 	TheCvrStgFile->replaceSample (samplepos, newsample) ;

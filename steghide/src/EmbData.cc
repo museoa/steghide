@@ -69,13 +69,17 @@ void EmbData::addBits (BitString bits)
 	myassert (Mode == EXTRACT) ;
 	myassert (bits.getLength() == NumBitsNeeded) ;
 
+#ifdef DEBUG
 	printDebug (1, "EmbData::addBits called with\n") ;
 	printDebug (1, " bits:") ;
 	bits.printDebug (1, 2) ;
+#endif
 
 	switch (State) {
 		case READCRYPT: {
+#ifdef DEBUG
 			printDebug (1, "in the READCRYPT state") ;
+#endif
 
 			unsigned int algo = (unsigned int) bits.getValue (0, EncryptionAlgorithm::IRep_size) ;
 			if (EncryptionAlgorithm::isValidIntegerRep (algo)) {
@@ -95,13 +99,17 @@ void EmbData::addBits (BitString bits)
 		break ; }
 
 		case READLENOFNEMBBITS: {
+#ifdef DEBUG
 			printDebug (1, "in the READLENOFNEMBBITS state") ;
+#endif
 			NumBitsNeeded = bits.getValue (0, NBitsLenOfNEmbBits) ;
 			State = READNEMBBITS ;
 		break ; }
 
 		case READNEMBBITS: {
+#ifdef DEBUG
 			printDebug (1, "in the READNEMBBITS state") ;
+#endif
 			NEmbBits = bits.getValue (0, NumBitsNeeded) ;
 #ifdef USE_LIBMCRYPT
 			NumBitsNeeded = MCryptPP::getEncryptedSize (EncAlgo, EncMode, NEmbBits) ;
@@ -113,7 +121,9 @@ void EmbData::addBits (BitString bits)
 		break ; }
 
 		case READENCRYPTED: {
+#ifdef DEBUG
 			printDebug (1, "in the READENCRYPTED state") ;
+#endif
 #ifdef USE_LIBMCRYPT
 			BitString decrypted ;
 			if (EncAlgo.getIntegerRep() == EncryptionAlgorithm::NONE) {
