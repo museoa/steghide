@@ -2,7 +2,7 @@ SUBDIRS = data
 TESTS = unittests systemtests.pl
 AM_CPPFLAGS = -I../src
 check_PROGRAMS = unittests
-EXTRA_DIST = systemtests.pl STSupport.pm st_fileformats.pl
+EXTRA_DIST = systemtests.pl STSupport.pm st_fileformats.pl st_embparameters.pl
 noinst_HEADERS = \
 AuFileTest.h AUtilsTest.h AudioSampleValueTest.h BFSAPHeuristicTest.h DFSAPHeuristicTest.h \
 BitStringTest.h BmpOS2FileTest.h BmpPaletteSampleValueTest.h \

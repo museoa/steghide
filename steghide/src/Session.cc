@@ -1,6 +1,6 @@
 /*
  * steghide 0.5.1 - a steganography program
- * Copyright (C) 2002 Stefan Hetzl <shetzl@chello.at>
+ * Copyright (C) 1999-2003 Stefan Hetzl <shetzl@chello.at>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -290,7 +290,7 @@ void Session::printHelp ()
 void Session::printLicense ()
 {
  	printf (
-		"Copyright (C) 2002 Stefan Hetzl <shetzl@chello.at>\n\n"
+		"Copyright (C) 1999-2003 Stefan Hetzl <shetzl@chello.at>\n\n"
 
  		"This program is free software; you can redistribute it and/or\n"
  		"modify it under the terms of the GNU General Public License\n"
