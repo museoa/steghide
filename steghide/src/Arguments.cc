@@ -207,7 +207,7 @@ bool Arguments::parse_EmbFn (ArgIt& curarg)
 		}
 
 		if (EmbFn.is_set()) {
-			throw ArgError (_("the embed file name argument can be used only once.")) ;
+			throw ArgError (_("the \"%s\" argument can be used only once."), (curarg - 1)->c_str()) ;
 		}
 
 		if (++curarg == TheArguments.end()) {
@@ -238,11 +238,11 @@ bool Arguments::parse_ExtFn (ArgIt& curarg)
 		}
 
 		if (ExtFn.is_set()) {
-			throw ArgError (_("the extract file name argument can be used only once.")) ;
+			throw ArgError (_("the \"%s\" argument can be used only once."), (curarg - 1)->c_str()) ;
 		}
 
 		if (++curarg == TheArguments.end()) {
-			throw ArgError (_("the \"%s\" argument must be followed by the plain file name."), (curarg - 1)->c_str()) ;
+			throw ArgError (_("the \"%s\" argument must be followed by the extract file name."), (curarg - 1)->c_str()) ;
 		}
 
 		if (*curarg == "-") {
@@ -300,7 +300,7 @@ bool Arguments::parse_StgFn (ArgIt& curarg)
 		}
 
 		if (StgFn.is_set()) {
-			throw ArgError (_("the stego file name argument can be used only once.")) ;
+			throw ArgError (_("the \"%s\" argument can be used only once."), (curarg - 1)->c_str()) ;
 		}
 
 		if (++curarg == TheArguments.end()) {
@@ -446,12 +446,12 @@ bool Arguments::parse_Encryption (ArgIt& curarg)
 		}
 
 		if (++curarg == TheArguments.end()) {
-			throw ArgError (_("the \"%s\" argument must be followed by encryption information."), (curarg - 1)->c_str()) ;
+			throw ArgError (_("the \"%s\" argument must be followed by encryption parameters."), (curarg - 1)->c_str()) ;
 		}
 
 		std::string s1, s2 ;
 		if ((*curarg)[0] == '-') {
-			throw ArgError (_("the \"%s\" argument must be followed by encryption information."), (curarg - 1)->c_str()) ;
+			throw ArgError (_("the \"%s\" argument must be followed by encryption parameters."), (curarg - 1)->c_str()) ;
 		}
 		else {
 			s1 = *curarg ;

@@ -42,7 +42,7 @@ You should have the following libraries installed to use steghide.
   compile steghide without libmcrypt you will not be able to use steghide to
   encrypt data before embedding nor to extract encrypted data (even if you know
   the correct passphrase).
-  Available at: http://mcrypt.hellug.gr/
+  Available at: http://mcrypt.sourceforge.net/
 
 * libjpeg
   A library implementing jpeg image compression. Without this library you will

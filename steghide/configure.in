@@ -189,7 +189,7 @@ then
 	echo "**********";
 	echo "libmcrypt could not be found on your system. Steghide will be compiled without";
 	echo "support for encryption. You will not be able to extract encrypted data!";
-	echo "libmcrypt can be downloaded from http://mcrypt.hellug.gr/";
+	echo "libmcrypt can be downloaded from http://mcrypt.sourceforge.net/";
 	echo "**********";
 else
 	AC_DEFINE(USE_LIBMCRYPT,1,[use the libmcrypt library (header and lib are present)])

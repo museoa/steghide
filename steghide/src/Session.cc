@@ -224,7 +224,7 @@ void Session::printEncInfo ()
 #else
 	printf (_("steghide has been compiled without support for encryption.\n"
 		"If you want to encrypt your data before embedding it, use an external encryption\n"
-		"program or install libmcrypt (http://mcrypt.hellug.gr/) and recompile steghide.\n")) ;
+		"program or install libmcrypt (http://mcrypt.sourceforge.net/) and recompile steghide.\n")) ;
 #endif
 }
 
@@ -260,26 +260,20 @@ void Session::printHelp ()
 		"   -e <a>[<m>]|<m>[<a>]  specify an encryption algorithm and/or mode\n"
 		"   -e none               do not encrypt data before embedding\n"
 		" -z, --compress          compress data before embedding (default)\n"
-		"  -z <l>                 using level <l> (1 best speed...9 best compression)\n"
+		"   -z <l>                 using level <l> (1 best speed...9 best compression)\n"
 		" -Z, --dontcompress      do not compress data before embedding\n"
-		" -a, --algorithm         choose matching algorithm\n"
-		"   -a <n>                where <n> is in 0 fastest...3 most secure\n"
-		" -g, --goal              specify a goal for the matching algorithms\n"
-		"   -g <p>                stop search when <p> percent are reached\n"
-		" -r, --radius            specify the neighbourhood-radius\n"
-		"   -r <r>                use the real number <r> as radius\n"
 		" -K, --nochecksum        do not embed crc32 checksum of embedded data\n"
 		" -N, --dontembedname     do not embed the name of the original file\n"
 		" -f, --force             overwrite existing files\n"
 		" -q, --quiet             suppress information messages\n"
 		" -v, --verbose           display detailed information\n"
 
-		"\nextraction options:\n"
+		"\nextracting options:\n"
 		" -sf, --stegofile        select stego file\n"
 		"   -sf <filename>        extract data from <filename>\n"
 		" -p, --passphrase        specify passphrase\n"
 		"   -p <passphrase>       use <passphrase> to extract data\n"
-		" -xf, --extractfile      select file for extracted data\n"
+		" -xf, --extractfile      select file name for extracted data\n"
 		"   -xf <filename>        write the extracted data to <filename>\n"
 		" -f, --force             overwrite existing files\n"
 		" -q, --quiet             suppress information messages\n"

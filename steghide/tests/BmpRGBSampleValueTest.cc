@@ -81,7 +81,7 @@ void BmpRGBSampleValueTest::testIsNeighbour ()
 {
 	Globs = gl_win ;
 	addTestResult (genericTestIsNeighbour (sv_0_0_0, sv_0_3_4, true)) ;
-	addTestResult (genericTestIsNeighbour (sv_0_3_4, sv_12_13_14, true)) ;
+	addTestResult (genericTestIsNeighbour (sv_0_3_4, sv_12_13_14, false)) ;
 	addTestResult (genericTestIsNeighbour (sv_1_1_1, sv_0_3_4, true)) ;
 	addTestResult (genericTestIsNeighbour (sv_10_10_10, sv_0_3_4, true)) ;
 	addTestResult (genericTestIsNeighbour (sv_128_128_128, sv_255_255_255, false)) ;

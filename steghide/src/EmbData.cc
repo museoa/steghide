@@ -118,7 +118,10 @@ void EmbData::addBits (BitString addbits)
 
 #ifndef USE_LIBMCRYPT
 			if (EncAlgo.getIntegerRep() != EncryptionAlgorithm::NONE) {
-				throw SteghideError (_("the embedded data is encrypted but steghide has been compiled without encryption support.")) ;
+				throw SteghideError (_(
+							"The embedded data is encrypted but steghide has been compiled without encryption\n"
+							"support. To be able to read the embedded data, you have to install libmcrypt\n"
+							"(http://mcrypt.sourceforge.net/) and recompile steghide.")) ;
 			}
 #endif
 		break ; }
