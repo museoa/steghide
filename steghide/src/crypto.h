@@ -21,7 +21,7 @@
 #ifndef SH_CRYPTO_H
 #define SH_CRYPTO_H
 
-#include "io.h"
+#include "plnfile.h"
 
 #define PASSPHRASE_MAXLEN	512
 

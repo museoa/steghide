@@ -21,6 +21,8 @@
 #ifndef SH_HASH_H
 #define SH_HASH_H
 
+#include "plnfile.h"
+
 #define SIZE_BLOWFISHKEY	16
 
 unsigned long getseed (char *passphrase) ;

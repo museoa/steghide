@@ -18,6 +18,20 @@
  *
  */
 
+#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#include <libintl.h>
+#define _(S) gettext (S)
+
+#include "bufmanag.h"
+#include "hash.h"
+#include "main.h"
+#include "msg.h"
+#include "plnfile.h"
+#include "support.h"
+
 /* reads a plain data file into a PLNFILE structure */
 PLNFILE *pln_readfile (char *filename)
 {
@@ -235,7 +249,7 @@ PLNFILE *pln_createfile (void)
 
 	plnfile->filename = NULL ;	/* will be filled later by deassemble_plndata() */
 	plnfile->stream = NULL ;	/* will be filled later be deassemble_plndata() */
-	plnfile->plndata = NULL ;	/* will be filled later by extractdata() */
+	plnfile->plndata = NULL ;	/* will be filled later with retval from extractdata() */
 
 	return plnfile ;
 }

@@ -22,6 +22,7 @@
 #define SH_STEGANO_H
 
 #include "bufmanag.h"
+#include "cvrstgfile.h"
 #include "crypto.h"
 
 /* stego header structure definition */
@@ -120,10 +121,10 @@ typedef struct struct_STEGOHEADER {
 extern STEGOHEADER sthdr ;
 
 /* function prototypes */
-void embeddata (BUFFER *cvrdata, unsigned long firstcvrpos, BUFFER *plndata) ;
-BUFFER *extractdata (BUFFER *stgdata, unsigned long firststgpos) ;
-void embedsthdr (BUFFER *cvrdata, int dmtd, DMTDINFO dmtdinfo, int enc, char *passphrase, unsigned long *firstplnpos) ;
-void extractsthdr (BUFFER *stgdata, int dmtd, DMTDINFO dmtdinfo, int enc, char *passphrase, unsigned long *firstplnpos) ;
+void embeddata (CVRSTGFILE *cvrstgfile, unsigned long firstcvrpos, PLNFILE *plnfile) ;
+BUFFER *extractdata (CVRSTGFILE *cvrstgfile, unsigned long firststgpos) ;
+void embedsthdr (CVRSTGFILE *cvrstgfile, int dmtd, DMTDINFO dmtdinfo, int enc, char *passphrase, unsigned long *firstplnpos) ;
+void extractsthdr (CVRSTGFILE *cvrstgfile, int dmtd, DMTDINFO dmtdinfo, int enc, char *passphrase, unsigned long *firstplnpos) ;
 #ifdef DEBUG
 void dmtd_reset (unsigned int dmtd, DMTDINFO dmtdinfo, unsigned long resetpos) ;
 unsigned long dmtd_nextpos (void) ;

@@ -27,21 +27,23 @@
 #define _(S) gettext (S)
 
 #include "main.h"
-#include "io.h"
+#include "cvrstgfile.h"
+#include "ff_wav.h"
 #include "bufmanag.h"
 #include "support.h"
 #include "msg.h"
 
-static void wav_readheaders (CVRFILE *file) ;
+static void wav_calcpos (CVRSTGFILE *file, unsigned long n, unsigned long *bytepos, int *bitpos) ;
+static void wav_readheaders (CVRSTGFILE *file) ;
 static void wav_readdata (CVRSTGFILE *file) ;
-static void wav_writeheaders (CVRFILE *file) ;
+static void wav_writeheaders (CVRSTGFILE *file) ;
 static void wav_writedata (CVRSTGFILE *file) ;
 static void wav_getchhdr (FILE *file, CHUNKHEADER *chhdr) ;
 static void wav_putchhdr (FILE *file, CHUNKHEADER *chhdr) ;
 
-void wav_readfile (CVRSTFILE *file)
+void wav_readfile (CVRSTGFILE *file)
 {
-	file->contents = s_malloc (sizeof WAV_CONTENTS) ;
+	file->contents = s_malloc (sizeof (WAV_CONTENTS)) ;
 
 	wav_readheaders (file) ;
 	wav_readdata (file) ;
@@ -59,51 +61,102 @@ void wav_writefile (CVRSTGFILE *file)
 
 unsigned long wav_capacity (CVRSTGFILE *file)
 {
+	unsigned int bytespersample = 0 ;
+	WAV_CONTENTS *wav_contents = ((WAV_CONTENTS *) file->contents) ;
+	unsigned long buflen = wav_contents->data->length ;
+
+	if (wav_contents->fmtch.BitsPerSample % 8 == 0) {
+		bytespersample = wav_contents->fmtch.BitsPerSample / 8 ;
+	}
+	else {
+		bytespersample = (wav_contents->fmtch.BitsPerSample / 8) + 1 ;
+	}
+
+	assert (buflen % bytespersample == 0) ;
+
+	return buflen / bytespersample ;
 }
 
 void wav_embedbit (CVRSTGFILE *file, unsigned long pos, int value)
 {
+	unsigned long bytepos = 0 ;
+	int bitpos = 0 ;
+	WAV_CONTENTS *wav_contents = ((WAV_CONTENTS *) file->contents) ;
+
+	assert (value == 0 || value == 1) ;
+
+	wav_calcpos (file, pos, &bytepos, &bitpos) ;
+	bufsetbit (wav_contents->data, bytepos, bitpos, value) ;
+
+	return ;
 }
 
 int wav_extractbit (CVRSTGFILE *file, unsigned long pos)
 {
+	unsigned long bytepos = 0 ;
+	int bitpos = 0 ;
+	WAV_CONTENTS *wav_contents = ((WAV_CONTENTS *) file->contents) ;
+
+	wav_calcpos (file, pos, &bytepos, &bitpos) ;
+	return bufgetbit (wav_contents->data, bytepos, bitpos) ;
 }
 
 void wav_cleanup (CVRSTGFILE *file)
 {
+	WAV_CONTENTS *wav_contents = ((WAV_CONTENTS *) file->contents) ;
+
+	free (wav_contents->unsupchunks1.data) ;
+	buffree (wav_contents->data) ;
+	free (wav_contents->unsupchunks2.data) ;
+	free (file->contents) ;
+}
+
+/* calculate position in buffer for n-th embedded bit */
+static void wav_calcpos (CVRSTGFILE *file, unsigned long n, unsigned long *bytepos, int *bitpos)
+{
+	unsigned int bytespersample = 0 ;
+	WAV_CONTENTS *wav_contents = ((WAV_CONTENTS *) file->contents) ;
+
+	if (wav_contents->fmtch.BitsPerSample % 8 == 0) {
+		bytespersample = wav_contents->fmtch.BitsPerSample / 8 ;
+	}
+	else {
+		bytespersample = (wav_contents->fmtch.BitsPerSample / 8) + 1 ;
+	}
+
+	*bytepos = n * bytespersample ;
+	*bitpos = wav_contents->fmtch.BitsPerSample % 8 ;
+
+	return ;
 }
 
 /* reads a wav file from disk into a CVRFILE structure */
 static void wav_readdata (CVRSTGFILE *file)
 {
-	int noncvrbytes, i ;
-	unsigned long cvrpos = 0, noncvrpos = 0 ;
+	int c = EOF ;
+	unsigned long pos = 0 ;
+	WAV_CONTENTS *wav_contents = ((WAV_CONTENTS *) file->contents) ;
 
-	noncvrbytes = (file->headers->wav.fmtch.BitsPerSample / 8) - 1 ;
+	wav_contents->data = bufcreate (0) ; /* FIXME - set length smarter */
 
-	while ((cvrpos + noncvrpos) < file->headers->wav.datachhdr.len) {
-		bufsetbyte (file->cvrdata, cvrpos, getc (file->stream)) ;
-		cvrpos++ ;
-
-		for (i = 0; i < noncvrbytes; i++) {
-			bufsetbyte (file->noncvrdata, noncvrpos, getc (file->stream)) ;
-			noncvrpos++ ;
-		}
+	while ((c = getc (file->stream)) != EOF) {
+		bufsetbyte (wav_contents->data, pos++, c) ;
 	}
 
-	file->unsupdata2 = NULL ;
-	file->unsupdata2len = 0 ;
+	wav_contents->unsupchunks2.data = NULL ;
+	wav_contents->unsupchunks2.len = 0 ;
 	if (getc (file->stream) != EOF) {
 		unsigned char *ptrunsupdata2 ;
 		int c = EOF ;
 
+		/* FIXME - geht das bei stdin ?? */
 		fseek (file->stream, -1, SEEK_CUR) ;
 
 		while ((c = getc (file->stream)) != EOF) {
-			file->unsupdata2len++ ;
-			file->unsupdata2 = s_realloc (file->unsupdata2, file->unsupdata2len) ;
-			ptrunsupdata2 = file->unsupdata2 ;
-			ptrunsupdata2[file->unsupdata2len - 1] = c ;
+			wav_contents->unsupchunks2.len++ ;
+			wav_contents->unsupchunks2.data = s_realloc (wav_contents->unsupchunks2.data, wav_contents->unsupchunks2.len) ;
+			ptrunsupdata2 = wav_contents->unsupchunks2.data ;
+			ptrunsupdata2[wav_contents->unsupchunks2.len - 1] = c ;
 		}			
 	}
 
@@ -122,24 +175,17 @@ static void wav_readdata (CVRSTGFILE *file)
 /* writes a wav file from a CVRFILE structure to disk */
 static void wav_writedata (CVRSTGFILE *file)
 {
-	int noncvrbytes = 0, i = 0 ;
-	unsigned long cvrpos = 0, noncvrpos = 0 ;
+	int i = 0, c = EOF ;
+	unsigned long pos = 0 ;
+	WAV_CONTENTS *wav_contents = ((WAV_CONTENTS *) file->contents) ;
 
-	noncvrbytes = (file->headers->wav.fmtch.BitsPerSample / 8) - 1 ;
-
-	while ((cvrpos + noncvrpos) < file->headers->wav.datachhdr.len) {
-		putc (bufgetbyte (file->cvrdata, cvrpos), file->stream) ;
-		cvrpos++ ;
-
-		for (i = 0; i < noncvrbytes; i++) {
-			putc (bufgetbyte (file->noncvrdata, noncvrpos), file->stream) ;
-			noncvrpos++ ;
-		}
+	while ((c = bufgetbyte (wav_contents->data, pos++)) != ENDOFBUF) {
+		putc (c, file->stream) ;
 	}
 
-	if (file->unsupdata2len > 0) {
-		unsigned char *ptrunsupdata2 = file->unsupdata2 ;
-		for (i = 0; i < file->unsupdata2len; i++) {
+	if (wav_contents->unsupchunks2.len > 0) {
+		unsigned char *ptrunsupdata2 = wav_contents->unsupchunks2.data ;
+		for (i = 0; i < wav_contents->unsupchunks2.len; i++) {
 			putc ((int) ptrunsupdata2[i], file->stream) ;
 		}
 	}
@@ -157,17 +203,21 @@ static void wav_writedata (CVRSTGFILE *file)
 }
 
 /* reads the headers of a wav file from disk */
-static void wav_readheaders (CVRFILE *file)
+static void wav_readheaders (CVRSTGFILE *file)
 {
 	CHUNKHEADER tmpchhdr = { { '\0', '\0', '\0', '\0' }, 0 } ;
 	int i = 0;
+	WAV_CONTENTS *wav_contents = ((WAV_CONTENTS *) file->contents) ;
 
-	strcpy (file->headers->wav.riffchhdr.id, "RIFF") ;
-	file->headers->wav.riffchhdr.len = rifflen ;
-	strcpy (file->headers->wav.id_wave, "WAVE") ;
+	wav_getchhdr (file->stream, &wav_contents->riffchhdr) ;
+	wav_contents->id_wave[0] = getc (file->stream) ;
+	wav_contents->id_wave[1] = getc (file->stream) ;
+	wav_contents->id_wave[2] = getc (file->stream) ;
+	wav_contents->id_wave[3] = getc (file->stream) ;
 
-	wav_getchhdr (file->stream, &file->headers->wav.fmtchhdr) ;
-	if ((file->headers->wav.fmtch.FormatTag = read16_le (file->stream)) != WAV_FORMAT_PCM) {
+	/* FIXME - ev. hier noch nach "fmt " checken */
+	wav_getchhdr (file->stream, &wav_contents->fmtchhdr) ;
+	if ((wav_contents->fmtch.FormatTag = read16_le (file->stream)) != WAV_FORMAT_PCM) {
 		if (file->filename == NULL) {
 			exit_err (_("the wav file from standard input has a format that is not supported.")) ;
 		}
@@ -175,13 +225,13 @@ static void wav_readheaders (CVRFILE *file)
 			exit_err (_("the wav file \"%s\" has a format that is not supported."), file->filename) ;
 		}
 	}
-	file->headers->wav.fmtch.Channels = read16_le (file->stream) ;
-	file->headers->wav.fmtch.SamplesPerSec = read32_le (file->stream) ;
-	file->headers->wav.fmtch.AvgBytesPerSec = read32_le (file->stream) ;
-	file->headers->wav.fmtch.BlockAlign = read16_le (file->stream) ;
+	wav_contents->fmtch.Channels = read16_le (file->stream) ;
+	wav_contents->fmtch.SamplesPerSec = read32_le (file->stream) ;
+	wav_contents->fmtch.AvgBytesPerSec = read32_le (file->stream) ;
+	wav_contents->fmtch.BlockAlign = read16_le (file->stream) ;
 	/* if a number other than a multiple of 8 is used, we cannot hide data,
-	   because the least significant bits are always set to zero */
-	if ((file->headers->wav.fmtch.BitsPerSample = read16_le (file->stream)) % 8 != 0) {
+	   because the least significant bits are always set to zero - FIXME */
+	if ((wav_contents->fmtch.BitsPerSample = read16_le (file->stream)) % 8 != 0) {
 		if (file->filename == NULL) {
 			exit_err (_("the bits/sample rate of the wav file from standard input is not a multiple of eight.")) ;
 		}
@@ -190,30 +240,30 @@ static void wav_readheaders (CVRFILE *file)
 		}
 	}
 
-	file->unsupdata1 = NULL ;
-	file->unsupdata1len = 0 ;
+	wav_contents->unsupchunks1.data = NULL ;
+	wav_contents->unsupchunks1.len = 0 ;
 	wav_getchhdr (file->stream, &tmpchhdr) ;
 	while (strncmp (tmpchhdr.id, "data", 4) != 0) {
 		unsigned char *ptrunsupdata1 ;
 
-		file->unsupdata1 = s_realloc (file->unsupdata1, (file->unsupdata1len + 8 + tmpchhdr.len)) ;
+		wav_contents->unsupchunks1.data = s_realloc (wav_contents->unsupchunks1.data, (wav_contents->unsupchunks1.len + WAV_SIZE_CHHDR + tmpchhdr.len)) ;
 
-		ptrunsupdata1 = file->unsupdata1 ;
+		ptrunsupdata1 = wav_contents->unsupchunks1.data ;
 		for (i = 0; i < 4; i++) {
-			ptrunsupdata1[file->unsupdata1len++] = (unsigned char) tmpchhdr.id[i] ;
+			ptrunsupdata1[wav_contents->unsupchunks1.len++] = (unsigned char) tmpchhdr.id[i] ;
 		}
-		cp32ul2uc_le (&ptrunsupdata1[file->unsupdata1len], tmpchhdr.len) ;
-		file->unsupdata1len += 4 ;
+		cp32ul2uc_le (&ptrunsupdata1[wav_contents->unsupchunks1.len], tmpchhdr.len) ;
+		wav_contents->unsupchunks1.len += 4 ;
 
 		for (i = 0; i < tmpchhdr.len; i++) {
-			ptrunsupdata1[file->unsupdata1len++] = (unsigned char) getc (file->stream) ;
+			ptrunsupdata1[wav_contents->unsupchunks1.len++] = (unsigned char) getc (file->stream) ;
 		}
 
 		wav_getchhdr (file->stream, &tmpchhdr) ;
 	}
 
-	strncpy (file->headers->wav.datachhdr.id, tmpchhdr.id, 4) ;
-	file->headers->wav.datachhdr.len = tmpchhdr.len ;
+	strncpy (wav_contents->datachhdr.id, tmpchhdr.id, 4) ;
+	wav_contents->datachhdr.len = tmpchhdr.len ;
 
 	if (ferror (file->stream)) {
 		if (file->filename == NULL) {
@@ -228,30 +278,31 @@ static void wav_readheaders (CVRFILE *file)
 }
 
 /* writes the headers of a wav file to disk */
-static void wav_writeheaders (CVRFILE *file)
+static void wav_writeheaders (CVRSTGFILE *file)
 {
 	int i = 0 ;
+	WAV_CONTENTS *wav_contents = ((WAV_CONTENTS *) file->contents) ;
 
-	wav_putchhdr (file->stream, &file->headers->wav.riffchhdr) ;
+	wav_putchhdr (file->stream, &wav_contents->riffchhdr) ;
 	for (i = 0 ; i < 4 ; i++) {
-		putc ((int) file->headers->wav.id_wave[i], file->stream) ;
+		putc ((int) wav_contents->id_wave[i], file->stream) ;
 	}
 
-	wav_putchhdr (file->stream, &file->headers->wav.fmtchhdr) ;
-	write16_le (file->stream, file->headers->wav.fmtch.FormatTag) ;
-	write16_le (file->stream, file->headers->wav.fmtch.Channels) ;
-	write32_le (file->stream, file->headers->wav.fmtch.SamplesPerSec) ;
-	write32_le (file->stream, file->headers->wav.fmtch.AvgBytesPerSec) ;
-	write16_le (file->stream, file->headers->wav.fmtch.BlockAlign) ;
-	write16_le (file->stream, file->headers->wav.fmtch.BitsPerSample) ;
+	wav_putchhdr (file->stream, &wav_contents->fmtchhdr) ;
+	write16_le (file->stream, wav_contents->fmtch.FormatTag) ;
+	write16_le (file->stream, wav_contents->fmtch.Channels) ;
+	write32_le (file->stream, wav_contents->fmtch.SamplesPerSec) ;
+	write32_le (file->stream, wav_contents->fmtch.AvgBytesPerSec) ;
+	write16_le (file->stream, wav_contents->fmtch.BlockAlign) ;
+	write16_le (file->stream, wav_contents->fmtch.BitsPerSample) ;
 
-	if (file->unsupdata1len > 0) {
-		unsigned char *ptrunsupdata1 = file->unsupdata1 ;
-		for (i = 0; i < file->unsupdata1len; i++)
+	if (wav_contents->unsupchunks1.len > 0) {
+		unsigned char *ptrunsupdata1 = wav_contents->unsupchunks1.data ;
+		for (i = 0; i < wav_contents->unsupchunks1.len; i++)
 			putc ((int) ptrunsupdata1[i], file->stream) ;
 	}
 
-	wav_putchhdr (file->stream, &file->headers->wav.datachhdr) ;
+	wav_putchhdr (file->stream, &wav_contents->datachhdr) ;
 
 	if (ferror (file->stream)) {
 		if (file->filename == NULL) {

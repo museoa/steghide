@@ -56,6 +56,7 @@ typedef struct struct_WAV_CONTENTS {
 
 #define WAV_FORMAT_PCM		1
 #define WAV_SIZE_FMTCHUNK	16
+#define WAV_SIZE_CHHDR		8
 
 /* function prototypes */
 void wav_readfile (CVRSTGFILE *file) ;

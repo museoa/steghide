@@ -26,25 +26,29 @@
 #define _(S) gettext (S)
 
 #include "main.h"
-#include "io.h"
+#include "cvrstgfile.h"
+#include "ff_bmp.h"
 #include "bufmanag.h"
 #include "support.h"
 #include "msg.h"
 
 static void bmp_readheaders (CVRSTGFILE *file) ;
-static void bmpwin_readheaders (CVRSTGFILE *file)
-static void bmpos2_readheaders (CVRSTGFILE *file)
+static void bmpwin_readheaders (CVRSTGFILE *file) ;
+static void bmpos2_readheaders (CVRSTGFILE *file) ;
 static void bmp_writeheaders (CVRSTGFILE *file) ;
 static void bmpwin_writeheaders (CVRSTGFILE *file) ;
 static void bmpos2_writeheaders (CVRSTGFILE *file) ;
 static void bmp_readdata (CVRSTGFILE *file) ;
 static void bmp_writedata (CVRSTGFILE *file) ;
-static void bmp_readerror (CVRSTGFILE *file)
+static void bmp_readerror (CVRSTGFILE *file) ;
+static void bmp_writeerror (CVRSTGFILE *file) ;
 static void bmp_calcRC (CVRSTGFILE *file, unsigned long pos, unsigned long *row, unsigned long *column) ;
+static long bmp_calclinelength (CVRSTGFILE *file) ;
+static long bmp_getheight (CVRSTGFILE *file) ;
 
 void bmp_readfile (CVRSTGFILE *file)
 {
-	file->contents = s_malloc (sizeof BMP_CONTENTS) ;
+	file->contents = s_malloc (sizeof (BMP_CONTENTS)) ;
 
 	bmp_readheaders (file) ;
 	bmp_readdata (file) ;
@@ -63,26 +67,27 @@ void bmp_writefile (CVRSTGFILE *file)
 unsigned long bmp_capacity (CVRSTGFILE *file)
 {
 	unsigned long linelength = 0, retval = 0 ;
+	BMP_CONTENTS *bmp_contents = ((BMP_CONTENTS *) file->contents) ;
 
-	switch (file->contents->bmi.win.bmih.biSize) {
+	switch (bmp_contents->bmi.win.bmih.biSize) {
 		case BMP_SIZE_BMINFOHEADER:
-		if (file->contents->bmi.win.bmih.biBitCount * file->contents->bmi.win.bmih.biWidth % 8 == 0) {
-			linelength = file->contents->bmi.win.bmih.biBitCount * file->contents->bmi.win.bmih.biWidth / 8 ;
+		if (bmp_contents->bmi.win.bmih.biBitCount * bmp_contents->bmi.win.bmih.biWidth % 8 == 0) {
+			linelength = bmp_contents->bmi.win.bmih.biBitCount * bmp_contents->bmi.win.bmih.biWidth / 8 ;
 		}
 		else {
-			linelength = (file->contents->bmi.win.bmih.biBitCount * file->contents->bmi.win.bmih.biWidth / 8) + 1;
+			linelength = (bmp_contents->bmi.win.bmih.biBitCount * bmp_contents->bmi.win.bmih.biWidth / 8) + 1;
 		}
-		retval = file->contents->bmi.win.bmih.biHeight * linelength ;
+		retval = bmp_contents->bmi.win.bmih.biHeight * linelength ;
 		break ;
 
 		case BMP_SIZE_BMCOREHEADER:
-		if (file->contents->bmi.os2.bmch.bcBitCount * file->contents->bmi.os2.bmch.bcWidth % 8 == 0) {
-			linelength = file->contents->bmi.os2.bmch.bcBitCount * file->contents->bmi.os2.bmch.bcWidth / 8 ;
+		if (bmp_contents->bmi.os2.bmch.bcBitCount * bmp_contents->bmi.os2.bmch.bcWidth % 8 == 0) {
+			linelength = bmp_contents->bmi.os2.bmch.bcBitCount * bmp_contents->bmi.os2.bmch.bcWidth / 8 ;
 		}
 		else {
-			linelength = (file->contents->bmi.os2.bmch.bcBitCount * file->contents->bmi.os2.bmch.bcWidth / 8) + 1;
+			linelength = (bmp_contents->bmi.os2.bmch.bcBitCount * bmp_contents->bmi.os2.bmch.bcWidth / 8) + 1;
 		}
-		retval = file->contents->bmi.os2.bmch.bcHeight * linelength ;
+		retval = bmp_contents->bmi.os2.bmch.bcHeight * linelength ;
 		break ;
 
 		default:
@@ -96,12 +101,12 @@ unsigned long bmp_capacity (CVRSTGFILE *file)
 void bmp_embedbit (CVRSTGFILE *file, unsigned long pos, int value)
 {
 	unsigned long row = 0, column = 0 ;
-	unsigned char **ptr = file->contents->bitmap ;
+	BMP_CONTENTS *bmp_contents = ((BMP_CONTENTS *) file->contents) ;
 
 	assert (value == 0 || value == 1) ;
 
 	bmp_calcRC (file, pos, &row, &column) ;
-	ptr[row][column] = (ptr[row][column] & ~1) | value ;
+	bmp_contents->bitmap[row][column] = (bmp_contents->bitmap[row][column] & ~1) | value ;
 
 	return ;
 }
@@ -109,31 +114,36 @@ void bmp_embedbit (CVRSTGFILE *file, unsigned long pos, int value)
 int bmp_extractbit (CVRSTGFILE *file, unsigned long pos)
 {
 	unsigned long row = 0, column = 0 ;
-	unsigned char **ptr = file->contents->bitmap ;
+	BMP_CONTENTS *bmp_contents = ((BMP_CONTENTS *) file->contents) ;
 
 	bmp_calcRC (file, pos, &row, &column) ;
-	return (ptr[row][column] & 1) ;
+	return (bmp_contents->bitmap[row][column] & 1) ;
 }
 
 void bmp_cleanup (CVRSTGFILE *file)
 {
 	int i = 0 ;
+	BMP_CONTENTS *bmp_contents = ((BMP_CONTENTS *) file->contents) ;
 
-	switch (file->contents->bmi.win.bmih.biSize) {
+	switch (bmp_contents->bmi.win.bmih.biSize) {
 		case BMP_SIZE_BMINFOHEADER:
-		free (file->contents->bmi.win.colors) ;
-		for (i = 0 ; i < file->contents->bmi.win.bmih.biHeight ; i++) {
-			free (file->contents->bitmap[i]) ;
+		if (bmp_contents->bmi.win.ncolors > 0) {
+			free (bmp_contents->bmi.win.colors) ;
 		}
-		free (file->contents->bitmap) ;
+		for (i = 0 ; i < bmp_contents->bmi.win.bmih.biHeight ; i++) {
+			free (bmp_contents->bitmap[i]) ;
+		}
+		free (bmp_contents->bitmap) ;
 		break ;
 
 		case BMP_SIZE_BMCOREHEADER:
-		free (file->contents->bmi.os2.colors) ;
-		for (i = 0 ; i < file->contents->bmi.os2.bmch.bcHeight ; i++) {
-			free (file->contents->bitmap[i]) ;
+		if (bmp_contents->bmi.os2.ncolors > 0) {
+			free (bmp_contents->bmi.os2.colors) ;
 		}
-		free (file->contents->bitmap) ;
+		for (i = 0 ; i < bmp_contents->bmi.os2.bmch.bcHeight ; i++) {
+			free (bmp_contents->bitmap[i]) ;
+		}
+		free (bmp_contents->bitmap) ;
 		break ;
 
 		default:
@@ -141,32 +151,35 @@ void bmp_cleanup (CVRSTGFILE *file)
 		break ;
 	}
 
+	free (file->contents) ;
+
 	return ;
 }
 
 static void bmp_calcRC (CVRSTGFILE *file, unsigned long pos, unsigned long *row, unsigned long *column)
 {
 	unsigned long width = 0 /* in bytes */, height = 0 ;
+	BMP_CONTENTS *bmp_contents = ((BMP_CONTENTS *) file->contents) ;
 
-	switch (file->contents->bmi.win.bmih.biSize) {
+	switch (bmp_contents->bmi.win.bmih.biSize) {
 		case BMP_SIZE_BMINFOHEADER:
-		if (file->contents->bmi.win.bmih.biBitCount * file->contents->bmi.win.bmih.biWidth % 8 == 0) {
-			width = file->contents->bmi.win.bmih.biBitCount * file->contents->bmi.win.bmih.biWidth / 8 ;
+		if (bmp_contents->bmi.win.bmih.biBitCount * bmp_contents->bmi.win.bmih.biWidth % 8 == 0) {
+			width = bmp_contents->bmi.win.bmih.biBitCount * bmp_contents->bmi.win.bmih.biWidth / 8 ;
 		}
 		else {
-			width = (file->contents->bmi.win.bmih.biBitCount * file->contents->bmi.win.bmih.biWidth / 8) + 1;
+			width = (bmp_contents->bmi.win.bmih.biBitCount * bmp_contents->bmi.win.bmih.biWidth / 8) + 1;
 		}
-		height = file->contents->bmi.win.bmih.biHeight ;
+		height = bmp_contents->bmi.win.bmih.biHeight ;
 		break ;
 
 		case BMP_SIZE_BMCOREHEADER:
-		if (file->contents->bmi.os2.bmch.bcBitCount * file->contents->bmi.os2.bmch.bcWidth % 8 == 0) {
-			width = file->contents->bmi.os2.bmch.bcBitCount * file->contents->bmi.os2.bmch.bcWidth / 8 ;
+		if (bmp_contents->bmi.os2.bmch.bcBitCount * bmp_contents->bmi.os2.bmch.bcWidth % 8 == 0) {
+			width = bmp_contents->bmi.os2.bmch.bcBitCount * bmp_contents->bmi.os2.bmch.bcWidth / 8 ;
 		}
 		else {
-			width = (file->contents->bmi.os2.bmch.bcBitCount * file->contents->bmi.os2.bmch.bcWidth / 8) + 1;
+			width = (bmp_contents->bmi.os2.bmch.bcBitCount * bmp_contents->bmi.os2.bmch.bcWidth / 8) + 1;
 		}
-		height = file->contents->bmi.os2.bmch.bcHeight ;
+		height = bmp_contents->bmi.os2.bmch.bcHeight ;
 		break ;
 
 		default:
@@ -184,13 +197,13 @@ static void bmp_calcRC (CVRSTGFILE *file, unsigned long pos, unsigned long *row,
 static void bmp_readheaders (CVRSTGFILE *file)
 {
 	unsigned long tmpSize = 0 ;
+	BMP_CONTENTS *bmp_contents = ((BMP_CONTENTS *) file->contents) ;
 
-	file->contents->bmfh = s_malloc (sizeof BITMAPFILEHEADER) ;
-	file->contents->bmfh.bfType = read16_le (file->stream) ;	/* FIXME - test this ! */
-	file->contents->bmfh.bfSize = read32_le (file->stream) ;
-	file->contents->bmfh.bfReserved1 = read16_le (file->stream) ;
-	file->contents->bmfh.bfReserved2 = read16_le (file->stream) ;
-	file->contents->bmfh.bfOffBits = read32_le (file->stream) ;
+	bmp_contents->bmfh.bfType = read16_le (file->stream) ;
+	bmp_contents->bmfh.bfSize = read32_le (file->stream) ;
+	bmp_contents->bmfh.bfReserved1 = read16_le (file->stream) ;
+	bmp_contents->bmfh.bfReserved2 = read16_le (file->stream) ;
+	bmp_contents->bmfh.bfOffBits = read32_le (file->stream) ;
 	
 	tmpSize = read32_le (file->stream) ;
 	switch (tmpSize) {
@@ -226,20 +239,20 @@ static void bmp_readheaders (CVRSTGFILE *file)
 
 static void bmpwin_readheaders (CVRSTGFILE *file)
 {
-	file->contents->bmi.win.bmih = s_malloc (sizeof BITMAPINFOHEADER) ;
+	BMP_CONTENTS *bmp_contents = ((BMP_CONTENTS *) file->contents) ;
 
-	file->contents->bmi.win.bmih.Size = BMP_SIZE_BMINFOHEADER ;
-	file->contents->bmi.win.bmih.Width = read32_le (file->stream) ;
-	file->contents->bmi.win.bmih.Height = read32_le (file->stream) ;
-	file->contents->bmi.win.bmih.Planes = read16_le (file->stream) ;
-	assert (file->contents->bmi.win.bmih.Planes == 1) ;
-	file->contents->bmi.win.bmih.BitCount = read16_le (file->stream) ;
-	assert ((file->contents->bmi.win.bmih.BitCount == 1) ||
-			(file->contents->bmi.win.bmih.BitCount == 4) ||
-			(file->contents->bmi.win.bmih.BitCount == 8) || 
-			(file->contents->bmi.win.bmih.BitCount == 24)) ;
-	file->contents->bmi.win.bmih.Compression = read32_le (file->stream) ;
-	if (file->contents->bmi.win.bmih.Compression != BMP_BI_RGB) {
+	bmp_contents->bmi.win.bmih.biSize = BMP_SIZE_BMINFOHEADER ;
+	bmp_contents->bmi.win.bmih.biWidth = read32_le (file->stream) ;
+	bmp_contents->bmi.win.bmih.biHeight = read32_le (file->stream) ;
+	bmp_contents->bmi.win.bmih.biPlanes = read16_le (file->stream) ;
+	assert (bmp_contents->bmi.win.bmih.biPlanes == 1) ;
+	bmp_contents->bmi.win.bmih.biBitCount = read16_le (file->stream) ;
+	assert ((bmp_contents->bmi.win.bmih.biBitCount == 1) ||
+			(bmp_contents->bmi.win.bmih.biBitCount == 4) ||
+			(bmp_contents->bmi.win.bmih.biBitCount == 8) || 
+			(bmp_contents->bmi.win.bmih.biBitCount == 24)) ;
+	bmp_contents->bmi.win.bmih.biCompression = read32_le (file->stream) ;
+	if (bmp_contents->bmi.win.bmih.biCompression != BMP_BI_RGB) {
 		if (file->filename == NULL) {
 			exit_err (_("the bitmap data from standard input is compressed which is not supported.")) ;
 		}
@@ -247,50 +260,53 @@ static void bmpwin_readheaders (CVRSTGFILE *file)
 			exit_err (_("the bitmap data in \"%s\" is compressed which is not supported."), file->filename) ;
 		}
 	}
-	file->contents->bmi.win.bmih.SizeImage = read32_le (file->stream) ;
-	file->contents->bmi.win.bmih.XPelsPerMeter = read32_le (file->stream) ;
-	file->contents->bmi.win.bmih.YPelsPerMeter = read32_le (file->stream) ;
-	file->contents->bmi.win.bmih.ClrUsed = read32_le (file->stream) ;
-	file->contents->bmi.win.bmih.ClrImportant = read32_le (file->stream) ;
+	bmp_contents->bmi.win.bmih.biSizeImage = read32_le (file->stream) ;
+	bmp_contents->bmi.win.bmih.biXPelsPerMeter = read32_le (file->stream) ;
+	bmp_contents->bmi.win.bmih.biYPelsPerMeter = read32_le (file->stream) ;
+	bmp_contents->bmi.win.bmih.biClrUsed = read32_le (file->stream) ;
+	bmp_contents->bmi.win.bmih.biClrImportant = read32_le (file->stream) ;
 
-	if (file->contents->bmi.win.bmih.BitCount == 24) {
-		file->contents->bmi.win.ncolors = 0 ;
+	if (bmp_contents->bmi.win.bmih.biBitCount == 24) {
+		bmp_contents->bmi.win.colors = NULL ;
+		bmp_contents->bmi.win.ncolors = 0 ;
 	}
 	else {
 		/* a color table exists */
 		int i = 0 ;
 
-		if (file->contents->bmi.win.bmih.ClrUsed != 0) {
-			file->contents->bmi.win.ncolors = file->contents->bmi.win.bmih.ClrUsed ;
-		}
-		else {
-			switch (file->contents->bmi.win.bmih.BitCount) {
-				case 1:
+		switch (bmp_contents->bmi.win.bmih.biBitCount) {
+			case 1:
+			if (args.action.value == ARGS_ACTION_EMBED) {
 				pwarn (_("using a black/white bitmap as cover is very insecure!")) ;
-				file->contents->bmi.win.ncolors = 2 ;
-				break ;
-
-				case 4:
-				pwarn (_("using a 16-color bitmap as cover is very insecure!")) ;
-				file->contents->bmi.win.ncolors = 16 ;
-				break ;
-
-				case 8:
-				file->contents->bmi.win.ncolors = 256 ;
-				break ;
-
-				default:
-				assert (0) ;
-				break ;
 			}
+			bmp_contents->bmi.win.ncolors = 2 ;
+			break ;
+
+			case 4:
+			if (args.action.value == ARGS_ACTION_EMBED) {
+				pwarn (_("using a 16-color bitmap as cover is very insecure!")) ;
+			}
+			bmp_contents->bmi.win.ncolors = 16 ;
+			break ;
+
+			case 8:
+			bmp_contents->bmi.win.ncolors = 256 ;
+			break ;
+
+			default:
+			assert (0) ;
+			break ;
+		}
+		if (bmp_contents->bmi.win.bmih.biClrUsed != 0) {
+			bmp_contents->bmi.win.ncolors = bmp_contents->bmi.win.bmih.biClrUsed ;
 		}
 
-		file->contents->bmi.win.colors = s_malloc ((sizeof RGBQUAD) * file->contents->bmi.win.ncolors) ;
-		for (i = 0 ; i < file->contents->bmi.win.ncolors ; i++) {
-			file->contents->bmi.win.colors[i].Blue = (unsigned char) getc (file->stream) ;
-			file->contents->bmi.win.colors[i].Green = (unsigned char) getc (file->stream) ;
-			file->contents->bmi.win.colors[i].Red = (unsigned char) getc (file->stream) ;
-			if ((file->contents->bmi.win.colors[i].Reserved = (unsigned char) getc (file->stream)) != 0) {
+		bmp_contents->bmi.win.colors = s_malloc ((sizeof (RGBQUAD)) * bmp_contents->bmi.win.ncolors) ;
+		for (i = 0 ; i < bmp_contents->bmi.win.ncolors ; i++) {
+			bmp_contents->bmi.win.colors[i].rgbBlue = (unsigned char) getc (file->stream) ;
+			bmp_contents->bmi.win.colors[i].rgbGreen = (unsigned char) getc (file->stream) ;
+			bmp_contents->bmi.win.colors[i].rgbRed = (unsigned char) getc (file->stream) ;
+			if ((bmp_contents->bmi.win.colors[i].rgbReserved = (unsigned char) getc (file->stream)) != 0) {
 				pwarn (_("maybe corrupted windows bmp format (Reserved in RGBQUAD is non-zero)")) ;
 			}
 		}
@@ -301,39 +317,44 @@ static void bmpwin_readheaders (CVRSTGFILE *file)
 
 static void bmpos2_readheaders (CVRSTGFILE *file)
 {
-	file->contents->bmi.os2.bmch = s_malloc (sizeof BITMAPCOREHEADER) ;
+	BMP_CONTENTS *bmp_contents = ((BMP_CONTENTS *) file->contents) ;
 
-	file->contents->bmi.os2.bmch.Size = BMP_SIZE_BMCOREHEADER ;
-	file->contents->bmi.os2.bmch.Width = read16_le (file->stream) ;
-	file->contents->bmi.os2.bmch.Height = read16_le (file->stream) ;
-	file->contents->bmi.os2.bmch.Planes = read16_le (file->stream) ;
-	assert (file->contents->bmi.os2.bmch.Planes == 1) ;
-	file->contents->bmi.os2.bmch.BitCount = read16_le (file->stream) ;
-	assert ((file->contents->bmi.os2.bmch.BitCount == 1) ||
-			(file->contents->bmi.os2.bmch.BitCount == 4) ||
-			(file->contents->bmi.os2.bmch.BitCount == 8) || 
-			(file->contents->bmi.os2.bmch.BitCount == 24)) ;
+	bmp_contents->bmi.os2.bmch.bcSize = BMP_SIZE_BMCOREHEADER ;
+	bmp_contents->bmi.os2.bmch.bcWidth = read16_le (file->stream) ;
+	bmp_contents->bmi.os2.bmch.bcHeight = read16_le (file->stream) ;
+	bmp_contents->bmi.os2.bmch.bcPlanes = read16_le (file->stream) ;
+	assert (bmp_contents->bmi.os2.bmch.bcPlanes == 1) ;
+	bmp_contents->bmi.os2.bmch.bcBitCount = read16_le (file->stream) ;
+	assert ((bmp_contents->bmi.os2.bmch.bcBitCount == 1) ||
+			(bmp_contents->bmi.os2.bmch.bcBitCount == 4) ||
+			(bmp_contents->bmi.os2.bmch.bcBitCount == 8) || 
+			(bmp_contents->bmi.os2.bmch.bcBitCount == 24)) ;
 
-	if (file->contents->bmi.os2.bmch.BitCount == 24) {
-		file->contents->bmi.os2.ncolors = 0 ;
+	if (bmp_contents->bmi.os2.bmch.bcBitCount == 24) {
+		bmp_contents->bmi.os2.colors = NULL ;
+		bmp_contents->bmi.os2.ncolors = 0 ;
 	}
 	else {
 		/* a color table exists */
 		int i = 0 ;
 
-		switch (file->contents->bmi.os2.bmch.BitCount) {
+		switch (bmp_contents->bmi.os2.bmch.bcBitCount) {
 			case 1:
-			pwarn (_("using a black/white bitmap as cover is very insecure!")) ;
-			file->contents->bmi.os2.ncolors = 2 ;
+			if (args.action.value == ARGS_ACTION_EMBED) {
+				pwarn (_("using a black/white bitmap as cover is very insecure!")) ;
+			}
+			bmp_contents->bmi.os2.ncolors = 2 ;
 			break ;
 
 			case 4:
-			pwarn (_("using a 16-color bitmap as cover is very insecure!")) ;
-			file->contents->bmi.os2.ncolors = 16 ;
+			if (args.action.value == ARGS_ACTION_EMBED) {
+				pwarn (_("using a 16-color bitmap as cover is very insecure!")) ;
+			}
+			bmp_contents->bmi.os2.ncolors = 16 ;
 			break ;
 
 			case 8:
-			file->contents->bmi.os2.ncolors = 256 ;
+			bmp_contents->bmi.os2.ncolors = 256 ;
 			break ;
 
 			default:
@@ -341,11 +362,11 @@ static void bmpos2_readheaders (CVRSTGFILE *file)
 			break ;
 		}
 
-		file->contents->bmi.os2.colors = s_malloc ((sizeof RGBTRIPLE) * file->contents->bmi.os2.ncolors) ;
-		for (i = 0 ; i < file->contents->bmi.os2.ncolors ; i++) {
-			file->contents->bmi.os2.colors[i].Blue = (unsigned char) getc (file->stream) ;
-			file->contents->bmi.os2.colors[i].Green = (unsigned char) getc (file->stream) ;
-			file->contents->bmi.os2.colors[i].Red = (unsigned char) getc (file->stream) ;
+		bmp_contents->bmi.os2.colors = s_malloc ((sizeof (RGBTRIPLE)) * bmp_contents->bmi.os2.ncolors) ;
+		for (i = 0 ; i < bmp_contents->bmi.os2.ncolors ; i++) {
+			bmp_contents->bmi.os2.colors[i].rgbtBlue = (unsigned char) getc (file->stream) ;
+			bmp_contents->bmi.os2.colors[i].rgbtGreen = (unsigned char) getc (file->stream) ;
+			bmp_contents->bmi.os2.colors[i].rgbtRed = (unsigned char) getc (file->stream) ;
 		}
 	}
 
@@ -355,14 +376,16 @@ static void bmpos2_readheaders (CVRSTGFILE *file)
 /* writes the headers of a bmp file to disk */
 static void bmp_writeheaders (CVRSTGFILE *file)
 {
-	write16_le (file->stream, file->contents->bmfh.bfType) ;
-	write32_le (file->stream, file->contents->bmfh.bfSize) ;
-	write16_le (file->stream, file->contents->bmfh.bfReserved1) ;
-	write16_le (file->stream, file->contents->bmfh.bfReserved2) ;
-	write32_le (file->stream, file->contents->bmfh.bfOffBits) ;
+	BMP_CONTENTS *bmp_contents = ((BMP_CONTENTS *) file->contents) ;
+
+	write16_le (file->stream, bmp_contents->bmfh.bfType) ;
+	write32_le (file->stream, bmp_contents->bmfh.bfSize) ;
+	write16_le (file->stream, bmp_contents->bmfh.bfReserved1) ;
+	write16_le (file->stream, bmp_contents->bmfh.bfReserved2) ;
+	write32_le (file->stream, bmp_contents->bmfh.bfOffBits) ;
 
 	/* FIXME - funktioniert das mit union sicher ? */
-	switch (file->contents->bmi.win.bmih.biSize) {
+	switch (bmp_contents->bmi.win.bmih.biSize) {
 		case BMP_SIZE_BMINFOHEADER:
 		bmpwin_writeheaders (file) ;
 		break ;
@@ -374,15 +397,6 @@ static void bmp_writeheaders (CVRSTGFILE *file)
 		default:
 		assert (0) ;
 		break ;
-	}
-
-	if (file->unsupdata1len != 0) {
-		unsigned char *ptrunsupdata1 = file->unsupdata1 ;
-		int i = 0 ;
-
-		for (i = 0 ; i < file->unsupdata1len ; i++) {
-			putc ((int) ptrunsupdata1[i], file->stream) ;
-		}
 	}
 
 	if (ferror (file->stream)) {
@@ -399,27 +413,29 @@ static void bmp_writeheaders (CVRSTGFILE *file)
 
 static void bmpwin_writeheaders (CVRSTGFILE *file)
 {
-	write32_le (file->stream, file->contents->bmi.win.bmih.biSize) ;
-	write32_le (file->stream, file->contents->bmi.win.bmih.biWidth) ;
-	write32_le (file->stream, file->contents->bmi.win.bmih.biHeight) ;
-	write16_le (file->stream, file->contents->bmi.win.bmih.biPlanes) ;
-	write16_le (file->stream, file->contents->bmi.win.bmih.biBitCount) ;
-	write32_le (file->stream, file->contents->bmi.win.bmih.biCompression) ;
-	write32_le (file->stream, file->contents->bmi.win.bmih.biSizeImage) ;
-	write32_le (file->stream, file->contents->bmi.win.bmih.biXPelsPerMeter) ;
-	write32_le (file->stream, file->contents->bmi.win.bmih.biYPelsPerMeter) ;
-	write32_le (file->stream, file->contents->bmi.win.bmih.biClrUsed) ;
-	write32_le (file->stream, file->contents->bmi.win.bmih.biClrImportant) ;
+	BMP_CONTENTS *bmp_contents = ((BMP_CONTENTS *) file->contents) ;
 
-	if (file->contents->bmi.win.ncolors > 0) {
+	write32_le (file->stream, bmp_contents->bmi.win.bmih.biSize) ;
+	write32_le (file->stream, bmp_contents->bmi.win.bmih.biWidth) ;
+	write32_le (file->stream, bmp_contents->bmi.win.bmih.biHeight) ;
+	write16_le (file->stream, bmp_contents->bmi.win.bmih.biPlanes) ;
+	write16_le (file->stream, bmp_contents->bmi.win.bmih.biBitCount) ;
+	write32_le (file->stream, bmp_contents->bmi.win.bmih.biCompression) ;
+	write32_le (file->stream, bmp_contents->bmi.win.bmih.biSizeImage) ;
+	write32_le (file->stream, bmp_contents->bmi.win.bmih.biXPelsPerMeter) ;
+	write32_le (file->stream, bmp_contents->bmi.win.bmih.biYPelsPerMeter) ;
+	write32_le (file->stream, bmp_contents->bmi.win.bmih.biClrUsed) ;
+	write32_le (file->stream, bmp_contents->bmi.win.bmih.biClrImportant) ;
+
+	if (bmp_contents->bmi.win.ncolors > 0) {
 		/* a color table exists */
 		int i = 0 ;
 
-		for (i = 0 ; i < file->contents->bmi.win.ncolors ; i++) {
-			putc ((int) file->contents->bmi.win.colors[i].Blue, file->stream) ;
-			putc ((int) file->contents->bmi.win.colors[i].Green, file->stream) ;
-			putc ((int) file->contents->bmi.win.colors[i].Red, file->stream) ;
-			putc ((int) file->contents->bmi.win.colors[i].Reserved, file->stream) ;
+		for (i = 0 ; i < bmp_contents->bmi.win.ncolors ; i++) {
+			putc ((int) bmp_contents->bmi.win.colors[i].rgbBlue, file->stream) ;
+			putc ((int) bmp_contents->bmi.win.colors[i].rgbGreen, file->stream) ;
+			putc ((int) bmp_contents->bmi.win.colors[i].rgbRed, file->stream) ;
+			putc ((int) bmp_contents->bmi.win.colors[i].rgbReserved, file->stream) ;
 		}
 	}
 
@@ -428,40 +444,93 @@ static void bmpwin_writeheaders (CVRSTGFILE *file)
 
 static void bmpos2_writeheaders (CVRSTGFILE *file)
 {
-	write32_le (file->stream, file->contents->bmi.os2.bmch.bcSize) ;
-	write16_le (file->stream, file->contents->bmi.os2.bmch.bcWidth) ;
-	write16_le (file->stream, file->contents->bmi.os2.bmch.bcHeight) ;
-	write16_le (file->stream, file->contents->bmi.os2.bmch.bcPlanes) ;
-	write16_le (file->stream, file->contents->bmi.os2.bmch.bcBitCount) ;
+	BMP_CONTENTS *bmp_contents = ((BMP_CONTENTS *) file->contents) ;
 
-	if (file->contents->bmi.os2.ncolors > 0) {
+	write32_le (file->stream, bmp_contents->bmi.os2.bmch.bcSize) ;
+	write16_le (file->stream, bmp_contents->bmi.os2.bmch.bcWidth) ;
+	write16_le (file->stream, bmp_contents->bmi.os2.bmch.bcHeight) ;
+	write16_le (file->stream, bmp_contents->bmi.os2.bmch.bcPlanes) ;
+	write16_le (file->stream, bmp_contents->bmi.os2.bmch.bcBitCount) ;
+
+	if (bmp_contents->bmi.os2.ncolors > 0) {
 		/* a color table exists */
 		int i = 0 ;
 
-		for (i = 0 ; i < file->contents->bmi.os2.ncolors ; i++) {
-			putc ((int) file->contents->bmi.os2.colors[i].Blue, file->stream) ;
-			putc ((int) file->contents->bmi.os2.colors[i].Green, file->stream) ;
-			putc ((int) file->contents->bmi.os2.colors[i].Red, file->stream) ;
+		for (i = 0 ; i < bmp_contents->bmi.os2.ncolors ; i++) {
+			putc ((int) bmp_contents->bmi.os2.colors[i].rgbtBlue, file->stream) ;
+			putc ((int) bmp_contents->bmi.os2.colors[i].rgbtGreen, file->stream) ;
+			putc ((int) bmp_contents->bmi.os2.colors[i].rgbtRed, file->stream) ;
 		}
 	}
 	
 	return ;
 }
 
-/* reads a bmp file from disk into a CVRSTGFILE structure */
-static void bmp_readdata (CVRFILE *file)
+/* returns the number of bytes used to store the pixel data of one scan line */
+static long bmp_calclinelength (CVRSTGFILE *file)
 {
-	unsigned long line = 0, linelength = 0 ;
+	BMP_CONTENTS *bmp_contents = ((BMP_CONTENTS *) file->contents) ;
+	long retval = 0 ;
+
+	switch (bmp_contents->bmi.win.bmih.biSize) {
+		case BMP_SIZE_BMINFOHEADER:
+		if (bmp_contents->bmi.win.bmih.biBitCount * bmp_contents->bmi.win.bmih.biWidth % 8 == 0) {
+			retval = bmp_contents->bmi.win.bmih.biBitCount * bmp_contents->bmi.win.bmih.biWidth / 8 ;
+		}
+		else {
+			retval = (bmp_contents->bmi.win.bmih.biBitCount * bmp_contents->bmi.win.bmih.biWidth / 8) + 1;
+		}
+		break ;
+
+		case BMP_SIZE_BMCOREHEADER:
+		if (bmp_contents->bmi.os2.bmch.bcBitCount * bmp_contents->bmi.os2.bmch.bcWidth % 8 == 0) {
+			retval = bmp_contents->bmi.os2.bmch.bcBitCount * bmp_contents->bmi.os2.bmch.bcWidth / 8 ;
+		}
+		else {
+			retval = (bmp_contents->bmi.os2.bmch.bcBitCount * bmp_contents->bmi.os2.bmch.bcWidth / 8) + 1;
+		}
+		break ;
+
+		default:
+		assert (0) ;
+		break ;
+	}
+
+	return retval ;
+}
+
+static long bmp_getheight (CVRSTGFILE *file)
+{
+	BMP_CONTENTS *bmp_contents = ((BMP_CONTENTS *) file->contents) ;
+	long retval = 0 ;
+
+	switch (bmp_contents->bmi.win.bmih.biSize) {
+		case BMP_SIZE_BMINFOHEADER:
+		retval = bmp_contents->bmi.win.bmih.biHeight ;
+		break ;
+
+		case BMP_SIZE_BMCOREHEADER:
+		retval = bmp_contents->bmi.os2.bmch.bcHeight ;
+		break ;
+
+		default:
+		assert (0) ;
+		break ;
+	}
+
+	return retval ;
+}
+
+/* reads a bmp file from disk into a CVRSTGFILE structure */
+static void bmp_readdata (CVRSTGFILE *file)
+{
+	BMP_CONTENTS *bmp_contents = ((BMP_CONTENTS *) file->contents) ;
+	long line = 0, linelength = 0, height = 0 ;
 	int i = 0, paddinglength = 0 ;
 	int c = EOF ;
 
-	/* auch für os2 FIXME */
-	if (file->contents->bmi.win.bmih.biBitCount * file->contents->bmi.win.bmih.biWidth % 8 == 0) {
-		linelength = file->contents->bmi.win.bmih.biBitCount * file->contents->bmi.win.bmih.biWidth / 8 ;
-	}
-	else {
-		linelength = (file->contents->bmi.win.bmih.biBitCount * file->contents->bmi.win.bmih.biWidth / 8) + 1;
-	}
+	linelength = bmp_calclinelength (file) ;
+	height = bmp_getheight (file) ;
 
 	if (linelength % 4 == 0) {
 		paddinglength = 0 ;
@@ -470,11 +539,11 @@ static void bmp_readdata (CVRFILE *file)
 		paddinglength = 4 - (linelength % 4) ;
 	}
 
-	file->contents->bitmap = s_malloc ((sizeof void*) * file->contents->bmi.win.bmih.biHeight) ;
+	bmp_contents->bitmap = s_malloc ((sizeof (void*)) * height) ;
 
-	for (line = file->contents->bmi.win.bmih.biHeight ; line >= 0 ; line--) {
-		file->contents->bitmap[line] = s_malloc (linelength) ;
-		if (fread (file->contents->bitmap[line], linelength, 1, file->stream) != 1) {
+	for (line = height - 1 ; line >= 0 ; line--) {
+		bmp_contents->bitmap[line] = s_malloc (linelength) ;
+		if (fread (bmp_contents->bitmap[line], 1, linelength, file->stream) != linelength) {
 			bmp_readerror (file) ;
 		}
 
@@ -484,7 +553,7 @@ static void bmp_readdata (CVRFILE *file)
 					bmp_readerror (file) ;
 				}
 				else {
-					pwarn (_("maybe corrupted bmp format (padding byte set to non-zero)")).
+					pwarn (_("maybe corrupted bmp format (padding byte set to non-zero)")) ;
 				}
 			}
 		}
@@ -494,18 +563,14 @@ static void bmp_readdata (CVRFILE *file)
 }
 
 /* writes a bmp file from a CVRSTGFILE structure to disk */
-static void bmp_writedata (CVRFILE *file)
+static void bmp_writedata (CVRSTGFILE *file)
 {
-	unsigned long line = 0, linelength = 0 ;
+	BMP_CONTENTS *bmp_contents = ((BMP_CONTENTS *) file->contents) ;
+	long line = 0, linelength = 0, height = 0 ;
 	int i = 0, paddinglength = 0 ;
 	
-	/* auch für os2 FIXME */
-	if (file->contents->bmi.win.bmih.biBitCount * file->contents->bmi.win.bmih.biWidth % 8 == 0) {
-		linelength = file->contents->bmi.win.bmih.biBitCount * file->contents->bmi.win.bmih.biWidth / 8 ;
-	}
-	else {
-		linelength = (file->contents->bmi.win.bmih.biBitCount * file->contents->bmi.win.bmih.biWidth / 8) + 1;
-	}
+	linelength = bmp_calclinelength (file) ;
+	height = bmp_getheight (file) ;
 
 	if (linelength % 4 == 0) {
 		paddinglength = 0 ;
@@ -514,8 +579,8 @@ static void bmp_writedata (CVRFILE *file)
 		paddinglength = 4 - (linelength % 4) ;
 	}
 
-	for (line = file->contents->bmi.win.bmih.biHeight ; line >= 0 ; line--) {
-		if (fwrite (file->contents->bitmap[line], linelength, 1, file->stream) != 1) {
+	for (line = height - 1 ; line >= 0 ; line--) {
+		if (fwrite (bmp_contents->bitmap[line], 1, linelength, file->stream) != linelength) {
 			bmp_writeerror (file) ;
 		}
 

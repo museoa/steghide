@@ -27,7 +27,7 @@
 #define _(S) gettext (S)
 
 #include "main.h"
-#include "io.h"
+#include "cvrstgfile.h"
 #include "bufmanag.h"
 #include "msg.h"
 #include "support.h"
@@ -107,7 +107,7 @@ CVRSTGFILE *cvrstg_readfile (char *filename)
 		break ;
 	}
 
-	return cvrfile ;
+	return file ;
 }
 
 /* writes the file described in the cvrstgfile structure to disk */
@@ -139,11 +139,11 @@ void cvrstg_writefile (CVRSTGFILE *file)
 	}
 
 	if (args.action.value == ARGS_ACTION_EMBED) {
-		if (stgfile->filename == NULL) {
+		if (file->filename == NULL) {
 			pverbose (_("wrote stego file to standard output.")) ;
 		}
 		else {
-			pmsg (_("wrote stego file to \"%s\"."), stgfile->filename) ;
+			pmsg (_("wrote stego file to \"%s\"."), file->filename) ;
 		}
 	}
 	else {
@@ -171,11 +171,11 @@ void cvrstg_transform (CVRSTGFILE *file, char *stgfilename)
 			/* check if file already exists */
 			if (fileexists (file->filename)) {
 				if ((args.cvrfn.value == NULL) || (args.plnfn.value == NULL)) {
-					exit_err (_("file \"%s\" does already exist."), stgfile->filename) ;
+					exit_err (_("file \"%s\" does already exist."), file->filename) ;
 				}
 				else {
-					if (!pquestion (_("file \"%s\" does already exist. overwrite ?"), stgfile->filename)) {
-						exit_err (_("did not write to file \"%s\"."), stgfile->filename) ;
+					if (!pquestion (_("file \"%s\" does already exist. overwrite ?"), file->filename)) {
+						exit_err (_("did not write to file \"%s\"."), file->filename) ;
 					}
 				}
 			}
@@ -225,7 +225,7 @@ void cvrstg_embedbit (CVRSTGFILE *file, unsigned long pos, int value)
 		wav_embedbit (file, pos, value) ;
 		break ;
 
-		case FF_AU
+		case FF_AU:
 		au_embedbit (file, pos, value) ;
 		break ;
 
@@ -292,7 +292,7 @@ void cvrstg_cleanup (CVRSTGFILE *file)
 }
 
 /* auto-detects file format while reading headers */
-static void detectff (CVRFILE *file)
+static int detectff (CVRSTGFILE *file)
 {
 	char buf[4] = { '\0', '\0', '\0', '\0' } ;
 	int i = 0, retval = FF_UNKNOWN ;

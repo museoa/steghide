@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: steghide 0.4.5\n"
-"POT-Creation-Date: 2002-03-13 18:47+0100\n"
+"POT-Creation-Date: 2002-03-13 22:32+0100\n"
 "PO-Revision-Date: 2002-02-21 16:52+0100\n"
 "Last-Translator: Stefan Hetzl <shetzl@teleweb.at>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -253,164 +253,164 @@ msgstr "Der MD5 Algorithmus aus libmhash konnte nicht initialisiert werden."
 msgid "could not initialize libmhash CRC32 algorithm."
 msgstr "Der CRC32 Algorithums aus libmhash konnte nicht initialisiert werden."
 
-#: src/io.c:80 src/io.c:89
+#: src/io.c:84 src/io.c:93
 msgid "the file format of the data from standard input is not supported."
 msgstr "Das Dateiformat der Daten von der Standardeingabe wird nicht unterstützt."
 
-#: src/io.c:83 src/io.c:92
+#: src/io.c:87 src/io.c:96
 #, c-format
 msgid "the file format of the file \"%s\" is not supported."
 msgstr "Das Dateiformat der Datei \"%s\" wird nicht unterstützt."
 
-#: src/io.c:106
+#: src/io.c:110
 msgid "writing stego file to standard output."
 msgstr "Schreibe Stegodatei auf die Standardausgabe."
 
-#: src/io.c:109
+#: src/io.c:113
 #, c-format
 msgid "writing stego file \"%s\"."
 msgstr "Schreibe Stegodatei \"%s\"."
 
-#: src/io.c:159
+#: src/io.c:163
 #, c-format
 msgid "the maximum length for the plain file name is %d characters."
 msgstr "Die maximale Länge für den Namen der Klartextdatei ist %d Zeichen."
 
-#: src/io.c:216
+#: src/io.c:220
 msgid ""
 "please specify a name for the plain file (there is none embedded in the "
 "stego file)."
 msgstr "Bitte geben Sie einen Namen für die Klartextdatei an (es ist keiner in der Stegodatei eingebettet)"
 
-#: src/io.c:237
+#: src/io.c:241
 msgid "crc32 checksum test ok."
 msgstr "CRC32 Prüfsummentest in Ordnung."
 
-#: src/io.c:240
+#: src/io.c:244
 msgid "crc32 checksum failed! extracted data is probably corrupted."
 msgstr "CRC32 Prüfsummentest fehlgeschlagen! Die extrahierten Daten sind wahrscheinlich fehlerhaft."
 
-#: src/io.c:308
+#: src/io.c:315
 msgid "reading cover file from standard input."
 msgstr "Lese Trägerdatei von der Standardeingabe."
 
-#: src/io.c:311
+#: src/io.c:318
 #, c-format
 msgid "reading cover file \"%s\"."
 msgstr "Lese Trägerdatei \"%s\"."
 
-#: src/io.c:316
+#: src/io.c:323
 msgid "reading stego file from standard input."
 msgstr "Lese Stegodatei von der Standardeingabe."
 
-#: src/io.c:319
+#: src/io.c:326
 #, c-format
 msgid "reading stego file \"%s\"."
 msgstr "Lese Stegodatei \"%s\"."
 
-#: src/io.c:336
+#: src/io.c:343
 #, c-format
 msgid "could not open the file \"%s\"."
 msgstr "Die Datei \"%s\" konnte nicht geöffnet werden."
 
-#: src/io.c:386 src/io.c:501
+#: src/io.c:393 src/io.c:508
 #, c-format
 msgid "file \"%s\" does already exist."
 msgstr "Die Datei \"%s\" existiert bereits."
 
-#: src/io.c:389 src/io.c:504
+#: src/io.c:396 src/io.c:511
 #, c-format
 msgid "file \"%s\" does already exist. overwrite ?"
 msgstr "Die Datei \"%s\" existiert bereits. Überschreiben ?"
 
-#: src/io.c:390 src/io.c:505
+#: src/io.c:397 src/io.c:512
 #, c-format
 msgid "did not write to file \"%s\"."
 msgstr "Datei \"%s\" wurde nicht geschrieben."
 
-#: src/io.c:397
+#: src/io.c:404
 #, c-format
 msgid "could not create stego file \"%s\"."
 msgstr "Die Stegodatei \"%s\" konnte nicht erstellt werden."
 
-#: src/io.c:421
+#: src/io.c:428
 msgid "wrote stego file to standard output."
 msgstr "Stegodatei auf Standardausgabe geschrieben."
 
-#: src/io.c:424
+#: src/io.c:431
 #, c-format
 msgid "wrote stego file to \"%s\"."
 msgstr "Stegodatei nach \"%s\" geschrieben."
 
-#: src/io.c:442
+#: src/io.c:449
 msgid "reading plain file from standard input."
 msgstr "Lese Klartextdatei von der Standardeingabe."
 
-#: src/io.c:445
+#: src/io.c:452
 #, c-format
 msgid "reading plain file \"%s\"."
 msgstr "Lese Klartextdatei \"%s\"."
 
-#: src/io.c:456
+#: src/io.c:463
 #, c-format
 msgid "could not open file \"%s\"."
 msgstr "Die Datei \"%s\" konnte nicht geöffnet werden."
 
-#: src/io.c:470
+#: src/io.c:477
 msgid "an error occured while reading the plain data from standard input."
 msgstr ""
 "Beim Lesen der Klartextdaten von der Standardeingabe ist ein Fehler "
 "aufgetreten."
 
-#: src/io.c:473
+#: src/io.c:480
 #, c-format
 msgid "an error occured while reading the file \"%s\"."
 msgstr "Beim Lesen der Datei \"%s\" ist ein Fehler aufgetreten."
 
-#: src/io.c:487
+#: src/io.c:494
 msgid "writing plain file to standard output."
 msgstr "Schreibe Klartextdatei auf die Standardausgabe."
 
-#: src/io.c:490
+#: src/io.c:497
 #, c-format
 msgid "writing plain file to \"%s\"."
 msgstr "Schreibe Klartextdatei nach \"%s\"."
 
-#: src/io.c:512
+#: src/io.c:519
 #, c-format
 msgid "could not create plain file \"%s\"."
 msgstr "Die Klartextdatei \"%s\" konnte nicht erstellt werden."
 
-#: src/io.c:523
+#: src/io.c:530
 msgid "an error occured while writing the plain data to standard output."
 msgstr ""
 "Beim Schreiben der Klartextdaten auf die Standardausgabe ist ein Fehler "
 "aufgetreten."
 
-#: src/io.c:526
+#: src/io.c:533
 #, c-format
 msgid "an error occured while writing to the file \"%s\"."
 msgstr "Beim Schreiben in die Datei \"%s\" ist ein Fehler aufgetreten."
 
-#: src/main.c:156
+#: src/main.c:158
 msgid "you cannot use arguments with the \"version\" command"
 msgstr "Mit dem \"version\" Kommando können keine Argumente verwendet werden."
 
-#: src/main.c:163
+#: src/main.c:165
 msgid "you cannot use arguments with the \"license\" command"
 msgstr "Mit dem \"license\" Kommando können keine Argumente verwendet werden."
 
-#: src/main.c:170
+#: src/main.c:172
 msgid "you cannot use arguments with the \"help\" command"
 msgstr "Mit dem \"help\" Kommando können keine Argumente verwendet werden."
 
-#: src/main.c:181
+#: src/main.c:183
 #, c-format
 msgid "unknown command \"%s\". type \"%s --help\" for help."
 msgstr ""
 "unbekanntes Kommando \"%s\". Tippen Sie \"%s --help\", um Hilfe zu erhalten."
 
-#: src/main.c:190 src/main.c:245
+#: src/main.c:192 src/main.c:247
 #, c-format
 msgid ""
 "the argument \"%s\" can only be used with the \"embed\" command. type \"%s --"
@@ -419,7 +419,7 @@ msgstr ""
 "Das Argument \"%s\" kann nur mit dem \"embed\"-Kommando verwendet werden. "
 "Tippen Sie \"%s --help\", um Hilfe zu erhalten."
 
-#: src/main.c:194
+#: src/main.c:196
 #, c-format
 msgid ""
 "the distribution argument can be used only once. type \"%s --help\" for help."
@@ -427,37 +427,37 @@ msgstr ""
 "Das Argument \"Verteilung\" kann nur einmal verwendet werden. Tippen Sie \"%"
 "s --help\", um Hilfe zu erhalten."
 
-#: src/main.c:201
+#: src/main.c:203
 #, c-format
 msgid "the argument \"%s\" is incomplete. type \"%s --help\" for help."
 msgstr "Das Argument \"%s\" ist unvollständig. Tippen Sie \"%s --help\", um Hilfe zu erhalten."
 
-#: src/main.c:213
+#: src/main.c:215
 #, c-format
 msgid "the interval length for the cnsti method must be smaller than %d."
 msgstr "Die Intervallänge für die cnsti-Methode muss kleiner als %d sein."
 
-#: src/main.c:230
+#: src/main.c:232
 #, c-format
 msgid ""
 "the maximum interval length for the prndi method must be smaller than %d."
 msgstr "Die maximale Intervallänge für die prndi-Methode muss kleiner als %d sein."
 
-#: src/main.c:239
+#: src/main.c:241
 #, c-format
 msgid "unknown distribution method \"%s\". type \"%s --help\" for help."
 msgstr ""
 "unbekannte Verteilungsmethode \"%s\". Tippen Sie \"%s --help\", um Hilfe zu "
 "erhalten."
 
-#: src/main.c:249 src/main.c:264
+#: src/main.c:251 src/main.c:266
 #, c-format
 msgid ""
 "the encryption argument can be used only once. type \"%s --help\" for help."
 msgstr "Das Argument \"Verschlüsselung\" kann nur einmal verwendet werden. Tippen Sie \"%s --help\", um Hilfe zu erhalten."
 
-#: src/main.c:260 src/main.c:297 src/main.c:312 src/main.c:327 src/main.c:342
-#: src/main.c:394
+#: src/main.c:262 src/main.c:299 src/main.c:314 src/main.c:329 src/main.c:344
+#: src/main.c:396
 #, c-format
 msgid ""
 "argument \"%s\" can only be used with the \"embed\" command. type \"%s --help"
@@ -466,20 +466,20 @@ msgstr ""
 "Das Argument \"%s\" kann nur zusammen mit dem \"embed\"-Kommando verwendet "
 "werden. Tippen Sie \"%s --help\", um Hilfe zu erhalten."
 
-#: src/main.c:275 src/main.c:286
+#: src/main.c:277 src/main.c:288
 #, c-format
 msgid ""
 "the stego header encryption argument can be used only once. type \"%s --help"
 "\" for help."
 msgstr "Das Argument \"Stego-Header Verschlüsselung\" kann nur einmal verwendet werden. Tippen Sie \"%s --help\", um Hilfe zu erhalten."
 
-#: src/main.c:301 src/main.c:316
+#: src/main.c:303 src/main.c:318
 #, c-format
 msgid ""
 "the checksum argument can be used only once. type \"%s --help\" for help."
 msgstr "Das Argument \"Prüfsumme\" kann nur einmal verwendet werden. Tippen Sie \"%s --help\", um Hilfe zu erhalten."
 
-#: src/main.c:331 src/main.c:346
+#: src/main.c:333 src/main.c:348
 #, c-format
 msgid ""
 "the plain file name embedding argument can be used only once. type \"%s --"
@@ -488,14 +488,14 @@ msgstr ""
 "Das Argument \"Einbettung des Klartextdateinamens\" kann nur einmal "
 "verwendet werden. Tippen Sie \"%s --help\", um Hilfe zu erhalten."
 
-#: src/main.c:357
+#: src/main.c:359
 #, c-format
 msgid ""
 "the compatibility argument can be used only once. type \"%s --help\" for "
 "help."
 msgstr "Das Argument \"Kompatibilität\" kann nur einmal verwendet werden. Tippen Sie \"%s --help\", um Hilfe zu erhalten."
 
-#: src/main.c:370
+#: src/main.c:372
 #, c-format
 msgid ""
 "the passphrase argument can be used only once. type \"%s --help\" for help."
@@ -503,7 +503,7 @@ msgstr ""
 "Das Argument \"Passphrase\" kann nur einmal verwendet werden. Tippen Sie \"%"
 "s --help\", um Hilfe zu erhalten."
 
-#: src/main.c:377
+#: src/main.c:379
 #, c-format
 msgid ""
 "the \"%s\" argument must be followed by the passphrase. type \"%s --help\" "
@@ -512,26 +512,26 @@ msgstr ""
 "Nach dem Argument \"%s\" muss sich die Passphrase befinden. Tippen Sie \"%s "
 "--help\", um Hilfe zu erhalten."
 
-#: src/main.c:381 src/support.c:94 src/support.c:108
+#: src/main.c:383 src/support.c:94 src/support.c:108
 #, c-format
 msgid "the maximum length of the passphrase is %d characters."
 msgstr "Die maximale Länge der Passphrase ist %d Zeichen."
 
-#: src/main.c:398
+#: src/main.c:400
 #, c-format
 msgid ""
 "the \"%s\" argument must be followed by the cover file name. type \"%s --help"
 "\" for help."
 msgstr "Nach dem Argument \"%s\" muss sich der Name der Trägerdatei befinden. Tippen Sie \"%s --help\", um Hilfe zu erhalten."
 
-#: src/main.c:402
+#: src/main.c:404
 #, c-format
 msgid ""
 "the cover file name argument can be used only once. type \"%s --help\" for "
 "help."
 msgstr "Die Argument \"Trägerdatei\" kann nur einmal verwendet werden. Tippen Sie \"%s --help\", um Hilfe zu erhalten."
 
-#: src/main.c:419
+#: src/main.c:421
 #, c-format
 msgid ""
 "the \"%s\" argument must be followed by the stego file name. type \"%s --help"
@@ -540,7 +540,7 @@ msgstr ""
 "Nach dem Argument \"%s\" muss sich der Name der Stegodatei befinden. Tippen "
 "Sie \"%s --help\", um Hilfe zu erhalten."
 
-#: src/main.c:423
+#: src/main.c:425
 #, c-format
 msgid ""
 "the stego file name argument can be used only once. type \"%s --help\" for "
@@ -549,7 +549,7 @@ msgstr ""
 "Das Argument \"Stegodatei\" kann nur einmal verwendet werden. Tippen Sie \"%"
 "s --help\", um Hilfe zu erhalten."
 
-#: src/main.c:438
+#: src/main.c:440
 #, c-format
 msgid ""
 "the \"%s\" argument must be followed by the plain file name. type \"%s --help"
@@ -558,7 +558,7 @@ msgstr ""
 "Nach dem Argument \"%s\" muss sich der Name der Klartextdatei befinden. "
 "Tippen Sie \"%s --help\", um Hilfe zu erhalten."
 
-#: src/main.c:442
+#: src/main.c:444
 #, c-format
 msgid ""
 "the plain file name argument can be used only once. type \"%s --help\" for "
@@ -567,12 +567,12 @@ msgstr ""
 "Das Argument \"Klartextdatei\" kann nur einmal verwendet werden. Tippen Sie "
 "\"%s --help\", um Hilfe zu erhalten."
 
-#: src/main.c:457
+#: src/main.c:459
 #, c-format
 msgid "the force argument can be used only once. type \"%s --help\" for help."
 msgstr "Das Argument \"Überschreiben\" kann nur einmal verwendet werden. Tippen Sie \"%s --help\", um Hilfe zu erhalten."
 
-#: src/main.c:468 src/main.c:479
+#: src/main.c:470 src/main.c:481
 #, c-format
 msgid ""
 "the \"%s\" argument cannot be used here because the verbosity has already "
@@ -581,20 +581,20 @@ msgstr ""
 "Das Argument \"%s\" kann hier nicht verwendet werden, da die Genauigkeit der "
 "Ausgabe bereits festgelegt wurde."
 
-#: src/main.c:489
+#: src/main.c:491
 #, c-format
 msgid "unknown argument \"%s\". type \"%s --help\" for help."
 msgstr ""
 "unbekanntes Argument \"%s\". Tippen Sie \"%s --help\", um Hilfe zu erhalten."
 
-#: src/main.c:496
+#: src/main.c:498
 #, c-format
 msgid ""
 "standard input cannot be used for cover AND plain data. type \"%s --help\" "
 "for help."
 msgstr "Die Standardeingabe kann nicht für Trägerdaten UND Klartextdaten verwendet werden. Tippen Sie \"%s --help\", um Hilfe zu erhalten."
 
-#: src/main.c:504 src/main.c:510
+#: src/main.c:506 src/main.c:512
 msgid ""
 "if standard input is used, the passphrase must be specified on the command "
 "line."
@@ -602,7 +602,7 @@ msgstr ""
 "Wenn die Standardeingabe verwendet wird, muss die Passphrase in der "
 "Kommandozeile angegeben werden."
 
-#: src/main.c:679
+#: src/main.c:683
 msgid ""
 "\n"
 "the first argument must be one of the following:\n"
@@ -698,7 +698,7 @@ msgstr ""
 "steghide extract -sf stg.bmp\n"
 "\n"
 
-#: src/main.c:781 src/main.c:813
+#: src/main.c:785 src/main.c:817
 msgid "done."
 msgstr "fertig."
 

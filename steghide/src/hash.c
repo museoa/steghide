@@ -25,8 +25,8 @@
 #define _(S) gettext (S)
 
 #include "bufmanag.h"
-#include "io.h"
 #include "support.h"
+#include "plnfile.h"
 #include "msg.h"
 
 unsigned long getseed (char *passphrase)

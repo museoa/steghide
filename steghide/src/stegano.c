@@ -51,9 +51,9 @@ static DMTDINFO curdmtd_dmtdinfo ;
 static unsigned long curdmtd_curpos ;
 
 /* embed plain data in cover data (resulting in stego data) */
-void embeddata (BUFFER *cvrdata, unsigned long firstcvrpos, BUFFER *plndata)
+void embeddata (CVRSTGFILE *cvrstgfile, unsigned long firstcvrpos, PLNFILE *plnfile)
 {
-	int cvrbyte = 0, plnbits = 0 ;
+	int plnbits = 0 ;
 	int bit = 0 ;
 	int i = 0 ;
 	unsigned long plnpos_byte = 0, plnpos_bit = 0 ;
@@ -63,10 +63,10 @@ void embeddata (BUFFER *cvrdata, unsigned long firstcvrpos, BUFFER *plndata)
 
 	dmtd_reset (sthdr.dmtd, sthdr.dmtdinfo, cvrpos_byte) ;
 
-	while (plnpos_byte < plndata->length) {
+	while (plnpos_byte < plnfile->plndata->length) {
 		plnbits = 0 ;
 		for (i = 0 ; i < nstgbits() ; i++) {
-			if ((bit = bufgetbit (plndata, plnpos_byte, plnpos_bit)) != ENDOFBUF) {
+			if ((bit = bufgetbit (plnfile->plndata, plnpos_byte, plnpos_bit)) != ENDOFBUF) {
 				plnbits |= (bit << i) ;
 				if (plnpos_bit == 7) {
 					plnpos_byte++ ;
@@ -78,12 +78,15 @@ void embeddata (BUFFER *cvrdata, unsigned long firstcvrpos, BUFFER *plndata)
 			}
 		}
 
+		/* FIXME DELME
 		cvrbyte = bufgetbyte (cvrdata, cvrpos_byte) ;
 		bufsetbyte (cvrdata, cvrpos_byte, setbits (cvrbyte, plnbits)) ;
+		*/
+		cvrstg_embedbit (cvrstgfile, cvrpos_byte, plnbits) ;
 		
 		cvrpos_byte = dmtd_nextpos () ;
 
-		if ((cvrpos_byte >= cvrdata->length) && (plnpos_byte < plndata->length)) {
+		if ((cvrpos_byte >= cvrstg_capacity (cvrstgfile)) && (plnpos_byte < plnfile->plndata->length)) {
 			exit_err (_("the cover file is too short to embed the plain data. try a smaller interval length.")) ;
 		}
 	}
@@ -92,7 +95,7 @@ void embeddata (BUFFER *cvrdata, unsigned long firstcvrpos, BUFFER *plndata)
 }
 
 /* extracts plain data (return value) from stego data */
-BUFFER *extractdata (BUFFER *stgdata, unsigned long firststgpos)
+BUFFER *extractdata (CVRSTGFILE *cvrstgfile, unsigned long firststgpos)
 {
 	BUFFER *plndata = NULL ;
 	int plnbits = 0, i = 0 ;
@@ -119,7 +122,10 @@ BUFFER *extractdata (BUFFER *stgdata, unsigned long firststgpos)
 	}
 
 	while (plnpos_byte < size) {
+		/* FIXME DELME
 		plnbits = getbits (bufgetbyte (stgdata, stgpos_byte)) ;
+		*/
+		plnbits = cvrstg_extractbit (cvrstgfile, stgpos_byte) ;
 		for (i = 0 ; i < nstgbits() ; i++) {
 			if (plnpos_byte < size) {
 				bufsetbit (plndata, plnpos_byte, plnpos_bit, ((plnbits & (1 << i)) >> i)) ;
@@ -135,7 +141,7 @@ BUFFER *extractdata (BUFFER *stgdata, unsigned long firststgpos)
 
 		stgpos_byte = dmtd_nextpos() ;
 
-		if ((stgpos_byte >= stgdata->length) && (plnpos_byte < size)) {
+		if ((stgpos_byte >= cvrstg_capacity (cvrstgfile)) && (plnpos_byte < size)) {
 			exit_err (_("the stego file is too short to contain the plain data (file corruption ?).")) ;
 		}
 	}
@@ -143,7 +149,7 @@ BUFFER *extractdata (BUFFER *stgdata, unsigned long firststgpos)
 	return plndata ;
 }
 
-void embedsthdr (BUFFER *cvrdata, int dmtd, DMTDINFO dmtdinfo, int enc, char *passphrase, unsigned long *firstplnpos)
+void embedsthdr (CVRSTGFILE *cvrstgfile, int dmtd, DMTDINFO dmtdinfo, int enc, char *passphrase, unsigned long *firstplnpos)
 {
 	int hdrbuflen = STHDR_NBYTES_BLOWFISH ;
 	unsigned char *hdrbuf = NULL ;
@@ -208,9 +214,11 @@ void embedsthdr (BUFFER *cvrdata, int dmtd, DMTDINFO dmtdinfo, int enc, char *pa
 	cvrbytepos = 0 ;
 	for (bit = 0 ; bit < sthdrbuflen ; bit++) {
 		bitval = (hdrbuf[bit / 8] & (1 << (bit % 8))) >> (bit % 8) ;
+		/* FIXME DELME
 		bufsetbit (cvrdata, cvrbytepos, 0, bitval) ;
-		if (((cvrbytepos = dmtd_nextpos()) >= cvrdata->length) &&
-		   bit < sthdrbuflen) {
+		*/
+		cvrstg_embedbit (cvrstgfile, cvrbytepos, bitval) ;
+		if (((cvrbytepos = dmtd_nextpos()) >= cvrstg_capacity (cvrstgfile)) && (bit < sthdrbuflen)) {
 			exit_err (_("the cover file is too short to embed the stego header. use another cover file.")) ;
 		}
 	}
@@ -220,7 +228,7 @@ void embedsthdr (BUFFER *cvrdata, int dmtd, DMTDINFO dmtdinfo, int enc, char *pa
 	*firstplnpos = cvrbytepos ;
 }	
 
-void extractsthdr (BUFFER *stgdata, int dmtd, DMTDINFO dmtdinfo, int enc, char *passphrase, unsigned long *firstplnpos)
+void extractsthdr (CVRSTGFILE *cvrstgfile, int dmtd, DMTDINFO dmtdinfo, int enc, char *passphrase, unsigned long *firstplnpos)
 {
 	int hdrbuflen = STHDR_NBYTES_BLOWFISH ;
 	unsigned char hdrbuf[STHDR_NBYTES_BLOWFISH] ;
@@ -247,9 +255,12 @@ void extractsthdr (BUFFER *stgdata, int dmtd, DMTDINFO dmtdinfo, int enc, char *
 
 	for (bit = 0 ; bit < hdrbuflen * 8 ; bit++) {
 		oldcvrbytepos[bit] = cvrbytepos ;
+		/* FIXME DELME
 		bitval = bufgetbit (stgdata, cvrbytepos, 0) ;
+		*/
+		bitval = cvrstg_extractbit (cvrstgfile, cvrbytepos) ;
 		hdrbuf[bit / 8] |= bitval << (bit % 8) ;
-		if (((cvrbytepos = dmtd_nextpos()) >= stgdata->length) &&
+		if (((cvrbytepos = dmtd_nextpos()) >= cvrstg_capacity (cvrstgfile)) &&
 		   bit < hdrbuflen * 8) {
 			exit_err (_("the stego file is too short to contain the stego header (file corruption ?).")) ;
 		}
@@ -295,6 +306,7 @@ void extractsthdr (BUFFER *stgdata, int dmtd, DMTDINFO dmtdinfo, int enc, char *
 			exit_err (_("the mask saved in the stego header is zero (file corruption ?).")) ;
 		}
 		sthdr.mask = (unsigned int) tmp ;
+		exit_err (_("the mask saved in the stego header is not the default (1). This is no longer supported.")) ;
 	}
 	else {
 		sthdr.mask = 1 ;
@@ -379,6 +391,9 @@ static int nstgbits (void)
 	for (i = 0; i < 8; i++)
 		if (sthdr.mask & (1 << i))
 			n++ ;
+
+	/* FIXME - raushauen */
+	assert (n == 1) ;
 
 	return n ;
 }

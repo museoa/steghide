@@ -33,7 +33,8 @@
 #define _(S) gettext (S)
 
 #include "main.h"
-#include "io.h"
+#include "cvrstgfile.h"
+#include "plnfile.h"
 #include "crypto.h"
 #include "hash.h"
 #include "stegano.h"
@@ -750,14 +751,14 @@ static void license ()
 /* calls functions to embed plain data in cover data and save as stego data */
 static void embedfile (char *cvrfilename, char *stgfilename, char *plnfilename)
 {
-	CVRFILE *cvrfile = NULL, *stgfile = NULL ;
+	CVRSTGFILE *cvrstgfile = NULL ;
 	PLNFILE *plnfile = NULL ;
 	unsigned long nbytesplain = 0 ;
 	unsigned long firstplnpos = 0 ;
 
-	cvrfile = readcvrfile (cvrfilename) ;
+	cvrstgfile = cvrstg_readfile (cvrfilename) ;
 
-	plnfile = readplnfile (plnfilename) ;
+	plnfile = pln_readfile (plnfilename) ;
 
 	assemble_plndata (plnfile) ;
 
@@ -768,19 +769,18 @@ static void embedfile (char *cvrfilename, char *stgfilename, char *plnfilename)
 
 	setsthdrdmtd () ;
 
-	fillsthdr (cvrfile->cvrdata->length, nbytesplain, plnfile->plndata->length) ;
+	fillsthdr (cvrstg_capacity (cvrstgfile), nbytesplain, plnfile->plndata->length) ;
 
-	embedsthdr (cvrfile->cvrdata, sthdr_dmtd, sthdr_dmtdinfo, args.sthdrencryption.value, args.passphrase.value, &firstplnpos) ;
+	embedsthdr (cvrstgfile, sthdr_dmtd, sthdr_dmtdinfo, args.sthdrencryption.value, args.passphrase.value, &firstplnpos) ;
 
-	embeddata (cvrfile->cvrdata, firstplnpos, plnfile->plndata) ;
+	embeddata (cvrstgfile, firstplnpos, plnfile) ;
 
-	stgfile = createstgfile (cvrfile, stgfilename) ;
+	cvrstg_transform (cvrstgfile, stgfilename) ;
 
-	writestgfile (stgfile) ;
+	cvrstg_writefile (cvrstgfile) ;
 
-	cleanupcvrfile (cvrfile, FSS_NO) ;
-	cleanupcvrfile (stgfile, FSS_YES) ;
-	cleanupplnfile (plnfile) ;
+	cvrstg_cleanup (cvrstgfile) ;
+	pln_cleanup (plnfile) ;
 
 	pverbose (_("done.")) ;
 
@@ -790,18 +790,18 @@ static void embedfile (char *cvrfilename, char *stgfilename, char *plnfilename)
 /* calls functions to extract (and save) plain data from stego data */
 static void extractfile (char *stgfilename, char *plnfilename)
 {
-	CVRFILE *stgfile = NULL ;
+	CVRSTGFILE *stgfile = NULL ;
 	PLNFILE *plnfile = NULL ;
 	unsigned long firstplnpos = 0 ;
 
-	stgfile = readcvrfile (stgfilename) ;
+	stgfile = cvrstg_readfile (stgfilename) ;
 
 	setsthdrdmtd () ;
 
-	extractsthdr (stgfile->cvrdata, sthdr_dmtd, sthdr_dmtdinfo, args.sthdrencryption.value, args.passphrase.value, &firstplnpos) ;
+	extractsthdr (stgfile, sthdr_dmtd, sthdr_dmtdinfo, args.sthdrencryption.value, args.passphrase.value, &firstplnpos) ;
 
-	plnfile = createplnfile () ;
-	plnfile->plndata = extractdata (stgfile->cvrdata, firstplnpos) ;
+	plnfile = pln_createfile () ;
+	plnfile->plndata = extractdata (stgfile, firstplnpos) ;
 
 	if (sthdr.encryption) {
 		decrypt_plnfile (plnfile, args.passphrase.value) ;
@@ -809,10 +809,10 @@ static void extractfile (char *stgfilename, char *plnfilename)
 
 	deassemble_plndata (plnfile) ;
 
-	writeplnfile (plnfile) ;
+	pln_writefile (plnfile) ;
 
-	cleanupcvrfile (stgfile, FSS_YES) ;
-	cleanupplnfile (plnfile) ;
+	cvrstg_cleanup (stgfile) ;
+	pln_cleanup (plnfile) ;
 
 	pverbose (_("done.")) ;
 

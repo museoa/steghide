@@ -18,3 +18,27 @@
  *
  */
 
+#ifndef SH_PLNFILE_H
+#define SH_PLNFILE_H
+
+#include "bufmanag.h"
+
+/* PLNFILE describes a plaindata file */
+typedef struct struct_PLNFILE {	
+	/* file as data stream */
+	FILE	*stream ;
+	/* name of file */
+	char	*filename ;
+	/* first element of linked list of buffers that contain the data of the file */
+	BUFFER	*plndata ;
+} PLNFILE ;
+
+/* function prototypes */
+PLNFILE *pln_readfile (char *filename) ;
+void pln_writefile (PLNFILE *plnfile) ;
+void assemble_plndata (PLNFILE *plnfile) ;
+void deassemble_plndata (PLNFILE *plnfile) ;
+PLNFILE *pln_createfile (void) ;
+void pln_cleanup (PLNFILE *plnfile) ;
+
+#endif /* SH_PLNFILE_H */

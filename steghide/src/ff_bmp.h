@@ -76,13 +76,13 @@ typedef struct struct_RGBTRIPLE {
 typedef struct struct_BMPINFO_WIN {
 	BITMAPINFOHEADER	bmih ;
 	unsigned int		ncolors ;
-	RGBQUAD				colors[] ;
+	RGBQUAD				*colors ;
 } BMPINFO_WIN ;
 
 typedef struct struct_BMPINFO_OS2 {
 	BITMAPCOREHEADER	bmch ;
 	unsigned int		ncolors ;
-	RGBTRIPLE			colors[] ;
+	RGBTRIPLE			*colors ;
 } BMPINFO_OS2 ;
 
 typedef union union_BMPINFO {
@@ -93,7 +93,7 @@ typedef union union_BMPINFO {
 typedef struct struct_BMP_CONTENTS {
 	BITMAPFILEHEADER	bmfh ;
 	BMPINFO				bmi ;
-	void				**bitmap ;
+	unsigned char		**bitmap ;
 } BMP_CONTENTS ;
 
 #define BMP_SIZE_BMFILEHEADER	14
