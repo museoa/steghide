@@ -13,11 +13,6 @@ $DefSections = array (
 		"linkname" => "Documentation",
 		"link" => "documentation.php",
 		"subsections" => array (
-			"quickstart" => array (
-				"title" => "Steghide - Quick Start",
-				"linkname" => "quick start",
-				"link" => "documentation/quickstart.php"
-			),
 			"manpage" => array (
 				"title" => "Steghide - man page",
 				"linkname" => "man page",
