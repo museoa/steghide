@@ -69,22 +69,24 @@ function pseclinktr ($active, $css_td, $css_a, $imgsrc, $imgalt, $linkhref, $lin
 {
 	global $ToRoot;
 
-	echo "$spc<tr><td class=\"$css_td\"";
+	echo "$spc<tr>\n";
+	echo "$spc <td class=\"$css_td\"";
 	if ($active) {
 		echo " colspan=\"2\"";
 	}
 	echo ">\n";
-	echo "$spc <table cellspacing=\"0\" cellpadding=\"3\">\n";
-	echo "$spc  <tr>\n";
-	echo "$spc   <td><img src=\"$ToRoot$imgsrc\" alt=\"$imgalt\" border=\"0\"></td>\n";
-	echo "$spc   <td><a class=\"$css_a\"";
+	echo "$spc  <table cellspacing=\"0\" cellpadding=\"3\">\n";
+	echo "$spc   <tr>\n";
+	echo "$spc    <td><img src=\"$ToRoot$imgsrc\" alt=\"$imgalt\" border=\"0\"></td>\n";
+	echo "$spc    <td><a class=\"$css_a\"";
 	if ($linkhref != "") {
 		echo " href=\"$ToRoot$linkhref\"";
 	}
 	echo ">$linkname</a></td>\n";
-	echo "$spc  </tr>\n";
-	echo "$spc </table>\n";
-	echo "$spc</td></tr>\n";
+	echo "$spc   </tr>\n";
+	echo "$spc  </table>\n";
+	echo "$spc </td>\n";
+	echo "$spc</tr>\n";
 }
 
 /**
@@ -232,20 +234,32 @@ function psection ($sec, $sectioninfo, $activesecid, $isfirst, $spc)
 }
 
 /**
+ * print the navigation area (hierachy table and bottom left area)
  * $activesec contains the name of the active section
  * $spc is the space to print at the beginning of every line
  **/
-function phierachytable ($activesec, $spc)
+function pnavarea ($activesec, $spc)
 {
 	global $DefSections;
 
-	echo $spc . "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\"> <!-- start of hierachy table -->\n";
+	echo "$spc<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\"> <!-- start of navigation area -->\n";
 	$isfirst = TRUE ;
 	foreach ($DefSections as $sectionid => $sectioninfo) {
 		psection ($sectionid, $sectioninfo, $activesec, $isfirst, $spc . " ");
 		$isfirst &= FALSE;
 	}
-	echo $spc . "</table> <!-- end of hierachy table -->\n";
+	echo "$spc <tr>\n"; // lower area (lastupdate)
+	echo "$spc  <td id=\"lastupdate\" align=\"center\" valign=\"bottom\">\n" ;
+	echo "$spc   <a href=\"http://validator.w3.org/check/referer\"><img border=\"0\" src=\"" . $ToRoot . "images/valid-html401.png\"\n";
+	echo "$spc   alt=\"Valid HTML 4.01!\" height=\"31\" width=\"88\"></a>\n";
+	echo "$spc   <p>\n";
+	echo "$spc   hosted by:<br>\n";
+	include "sflogo.html";
+	echo "$spc   <p>\n";
+	echo "$spc   last change:<br>";
+	echo date("F j, Y", $ts_lastupdate) . "</td>\n"; // print last update
+	echo "$spc </tr>\n";
+	echo "$spc</table> <!-- end of navigation area -->\n";
 }
 
 /**
@@ -278,9 +292,9 @@ function pBodyPrologue ()
 	echo "  <tr>\n"; // lower areas (hierachy, text)
 	// FIXME WINFIX here height=100%
 	echo "   <td width=\"170\" valign=\"top\">\n"; // lower left area containing the hierachy table
-	phierachytable ($SectionID, "    ");
+	pnavarea ($SectionID, "    ");
 	echo "   </td>\n";
-	echo "   <td rowspan=\"2\">\n"; // lower right area containing the text
+	echo "   <td>\n"; // lower right area containing the text
 	echo "    <table width=\"100%\" cellpadding=\"10\"><tr><td> <!-- main text position -->\n"; // 1x1 table used for spacing only
 }
 
@@ -294,17 +308,6 @@ function pBodyEpilogue ($ts_lastupdate)
 	echo "     </td></tr></table> <!-- main text position -->\n"; // end of 1x1 table
 	echo "   </td>\n";
 	echo "  </tr>\n"; // end of second row in 3,2 table
-	echo "  <tr>\n"; // lower area (lastupdate)
-	echo "   <td id=\"lastupdate\" align=\"center\" valign=\"bottom\">\n" ;
-	echo "    <a href=\"http://validator.w3.org/check/referer\"><img border=\"0\" src=\"" . $ToRoot . "images/valid-html401.png\"\n";
-	echo "    alt=\"Valid HTML 4.01!\" height=\"31\" width=\"88\"></a>\n";
-	echo "    <p>\n";
-	echo "    hosted by:<br>\n";
-	include "sflogo.html";
-	echo "    <p>\n";
-	echo "    last change:<br>";
-	echo date("F j, Y", $ts_lastupdate) . "</td>\n"; // print last update
-	echo "  </tr>\n";
 	echo " </table>\n"; // end of main table
 }
 
