@@ -20,7 +20,7 @@
 
 #include <vector>
 
-#include "binaryio.h"
+#include "BinaryIO.h"
 #include "common.h"
 #include "jpegbase.h"
 

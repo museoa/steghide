@@ -6,20 +6,33 @@ noinst_HEADERS = BitStringTest.h
 # FIXME - how can a cross-directory dependency be coded with automake ?
 testall_SOURCES = main.cc BitStringTest.cc
 testall_LDADD = \
-../src/AssertionFailed.o ../src/SteghideError.o ../src/arg.o ../src/arguments.o \
-../src/aufile.o ../src/augheur.o ../src/ausamplevalue.o ../src/binaryio.o \
-../src/bitstring.o ../src/bmpfile.o ../src/bmpsamplevalue.o ../src/colorpalette.o \
-../src/constrheur.o ../src/cvrstgfile.o ../src/edge.o ../src/edgeiterator.o \
-../src/embdata.o ../src/embedder.o ../src/encalgo.o ../src/encmode.o \
-../src/error.o ../src/extractor.o ../src/graph.o ../src/graphaccess.o \
-../src/jpegbase.o ../src/jpegentropycoded.o ../src/jpegfile.o ../src/jpegframe.o \
-../src/jpegframehdr.o ../src/jpeghufftable.o ../src/jpegjfifapp0.o ../src/jpegrestart.o \
-../src/jpegsamplevalue.o ../src/jpegscan.o ../src/jpegscanhdr.o ../src/jpegunusedseg.o \
-../src/matching.o ../src/mcryptpp.o ../src/mhashkeygenpp.o \
-../src/mhashpp.o ../src/msg.o ../src/permutation.o ../src/randomsource.o \
-../src/rgbtriple.o ../src/samplevalue.o ../src/session.o ../src/svalueoppneigh.o \
-../src/terminal.o ../src/vertex.o ../src/vertexcontent.o ../src/wavchunk.o \
-../src/wavchunkheader.o ../src/wavchunkunused.o ../src/wavfile.o ../src/wavformatchunk.o \
-../src/wavsamplevalue.o \
+../src/Arg.o ../src/Arguments.o \
+../src/AssertionFailed.o ../src/AuFile.o \
+../src/AuSampleValue.o ../src/AugmentingPathHeuristic.o \
+../src/BinaryIO.o ../src/BitString.o \
+../src/BmpFile.o ../src/BmpPaletteSampleValue.o \
+../src/BmpRGBSampleValue.o ../src/BmpSampleValue.o \
+../src/ColorPalette.o ../src/ConstructionHeuristic.o \
+../src/CvrStgFile.o ../src/Edge.o \
+../src/EdgeIterator.o ../src/EmbData.o \
+../src/Embedder.o ../src/EncryptionAlgorithm.o \
+../src/EncryptionMode.o ../src/Extractor.o \
+../src/Graph.o ../src/GraphAccess.o \
+../src/JpegFile.o ../src/JpegSampleValue.o \
+../src/MCrypt.o ../src/MHash.o \
+../src/MHashKeyGen.o ../src/Matching.o \
+../src/Permutation.o ../src/RGBTriple.o \
+../src/RandomSource.o ../src/SampleValue.o \
+../src/SampleValueOppositeNeighbourhood.o ../src/Session.o \
+../src/SteghideError.o ../src/Terminal.o \
+../src/Vertex.o ../src/VertexContent.o \
+../src/WavChunk.o ../src/WavChunkHeader.o \
+../src/WavChunkUnused.o ../src/WavFile.o \
+../src/WavFormatChunk.o ../src/WavPCMSampleValue.o \
+../src/error.o ../src/jpegbase.o \
+../src/jpegentropycoded.o ../src/jpegframe.o \
+../src/jpegframehdr.o ../src/jpeghufftable.o \
+../src/jpegjfifapp0.o ../src/jpegrestart.o \
+../src/jpegscan.o ../src/jpegscanhdr.o \
+../src/jpegunusedseg.o ../src/msg.o \
 -lcppunit
-

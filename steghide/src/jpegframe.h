@@ -23,7 +23,7 @@
 
 #include <vector>
 
-#include "binaryio.h"
+#include "BinaryIO.h"
 #include "jpegbase.h"
 #include "jpegframehdr.h"
 #include "jpeghufftable.h"

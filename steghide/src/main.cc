@@ -22,7 +22,7 @@
 
 #include "common.h"
 #include "error.h"
-#include "session.h"
+#include "Session.h"
 
 #ifdef WIN32 // locale support on Windows
 

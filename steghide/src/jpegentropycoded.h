@@ -23,8 +23,8 @@
 
 #include <vector>
 
-#include "binaryio.h"
-#include "cvrstgobject.h"
+#include "BinaryIO.h"
+#include "CvrStgObject.h"
 #include "jpegbase.h"
 #include "jpeghufftable.h"
 

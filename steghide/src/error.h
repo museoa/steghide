@@ -24,7 +24,7 @@
 #include <cstdio>
 #include <string>
 
-#include "binaryio.h"
+#include "BinaryIO.h"
 #include "SteghideError.h"
 
 class ArgError : public SteghideError {

@@ -23,7 +23,7 @@
 
 #include <string>
 
-#include "binaryio.h"
+#include "BinaryIO.h"
 #include "jpegbase.h"
 
 /**

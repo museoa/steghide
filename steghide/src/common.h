@@ -44,11 +44,11 @@ extern void printDebug (unsigned int level, const char *msgfmt, ...) ;
 #endif
 
 // every class has access to the command line arguments
-#include "arguments.h"
+#include "Arguments.h"
 extern Arguments Args ;
 
 // every class has access to random data
-#include "randomsource.h"
+#include "RandomSource.h"
 extern RandomSource RndSrc ;
 
 // typedefs

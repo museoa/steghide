@@ -20,7 +20,7 @@
 
 #include <string>
 
-#include "binaryio.h"
+#include "BinaryIO.h"
 #include "common.h"
 #include "error.h"
 #include "jpegbase.h"

@@ -1,36 +1,67 @@
 AM_CPPFLAGS = -I../intl -DLOCALEDIR=\"$(localedir)\"
 bin_PROGRAMS = steghide
 noinst_HEADERS = \
-AssertionFailed.h SteghideError.h arg.h arguments.h \
-aufile.h augheur.h ausamplevalue.h binaryio.h \
-bitstring.h bmpfile.h bmpsamplevalue.h colorpalette.h \
-common.h constrheur.h cvrstgfile.h cvrstgobject.h \
-edge.h edgeiterator.h embdata.h embedder.h \
-encalgo.h encmode.h error.h extractor.h \
-graph.h graphaccess.h jpegbase.h jpegentropycoded.h \
-jpegfile.h jpegframe.h jpegframehdr.h jpeghufftable.h \
-jpegjfifapp0.h jpegrestart.h jpegsamplevalue.h jpegscan.h \
-jpegscanhdr.h jpegunusedseg.h matching.h mcryptpp.h \
-mhashkeygenpp.h mhashpp.h msg.h permutation.h \
-randomsource.h rgbtriple.h sampleoccurence.h samplevalue.h \
-session.h svalueoppneigh.h terminal.h vertex.h \
-vertexcontent.h wavchunk.h wavchunkheader.h wavchunkunused.h \
-wavfile.h wavformatchunk.h wavsamplevalue.h wrapper_hash_set.h
+Arg.h Arguments.h \
+AssertionFailed.h AuFile.h \
+AuSampleValue.h AugmentingPathHeuristic.h \
+BinaryIO.h BitString.h \
+BmpFile.h BmpPaletteSampleValue.h \
+BmpRGBSampleValue.h BmpSampleValue.h \
+ColorPalette.h ConstructionHeuristic.h \
+CvrStgFile.h CvrStgObject.h \
+Edge.h EdgeIterator.h \
+EmbData.h Embedder.h \
+EncryptionAlgorithm.h EncryptionMode.h \
+Extractor.h Graph.h \
+GraphAccess.h JpegFile.h \
+JpegSampleValue.h MCrypt.h \
+MHash.h MHashKeyGen.h \
+Matching.h Permutation.h \
+RGBTriple.h RandomSource.h \
+SampleOccurence.h SampleValue.h \
+SampleValueOppositeNeighbourhood.h Session.h \
+SteghideError.h Terminal.h \
+Vertex.h VertexContent.h \
+WavChunk.h WavChunkHeader.h \
+WavChunkUnused.h WavFile.h \
+WavFormatChunk.h WavPCMSampleValue.h \
+common.h error.h \
+jpegbase.h jpegentropycoded.h \
+jpegframe.h jpegframehdr.h \
+jpeghufftable.h jpegjfifapp0.h \
+jpegrestart.h jpegscan.h \
+jpegscanhdr.h jpegunusedseg.h \
+msg.h wrapper_hash_set.h
 steghide_SOURCES = \
-AssertionFailed.cc SteghideError.cc arg.cc arguments.cc \
-aufile.cc augheur.cc ausamplevalue.cc binaryio.cc \
-bitstring.cc bmpfile.cc bmpsamplevalue.cc colorpalette.cc \
-constrheur.cc cvrstgfile.cc edge.cc edgeiterator.cc \
-embdata.cc embedder.cc encalgo.cc encmode.cc \
-error.cc extractor.cc graph.cc graphaccess.cc \
-jpegbase.cc jpegentropycoded.cc jpegfile.cc jpegframe.cc \
-jpegframehdr.cc jpeghufftable.cc jpegjfifapp0.cc jpegrestart.cc \
-jpegsamplevalue.cc jpegscan.cc jpegscanhdr.cc jpegunusedseg.cc \
-main.cc matching.cc mcryptpp.cc mhashkeygenpp.cc \
-mhashpp.cc msg.cc permutation.cc randomsource.cc \
-rgbtriple.cc samplevalue.cc session.cc svalueoppneigh.cc \
-terminal.cc vertex.cc vertexcontent.cc wavchunk.cc \
-wavchunkheader.cc wavchunkunused.cc wavfile.cc wavformatchunk.cc \
-wavsamplevalue.cc
+Arg.cc Arguments.cc \
+AssertionFailed.cc AuFile.cc \
+AuSampleValue.cc AugmentingPathHeuristic.cc \
+BinaryIO.cc BitString.cc \
+BmpFile.cc BmpPaletteSampleValue.cc \
+BmpRGBSampleValue.cc BmpSampleValue.cc \
+ColorPalette.cc ConstructionHeuristic.cc \
+CvrStgFile.cc Edge.cc \
+EdgeIterator.cc EmbData.cc \
+Embedder.cc EncryptionAlgorithm.cc \
+EncryptionMode.cc Extractor.cc \
+Graph.cc GraphAccess.cc \
+JpegFile.cc JpegSampleValue.cc \
+MCrypt.cc MHash.cc \
+MHashKeyGen.cc Matching.cc \
+Permutation.cc RGBTriple.cc \
+RandomSource.cc SampleValue.cc \
+SampleValueOppositeNeighbourhood.cc Session.cc \
+SteghideError.cc Terminal.cc \
+Vertex.cc VertexContent.cc \
+WavChunk.cc WavChunkHeader.cc \
+WavChunkUnused.cc WavFile.cc \
+WavFormatChunk.cc WavPCMSampleValue.cc \
+error.cc jpegbase.cc \
+jpegentropycoded.cc jpegframe.cc \
+jpegframehdr.cc jpeghufftable.cc \
+jpegjfifapp0.cc jpegrestart.cc \
+jpegscan.cc jpegscanhdr.cc \
+jpegunusedseg.cc main.cc \
+msg.cc
 localedir = $(datadir)/locale
 LIBTOOL = $(SHELL) libtool

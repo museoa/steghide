@@ -3,7 +3,7 @@
 
 #define private public
 #define protected public
-#include "bitstring.h"
+#include "BitString.h"
 #undef private
 #undef protected
 

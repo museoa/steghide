@@ -25,7 +25,7 @@
 
 #include "common.h"
 #include "msg.h"
-#include "terminal.h"
+#include "Terminal.h"
 
 //
 // class MessageBase

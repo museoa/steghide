@@ -24,7 +24,7 @@
 #include <climits>
 #include <vector>
 
-#include "binaryio.h"
+#include "BinaryIO.h"
 #include "jpegbase.h"
 
 /**

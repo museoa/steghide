@@ -18,7 +18,7 @@
  *
  */
 
-#include "binaryio.h"
+#include "BinaryIO.h"
 #include "jpegrestart.h"
 
 JpegDefineRestartInterval::JpegDefineRestartInterval ()

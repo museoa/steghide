@@ -21,7 +21,7 @@
 #ifndef SH_JPEGRESTART_H
 #define SH_JPEGRESTART_H
 
-#include "binaryio.h"
+#include "BinaryIO.h"
 #include "jpegbase.h"
 
 class JpegDefineRestartInterval : public JpegSegment {

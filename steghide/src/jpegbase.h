@@ -23,9 +23,9 @@
 
 #include <vector>
 
-#include "binaryio.h"
+#include "BinaryIO.h"
 #include "common.h"
-#include "cvrstgobject.h"
+#include "CvrStgObject.h"
 
 /**
  * \class JpegObject

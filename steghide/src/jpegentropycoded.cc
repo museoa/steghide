@@ -20,14 +20,14 @@
 
 #include <vector>
 
-#include "binaryio.h"
+#include "BinaryIO.h"
 #include "common.h"
 #include "error.h"
 #include "jpegbase.h"
 #include "jpegentropycoded.h"
 #include "jpegframe.h"
 #include "jpegframehdr.h"
-#include "jpegsamplevalue.h"
+#include "JpegSampleValue.h"
 #include "jpegscan.h"
 #include "jpegscanhdr.h"
 
