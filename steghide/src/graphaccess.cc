@@ -27,12 +27,10 @@ GraphAccess::GraphAccess (Graph *g)
 	// FIXME - should be static to save memory
 #if 0
 	if (TheGraph == NULL) {
-//		cerr << "graph access first time" << endl ;
 		TheGraph = g ;
 		SamplesPerVertex = TheGraph->getSamplesPerVertex() ;
 	}
 	else {
-		//cerr << "graph access with " << TheGraph->getNumVertices() << " vertices." << endl ;
 		assert (TheGraph == g) ;
 	}
 #endif

@@ -21,8 +21,6 @@
 #include "constrheur.h"
 #include "randomsource.h"
 
-// FIXME - wie werden nach Einfügeoperation alle Knoten mit Grad 1 erkannt ?
-
 ConstructionHeuristic::ConstructionHeuristic (Graph *g)
 	: GraphAccess(g)
 {
@@ -100,11 +98,13 @@ void ConstructionHeuristic::checkNeighboursDeg1 (Vertex *v)
 		for (vector<SampleValue*>::const_iterator it = oppneighs.begin() ; it != oppneighs.end() ; it++) {
 			const list<VertexContent*> vcontents = TheGraph->getVertexContents(*it) ;
 			for (list<VertexContent*>::const_iterator jt = vcontents.begin() ; jt != vcontents.end() ; jt++) {
-				if ((*jt)->getDegree() == 1) {
-					list<Vertex*> occ = (*jt)->getOccurences() ;
-					for (list<Vertex*>::iterator kt = occ.begin() ; kt != occ.end() ; kt++) {
-						(*kt)->updateShortestEdge() ;
-						VerticesDeg1.push (*kt) ;
+				if ((*jt)->hasOccurences()) {
+					if ((*jt)->getDegree() == 1) {
+						list<Vertex*> occ = (*jt)->getOccurences() ;
+						for (list<Vertex*>::iterator kt = occ.begin() ; kt != occ.end() ; kt++) {
+							(*kt)->updateShortestEdge() ;
+							VerticesDeg1.push (*kt) ;
+						}
 					}
 				}
 			}
@@ -125,7 +125,7 @@ Vertex* ConstructionHeuristic::findVertexDegG (unsigned int k)
 		v = VerticesDegG.top() ;
 		VerticesDegG.pop() ;
 
-		if ((v->getDegree() > 1) && TheMatching->isExposed(v)) { // implicitly delete vertices that have been moved to VerticesDeg1 or have already been matched
+		if ((TheMatching->isExposed(v)) && (v->getDegree() > 1)) { // implicitly delete vertices that have been moved to VerticesDeg1 or have already been matched
 			float weight_before = v->getShortestEdge()->getWeight() ;
 			
 			v->updateShortestEdge() ;
@@ -175,9 +175,8 @@ Vertex *ConstructionHeuristic::findVertexDeg1 (unsigned int k)
 		assert (!VerticesDeg1.empty()) ;
 		v = VerticesDeg1.top() ;
 		VerticesDeg1.pop() ;
-		assert (v->getDegree() <= 1) ;
 
-		if ((v->getDegree() == 1) && TheMatching->isExposed(v)) { // implicitly delete vertices that have degree zero or have already been matched
+		if ((TheMatching->isExposed(v)) && (v->getDegree() == 1)) { // implicitly delete vertices that have degree zero or have already been matched
 			if (topk.size() == k - 1) {
 				for (unsigned int i = 0 ; i < k - 1 ; i++) {
 					VerticesDeg1.push (topk[i]) ;

@@ -110,7 +110,7 @@ class Vertex : private GraphAccess {
 		{ SampleOccurenceIts[i] = it ; }
 
 #ifdef DEBUG
-	void print (void) const ;
+	void print (unsigned short spc = 0) const ;
 	void printEdges (void) const ;
 #endif
 

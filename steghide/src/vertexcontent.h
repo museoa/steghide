@@ -85,6 +85,13 @@ class VertexContent : private GraphAccess {
 	const list<Vertex*>& getOccurences (void) const
 		{ return Occurences ; } ;
 
+	bool hasOccurences (void) const
+		{ return !Occurences.empty() ; } ;
+
+#ifdef DEBUG
+	void print (unsigned short spc = 0) const ;
+#endif
+
 	private:
 	/// the sample values of this vertex content
 	SampleValue** SampleValues ;

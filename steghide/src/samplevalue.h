@@ -139,6 +139,10 @@ class SampleValue {
 	void setLabel (unsigned long l)
 		{ Label = l ; } ;
 
+#ifdef DEBUG
+	void print (unsigned short spc = 0) const ;
+#endif
+
 	protected:
 	/// the bit that is embedded in this sample value - must be set in constructor of derived class
 	Bit SBit ;

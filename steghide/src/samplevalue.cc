@@ -27,3 +27,18 @@ void SampleValue::decNumEdges ()
 	assert (NumEdges > 0) ;
 	NumEdges-- ;
 }
+
+#ifdef DEBUG
+void SampleValue::print (unsigned short spc) const
+{
+	char* space = new char[spc + 1] ;
+	for (unsigned short i = 0 ; i < spc ; i++) {
+		space[i] = ' ' ;
+	}
+	space[spc] = '\0' ;
+	cerr << space << "SampleValue:" << endl ;
+	cerr << space << " Label: " << getLabel() << endl ;
+	cerr << space << " Key: " << getKey() << endl ;
+	cerr << space << " Bit: " << getBit() << endl ;
+}
+#endif

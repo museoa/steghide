@@ -57,7 +57,7 @@ VertexContent::VertexContent (Graph* g, SampleValue**& svs, SamplePos*& sposs)
 	SelfDegree = 0 ;
 	for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
 		for (unsigned short j = i + 1 ; j < SamplesPerVertex ; j++) {
-			if (SampleValues[i]->isNeighbour (SampleValues[j])) {
+			if ((SampleValues[i]->isNeighbour (SampleValues[j])) && (SampleValues[i]->getBit() != SampleValues[j]->getBit())) {
 				SelfDegree += 2 ;
 			}
 		}
@@ -86,13 +86,13 @@ bool VertexContent::operator== (const VertexContent& vc) const
 
 unsigned long VertexContent::getDegree (void) const
 {
+	assert (hasOccurences()) ;
 	unsigned long retval = 0 ;
-
 	for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
 		retval += SampleValues[i]->getNumEdges() ;
 	}
+	assert (SelfDegree <= retval) ;
 	retval -= SelfDegree ;
-
 	return retval ;
 }
 
@@ -138,6 +138,33 @@ size_t VertexContent::getHash (void) const
 	return retval ;
 }
 
+#ifdef DEBUG
+void VertexContent::print (unsigned short spc) const
+{
+	char* space = new char[spc + 1] ;
+	for (unsigned short i = 0 ; i < spc ; i++) {
+		space[i] = ' ' ;
+	}
+	space[spc] = '\0' ;
+	cerr << space << "VertexContent:" << endl ;
+	for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
+		SampleValues[i]->print (spc + 1) ;
+	}
+
+	cerr << space << " Occurences (Labels):"  ;
+	for (list<Vertex*>::const_iterator it = Occurences.begin() ; it != Occurences.end() ; it++) {
+		cerr << " " << (*it)->getLabel() ;
+	}
+	cerr << endl ;
+	
+	cerr << space << " DeletedOccurences (Labels):" ;
+	for (list<Vertex*>::const_iterator it = DeletedOccurences.begin() ; it != DeletedOccurences.end() ; it++) {
+		cerr << " " << (*it)->getLabel() ;
+	}
+	cerr << endl ;
+}
+#endif
+
 //
 // struct VertexContentsEqual
 //
@@ -153,4 +180,3 @@ size_t hash<VertexContent*>::operator() (const VertexContent *vc) const
 {
 	return vc->getHash() ;
 }
-

@@ -103,13 +103,19 @@ void Vertex::updateShortestEdge ()
 }
 
 #ifdef DEBUG
-void Vertex::print() const
+void Vertex::print (unsigned short spc) const
 {
-	cerr << "vertex with label " << getLabel() << endl ;
+	char* space = new char[spc + 1] ;
+	for (unsigned short i = 0 ; i < spc ; i++) {
+		space[i] = ' ' ;
+	}
+	space[spc] = '\0' ;
+
+	cerr << space << "Vertex:" << endl ;
+	cerr << space << " Label: " << getLabel() << endl ;
 	for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
-		cerr << "  SampleLabel[" << i << "] is " << getSampleValue(i)->getLabel() << endl ;
-		cerr << "  SamplePositon[" << i << "] is " << getSamplePos(i) << endl ;
-		cerr << "  SampleKey[" << i << "] is " << hex << getSampleValue(i)->getKey() << dec << endl ;
+		cerr << space << " SamplePosition: " << getSamplePos(i) << endl ;
+		getSampleValue(i)->print (spc + 1) ;
 	}
 }
 
