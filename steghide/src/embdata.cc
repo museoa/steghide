@@ -288,7 +288,7 @@ BitString EmbData::getBitString ()
 	else {
 		std::string tmp = stripDir (FileName) ;
 		if (tmp.size() > EmbFileNameMaxSize) {
-			throw SteghideError (_("the maximum length for the embedded file name is %d characters."), EmbFileNameMaxSize) ;
+			throw SteghideError (_("the maximum length for the embedded file's name is %d characters."), EmbFileNameMaxSize) ;
 		}
 		main.append (tmp.size(), NBitsLenOfFileName) ;
 		main.append (tmp) ;

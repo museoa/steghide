@@ -26,10 +26,10 @@ void WavFormatChunk::read (BinaryIO *io)
 	FormatTag = io->read16_le() ;
 	if (FormatTag != WAVE_FORMAT_PCM) {
 		if (io->is_std()) {
-			throw SteghideError (_("the wav file from standard input has a format that is not supported.")) ;
+			throw NotImplementedError (_("the wav file from standard input has a format that is not supported (FormatTag: 0x%X)."), FormatTag) ;
 		}
 		else {
-			throw SteghideError (_("the wav file \"%s\" has a format that is not supported."), io->getName().c_str()) ;
+			throw NotImplementedError (_("the wav file \"%s\" has a format that is not supported (FormatTag: 0x%X)."), io->getName().c_str(), FormatTag) ;
 		}
 	}
 	Channels = io->read16_le() ;
@@ -44,10 +44,10 @@ void WavFormatChunk::read (BinaryIO *io)
 		AdditionalSize = io->read16_le() ;
 		if (AdditionalSize != 0) {
 			if (io->is_std()) {
-				throw SteghideError (_("the wav file from standard input does not have pcm format.")) ;
+				throw NotImplementedError (_("the wav file from standard input does not have pcm format (header too long).")) ;
 			}
 			else {
-				throw SteghideError (_("the wav file \"%s\" does not have pcm format."), io->getName().c_str()) ;
+				throw NotImplementedError (_("the wav file \"%s\" does not have pcm format (header too long)."), io->getName().c_str()) ;
 			}
 		}
 		if (ChunkHeader->getChunkLength() != 18) {

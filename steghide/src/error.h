@@ -33,7 +33,7 @@ class SteghideError : public MessageBase {
 	SteghideError (std::string msg) ;
 	SteghideError (const char *msgfmt, ...) ;
 
-	void printMessage (void) ;	
+	virtual void printMessage (void) ;	
 } ;
 
 class BinaryInputError : public SteghideError {
@@ -75,4 +75,12 @@ class CorruptJpegError : public SteghideError {
 	public:
 	CorruptJpegError (BinaryIO *io, const char *msgfmt, ...) ;	
 } ;
+
+class NotImplementedError : public SteghideError {
+	public:
+	NotImplementedError (const char* msgfmt, ...) ;
+
+	void printMessage (void) ;
+} ;
+
 #endif

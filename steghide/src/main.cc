@@ -67,7 +67,7 @@ int main (int argc, char *argv[])
         Session s ;
         s.run() ;
     }
-    catch (SteghideError e) {
+    catch (SteghideError& e) {
         e.printMessage() ;
         exit(EXIT_FAILURE) ;
     }

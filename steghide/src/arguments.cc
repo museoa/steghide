@@ -133,7 +133,8 @@ void Arguments::parse (int argc, char *argv[])
 			Passphrase.setValue (argv[i]) ;
 
 			// overwrite passphrase in argv in order to avoid that it can be read with the ps command
-			for (unsigned int j = 0 ; j < strlen (argv[i]) ; j++) {
+			unsigned int len = strlen(argv[i]) ;
+			for (unsigned int j = 0 ; j < len ; j++) {
 				argv[i][j] = ' ' ;
 			}
 		}

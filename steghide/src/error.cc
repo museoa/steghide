@@ -152,3 +152,23 @@ CorruptJpegError::CorruptJpegError (BinaryIO *io, const char *msgfmt, ...)
 
 	setMessage(mainmsg + " " + auxmsg) ;
 }
+
+//
+// class NotImplementedError
+//
+NotImplementedError::NotImplementedError (const char *msgfmt, ...)
+	: SteghideError()
+{
+	va_list ap ;
+	va_start (ap, msgfmt) ;
+	setMessage (vcompose (msgfmt, ap)) ;
+	va_end (ap) ;
+}
+
+void NotImplementedError::printMessage ()
+{
+	SteghideError::printMessage() ;
+	printf (_("This feature is not implemented (yet). Please let me (shetzl@chello.at) know\n"
+		"this to increase the chance that this will be implemented in the near future.\n"
+		"Steghide will exit now.\n")) ;
+}

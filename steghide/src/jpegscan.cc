@@ -130,10 +130,10 @@ void JpegScan::read (BinaryIO *io)
 		}
 		else {
 			if (io->is_std()) {
-				throw SteghideError (_("encountered unknown marker code 0x%x in jpeg file on standard input while reading scan."), marker) ;
+				throw NotImplementedError (_("encountered unknown marker code 0x%x in jpeg file on standard input while reading scan."), marker) ;
 			}
 			else {
-				throw SteghideError (_("encountered unknown marker code 0x%x in jpeg file \"%s\" while reading scan."), marker, io->getName().c_str()) ;
+				throw NotImplementedError (_("encountered unknown marker code 0x%x in jpeg file \"%s\" while reading scan."), marker, io->getName().c_str()) ;
 			}
 		}
 	}

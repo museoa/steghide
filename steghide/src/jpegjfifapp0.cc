@@ -54,10 +54,10 @@ void JpegJFIFAPP0::read (BinaryIO *io)
 	version = io->read16_be() ;
 	if ((version >> 8) != 0x01) {
 		if (io->is_std()) {
-			throw SteghideError (_("the version of the jpeg file on standard input is not supported.")) ;
+			throw NotImplementedError (_("the version of the jpeg file on standard input is not supported.")) ;
 		}
 		else {
-			throw SteghideError (_("the version of the jpeg file \"%s\" is not supported."), io->getName().c_str()) ;
+			throw NotImplementedError (_("the version of the jpeg file \"%s\" is not supported."), io->getName().c_str()) ;
 		}
 	}
 	units = io->read8() ;

@@ -143,20 +143,19 @@ void JpegFrame::read (BinaryIO *io)
 			appendObj (new JpegUnusedSegment (marker, io)) ;
 		}
 		else if (marker == JpegElement::MarkerSOF2) {
-			// TODO - support progressive DCT
 			if (io->is_std()) {
-				throw SteghideError (_("the jpeg file on standard input uses progressive DCT mode which is not supported in this version.")) ;
+				throw NotImplementedError (_("the jpeg file on standard input uses progressive DCT mode which is not supported in this version.")) ;
 			}
 			else {
-				throw SteghideError (_("the jpeg file \"%s\" uses progressive DCT mode which is not supported in this version."), io->getName().c_str()) ;
+				throw NotImplementedError (_("the jpeg file \"%s\" uses progressive DCT mode which is not supported in this version."), io->getName().c_str()) ;
 			}
 		}
 		else {
 			if (io->is_std()) {
-				throw SteghideError (_("encountered unknown marker code 0x%x in jpeg file on standard input while reading frame."), marker) ;
+				throw NotImplementedError (_("encountered unknown marker code 0x%x in jpeg file on standard input while reading frame."), marker) ;
 			}
 			else {
-				throw SteghideError (_("encountered unknown marker code 0x%x in jpeg file \"%s\" while reading frame."), marker, io->getName().c_str()) ;
+				throw NotImplementedError (_("encountered unknown marker code 0x%x in jpeg file \"%s\" while reading frame."), marker, io->getName().c_str()) ;
 			}
 		}
 	}

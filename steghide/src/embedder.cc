@@ -19,6 +19,7 @@
  */
 
 #include <cfloat>
+#include <cstdlib>
 
 #include "augheur.h"
 #include "bitstring.h"
@@ -49,6 +50,13 @@ Embedder::Embedder ()
 	// create graph
 	TheGraph = new Graph (TheCvrStgFile, ToEmbed) ;
 	TheGraph->printVerboseInfo() ;
+
+#ifdef DEBUG
+	if (Args.DebugCommand.getValue() == PRINTGRAPH) {
+		TheGraph->print() ;
+		exit (EXIT_SUCCESS) ;
+	}
+#endif
 }
 
 Embedder::~Embedder ()

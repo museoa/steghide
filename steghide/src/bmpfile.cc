@@ -266,10 +266,10 @@ void BmpFile::readheaders ()
 
 			default: {
 				if (getBinIO()->is_std()) {
-					throw SteghideError (_("the bmp data from standard input has a format that is not supported.")) ;
+					throw NotImplementedError (_("the bmp data from standard input has a format that is not supported (biSize: %lu)."), tmpSize) ;
 				}
 				else {
-					throw SteghideError (_("the bmp file \"%s\" has a format that is not supported."), getBinIO()->getName().c_str()) ;
+					throw NotImplementedError (_("the bmp file \"%s\" has a format that is not supported (biSize: %lu)."), getBinIO()->getName().c_str(), tmpSize) ;
 				}
 			break ; }
 		}
@@ -303,17 +303,21 @@ void BmpFile::bmpwin_readheaders ()
 	bmih.biPlanes = getBinIO()->read16_le () ;
 	assert (bmih.biPlanes == 1) ;
 	bmih.biBitCount = getBinIO()->read16_le () ;
-	assert ((bmih.biBitCount == 1) ||
-			(bmih.biBitCount == 4) ||
-			(bmih.biBitCount == 8) || 
-			(bmih.biBitCount == 24)) ; // FIXME - 16bit bmps exist (os/2 maybe too)
+	if ((bmih.biBitCount != 1) && (bmih.biBitCount != 4) && (bmih.biBitCount != 8) && (bmih.biBitCount != 24)) {
+		if (getBinIO()->is_std()) {
+			throw NotImplementedError (_("the bmp data from standard input has a format that is not supported (biBitCount: %d)."), bmih.biBitCount) ;
+		}
+		else {
+			throw NotImplementedError (_("the bmp file \"%s\" has a format that is not supported (biBitCount: %d)."), getBinIO()->getName().c_str(), bmih.biBitCount) ;
+		}
+	}
 	bmih.biCompression = getBinIO()->read32_le () ;
 	if (bmih.biCompression != COMPRESSION_BI_RGB) {
 		if (getBinIO()->is_std()) {
-			throw SteghideError (_("the bitmap data from standard input is compressed which is not supported.")) ;
+			throw NotImplementedError (_("the bitmap data from standard input is compressed which is not supported.")) ;
 		}
 		else {
-			throw SteghideError (_("the bitmap data in \"%s\" is compressed which is not supported."), getBinIO()->getName().c_str()) ;
+			throw NotImplementedError (_("the bitmap data in \"%s\" is compressed which is not supported."), getBinIO()->getName().c_str()) ;
 		}
 	}
 	bmih.biSizeImage = getBinIO()->read32_le () ;
