@@ -77,7 +77,7 @@ unsigned long readnum (char *s)
 	return retval ;
 }
 
-char *get_passphrase (int doublecheck)
+char *get_passphrase (bool doublecheck)
 {
 	struct termios oldattr ;
 	char *p1, *p2 ;
@@ -99,7 +99,7 @@ char *get_passphrase (int doublecheck)
 	termios_reset (oldattr) ;
 	printf ("\n") ;
 
-	if (doublecheck == PP_DOUBLECHECK) {
+	if (doublecheck) {
 		fprintf (stderr, _("Re-Enter passphrase: ")) ;
 		oldattr = termios_echo_off () ;
 		i = 0 ;
@@ -245,6 +245,7 @@ void *s_realloc (void *ptr, size_t size)
 	return retval ;
 }
 
+#if 0
 int read16_le (FILE *file)
 {
 	int bytes[2] ;
@@ -316,6 +317,7 @@ void write32_be (FILE *file, unsigned long val)
 	putc ((val >> 8) & 0xFF, file) ;
 	putc (val & 0xFF, file) ;
 }
+#endif
 
 void cp32ul2uc_be (unsigned char *dest, unsigned long src)
 {

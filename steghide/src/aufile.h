@@ -21,33 +21,43 @@
 #ifndef SH_FF_AU_H
 #define SH_FF_AU_H
 
+#include "binaryio.h"
+#include "bufmanag.h"
 #include "cvrstgfile.h"
 
-/*** au file format ***/
-typedef struct struct_AU_HEADER {
-	char			id[4] ;
-	unsigned long	offset ;
-	unsigned long	size ;
-	unsigned long	encoding ;
-	unsigned long	samplerate ;
-	unsigned long	channels ;
-} AU_HEADER ;
+class AuFile : public CvrStgFile {
+	public:
+	AuFile (void) ;
+	AuFile (BinaryIO *io) ;
+	~AuFile (void) ;
 
-#define AU_SIZE_HEADER		24
+	void read (BinaryIO *io) ;
+	void write (void) ;
+	unsigned long getCapacity (void) ;
+	void embedBit (unsigned long pos, int bit) ;
+	int extractBit (unsigned long pos) ;
 
-typedef struct struct_AU_CONTENTS {
-	AU_HEADER		*header ;
+	private:
+	static const int HeaderSize = 24 ;
+
+	typedef struct struct_AuHeader {
+		char			id[4] ;
+		unsigned long	offset ;
+		unsigned long	size ;
+		unsigned long	encoding ;
+		unsigned long	samplerate ;
+		unsigned long	channels ;
+	} AuHeader ;
+
+	AuHeader		*header ;
 	unsigned long	len_infofield ;
 	void			*infofield ;
 	BUFFER			*data ;
-} AU_CONTENTS ;
 
-/* function prototypes */
-void au_readfile (CVRSTGFILE *file) ;
-void au_writefile (CVRSTGFILE *file) ;
-unsigned long au_capacity (CVRSTGFILE *file) ;
-void au_embedbit (CVRSTGFILE *file, unsigned long pos, int value) ;
-int au_extractbit (CVRSTGFILE *file, unsigned long pos) ;
-void au_cleanup (CVRSTGFILE *file) ;
+	void readheaders (void) ;
+	void readdata (void) ;
+	void writeheaders (void) ;
+	void writedata (void) ;
+} ;
 
 #endif /* ndef SH_FF_AU_H */

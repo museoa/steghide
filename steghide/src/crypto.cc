@@ -29,6 +29,7 @@
 #include <libintl.h>
 #define _(S) gettext (S)
 
+#include "arguments.h"
 #include "bufmanag.h"
 #include "stegano.h"
 #include "crypto.h"
@@ -46,7 +47,7 @@ void encrypt_sthdr (void *buf, int buflen, char *passphrase)
 
 	assert (buflen % BLOCKSIZE_BLOWFISH == 0) ;
 
-	if (args.compatibility.value) {
+	if (args->compatibility.getValue()) {
 		cryptoalgo = CRYPTOALGO_STHDR_COMPAT ;
 	}
 	else {
@@ -82,7 +83,7 @@ void decrypt_sthdr (void *buf, int buflen, char *passphrase)
 
 	assert (buflen % BLOCKSIZE_BLOWFISH == 0) ;
 
-	if (args.compatibility.value) {
+	if (args->compatibility.getValue()) {
 		cryptoalgo = CRYPTOALGO_STHDR_COMPAT ;
 	}
 	else {
@@ -135,7 +136,7 @@ void encrypt_plnfile (PLNFILE *plnfile, char *passphrase)
 		bufsetbyte (result, i, IV[i]) ;
 	}
 
-	if (args.compatibility.value) {
+	if (args->compatibility.getValue()) {
 		cryptoalgo = CRYPTOALGO_DATA_COMPAT ;
 	}
 	else {
@@ -206,7 +207,7 @@ void decrypt_plnfile (PLNFILE *plnfile, char *passphrase)
 		IV[plnpos] = bufgetbyte (plnfile->plndata, plnpos) ;
 	}
 
-	if (args.compatibility.value) {
+	if (args->compatibility.getValue()) {
 		cryptoalgo = CRYPTOALGO_DATA_COMPAT ;
 	}
 	else {

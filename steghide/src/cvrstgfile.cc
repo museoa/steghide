@@ -1,23 +1,3 @@
-/*
- * steghide 0.4.5 - a steganography program
- * Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -26,6 +6,7 @@
 #include <libintl.h>
 #define _(S) gettext (S)
 
+#include "error.h"
 #include "main.h"
 #include "cvrstgfile.h"
 #include "bufmanag.h"
@@ -33,129 +14,67 @@
 #include "support.h"
 #include "stegano.h"
 #include "hash.h"
-#include "ff_bmp.h"
-#include "ff_wav.h"
-#include "ff_au.h"
+#include "bmpfile.h"
+#include "wavfile.h"
+#include "aufile.h"
 
-/* function prototypes */
-static int detectff (CVRSTGFILE *file) ;
-
-CVRSTGFILE *cvrstg_readfile (char *filename)
+CvrStgFile::CvrStgFile (void)
 {
-	CVRSTGFILE *file = NULL ;
+	// empty
+}
 
-	if (args.action.value == ARGS_ACTION_EMBED) {
-		if (filename == NULL) {
+CvrStgFile::CvrStgFile (BinaryIO *io)
+{
+	read (io) ;
+}
+
+CvrStgFile::~CvrStgFile (void)
+{
+	delete BinIO ;
+}
+
+void CvrStgFile::read (BinaryIO *io)
+{
+	BinIO = io ;
+
+	if (args->command.getValue() == EMBED) {
+		if (BinIO->is_std()) {
 			pverbose (_("reading cover file from standard input.")) ;
 		}
 		else {
-			pverbose (_("reading cover file \"%s\"."), filename) ;
+			pverbose (_("reading cover file \"%s\"."), BinIO->getName().c_str()) ;
 		}
 	}
-	else if (args.action.value == ARGS_ACTION_EXTRACT) {
-		if (filename == NULL) {
+	else if (args->command.getValue() == EXTRACT) {
+		if (BinIO->is_std()) {
 			pverbose (_("reading stego file from standard input.")) ;
 		}
 		else {
-			pverbose (_("reading stego file \"%s\"."), filename) ;
+			pverbose (_("reading stego file \"%s\"."), BinIO->getName().c_str()) ;
 		}
 	}
 	else {
 		assert (0) ;
 	}
-
-	/* fill CVRSTGFILE structure */
-	file = (CVRSTGFILE *) s_malloc (sizeof *file) ;
-
-	if (filename == NULL) {
-		file->stream = stdin ;
-		file->filename = NULL ;
-	}
-	else {
-		if ((file->stream = fopen (filename, "rb")) == NULL) {
-			free (file) ;
-			exit_err (_("could not open the file \"%s\"."), filename) ;
-		}
-		file->filename = filename ;
-	}
-
-	file->fileformat = detectff (file) ;
-	switch (file->fileformat) {
-		case FF_UNKNOWN:
-		if (file->filename == NULL) {
-			exit_err (_("the file format of the data from standard input is not supported.")) ;
-		}
-		else {
-			exit_err (_("the file format of the file \"%s\" is not supported."), file->filename) ;
-		}
-		break ;
-
-		case FF_BMP:
-		bmp_readfile (file) ;
-		break ;
-
-		case FF_WAV:
-		wav_readfile (file) ;
-		break ;
-
-		case FF_AU:
-		au_readfile (file) ;
-		break ;
-
-		default:
-		assert (0) ;
-		break ;
-	}
-
-	return file ;
 }
 
-/* writes the file described in the cvrstgfile structure to disk */
-void cvrstg_writefile (CVRSTGFILE *file)
+void CvrStgFile::write (void)
 {
-	if (file->filename == NULL) {
+	if (BinIO->is_std()) {
 		pverbose (_("writing stego file to standard output.")) ;
 	}
 	else {
-		pverbose (_("writing stego file \"%s\"."), file->filename) ;
+		pverbose (_("writing stego file \"%s\"."), BinIO->getName().c_str()) ;
 	}
-
-	switch (file->fileformat) {
-		case FF_BMP:
-		bmp_writefile (file) ;
-		break ;
-
-		case FF_WAV:
-		wav_writefile (file) ;
-		break ;
-
-		case FF_AU:
-		au_writefile (file) ;
-		break ;
-
-		default:
-		assert (0) ;
-		break ;
-	}
-
-	if (args.action.value == ARGS_ACTION_EMBED) {
-		if (file->filename == NULL) {
-			pverbose (_("wrote stego file to standard output.")) ;
-		}
-		else {
-			pmsg (_("wrote stego file to \"%s\"."), file->filename) ;
-		}
-	}
-	else {
-		assert (0) ;
-	}
-
-	return ;
 }
 
 /* 'creates' a stego file from a cover file */
-void cvrstg_transform (CVRSTGFILE *file, char *stgfilename)
+void CvrStgFile::transform (string stgfn)
 {
+	delete BinIO ;
+	BinIO = new BinaryIO (stgfn, BinaryIO::WRITE) ;
+
+#if 0
 	if (file->filename != NULL) {
 		if (fclose (file->stream) == EOF) {
 			exit_err (_("could not close file \"%s\"."), file->filename) ;
@@ -167,14 +86,14 @@ void cvrstg_transform (CVRSTGFILE *file, char *stgfilename)
 		file->stream = stdout ;
 	}
 	else {
-		if (!args.force.value) {
+		if (!args->force.value) {
 			/* check if file already exists */
 			if (fileexists (file->filename)) {
-				if ((args.cvrfn.value == NULL) || (args.plnfn.value == NULL)) {
+				if ((args->cvrfn.value == NULL) || (args->plnfn.value == NULL)) {
 					exit_err (_("file \"%s\" does already exist."), file->filename) ;
 				}
 				else {
-					if (!pquestion (_("file \"%s\" does already exist. overwrite ?"), file->filename)) {
+					if (!pquestBinIOn (_("file \"%s\" does already exist. overwrite ?"), file->filename)) {
 						exit_err (_("did not write to file \"%s\"."), file->filename) ;
 					}
 				}
@@ -185,131 +104,35 @@ void cvrstg_transform (CVRSTGFILE *file, char *stgfilename)
 			exit_err (_("could not create stego file \"%s\"."), file->filename) ;
 		}
 	}
+#endif
 
 	return ;
 }
 
-unsigned long cvrstg_capacity (CVRSTGFILE *file)
-{
-	unsigned long retval = 0 ;
 
-	switch (file->fileformat) {
-		case FF_BMP:
-		retval = bmp_capacity (file) ;
-		break ;
 
-		case FF_WAV:
-		retval = wav_capacity (file) ;
-		break ;
 
-		case FF_AU:
-		retval = au_capacity (file) ;
-		break ;
 
-		default:
-		assert (0) ;
-		break ;
-	}
+// FIXME - detectff sollte mit BinaryIO arbeiten und auch zurückgeben oder verwenden oder so - damit CvrStgFile bzw. abgeleitetes Objekt gleich mit BinaryIO weiterarbeiten kann - ohne rewind oder so...
 
-	return retval ;
-}
 
-void cvrstg_embedbit (CVRSTGFILE *file, unsigned long pos, int value)
-{
-	switch (file->fileformat) {
-		case FF_BMP:
-		bmp_embedbit (file, pos, value) ;
-		break ;
 
-		case FF_WAV:
-		wav_embedbit (file, pos, value) ;
-		break ;
-
-		case FF_AU:
-		au_embedbit (file, pos, value) ;
-		break ;
-
-		default:
-		assert (0) ;
-		break ;
-	}
-
-	return ;
-}
-
-int cvrstg_extractbit (CVRSTGFILE *file, unsigned long pos)
-{
-	int retval = -1 ;
-
-	switch (file->fileformat) {
-		case FF_BMP:
-		retval = bmp_extractbit (file, pos) ;
-		break ;
-
-		case FF_WAV:
-		retval = wav_extractbit (file, pos) ;
-		break ;
-
-		case FF_AU:
-		retval = au_extractbit (file, pos) ;
-		break ;
-
-		default:
-		assert (0) ;
-		break ;
-	}
-
-	return retval ;
-}
-
-void cvrstg_cleanup (CVRSTGFILE *file)
-{
-	switch (file->fileformat) {
-		case FF_BMP:
-		bmp_cleanup (file) ;
-		break ;
-
-		case FF_WAV:
-		wav_cleanup (file) ;
-		break ;
-
-		case FF_AU:
-		au_cleanup (file) ;
-		break ;
-
-		default:
-		assert (0) ;
-		break ;
-	}
-
-	if (file->filename != NULL) {
-		if (fclose (file->stream) != 0) {
-			exit_err (_("could not close file \"%s\"."), file->filename) ;
-		}
-	}
-
-	return ;
-}
-
-/* auto-detects file format while reading headers */
-static int detectff (CVRSTGFILE *file)
+/* detects file format */
+static int detectff (BinaryIO *io)
 {
 	char buf[4] = { '\0', '\0', '\0', '\0' } ;
-	int i = 0, retval = FF_UNKNOWN ;
+	int retval = FF_UNKNOWN ;
 	
-	/* FIXME - return value von getc überprüfen, danach ein ferror !! */
-	/* ? auch in read32_le,... funktionen ? */
-
-	for (i = 0 ; i < 2 ; i++) {
-		buf[i] = (char) getc (file->stream) ;
+	for (unsigned int i = 0 ; i < 2 ; i++) {
+		buf[i] = (char) io->read8() ;
 	}
 
 	if (strncmp ("BM", buf, 2) == 0) {
 		retval = FF_BMP ;
 	}
 	else {
-		for (i = 2 ; i < 4 ; i++) {
-			buf[i] = (char) getc (file->stream) ;
+		for (unsigned int i = 2 ; i < 4 ; i++) {
+			buf[i] = (char) io->read8() ;
 		}
 
 		if (strncmp (".snd", buf, 4) == 0) {
@@ -318,9 +141,10 @@ static int detectff (CVRSTGFILE *file)
 		else if (strncmp ("RIFF", buf, 4) == 0) {
 			unsigned long rifflen ;
 
-			rifflen = read32_le (file->stream) ;
-			for (i = 0 ; i < 4 ; i++) {
-				buf[i] = getc (file->stream) ;
+			// FIXME - wie kommt WavFile an rifflen ??
+			rifflen = io->read32_le() ;
+			for (unsigned int i = 0 ; i < 4 ; i++) {
+				buf[i] = (char) io->read8() ;
 			}
 			if (strncmp ("WAVE", buf, 4) == 0) {
 				retval = FF_WAV ;
@@ -328,7 +152,40 @@ static int detectff (CVRSTGFILE *file)
 		}
 	}
 
-	rewind (file->stream) ;
-
 	return retval ;
+}
+
+CvrStgFile *cvrstg_readfile (string filename)
+{
+	BinaryIO *BinIO = new BinaryIO (filename, BinaryIO::READ) ;
+	CvrStgFile *file = NULL ;
+
+	switch (detectff (BinIO)) {
+		case FF_UNKNOWN:
+		if (BinIO->is_std()) {
+			throw SteghideError (_("the file format of the data from standard input is not supported.")) ;
+		}
+		else {
+			throw SteghideError (_("the file format of the file \"%s\" is not supported."), BinIO->getName().c_str()) ;
+		}
+		break ;
+
+		case FF_BMP:
+		file = new BmpFile (BinIO) ;
+		break ;
+
+		case FF_WAV:
+		file = new WavFile (BinIO) ;
+		break ;
+
+		case FF_AU:
+		file = new AuFile (BinIO) ;
+		break ;
+
+		default:
+		assert (0) ;
+		break ;
+	}
+
+	return file ;
 }

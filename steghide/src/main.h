@@ -29,6 +29,7 @@
 
 #define PROGNAME	"steghide"
 
+#if 0
 #define ARGS_ACTION_EMBED		1
 #define ARGS_ACTION_EXTRACT		2
 #define ARGS_ACTION_VERSION		3
@@ -83,7 +84,8 @@ typedef struct struct_ARGS {
 	ARGSTRING passphrase ;
 } ARGS ;
 
-extern ARGS args ;
+extern ARGS args->;
+#endif
 
 #ifdef WIN32
 #include <windows.h>

@@ -28,15 +28,12 @@
 #define CHILD_ARGCMAX	20
 #define CHILD_ARGLENMAX 512
 
-#define PP_DOUBLECHECK		1
-#define PP_NODOUBLECHECK	0
-
 /* function prototypes */
 void srnd (unsigned long seed) ;
 int rnd (unsigned long max) ;
 char *stripdir (char *filename) ;
 void swap (unsigned long *x, unsigned long *y) ;
-char *get_passphrase (int doublecheck) ;
+char *get_passphrase (bool doublecheck) ;
 struct termios termios_echo_off (void) ;
 struct termios termios_singlekey_on (void) ;
 void termios_reset (struct termios attr) ;
@@ -45,14 +42,6 @@ unsigned long readnum (char *s) ;
 void *s_malloc (size_t size) ;
 void *s_calloc (size_t nmemb, size_t size) ;
 void *s_realloc (void *ptr, size_t size) ;
-int read16_le (FILE *file) ;
-int read16_be (FILE *file) ;
-unsigned long read32_le (FILE *file) ;
-unsigned long read32_be (FILE *file) ;
-void write16_le (FILE *file, int val) ;
-void write16_be (FILE *file, int val) ;
-void write32_le (FILE *file, unsigned long val) ;
-void write32_be (FILE *file, unsigned long val) ;
 void cp32ul2uc_be (unsigned char *dest, unsigned long src) ;
 void cp32uc2ul_be (unsigned long *dest, unsigned char *src) ;
 void cp32ul2uc_le (unsigned char *dest, unsigned long src) ;
@@ -61,4 +50,15 @@ unsigned int cp_bits_to_buf_le (void *buf, unsigned int bufbitpos, unsigned long
 unsigned int cp_bits_from_buf_le (void *buf, unsigned int bufbitpos, unsigned long *val, unsigned int val_nbits) ;
 unsigned int nbits (unsigned long x) ;
 
+#if 0
+int read16_le (FILE *file) ;
+int read16_be (FILE *file) ;
+unsigned long read32_le (FILE *file) ;
+unsigned long read32_be (FILE *file) ;
+
+void write16_le (FILE *file, int val) ;
+void write16_be (FILE *file, int val) ;
+void write32_le (FILE *file, unsigned long val) ;
+void write32_be (FILE *file, unsigned long val) ;
+#endif
 #endif /* ndef SH_SUPPORT_H */

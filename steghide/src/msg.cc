@@ -27,13 +27,14 @@
 #include <libintl.h>
 #define _(S) gettext (S)
 
+#include "arguments.h"
 #include "msg.h"
 #include "support.h"
 #include "main.h"
 
 void pverbose (char *fmt, ...)
 {
-	if (args.verbosity.value == ARGS_VERBOSITY_VERBOSE) {
+	if (args->verbosity.getValue() == VERBOSE) {
 		va_list ap ;
 
 		va_start (ap, fmt) ;
@@ -48,7 +49,7 @@ void pverbose (char *fmt, ...)
 
 void pmsg (char *fmt, ...)
 {
-	if (args.verbosity.value != ARGS_VERBOSITY_QUIET) {
+	if (args->verbosity.getValue() != QUIET) {
 		va_list ap ;
 
 		va_start (ap, fmt) ;
@@ -90,7 +91,7 @@ int pquestion (char *fmt, ...)
 
 void pwarn (char *fmt, ...)
 {
-	if (args.verbosity.value != ARGS_VERBOSITY_QUIET) {
+	if (args->verbosity.getValue() != QUIET) {
 		va_list ap ;
 
 		fprintf (stderr, _("%s: warning: "), PROGNAME) ;

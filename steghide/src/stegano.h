@@ -121,10 +121,10 @@ typedef struct struct_STEGOHEADER {
 extern STEGOHEADER sthdr ;
 
 /* function prototypes */
-void embeddata (CVRSTGFILE *cvrstgfile, unsigned long firstcvrpos, PLNFILE *plnfile) ;
-BUFFER *extractdata (CVRSTGFILE *cvrstgfile, unsigned long firststgpos) ;
-void embedsthdr (CVRSTGFILE *cvrstgfile, int dmtd, DMTDINFO dmtdinfo, int enc, char *passphrase, unsigned long *firstplnpos) ;
-void extractsthdr (CVRSTGFILE *cvrstgfile, int dmtd, DMTDINFO dmtdinfo, int enc, char *passphrase, unsigned long *firstplnpos) ;
+void embeddata (CvrStgFile *cvrstgfile, unsigned long firstcvrpos, PLNFILE *plnfile) ;
+BUFFER *extractdata (CvrStgFile *cvrstgfile, unsigned long firststgpos) ;
+void embedsthdr (CvrStgFile *cvrstgfile, int dmtd, DMTDINFO dmtdinfo, int enc, char *passphrase, unsigned long *firstplnpos) ;
+void extractsthdr (CvrStgFile *cvrstgfile, int dmtd, DMTDINFO dmtdinfo, int enc, char *passphrase, unsigned long *firstplnpos) ;
 #ifdef DEBUG
 void dmtd_reset (unsigned int dmtd, DMTDINFO dmtdinfo, unsigned long resetpos) ;
 unsigned long dmtd_nextpos (void) ;

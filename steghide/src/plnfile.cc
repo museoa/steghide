@@ -25,6 +25,7 @@
 #include <libintl.h>
 #define _(S) gettext (S)
 
+#include "arguments.h"
 #include "bufmanag.h"
 #include "hash.h"
 #include "main.h"
@@ -95,10 +96,10 @@ void pln_writefile (PLNFILE *plnfile)
 		plnfile->stream = stdout ;
 	}
 	else {
-		if (!args.force.value) {
+		if (!args->force.getValue()) {
 			/* check if file already exists */
 			if (fileexists (plnfile->filename)) {
-				if (args.stgfn.value == NULL) {
+				if (args->stgfn.getValue() == "") {
 					exit_err (_("file \"%s\" does already exist."), plnfile->filename) ;
 				}
 				else {
@@ -141,15 +142,15 @@ void assemble_plndata (PLNFILE *plnfile)
 
 	buf = bufcreate (1) ;
 	
-	if ((args.plnfn.value == NULL) || (!args.embedplnfn.value)) {
+	if ((args->plnfn.getValue() == "") || (!args->embedplnfn.getValue())) {
 		/* standard input is used or plain file name embedding has
 		   been turned off explicitly */
 		bufsetbyte (buf, pos++, 0) ;
 	}
 	else {
-		assert (args.plnfn.is_set) ;
+		assert (args->plnfn.is_set()) ;
 
-		tmp = stripdir (args.plnfn.value) ;
+		tmp = stripdir ((char *) args->plnfn.getValue().c_str()) ;
 
 		if ((nbytes_plnfilename = strlen (tmp)) > PLNFILENAME_MAXLEN) {
 			exit_err (_("the maximum length for the plain file name is %d characters."), PLNFILENAME_MAXLEN) ;
@@ -161,7 +162,7 @@ void assemble_plndata (PLNFILE *plnfile)
 		}
 	}
 
-	if (args.checksum.value) {
+	if (args->checksum.getValue()) {
 		unsigned char *uc_crc32 = (unsigned char *) getcrc32 (plnfile) ;
 		bufsetbyte (buf, pos++, (int) uc_crc32[0]) ;
 		bufsetbyte (buf, pos++, (int) uc_crc32[1]) ;
@@ -193,20 +194,20 @@ void deassemble_plndata (PLNFILE *plnfile)
 	}
 	plnfilename[i] = '\0' ;
 
-	if (args.plnfn.is_set) {
-		if (args.plnfn.value == NULL) {
+	if (args->plnfn.is_set()) {
+		if (args->plnfn.getValue() == "") {
 			/* write pln data to stdout */
 			plnfile->filename = NULL ;
 		}
 		else {
 			/* write pln data to file with given name */
-			plnfile->filename = (char *) s_malloc (strlen (args.plnfn.value) + 1) ;
-			strcpy (plnfile->filename, args.plnfn.value) ;
+			plnfile->filename = (char *) s_malloc (strlen (args->plnfn.getValue().c_str()) + 1) ;
+			strcpy (plnfile->filename, args->plnfn.getValue().c_str()) ;
 		}
 	}
 	else {
 		/* write pln data to file with name stored in stego file */
-		assert (args.plnfn.value == NULL) ;
+		assert (args->plnfn.getValue() == "") ;
 
 		if (nbytes_plnfilename == 0) {
 			exit_err (_("please specify a name for the plain file (there is none embedded in the stego file).")) ;
