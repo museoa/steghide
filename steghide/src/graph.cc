@@ -47,6 +47,9 @@ Graph::Graph (CvrStgFile *f, vector<SamplePos*>& sposs)
 		cerr << "SampleValueOppositeNeighbourhood check failed." << endl ;
 	}
 #endif
+	if (!check_SampleOccurences()) {
+		cerr << "SampleOccurences check failed." << endl ;
+	}
 }
 
 void Graph::constructSamples (const vector<SamplePos*>& sposs,
@@ -131,6 +134,7 @@ void Graph::constructEdges (const hash_set<VertexContent*,hash<VertexContent*>,V
 
 	// fill SampleOccurences
 	SampleOccurences = vector<list<SampleOccurence> > (SampleValues.size()) ;
+	DeletedSampleOccurences = vector<list<SampleOccurence> > (SampleValues.size()) ;
 	for (vector<Vertex*>::iterator it = Vertices.begin() ; it != Vertices.end() ; it++) {
 		for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
 			SampleOccurence occ (*it, j) ;
@@ -361,7 +365,7 @@ bool Graph::check_ds (void) const
 	retval = check_degrees() && retval ;
 	retval = check_sampleoppositeneighbourhood() && retval ;
 	retval = check_vertexcontents() && retval ;
-	retval = check_sampleoccurences() && retval ;
+	retval = check_SampleOccurences() && retval ;
 
 	return retval ;
 }
@@ -534,40 +538,65 @@ bool Graph::check_vertexcontents (void) const
 	return retval ;
 }
 
-// FIXME - fix this
-bool Graph::check_sampleoccurences (void) const
+bool Graph::check_SampleOccurences (void) const
 {
 	bool retval = true ;
-#if 0
-
-	unsigned long nsamples = File->getNumSamples() ;
-
-	cerr << "checking SampleOccurences: every samplepos is a valid samplepos for this file" << endl ;
-	for (unsigned long i = 0 ; i < SampleValues.size() ; i++) {
-		for (map<SamplePos,pair<Vertex*,unsigned short> >::const_iterator j = SampleOccurences[i].begin() ; j != SampleOccurences[i].end() ; j++) {
-			if (j->first >= nsamples) {
-				retval = false ;
-				cerr << "FAILED: invalid sample position" << endl ;
-			}
-		}
-	}
-
-	cerr << "checking SampleOccurences: every samplepos occurs not more than once" << endl ;
-	vector<bool> hasoccured (nsamples, false) ;
-	for (unsigned long i = 0 ; i < SampleValues.size() ; i++) {
-		for (map<SamplePos,pair<Vertex*,unsigned short> >::const_iterator j = SampleOccurences[i].begin() ; j != SampleOccurences[i].end() ; j++) {
-			if (hasoccured[j->first]) {
-				retval = false ;
-				cerr << "FAILED: a sample in SampleOccurences occurs two times" << endl ;
-			}
-			else {
-				hasoccured[j->first] = true ;
-			}
-		}
-	}
-
-#endif
+	cerr << "checking SampleOccurences:" << endl ;
+	retval = check_SampleOccurences_correctness() && retval ;
+	retval = check_SampleOccurences_completeness() && retval ;
 	return retval ;
+}
+
+bool Graph::check_SampleOccurences_correctness (void) const
+{
+	bool err = false ;
+
+	unsigned long numsvs = SampleValues.size() ;
+	for (unsigned long lbl = 0 ; lbl < numsvs ; lbl++) {
+		for (list<SampleOccurence>::const_iterator it = SampleOccurences[lbl].begin() ; it != SampleOccurences[lbl].end() ; it++) {
+			Vertex *v = it->getVertex() ;
+			unsigned short idx = it->getIndex() ;
+			if (v->getSampleValue(idx) != SampleValues[lbl]) { // pointer equivalence
+				err = true ;
+			}
+		}
+	}
+
+	if (err) {
+		cerr << "FAILED: there exists a SampleOccurence in SampleOccurences which is not correct" << endl ;
+	}
+
+	return !err ;
+}
+
+bool Graph::check_SampleOccurences_completeness (void) const
+{
+	bool err = false ;
+
+	unsigned long numvertices = Vertices.size() ;
+	for (unsigned long vlbl = 0 ; vlbl < numvertices ; vlbl++) {
+		for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
+			SampleValueLabel svlbl = Vertices[vlbl]->getSampleValue(j)->getLabel() ;
+			// SampleOccurence(v,j) must be in SampleOccurences[svlbl]
+			bool found = false ;
+			for (list<SampleOccurence>::const_iterator it = SampleOccurences[svlbl].begin() ; it != SampleOccurences[svlbl].end() ; it++) {
+				if (it->getVertex() == Vertices[vlbl] && it->getIndex() == j) { // pointer equivalence
+					found = true ;
+					break ;
+				}
+			}
+			if (!found) {
+				err = true ;
+			}
+		}
+	}
+
+	if (err) {
+		cerr << "FAILED: there is a vertex which is not fully represented in SampleOccurences" << endl ;
+	}
+
+	return !err ;
+
 }
 
 #if 0

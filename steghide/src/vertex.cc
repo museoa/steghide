@@ -42,6 +42,8 @@ Vertex::~Vertex ()
 
 void Vertex::markDeleted ()
 {
+	printdebug (2, "marking vertex with label %ul as deleted.", getLabel()) ;
+
 	if (valid) {
 		// decrement neighbour degrees
 		for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
@@ -66,6 +68,8 @@ void Vertex::markDeleted ()
 
 void Vertex::unmarkDeleted ()
 {
+	printDebug (2, "unmarking deletion of vertex with label %ul.", getLabel()) ;
+
 	if (!valid) {
 		// undelete into sample occurences in graph
 		for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {

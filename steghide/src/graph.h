@@ -182,7 +182,10 @@ class Graph {
 	bool check_degrees (void) const ;
 	bool check_sampleoppositeneighbourhood (void) const ;
 	bool check_vertexcontents (void) const ;
-	bool check_sampleoccurences (void) const ;
+
+	bool check_SampleOccurences (void) const ;
+	bool check_SampleOccurences_correctness (void) const ;
+	bool check_SampleOccurences_completeness (void) const ;
 #endif
 } ;
 

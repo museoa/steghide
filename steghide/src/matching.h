@@ -156,6 +156,16 @@ class Matching : private GraphAccess {
 	list<Edge*> MatchingEdges ;
 
 	unsigned long Cardinality ;
+
+#ifdef DEBUG
+	public:
+	/**
+	 * checks if the following conditions are met:
+	 * 1) For every e \in MatchingEdges: For both of its vertices v1 and v2
+	 *    VertexInformation[v1] and VertexInformation[v2] point to e
+	 **/
+	bool check (void) const ;
+#endif
 } ;
 
 #endif // ndef SH_MATCHING_H

@@ -27,6 +27,7 @@
 VertexContent::VertexContent (Graph* g, SampleValue**& svs, SamplePos*& sposs)
 	: GraphAccess(g)
 {
+	assert (SamplesPerVertex == 1) ;
 	SampleValues = new SampleValue*[SamplesPerVertex] ;
 	for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
 		unsigned short idx_minkey = i ;

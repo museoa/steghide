@@ -63,3 +63,10 @@ Matching& Matching::augment (const vector<Edge*> &path)
 	}
 	return *this ;
 }
+
+#ifdef DEBUG
+bool Matching::check () const
+{
+	return false ;
+}
+#endif

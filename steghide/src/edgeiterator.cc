@@ -117,13 +117,14 @@ bool EdgeIterator::isDestSampleValueOK (const SampleValue *sv)
 	bool found = false ;
 	list<SampleOccurence> socc = TheGraph->getSampleOccurences(sv) ;
 	list<SampleOccurence>::const_iterator it = socc.begin() ;
-	do {
+	while (!found && it != socc.end()) {
+		assert (socc.size() > 0) ; //DEBUG
 		if (*(it->getVertex()) == *SrcVertex) {
 			it++ ;
 		}
 		else {
 			found = true ;
 		}
-	} while (!found && it != socc.end()) ;
+	}
 	return found ;
 }
