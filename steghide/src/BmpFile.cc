@@ -173,6 +173,9 @@ std::vector<SampleValueAdjacencyList*> BmpFile::calcSVAdjacencyLists (const std:
 {
 	if (getBitCount() == 24) {
 		EmbValue m = getEmbValueModulus() ;
+		UWORD32 r = getRadius() ;
+
+		// create svalists
 		std::vector<SampleValueAdjacencyList*> lists (m) ;
 		for (EmbValue i = 0 ; i < m ; i++) {
 			lists[i] = new SampleValueAdjacencyList (svs.size()) ;
@@ -189,7 +192,7 @@ std::vector<SampleValueAdjacencyList*> BmpFile::calcSVAdjacencyLists (const std:
 		}
 
 		// create hemisphere matrix (will contain a discrete hemisphere with radius getRadius())
-		unsigned short r_eucl = (unsigned short) sqrt (getRadius()) ; // the euclidean radius (not squared) - rounded to next lower natural number 
+		unsigned short r_eucl = (unsigned short) sqrt (r) ; // the euclidean radius (not squared) - rounded to next lower natural number 
 		short hemisphere[2 * r_eucl + 1][2 * r_eucl + 1] ;
 		for (short dr = -r_eucl ; dr <= r_eucl ; dr++) {
 			for (short dg = -r_eucl ; dg <= r_eucl ; dg++) {
@@ -204,9 +207,27 @@ std::vector<SampleValueAdjacencyList*> BmpFile::calcSVAdjacencyLists (const std:
 			}
 		}
 
+		//
 		// fill adjacency lists
+		//
+
+		// create reservoir - for every i reservoir[i] contains the sample values that are neighbourss of
+		// the sample value with label i and have a lower label (and have already been found)
+		// This is necessary to use collapsing trees together with bucket sort (without huge increase in memory usage)
+		std::vector<BmpRGBSampleValue*> reservoir[svs.size()] ;
+
+		// neighbours sorted by distance (for the current source sample value)
+		std::vector<BmpRGBSampleValue*> neighbours_byd[r + 1] ;
+
 		for (std::vector<SampleValue*>::const_iterator srcsvit = svs.begin() ; srcsvit != svs.end() ; srcsvit++) {
 			BmpRGBSampleValue* srcsv = (BmpRGBSampleValue*) (*srcsvit) ;
+
+			// sort reservoir into neighbours_byd
+			for (std::vector<BmpRGBSampleValue*>::const_iterator it = reservoir[srcsv->getLabel()].begin() ;
+					it != reservoir[srcsv->getLabel()].end() ; it++) {
+				neighbours_byd[srcsv->calcDistance(*it)].push_back (*it) ;
+			}
+
 			unsigned short r_abs_start = AUtils::bminus<unsigned short> (srcsv->getRed(), r_eucl) ;
 			unsigned short r_abs_end = AUtils::bplus<unsigned short, 255> (srcsv->getRed(), r_eucl) ;
 			unsigned short g_abs_start = AUtils::bminus<unsigned short> (srcsv->getGreen(), r_eucl) ;
@@ -244,8 +265,8 @@ std::vector<SampleValueAdjacencyList*> BmpFile::calcSVAdjacencyLists (const std:
 								BlueMap::iterator bit = bluemap.lower_bound (b_abs_start) ;
 								while ((bit != bluemap.end()) && (bit->first <= b_abs_end)) {
 									if (srcsv->getLabel() < bit->second->getLabel()) {
-										(*(lists[bit->second->getEmbeddedValue()]))[srcsv].push_back (bit->second) ;
-										(*(lists[srcsv->getEmbeddedValue()]))[bit->second].push_back (srcsv) ;
+										neighbours_byd[srcsv->calcDistance(bit->second)].push_back (bit->second) ;
+										reservoir[bit->second->getLabel()].push_back (srcsv) ;
 										bit++ ;
 									}
 									else {
@@ -262,12 +283,17 @@ std::vector<SampleValueAdjacencyList*> BmpFile::calcSVAdjacencyLists (const std:
 					rit++ ;
 				}
 			}	// end of rit loop
-		}
 
-		// sort adjacency lists
-		for (EmbValue i = 0 ; i < m ; i++) {
-			lists[i]->sort() ;
-		}
+			for (unsigned short d = 0 ; d <= r ; d++) {
+				if (!neighbours_byd[d].empty()) {
+					for (std::vector<BmpRGBSampleValue*>::const_iterator it = neighbours_byd[d].begin() ;
+							it != neighbours_byd[d].end() ; it++) {
+						(*(lists[(*it)->getEmbeddedValue()]))[srcsv].push_back (*it) ;
+					}
+					neighbours_byd[d].clear() ;
+				}
+			}
+		} // end of svs for loop
 
 		return lists ;
 	}
