@@ -39,7 +39,6 @@
 BmpFile::BmpFile (BinaryIO *io)
 	: CvrStgFile()
 {
-	setRadius (Radius) ;
 	read (io) ;
 }
 
@@ -441,21 +440,25 @@ void BmpFile::bmpwin_readheaders ()
 		case 1:
 		setSamplesPerVertex (SamplesPerVertex_SmallPalette) ;
 		setEmbValueModulus (EmbValueModulus_SmallPalette) ;
+		setRadius (Radius_Palette) ;
 		break ;
 
 		case 4:
 		setSamplesPerVertex (SamplesPerVertex_SmallPalette) ;
 		setEmbValueModulus (EmbValueModulus_SmallPalette) ;
+		setRadius (Radius_Palette) ;
 		break ;
 
 		case 8:
 		setSamplesPerVertex (SamplesPerVertex_LargePalette) ;
 		setEmbValueModulus (EmbValueModulus_LargePalette) ;
+		setRadius (Radius_Palette) ;
 		break ;
 
 		case 24:
 		setSamplesPerVertex (SamplesPerVertex_RGB) ;
 		setEmbValueModulus (EmbValueModulus_RGB) ;
+		setRadius (Radius_RGB) ;
 		break ;
 
 		default:
@@ -540,21 +543,25 @@ void BmpFile::bmpos2_readheaders ()
 		case 1:
 		setSamplesPerVertex (SamplesPerVertex_SmallPalette) ;
 		setEmbValueModulus (EmbValueModulus_SmallPalette) ;
+		setRadius (Radius_Palette) ;
 		break ;
 
 		case 4:
 		setSamplesPerVertex (SamplesPerVertex_SmallPalette) ;
 		setEmbValueModulus (EmbValueModulus_SmallPalette) ;
+		setRadius (Radius_Palette) ;
 		break ;
 
 		case 8:
 		setSamplesPerVertex (SamplesPerVertex_LargePalette) ;
 		setEmbValueModulus (EmbValueModulus_LargePalette) ;
+		setRadius (Radius_Palette) ;
 		break ;
 
 		case 24:
 		setSamplesPerVertex (SamplesPerVertex_RGB) ;
 		setEmbValueModulus (EmbValueModulus_RGB) ;
+		setRadius (Radius_RGB) ;
 		break ;
 
 		default:

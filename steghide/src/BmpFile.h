@@ -94,8 +94,10 @@ class BmpFile : public CvrStgFile {
 	static const unsigned short SamplesPerVertex_SmallPalette = 2 ;
 	static const unsigned short SamplesPerVertex_LargePalette = 3 ;
 	static const unsigned short SamplesPerVertex_RGB = 2 ;
-	/// the default radius (400 = 20^2)
-	static const UWORD32 Radius = 400 ;
+	/// the default radius for palette images (400 = 20^2)
+	static const UWORD32 Radius_Palette = 400 ;
+	/// the default radius for RGB images (225 = 15^2)
+	static const UWORD32 Radius_RGB = 225 ;
 
 	static const EmbValue EmbValueModulus_SmallPalette = 2 ;
 	static const EmbValue EmbValueModulus_LargePalette = 4 ;

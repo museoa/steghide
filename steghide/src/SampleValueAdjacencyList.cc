@@ -62,8 +62,25 @@ bool SampleValueAdjacencyList::operator== (const SampleValueAdjacencyList& sval)
 
 void SampleValueAdjacencyList::sort ()
 {
+#if 0
+	unsigned short stats_n = 10 ; // max row size to be counted
+	unsigned long stats[stats_n + 2] ;
+	for (unsigned short i = 0 ; i < stats_n + 2 ; i++) {
+		stats[i] = 0 ;
+	}
+#endif
+
 	for (SampleValueLabel lbl = 0 ; lbl < AdjacencyList.size() ; lbl++) {
 		std::vector<SampleValue*>& row = AdjacencyList[lbl] ;
+
+#if 0
+		if (row.size() <= stats_n) {
+			stats[row.size()]++ ;
+		}
+		else { // row.size() is > stats_n
+			stats[stats_n + 1]++ ;
+		}
+#endif
 
 		if (row.size() > 0) {
 			UWORD32* distances = new UWORD32[row.size() + 1] ;
@@ -76,6 +93,14 @@ void SampleValueAdjacencyList::sort ()
 			delete[] distances ;
 		}
 	}
+
+#if 0
+	std::cerr << "x: n ... rows in svalists with size x occur n times" << std::endl ;
+	for (unsigned short i = 0 ; i < stats_n + 1 ; i++) {
+		std::cerr << i << ": " << stats[i] << std::endl ;
+	}
+	std::cerr << ">" << stats_n << ": " << stats[stats_n + 1] << std::endl ;
+#endif
 }
 
 void SampleValueAdjacencyList::quicksort (std::vector<SampleValue*>& oppneighs, UWORD32* distances, unsigned int l, unsigned int r)
