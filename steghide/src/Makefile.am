@@ -46,7 +46,7 @@ Embedder.cc EncryptionAlgorithm.cc \
 EncryptionMode.cc Extractor.cc \
 Graph.cc \
 JpegFile.cc JpegSampleValue.cc \
-MCryptPP.cc MHashPP.cc \
+MCryptpp.cc MHashPP.cc \
 MHashKeyGen.cc Matching.cc \
 Permutation.cc RGBTriple.cc \
 RandomSource.cc SampleValue.cc \
