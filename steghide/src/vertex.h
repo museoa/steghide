@@ -25,87 +25,107 @@
 #include <vector>
 
 #include "common.h"
-#include "samplevalue.h"
 #include "edge.h"
+#include "graph.h"
+#include "graphaccess.h"
+#include "sampleoccurence.h"
+#include "samplevalue.h"
 #include "vertexcontent.h"
 
 /**
  * \class Vertex
  * \brief a vertex in a graph
+ *
+ * A vertex represents a bit that will cause a change to the cover-stego-file to be embedded.
+ * A vertex consists of k samples (that is k sample values at k (different) positions in the
+ * cover-stego-file), where k is TheCvrStgFile->getNumSamplesPerEBit(). One of these k samples
+ * must be changed to an opposite sample to embed the bit that corresponds to this vertex.
  **/
-class Vertex {
+class Vertex : private GraphAccess {
 	public:
-	Vertex (VertexLabel l, unsigned short spebit) ;
-
 	/**
-	 * add a sample to this vertex
-	 * \param pos the position of the sample in the cvrstgfile
-	 * \param a pointer to the only(!) copy of the sample with this value
+	 * construct a new vertex object
+	 * \param g the graph this vertex will be part of
+	 * \param l the vertex label for this vertex
+	 * \param sposs the array (with length g->getSamplesPerEBit()) of the positions of the samples
+	 * \param vc the corresponding vertex content
 	 **/
-	void addSample (SamplePos spos, SampleValue *s) ;
-
-	/**
-	 * of how many samples does this vertex consist ?
-	 * \return the number of samples this vertex consists of
-	 *
-	 * The return value of this function is (must be equal to) the number of samples per ebit.
-	 **/
-	unsigned int getNumSamples (void) const ;
+	Vertex (Graph* g, VertexLabel l, SamplePos* sposs, VertexContent* vc) ;
 
 	/**
 	 * get the i-th sample position
-	 * \param i an index of a sample in this vertex
+	 * \param i an index of a sample in this vertex (must be < TheCvrStgFile->getNumSamplesPerEBit())
 	 * \return the position of the sample in the associated cvrstgfile
 	 **/
-	SamplePos getSamplePos (unsigned int i) const ;
+	SamplePos getSamplePos (unsigned short i) const
+		{ return SamplePositions[i] ; } ;
 
 	/**
 	 * get the i-th sample value
-	 * \param i an index of a sample in this vertex
+	 * \param i an index of a sample in this vertex (must be < TheCvrStgFile->getNumSamplesPerEBit())
 	 * \return the value of the sample in the associated cvrstgfile
 	 **/
-	SampleValue *getSample (unsigned int i) const ;
+	SampleValue *getSampleValue (unsigned short i) const
+		{ return Content->getSampleValue(i) ; } ;
 
 	/**
-	 * set the content of the vertex (i.e. tell the vertex about his sample labels)
-	 * This function also adds this to the list of Occurences in the vertex content and keeps the iterator.
-	 * The SampleData in this vertex is sorted in the same way as it is in the vertex content.
+	 * get the degree of this vertex (via it's vertex content)
 	 **/
-	void connectToContent (VertexContent *vc) ;
-	VertexContent *getContent (void) const ;
-	void deleteFromContent (void) ;
-	unsigned long getDegree (void) const ;
+	unsigned long getDegree (void) const
+		{ return Content->getDegree() ; } ;
 
-	VertexLabel getLabel (void) const ;
-	void setLabel (VertexLabel l) ;
+	/**
+	 * get the shortest edge of this vertex
+	 **/
+	Edge *getShortestEdge (void) const
+		{ return ShortestEdge ; } ;
 
-	Edge *getShortestEdge (void) const ;
-	void setShortestEdge (Edge *e) ;
+	/**
+	 * find shortest edge of this vertex and save result to ShortestEdge
+	 **/
+	void updateShortestEdge (void) ;
 
-	Edge *getMatchingEdge (void) const ;
-	void setMatchingEdge (Edge *e) ;
-	bool isMatched (void) const ;
+	/**
+	 * if this vertex is valid, mark it as deleted
+	 **/
+	void markDeleted (void) ;
+
+	/**
+	 * if this vertex is marked as deleted, undo this
+	 **/
+	void unmarkDeleted (void) ;
+
+	VertexLabel getLabel (void) const
+		{ return Label ; } ;
+
+	void setLabel (VertexLabel l)
+		{ Label = l ; } ;
 
 #ifdef DEBUG
 	void print (void) const ;
 #endif
+
 	private:
+	/// the vertex label of this vertex
 	VertexLabel Label ;
 
-	unsigned short NumSamples ;
-	vector<SamplePos> SamplePositions ;
-	vector<SampleValue*> Samples ;
-	
+	/// the sample positions of the samples described by this vertex in the CvrStgFile
+	SamplePos* SamplePositions ;
+
+	/// the content of this vertex
 	VertexContent *Content ;
-	list<Vertex*>::iterator OccurencesInContentIt ;
 
+	/// points to an entry in the list of vertex occurences in the vertex content
+	list<Vertex*>::iterator VertexOccurenceIt ;
+
+	/// point to entries in lists of sample occurences in the graph
+	list<SampleOccurence>::iterator* SampleOccurenceIt ;
+
+	/// the shortest edge of this vertex (as calculated by updateShortestEdge)
 	Edge *ShortestEdge ;
-	Edge *MatchingEdge ;
-} ;
 
-struct LongerShortestEdge : public binary_function<Vertex*,Vertex*,bool> {
-	bool operator() (Vertex *v1, Vertex *v2)
-		{ return (v1->getShortestEdge()->getWeight() > v2->getShortestEdge()->getWeight()) ; }
+	/// true iff this vertex is not deleted
+	bool valid ;
 } ;
 
 #endif // ndef SH_VERTEX_H

@@ -26,7 +26,6 @@
 
 #include "common.h"
 
-// FIXME - uchar -> BYTE, uint->WORD16 etc. where appropriate
 class BinaryIO {
 	public:
 	enum MODE { READ, WRITE } ;
@@ -58,20 +57,20 @@ class BinaryIO {
 	 * read n bytes (little endian byte ordering)
 	 * \param n the number of bytes to read (must be <= 4)
 	 **/
-	unsigned long read_le (unsigned short n) ;
+	UWORD32 read_le (unsigned short n) ;
 	std::string readstring (unsigned int len) ;
 
-	void write8 (unsigned char val) ;
-	void write16_le (unsigned int val) ;
-	void write16_be (unsigned int val) ;
-	void write32_le (unsigned long val) ;
-	void write32_be (unsigned long val) ;
+	void write8 (BYTE val) ;
+	void write16_le (UWORD16 val) ;
+	void write16_be (UWORD16 val) ;
+	void write32_le (UWORD32 val) ;
+	void write32_be (UWORD32 val) ;
 	/**
 	 * write n bytes of val (little endian byte ordering)
 	 * \param n the number of bytes to write (must be <= 4)
 	 * \param val the value
 	 **/
-	void write_le (unsigned long val, unsigned short n) ;
+	void write_le (UWORD32 val, unsigned short n) ;
 	void writestring (std::string s) ;
 
 	protected:

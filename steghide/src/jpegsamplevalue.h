@@ -30,9 +30,9 @@ class JpegSampleValue : public SampleValue {
 		: SampleValue(NULL) {} ;
 	JpegSampleValue (CvrStgFile *f, int c) ;
 
-	bool isNeighbour (SampleValue *s) const ;
+	bool isNeighbour (const SampleValue *s) const ;
 	SampleValue* getNearestOppositeSampleValue (void) const ;
-	float calcDistance (SampleValue *s) const ;
+	float calcDistance (const SampleValue *s) const ;
 
 	float getRadius (void) const ;
 

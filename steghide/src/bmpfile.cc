@@ -128,7 +128,7 @@ unsigned int BmpFile::getSamplesPerEBit()
 	return retval ;
 }
 
-SampleValue *BmpFile::getSample (SamplePos pos)
+SampleValue *BmpFile::getSampleValue (SamplePos pos)
 {
 	unsigned long row = 0, column = 0 ;
 	unsigned short firstbit = 0 ;
@@ -306,7 +306,7 @@ void BmpFile::bmpwin_readheaders ()
 	assert ((bmih.biBitCount == 1) ||
 			(bmih.biBitCount == 4) ||
 			(bmih.biBitCount == 8) || 
-			(bmih.biBitCount == 24)) ; // FIXME - 16bit bmps exist (os/2 maybe too)
+			(bmih.biBitCount == 24)) ; // FIXME nc - 16bit bmps exist (os/2 maybe too)
 	bmih.biCompression = getBinIO()->read32_le () ;
 	if (bmih.biCompression != COMPRESSION_BI_RGB) {
 		if (getBinIO()->is_std()) {

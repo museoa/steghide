@@ -27,6 +27,8 @@
 #include "cvrstgobject.h"
 #include "samplevalue.h"
 
+extern CvrStgFile* TheCvrStgFile ;
+
 class CvrStgFile : public CvrStgObject {
 	public:
 	static CvrStgFile *readFile (std::string fn) ;
@@ -48,8 +50,8 @@ class CvrStgFile : public CvrStgObject {
 	 *
 	 * This is equivalent to getSample(pos)->getBit().
 	 **/
-	// FIXME - implement this in ...File to save some time - include tests: implementation in ...File is equivalent to getSample(pos)->getBit()
-	Bit getSampleBit (SamplePos pos) { return (getSample(pos)->getBit()) ; }
+	// FIXME nc - implement this in ...File to save some time - include tests: implementation in ...File is equivalent to getSample(pos)->getBit()
+	Bit getSampleBit (SamplePos pos) { return (getSampleValue(pos)->getBit()) ; }
 
 	protected:
 	void setBinIO (BinaryIO *io) ;

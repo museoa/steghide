@@ -40,7 +40,7 @@ class WavFile : public CvrStgFile {
 
 	unsigned long getNumSamples (void) ;
 	void replaceSample (SamplePos pos, SampleValue *s) ;
-	SampleValue* getSample (SamplePos pos) ;
+	SampleValue* getSampleValue (SamplePos pos) ;
 	unsigned int getSamplesPerEBit (void) ;
 
 	unsigned short getBitsPerSample (void) ;

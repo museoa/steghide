@@ -28,12 +28,20 @@ class Vertex ;
 
 class Edge {
 	public:
-	Edge (Vertex *v1, unsigned short idx1, Vertex *v2, unsigned short idx2, unsigned long w) ;
-	~Edge (void) {} ;
+	/**
+	 * constructs an edge object (calculates the weight)
+	 **/
+	Edge (Vertex *v1, unsigned short idx1, Vertex *v2, unsigned short idx2) ;
+	Edge (Vertex *v1, unsigned short idx1, Vertex *v2, unsigned short idx2, float w) ;
 
-	Vertex *getVertex1 (void) const ;
-	Vertex *getVertex2 (void) const ;
-	unsigned long getWeight (void) const ;
+	Vertex *getVertex1 (void) const
+		{ return Vertex1 ; } ;
+
+	Vertex *getVertex2 (void) const
+		{ return Vertex2 ; } ;
+
+	float getWeight (void) const
+		{ return Weight ; } ;
 
 	/**
 	 * get the vertex on this edge that is not equal to v
@@ -49,13 +57,13 @@ class Edge {
 	 * get the old sample value that will be replaced to embed the bit represented by the vertex v
 	 * warning: this function must be used before the sample has been replaced in the cvrstgfile
 	 **/
-	SampleValue *getOriginalSample (Vertex *v) const ;
+	SampleValue *getOriginalSampleValue (Vertex *v) const ;
 
 	/**
 	 * get the sample value that should replace the previous sample value to embed the bit represented by the vertex v
 	 * warning: this function must be used before the sample has been replaced in the cvrstgfile
 	 **/
-	SampleValue *getReplacingSample (Vertex *v) const ;
+	SampleValue *getReplacingSampleValue (Vertex *v) const ;
 	
 	private:
 	Vertex *Vertex1 ;
@@ -67,7 +75,7 @@ class Edge {
 	unsigned short Index2 ;
 
 	/// contains the weight of this edge
-	unsigned long Weight ;
+	float Weight ;
 } ;
 
 #endif // ndef SH_EDGE_H

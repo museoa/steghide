@@ -18,47 +18,50 @@
  *
  */
 
-#ifndef SH_EMBEDDER_H
-#define SH_EMBEDDER_H
+#ifndef SH_AUGHEUR_H
+#define SH_AUGHEUR_H
 
-#include <string>
-#include <vector>
-
-#include "bitstring.h"
-#include "common.h"
-#include "cvrstgfile.h"
+#include "edgeiterator.h"
 #include "graph.h"
 #include "matching.h"
 
-class Embedder {
+/**
+ * \class AugmentingPathHeuristic
+ **/
+class AugmentingPathHeuristic {
 	public:
-	Embedder (void) ;
+	AugmentingPathHeuristic (Graph *g, Matching *m) ;
 
-	~Embedder (void) ;
+	void run (void) ;
 
-	void embed (void) ;
+	Matching *getMatching (void) const
+		{ return TheMatching ; } ;
 
 	private:
-	static const unsigned int Default_NConstrHeur = 1 ;
+	/**
+	 * \param v0 an exposed vertex
+	 **/
+	vector<Edge*>* searchAugmentingPath (Vertex* v0) ;
 
-	BitString ToEmbed ;
-	CvrStgFile* TheCvrStgFile ;
-	Graph* TheGraph ;
+	Edge* getNextEdge (Vertex *v) ;
+
+	void markVisited (Vertex *v)
+		{ TimeCounters[v->getLabel()] = TimeCounter ; } ;
 
 	/**
-	 * do the matching algorithms
+	 * returns true iff v has already been visited in this
+	 * iteration, i.e. in the current call of searchAugmentingPath
 	 **/
-	const Matching* calculateMatching () ;
+	bool isVisited (Vertex *v)
+		{ return (TimeCounters[v->getLabel()] == TimeCounter) ; } ;
 
-	/**
-	 * embed the two bits represented by the two vertices adjacent to e
-	 **/
-	void embedEdge (Edge *e) ;
+	Graph *TheGraph ;
+	Matching *TheMatching ;
 
-	/**
-	 * embed the bit represented by the Vertex v
-	 **/
-	void embedExposedVertex (Vertex *v) ;
+	UWORD32 TimeCounter ;
+	vector<UWORD32> TimeCounters ;
+	vector<bool> VertexOnPath ;
+	vector<EdgeIterator> EdgeIterators ;
 } ;
 
-#endif // ndef SH_EMBEDDER_H
+#endif // ndef SH_AUGHEUR_H

@@ -63,10 +63,10 @@ class Arguments {
 	static const bool		Default_EmbedEmbFn = true ;
 	static const bool		Default_Force = false ;
 	static const VERBOSITY	Default_Verbosity = NORMAL ;
+	static const float		Default_Radius = 0.0 ; // there is no default radius for all file formats
 #ifdef DEBUG
 	static const DEBUGCOMMAND	Default_DebugCommand = NONE ;
 	static const unsigned int	Default_DebugLevel = 0 ;
-	static const float			Default_Radius = 0.0 ; // there is no default radius for all file formats
 	static const unsigned int	Default_PriorityQueueRange = 0 ; // is never used
 	static const unsigned int	Default_NConstrHeur = 0 ; // is never used
 #endif

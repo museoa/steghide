@@ -168,7 +168,7 @@ void BinaryIO::open (std::string fn, MODE m)
 
 bool BinaryIO::eof (void)
 {
-	// FIXME
+	// FIXME nc - is there another way to do this ?
 	int c = fgetc (getStream()) ;
 	bool retval = feof (getStream()) ;
 	ungetc (c, getStream()) ;
@@ -261,13 +261,13 @@ UWORD32 BinaryIO::read32_be (void)
 	return ((bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | bytes[3]) ;
 }
 
-unsigned long BinaryIO::read_le (unsigned short n)
+UWORD32 BinaryIO::read_le (unsigned short n)
 {
 	assert (getMode() == READ) ;
 	assert (is_open()) ;
 	assert (n <= 4) ;
 
-	unsigned long retval = 0 ;
+	UWORD32 retval = 0 ;
 	for (unsigned short i = 0 ; i < n ; i++) {
 		int byte = EOF ;
 		if ((byte = fgetc (getStream())) == EOF) {
@@ -281,23 +281,15 @@ unsigned long BinaryIO::read_le (unsigned short n)
 
 std::string BinaryIO::readstring (unsigned int len)
 {
-	// FIXME - test this
 	char retval[len + 1] ;
 	for (unsigned int i = 0 ; i < len ; i++) {
 		retval[i] = (char) read8() ;
 	}
 	retval[len] = '\0' ;
 	return std::string (retval) ;
-#if 0
-	std::ostringstream ost ;
-	for (unsigned int i = 0 ; i < len ; i++) {
-		ost << read8() ;
-	}
-	return ost.str() ;
-#endif
 }
 
-void BinaryIO::write8 (unsigned char val)
+void BinaryIO::write8 (BYTE val)
 {
 	assert (getMode() == WRITE) ;
 	assert (is_open()) ;
@@ -307,7 +299,7 @@ void BinaryIO::write8 (unsigned char val)
 	}
 }
 
-void BinaryIO::write16_le (unsigned int val)
+void BinaryIO::write16_le (UWORD16 val)
 {
 	assert (getMode() == WRITE) ;
 	assert (is_open()) ;
@@ -319,7 +311,7 @@ void BinaryIO::write16_le (unsigned int val)
 	}
 }
 
-void BinaryIO::write16_be (unsigned int val)
+void BinaryIO::write16_be (UWORD16 val)
 {
 	assert (getMode() == WRITE) ;
 	assert (is_open()) ;
@@ -331,7 +323,7 @@ void BinaryIO::write16_be (unsigned int val)
 	}
 }
 
-void BinaryIO::write32_le (unsigned long val)
+void BinaryIO::write32_le (UWORD32 val)
 {
 	assert (getMode() == WRITE) ;
 	assert (is_open()) ;
@@ -343,7 +335,7 @@ void BinaryIO::write32_le (unsigned long val)
 	}
 }
 
-void BinaryIO::write32_be (unsigned long val)
+void BinaryIO::write32_be (UWORD32 val)
 {
 	assert (getMode() == WRITE) ;
 	assert (is_open()) ;
@@ -355,7 +347,7 @@ void BinaryIO::write32_be (unsigned long val)
 	}
 }
 
-void BinaryIO::write_le (unsigned long val, unsigned short n)
+void BinaryIO::write_le (UWORD32 val, unsigned short n)
 {
 	assert (getMode() == WRITE) ;
 	assert (is_open()) ;

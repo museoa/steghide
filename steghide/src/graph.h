@@ -28,103 +28,159 @@
 #include <vector>
 
 #include "common.h"
+#include "sampleoccurence.h"
 #include "svalueoppneigh.h"
 #include "vertex.h"
 #include "vertexcontent.h"
 
+/**
+ * \class Graph
+ * \brief a graph constructed from a cover-file and a message to be embedded
+ **/
 class Graph {
 	public:
-	Graph (void) ;
-	Graph (CvrStgFile *f) ;
+	Graph (void) {} ;
+
+	/**
+	 * construct a graph
+	 * \param f the underlying cover file
+	 * \param sposs the vector of k-tuples of sample positions that will make up the vertices
+	 **/
+	Graph (CvrStgFile *f, vector<SamplePos*>& sposs) ;
+
+	/**
+	 * construct sample-related data structures
+	 *
+	 * needs: sposs(unsorted)
+	 * provides: svalues(unsorted), SampleValues
+	 **/
+	void constructSamples (const vector<SamplePos*> &sposs, vector<SampleValue**>& svalues) ;
+
+	/**
+	 * construct vertex-related data structures
+	 *
+	 * needs: sposs(unsorted), svalues(unsorted), SampleValues
+	 * provides: sposs(sorted), svalues(sorted), vc_set, VertexContents (values), Vertices
+	 **/
+	void constructVertices (vector<SamplePos*>& sposs, vector<SampleValue**>& svalues,
+		hash_set<VertexContent*,hash<VertexContent*>,VertexContentsEqual>& vc_set) ;
+
+	/**
+	 * construct edge-related data structures
+	 *
+	 * needs: vc_set, SampleValues, Vertices
+	 * provides: SValueOppNeighs, SampleOccurences, VertexContents (degrees)
+	 **/
+	void constructEdges (const hash_set<VertexContent*,hash<VertexContent*>,VertexContentsEqual>& vc_set) ;
+
 	~Graph (void) ;
 
 	/**
-	 * add a vertex to this graph
-	 * \param poss a vector of sample positions the new vertex should consist of
-	 *
-	 * The vertex label of this new vertex is getNumVertices()-1 (after adding).
+	 * get the number of vertices in this graph
 	 **/
-	void addVertex (const vector<SamplePos> &poss) ;
+	unsigned long getNumVertices (void) const
+		{ return Vertices.size() ; } ;
 
 	/**
 	 * get a vertex
-	 * \param i the vertex label (index) of the vertex to be returned
+	 * \param i the vertex label (index) of the vertex to be returned (must be < getNumVertices())
 	 * \return the i-th vertex
 	 **/
-	Vertex *getVertex (VertexLabel i) const ;
+	Vertex *getVertex (VertexLabel l) const
+		{ return Vertices[l] ; } ;
 
-	void startAdding (void) ;
-	void finishAdding (void) ;
+	void unmarkDeletedAllVertices (void) ;
 
-	void calcMatching (void) ;
+	SampleValue* getSampleValue (const SampleValueLabel l) const
+		{ return SampleValues[l] ; } ;
 
-	private:
-	static const unsigned int PriorityQueueRange = 1 ;
-	static const unsigned int NConstrHeur = 1 ;
+#if 0
+	/**
+	 * get the label of an opposite neighbour of a given sample value
+	 * \param svl the label of the sample value whose neighbour should be returned
+	 * \param i the index of the opposite neighbour in all opposite neighbours of svl
+	 * \return the i-th opposite neighbour of the sample value represented by svl
+	 **/
+	SampleValueLabel getOppNeighLabel (SampleValueLabel svl, unsigned long i) const
+		{ return SValueOppNeighs[svl][i] ; } ;
 
-	void setupConstrHeuristic (void) ;
-	Vertex *findVertexDeg1 (unsigned int k) ;
-	Vertex *findVertexDegG (unsigned int k) ;
-	vector<Edge*> *doConstrHeuristic (void) ;
+	SampleValue *getOppNeigh (SampleValueLabel svl, unsigned long i) const
+		{ return SampleValues[SValueOppNeighs[svl][i]] ; } ;
+
+	SampleValue *getOppNeigh (SampleValue* sv, unsigned long i) const
+		{ return SValueOppNeighs[sv][i] ; } ;
+#endif
 
 	/**
-	 * insert the edge e into the matching m and invalidate the two vertices for the matching algorithm
+	 * get the number of opposite neighbours of a given sample value
 	 **/
-	void insertInMatching (vector<Edge*> *m, Edge *e) ;
+	unsigned long getNumOppNeighs (const SampleValue* sv) const
+		{ return SValueOppNeighs[sv].size() ; } ;
 
-	void updateShortestEdge (Vertex *v) ;
+	const vector<SampleValue*>& getOppNeighs (const SampleValue *sv) const
+		{ return SValueOppNeighs[sv] ; } ;
 
-	void replaceShortestEdge (Vertex *v1, Edge *e) ;
-	void replaceMatchingEdge (Vertex *v1, Vertex *v2, Edge *e) ;
+	/**
+	 * get the number of occurences of a given sample value
+	 **/
+	unsigned long getNumSampleOccurences (SampleValueLabel svl) const
+		{ return SampleOccurences[svl].size() ; } ;
 
-	void printVOutputVertices (void) ;
-	void printVOutputEdges (void) ;
-	void printVOutputMatching (vector<Edge*> *m) ;
+	unsigned long getNumSampleOccurences (SampleValue *sv) const
+		{ return SampleOccurences[sv->getLabel()].size() ; } ;
 
-	unsigned long absdiff (unsigned long a, unsigned long b) ;
+	const list<SampleOccurence>& getSampleOccurences (SampleValue *sv) const
+		{ return SampleOccurences[sv->getLabel()] ; } ;
 
+	list<SampleOccurence>::iterator markDeletedSampleOccurence (list<SampleOccurence>::iterator it) ;
+	list<SampleOccurence>::iterator unmarkDeletedSampleOccurence (list<SampleOccurence>::iterator it) ;
+
+	void undeleteAllVertices (void) ;
+
+	void printVerboseInfo (void) ;
+
+	unsigned short getSamplesPerVertex (void) const
+		{ return SamplesPerEBit ; } ;
+
+	private:
 	/// contains the vertices in this graph - Vertices[i] is the vertex with label i
 	vector<Vertex*> Vertices ;
 
-	/// contains the unique sample list - Samples[i] is the sample with label i
+	/// contains the unique sample list - SampleValues[i] is the sample value with label i
 	vector<SampleValue*> SampleValues ;
-	/// is used to create the unique sample list
-	hash_set<SampleValue*,hash<SampleValue*>,SampleValuesEqual> SampleValues_set ;
 
 	SampleValueOppositeNeighbourhood SValueOppNeighs ;
 
+#if 0
 	/**
 	 * contains the unique vertex contents - the size of the vector is the number of unique samples (indexed by sample labels)
 	 * for a sample label lbl the list UniqueVertexContents[lbl] contains all UniqueVertextContent objects that contain
 	 * the sample described by lbl.
 	 * The main purpose of this data structure is to hold the vertex degrees.
 	 **/
-	vector<list<VertexContent*> > VertexContents ;
+	vector<list<VertexContent*> > VertexContents ; // FIXME nc - ?? use vector instead of list - performance in time/memory ??
+#endif
 
-	/**
-	 * SampleOccurences[sample_label] contains a map of the occurences of this sample in the cvrstgfile (in the first
-	 * component) and in the graph (in the second component). The first component (the SamplePos) is the sample
-	 * position of this occurence in the cvrstgfile. The second component is a pair whose first component
-	 * is the vertex where this sample occurs and whose second component is the ushort index in the vertex of this sample.
-	 * The main purpose of this data structure is to (implicitly) hold the edges.
-	 **/
-	vector<map<SamplePos,pair<Vertex*,unsigned short> > > SampleOccurences ;
+	vector<list<SampleOccurence> > SampleOccurences ;
 
-	/// used for construction heuristic - contains all vertices of degree 1
-	priority_queue<Vertex*, vector<Vertex*>, LongerShortestEdge> VerticesDeg1 ;
-	/// used for contruction heuristic - contains all vertices with degree greater than 1
-	priority_queue<Vertex*, vector<Vertex*>, LongerShortestEdge> VerticesDegG ;
+	/// contains those sample occurences that have been deleted from SampleOccurences
+	vector<list<SampleOccurence> > DeletedSampleOccurences ;
+
 
 	CvrStgFile *File ;
 	unsigned short SamplesPerEBit ;
 
 #ifdef DEBUG
+	unsigned long NumVertexContents ;
+
 	/**
 	 * prints graph in a format suitable as input to the C implementation
 	 * of Gabow's non-weighted matching algorithm by E. Rothberg to stdout
 	 * (available at: ftp://ftp.zib.de/pub/Packages/mathprog/matching/index.html
 	 **/
 	void print (void) const ;
+
+	// FIXME nc - clean up these functions
 
 	void printUnmatchedVertices (void) const ;
 	void printUnmatchedVerticescontaining (unsigned long samplekey) const ;

@@ -44,7 +44,7 @@ class JpegEntropyCoded : public JpegObject, public CvrStgObject {
 
 	unsigned long getNumSamples (void) ;
 	void replaceSample (SamplePos pos, SampleValue *s) ;
-	SampleValue* getSample (SamplePos pos) ;
+	SampleValue* getSampleValue (SamplePos pos) ;
 
 	/**
 	 * get the frequencies of the AC rs values in this entropy coded segment

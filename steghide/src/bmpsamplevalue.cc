@@ -47,10 +47,9 @@ BmpSampleValue::BmpSampleValue (CvrStgFile *f)
 	}
 }
 
-bool BmpSampleValue::isNeighbour (SampleValue *s) const
+bool BmpSampleValue::isNeighbour (const SampleValue *s) const
 {
-	assert (s != NULL) ; // FIXME - delme
-	BmpSampleValue *sample = dynamic_cast<BmpSampleValue*> (s) ;
+	const BmpSampleValue *sample = dynamic_cast<const BmpSampleValue*> (s) ;
 	assert (sample != NULL) ;
 	int dr = (int) getRed() - (int) sample->getRed() ;
 	int dg = (int) getGreen() - (int) sample->getGreen() ;
@@ -58,9 +57,9 @@ bool BmpSampleValue::isNeighbour (SampleValue *s) const
 	return ((dr*dr + dg*dg + db*db) <= RadiusSquared) ;
 }
 
-float BmpSampleValue::calcDistance (SampleValue *s) const
+float BmpSampleValue::calcDistance (const SampleValue *s) const
 {
-	BmpSampleValue *sample = dynamic_cast<BmpSampleValue*> (s) ;
+	const BmpSampleValue *sample = dynamic_cast<const BmpSampleValue*> (s) ;
 	assert (sample != NULL) ;
 	float dr = (float) getRed() - (float) sample->getRed() ;
 	float dg = (float) getGreen() - (float) sample->getGreen() ;

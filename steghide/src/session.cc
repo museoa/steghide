@@ -96,8 +96,8 @@ void Session::printVersion ()
 	cout << "steghide version " << VERSION << endl ;
 }
 
-// TODO - test short und long arguments
-// FIXME - every error message should end with a "." - see .pot file
+// TODO nc - test short und long arguments
+// FIXME nc - every error message should end with a "." - see .pot file
 void Session::printHelp ()
 {
 	printVersion() ;
@@ -119,6 +119,8 @@ void Session::printHelp ()
 		" -e, --encryption        select encryption parameters\n"
 		"   -e <a>[<m>]|<m>[<a>]  specify an encryption algorithm and/or mode\n"
 		"   -e none               do not encrypt data before embedding\n"
+		" -r, --radius            specify the neighbourhood-radius\n"
+		"   -r <r>                use the real number <r> as radius\n"
 		" -k, --checksum          embed crc32 checksum of embedded data (default)\n"
 		" -K, --nochecksum        do not embed crc32 checksum of embedded data\n"
 		" -n, --embedname         embed the name of the original file (default)\n"

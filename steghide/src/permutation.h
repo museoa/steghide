@@ -83,6 +83,4 @@ class Permutation {
 	unsigned long keyhash (unsigned long key, unsigned long arg) ;
 } ;
 
-// TODO ? - use salt for permutation ?
-
 #endif //ndef SH_PERMUTATION_H

@@ -21,132 +21,105 @@
 #include "common.h"
 #include "vertex.h"
 
-Vertex::Vertex (VertexLabel l, unsigned short spebit)
-	: Label(l)
+// DEBUG
+Vertex::Vertex (Graph* g, VertexLabel l, SamplePos* sposs, VertexContent *vc)
+	: GraphAccess(g)
 {
-	NumSamples = 0 ;
-	SamplePositions = vector<SamplePos> (spebit) ;
-	Samples = vector<SampleValue*> (spebit) ;
-	Content = NULL ;
-	ShortestEdge = NULL ;
-	MatchingEdge = NULL ;
-}
-
-void Vertex::addSample (SamplePos spos, SampleValue *s)
-{
-	assert (NumSamples < SamplePositions.size()) ;
-	SamplePositions[NumSamples] = spos ;
-	Samples[NumSamples] = s ;
-	NumSamples++ ;
-}
-
-unsigned int Vertex::getNumSamples() const
-{
-	return NumSamples ;
-}
-
-SamplePos Vertex::getSamplePos (unsigned int i) const
-{
-	assert (i < SamplePositions.size()) ;
-	return SamplePositions[i] ;
-}
-
-SampleValue *Vertex::getSample (unsigned int i) const
-{
-	assert (i < Samples.size()) ;
-	return Samples[i] ;
-}
-
-void Vertex::connectToContent (VertexContent *vc)
-{
+	setLabel (l) ;
+	SamplePositions = sposs ;
 	Content = vc ;
-	OccurencesInContentIt = Content->addOccurence (this) ;
+	assert (Content > (VertexContent*) 0xff) ;
+#if 0
+	VertexOccurenceIt = Content->addOccurence (this) ;
+#endif
+	ShortestEdge = NULL ;
+	valid = true ;
+}
 
-	// reorder SamplePositions and Samples to match the order of SampleLabels in the vertex content
-	vector<SampleValueLabel> sl = Content->getSampleValueLabels() ;
-	
-	vector<SamplePos> new_sposs (SamplePositions.size()) ;
-	vector<SampleValue*> new_samples (Samples.size()) ;
+void Vertex::markDeleted ()
+{
+	if (valid) {
+		// decrement neighbour degrees
+		for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
+			const vector<SampleValue*> oppneighs = TheGraph->getOppNeighs(getSampleValue(i)) ;
+			for (unsigned long j = 0 ; j < oppneighs.size() ; j++) {
+				oppneighs[j]->decNumEdges() ;
+			}
+		}
 
-	vector<bool> srcused (Samples.size(), false) ;
+#if 0
+		// delete from vertex occurences in vertex content
+		VertexOccurenceIt = Content->markDeletedFromOccurences (VertexOccurenceIt) ;
+#endif
 
-	for (unsigned short dest = 0 ; dest < sl.size() ; dest++) {
-		for (unsigned short src = 0 ; src < Samples.size() ; src++) {
-			if (Samples[src]->getLabel() == sl[dest]) {
-				if (!srcused[src]) {
-					// to prevent problems when a vertex contains the same sample more than one time:
-					// only the first occurence of this sample would be used as source
-					new_sposs[dest] = SamplePositions[src] ;
-					new_samples[dest] = Samples[src] ;
-					srcused[src] = true ;
-					break ;
+		// delete from sample occurences in graph
+		for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
+			SampleOccurenceIt[i] = TheGraph->markDeletedSampleOccurence (SampleOccurenceIt[i]) ;
+		}
+		valid = false ;
+	}
+}
+
+void Vertex::unmarkDeleted ()
+{
+	if (!valid) {
+		// undelete into sample occurences in graph
+		for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
+			SampleOccurenceIt[i] = TheGraph->unmarkDeletedSampleOccurence (SampleOccurenceIt[i]) ;
+		}
+
+#if 0
+		// undelete into sample occurences in graph
+		VertexOccurenceIt = Content->unmarkDeletedFromOccurences (VertexOccurenceIt) ;
+#endif
+
+		// increment neighbour degrees
+		for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
+			const vector<SampleValue*> oppneighs = TheGraph->getOppNeighs(getSampleValue(i)) ;
+			for (unsigned long j = 0 ; j < oppneighs.size() ; j++) {
+				oppneighs[j]->incNumEdges() ;
+			}
+		}
+
+		valid = true ;
+	}
+}
+
+void Vertex::updateShortestEdge ()
+{
+	if (getDegree() == 0) {
+		if (ShortestEdge != NULL) {
+			delete ShortestEdge ;
+		}
+		ShortestEdge = NULL ;
+	}
+	else {
+		for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
+			SampleValue* srcsv = getSampleValue(i) ;
+			for (unsigned long j = 0 ; j < TheGraph->getNumOppNeighs(srcsv) ; j++) {
+				SampleValue *destsv = TheGraph->getOppNeighs(srcsv)[j] ;
+				if ((ShortestEdge == NULL) || (ShortestEdge->getWeight() > srcsv->calcDistance(destsv))) {
+					if (TheGraph->getNumSampleOccurences(destsv) > 0) {
+						SampleOccurence occ = *(TheGraph->getSampleOccurences(destsv).begin()) ;
+						if (ShortestEdge != NULL) {
+							delete ShortestEdge ;
+						}
+						ShortestEdge = new Edge (this, i, occ.getVertex(), occ.getIndex()) ;
+					}
 				}
 			}
 		}
 	}
-
-	SamplePositions = new_sposs ;
-	Samples = new_samples ;
-}
-
-VertexContent *Vertex::getContent() const
-{
-	return Content ;
-}
-
-void Vertex::deleteFromContent()
-{
-	Content->deleteFromOccurences (OccurencesInContentIt) ;
-}
-
-unsigned long Vertex::getDegree() const
-{
-	return Content->getDegree() ;
-}
-
-VertexLabel Vertex::getLabel() const
-{
-	return Label ;
-}
-
-void Vertex::setLabel (VertexLabel l)
-{
-	Label = l ;
-}
-
-Edge *Vertex::getShortestEdge() const
-{
-	return ShortestEdge ;
-}
-
-void Vertex::setShortestEdge (Edge *e)
-{
-	ShortestEdge = e ;
-}
-
-Edge *Vertex::getMatchingEdge() const
-{
-	return MatchingEdge ;
-}
-
-void Vertex::setMatchingEdge (Edge *e)
-{
-	MatchingEdge = e ;
-}
-
-bool Vertex::isMatched() const
-{
-	return (MatchingEdge != NULL) ;
 }
 
 #ifdef DEBUG
 void Vertex::print() const
 {
-	cerr << "vertex with label " << Label << endl ;
-	for (unsigned short i = 0 ; i < NumSamples ; i++) {
-		cerr << "  SampleLabel[" << i << "] is " << Samples[i]->getLabel() << endl ;
-		cerr << "  SamplePositon[" << i << "] is " << SamplePositions[i] << endl ;
-		cerr << "  SampleKey[" << i << "] is " << hex << Samples[i]->getKey() << endl ;
+	cerr << "vertex with label " << getLabel() << endl ;
+	for (unsigned short i = 0 ; i < TheGraph->getSamplesPerVertex() ; i++) {
+		cerr << "  SampleLabel[" << i << "] is " << getSampleValue(i)->getLabel() << endl ;
+		cerr << "  SamplePositon[" << i << "] is " << getSamplePos(i) << endl ;
+		cerr << "  SampleKey[" << i << "] is " << hex << getSampleValue(i)->getKey() << endl ;
 	}
 }
 #endif

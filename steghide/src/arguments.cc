@@ -358,7 +358,6 @@ void Arguments::parse (int argc, char *argv[])
 			}
 		}
 		
-		// FIXME - add this to --help
 		else if (std::string (argv[i]) == "-r" || std::string (argv[i]) == "--radius") {
 			if (Command.getValue() != EMBED) {
 				throw SteghideError (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
@@ -570,10 +569,10 @@ void Arguments::setDefaults (void)
 	StgFn.setValue ("", false) ;
 	Force.setValue (Default_Force, false) ;
 	Verbosity.setValue (Default_Verbosity, false) ;
+	Radius.setValue (Default_Radius, false) ;
 #ifdef DEBUG
 	DebugCommand.setValue (Default_DebugCommand, false) ;
 	DebugLevel.setValue (Default_DebugLevel, false) ;
-	Radius.setValue (Default_Radius, false) ;
 	PriorityQueueRange.setValue (Default_PriorityQueueRange, false) ;
 	NConstrHeur.setValue (Default_NConstrHeur, false) ;
 #endif

@@ -65,5 +65,8 @@ typedef int Bit ;
 typedef UWORD32 SamplePos ;
 typedef UWORD32 VertexLabel ;
 typedef UWORD32 SampleValueLabel ;
+typedef UWORD32 SampleKey ;
+
+#define SAMPLEKEY_MAX 0xFFFFFFFFUL ;
 
 #endif // ndef SH_COMMON_H

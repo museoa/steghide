@@ -23,11 +23,13 @@
 
 #include "bmpsamplevalue.h"
 #include "common.h"
+#include "graph.h"
 #include "samplevalue.h"
 #include "svalueoppneigh.h"
 #include "wavsamplevalue.h"
 
-SampleValueOppositeNeighbourhood::SampleValueOppositeNeighbourhood (const vector<SampleValue*> &svalues)
+SampleValueOppositeNeighbourhood::SampleValueOppositeNeighbourhood (Graph *g, const vector<SampleValue*> &svalues)
+	: GraphAccess(g)
 {
 	if (svalues.size() > 0) { // graph contains at least one vertex
 		if (dynamic_cast<BmpRGBSampleValue*> (svalues[0])) {
@@ -45,14 +47,14 @@ SampleValueOppositeNeighbourhood::SampleValueOppositeNeighbourhood (const vector
 void SampleValueOppositeNeighbourhood::calcOppNeighs_generic (const vector<SampleValue*> &svalues)
 {
 	// partition samples into those with getBit() == 0 and with getBit() == 1
-	unsigned long n = svalues.size() ;
+	unsigned long numsvs = svalues.size() ;
 
 	vector<SampleValue*> svalues0 ;
-	svalues0.reserve (n / 2) ;
+	svalues0.reserve (numsvs / 2) ;
 	vector<SampleValue*> svalues1 ;
-	svalues1.reserve (n / 2) ;
+	svalues1.reserve (numsvs / 2) ;
 
-	for (unsigned long l = 0 ; l < n ; l++) {
+	for (unsigned long l = 0 ; l < numsvs ; l++) {
 		if (svalues[l]->getBit() == 0) {
 			svalues0.push_back (svalues[l]) ;
 		}
@@ -62,69 +64,71 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_generic (const vector<Sampl
 	}
 
 	// fill OppNeighs data structure
-	OppNeighs = vector<vector<SampleValueLabel> > (n) ;
-	unsigned long n0 = svalues0.size() ;
-	unsigned long n1 = svalues1.size() ;
-	for (unsigned long i0 = 0 ; i0 < n0 ; i0++) {
-		for (unsigned long i1 = 0 ; i1 < n1 ; i1++) {
+	OppNeighs = vector<vector<SampleValue*> > (numsvs) ;
+	for (unsigned long i0 = 0 ; i0 < svalues0.size() ; i0++) {
+		for (unsigned long i1 = 0 ; i1 < svalues1.size() ; i1++) {
 			if (svalues0[i0]->isNeighbour(svalues1[i1])) {
-				unsigned long l0 = svalues0[i0]->getLabel() ;
-				unsigned long l1 = svalues1[i1]->getLabel() ;
-				OppNeighs[l0].push_back (l1) ;
-				OppNeighs[l1].push_back (l0) ;
+				OppNeighs[svalues0[i0]->getLabel()].push_back (svalues1[i1]) ;
+				OppNeighs[svalues1[i1]->getLabel()].push_back (svalues0[i0]) ;
 			}
 		}
+	}
+
+	// sort OppNeighs data structure
+	for (unsigned long lbl = 0 ; lbl < numsvs ; lbl++) {
+		sort (OppNeighs[lbl].begin(), OppNeighs[lbl].end(), SmallerDistance(TheGraph->getSampleValue(lbl))) ;
 	}
 }
 
 void SampleValueOppositeNeighbourhood::calcOppNeighs_rgb (const vector<SampleValue*> &svalues)
 {
-	unsigned long numsvalues = svalues.size() ;
+	unsigned long numsvs = svalues.size() ;
 
 	vector<BmpRGBSampleValue*> svalues0 ;
-	svalues0.reserve (numsvalues / 2) ;
+	svalues0.reserve (numsvs / 2) ;
 
 	unsigned short numcubes = 0 ;
-	short r = (short) svalues[0]->getRadius() ; // FIXME - what should be done with a radius not \in N
-	if (256 % r == 0) {
-		numcubes = 256 / r ;
+	short cubelen = (short int) roundup(svalues[0]->getRadius()) ;
+	if (256 % cubelen == 0) {
+		numcubes = 256 / cubelen ;
 	}
 	else {
-		numcubes = (256 / r) + 1 ;
+		numcubes = (256 / cubelen) + 1 ;
 	}
 
 	// init cubes
 	vector<BmpRGBSampleValue*> cubes[numcubes][numcubes][numcubes] ;
 
 	// fill svalues0 and cubes
-	for (unsigned long l = 0 ; l < numsvalues ; l++) {
+	for (unsigned long l = 0 ; l < numsvs ; l++) {
 		BmpRGBSampleValue *s = dynamic_cast<BmpRGBSampleValue*> (svalues[l]) ;
 		assert (s != NULL) ;
 		if (s->getBit() == 0) {
 			svalues0.push_back (s) ;
 		}
 		else {
-			unsigned short i_red = s->getRed() / r ;
-			unsigned short i_green = s->getGreen() / r ;
-			unsigned short i_blue = s->getBlue() / r ;
+			unsigned short i_red = s->getRed() / cubelen ;
+			unsigned short i_green = s->getGreen() / cubelen ;
+			unsigned short i_blue = s->getBlue() / cubelen ;
 			cubes[i_red][i_green][i_blue].push_back (s) ;
 		}
 	}
 
 	// fill OppNeighs data structure
-	OppNeighs = vector<vector<SampleValueLabel> > (numsvalues) ;
+	OppNeighs = vector<vector<SampleValue*> > (numsvs) ;
 	unsigned long numsv0 = svalues0.size() ;
 	for (unsigned long i = 0 ; i < numsv0 ; i++) {
 		// find all opposite neighbours of svalues0[i] (in the 3^3 cubes around samplesvalues0[i])
-		short start_red = (svalues0[i]->getRed() / r) - 1, end_red = start_red + 2 ;
-		short start_green = (svalues0[i]->getGreen() / r) - 1, end_green = start_green + 2 ;
-		short start_blue = (svalues0[i]->getBlue() / r) - 1, end_blue = start_blue + 2 ;
+		short start_red = (svalues0[i]->getRed() / cubelen) - 1, end_red = start_red + 2 ;
+		short start_green = (svalues0[i]->getGreen() / cubelen) - 1, end_green = start_green + 2 ;
+		short start_blue = (svalues0[i]->getBlue() / cubelen) - 1, end_blue = start_blue + 2 ;
 		if (start_red < 0) start_red = 0 ;
 		if (start_green < 0) start_green = 0 ;
 		if (start_blue < 0) start_blue = 0 ;
 		if (end_red >= numcubes) end_red = numcubes - 1 ;
 		if (end_green >= numcubes) end_green = numcubes - 1 ;
 		if (end_blue >= numcubes) end_blue = numcubes - 1 ;
+		SampleValue* thissv = svalues[0] ;
 		SampleValueLabel thissv_label = svalues0[i]->getLabel() ;
 
 		for (short i_red = start_red ; i_red <= end_red ; i_red++) {
@@ -134,14 +138,18 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_rgb (const vector<SampleVal
 					unsigned int thiscube_size = thiscube.size() ;
 					for (unsigned int j = 0 ; j < thiscube_size ; j++) {
 						if (svalues0[i]->isNeighbour (thiscube[j])) {
-							OppNeighs[thissv_label].push_back (thiscube[j]->getLabel()) ;
-							OppNeighs[thiscube[j]->getLabel()].push_back (thissv_label) ;
+							OppNeighs[thissv_label].push_back (thiscube[j]) ;
+							OppNeighs[thiscube[j]->getLabel()].push_back (thissv) ;
 						}
 					}
-
 				}
 			}
 		}
+	}
+
+	// sort OppNeighs data structure
+	for (unsigned long lbl = 0 ; lbl < numsvs ; lbl++) {
+		sort (OppNeighs[lbl].begin(), OppNeighs[lbl].end(), SmallerDistance(TheGraph->getSampleValue(lbl))) ;
 	}
 }
 
@@ -170,9 +178,9 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_wav (const vector<SampleVal
 	sort (svalues0.begin(), svalues0.end(), smaller) ;
 	sort (svalues1.begin(), svalues1.end(), smaller) ;
 
-	int r_ub = (int) svalues[0]->getRadius() ; // FIXME - round up radius
-
-	OppNeighs = vector<vector<SampleValueLabel> > (n) ;
+	// fill the OppNeighs vectors
+	int r_ub = roundup (svalues[0]->getRadius()) ;
+	OppNeighs = vector<vector<SampleValue*> > (n) ;
 	unsigned long n0 = svalues0.size() ;
 	unsigned long n1 = svalues1.size() ;
 	unsigned long start1 = 0 ;
@@ -182,9 +190,24 @@ void SampleValueOppositeNeighbourhood::calcOppNeighs_wav (const vector<SampleVal
 		}
 		unsigned long i1 = start1 ;
 		while ((i1 < n1) && (svalues1[i1]->getValue() <= svalues0[i0]->getValue() + r_ub)) {
-			OppNeighs[svalues0[i0]->getLabel()].push_back (svalues1[i1]->getLabel()) ;
-			OppNeighs[svalues1[i1]->getLabel()].push_back (svalues0[i0]->getLabel()) ;
+			OppNeighs[svalues0[i0]->getLabel()].push_back (svalues1[i1]) ;
+			OppNeighs[svalues1[i1]->getLabel()].push_back (svalues0[i0]) ;
 			i1++ ;
 		}
 	}
+
+	// OppNeighs are already sorted
+}
+
+int SampleValueOppositeNeighbourhood::roundup (float x)
+{
+	int retval = -1 ;
+	float intpart = (float) ((int) x) ;
+	if (x - intpart == 0) {
+		retval = (int) x ;
+	}
+	else {
+		retval = ((int) x) + 1 ;
+	}
+	return retval ;
 }

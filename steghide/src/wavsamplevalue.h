@@ -31,9 +31,9 @@ class WavPCMSampleValue : public SampleValue {
 	WavPCMSampleValue (void) : SampleValue(NULL) {} ;
 	WavPCMSampleValue (CvrStgFile *f, int v) ;
 
-	bool isNeighbour (SampleValue *s) const ;
+	bool isNeighbour (const SampleValue *s) const ;
 	SampleValue* getNearestOppositeSampleValue (void) const ;
-	float calcDistance (SampleValue *s) const ;
+	float calcDistance (const SampleValue *s) const ;
 
 	float getRadius (void) const ;
 

@@ -46,18 +46,6 @@ AuFile::~AuFile (void)
 {
 }
 
-// FIXME - use reference to vector not vector
-std::vector<unsigned char> AuFile::getData (void)
-{
-	return data ;
-}
-
-// FIXME - use reference to vector not vector
-void AuFile::setData (std::vector<unsigned char> d)
-{
-	data = d ;
-}
-
 void AuFile::read (BinaryIO *io)
 {
 	CvrStgFile::read (io) ;
@@ -92,7 +80,7 @@ void AuFile::replaceSample (SamplePos pos, SampleValue *s)
 	data[pos] = sample->getValue() ;
 }
 
-SampleValue *AuFile::getSample (SamplePos pos)
+SampleValue *AuFile::getSampleValue (SamplePos pos)
 {
 	assert (pos < getNumSamples()) ;
 	return ((SampleValue *) new AuSampleValue (this, data[pos])) ;

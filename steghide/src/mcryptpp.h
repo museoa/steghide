@@ -109,9 +109,6 @@ class MCryptpp {
 	void *s_malloc (size_t size) ;
 } ;
 
-/* TODO: test with every algorithm and every mode - to avoid typos
-   */
-
 #endif // ndef SH_MCRYPTPP_H
 
 #endif // def USE_LIBMCRYPT

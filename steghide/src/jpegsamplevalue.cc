@@ -37,12 +37,12 @@ int JpegSampleValue::getDctCoeff() const
 	return DctCoeff ;
 }
 
-bool JpegSampleValue::isNeighbour (SampleValue *s) const
+bool JpegSampleValue::isNeighbour (const SampleValue *s) const
 {
 	return (calcDistance (s) <= Radius) ;
 }
 
-// FIXME - it is assumed that the maximum and the minimum values are never touched (also in getOppositeNeighbours)
+// FIXME nc - it is assumed that the maximum and the minimum values are never touched (also in getOppositeNeighbours)
 SampleValue *JpegSampleValue::getNearestOppositeSampleValue() const
 {
 	int n_coeff = 0 ;
@@ -55,10 +55,9 @@ SampleValue *JpegSampleValue::getNearestOppositeSampleValue() const
 	return ((SampleValue *) new JpegSampleValue (getFile(), n_coeff)) ;
 }
 
-// FIXME - for jpeg samples: implement a bias towards zero in calcDistance and getNearestOppositeSample ?
-float JpegSampleValue::calcDistance (SampleValue *s) const
+float JpegSampleValue::calcDistance (const SampleValue *s) const
 {
-	JpegSampleValue *sample = dynamic_cast<JpegSampleValue*> (s) ;
+	const JpegSampleValue *sample = dynamic_cast<const JpegSampleValue*> (s) ;
 	assert (sample != NULL) ;
 	return (abs (((float) DctCoeff) - ((float) sample->getDctCoeff()))) ;
 }

@@ -234,10 +234,10 @@ void JpegContainer::replaceSample (SamplePos pos, SampleValue *s)
 	cso->replaceSample (pos, s) ;
 }
 
-SampleValue *JpegContainer::getSample (SamplePos pos)
+SampleValue *JpegContainer::getSampleValue (SamplePos pos)
 {
 	CvrStgObject *cso = calcCvrStgObject (&pos) ;
-	return cso->getSample (pos) ;
+	return cso->getSampleValue (pos) ;
 }
 
 CvrStgObject *JpegContainer::calcCvrStgObject (SamplePos *pos) const

@@ -27,58 +27,72 @@
 #include <vector>
 
 #include "common.h"
+#include "graphaccess.h"
+#include "samplevalue.h"
 // declared here to prevent circulating includes
+class Graph ;
 class Vertex ;
 
-class VertexContent {
+class VertexContent : private GraphAccess {
 	public:
 	/**
-	 * construct a vertex content object using the sorted sample labels
-	 * \param sl the sample labels - will be sorted in the constructor
+	 * construct a vertex content object using the given sample values
+	 * \param g the graph this vertex content will be part of
+	 * \param svs the sample values that this vertex content will contain
+	 * \param sposs the positions corresponding to the sample values
+	 *
+	 * Both, the svs and the sposs arrays will be sorted according to the
+	 * keys of the sample values. Only the sample values will be kept, but the
+	 * sample positions will be sorted too (by corresponding sample value keys).
 	 **/
-	VertexContent (const vector<SampleValueLabel> &sl) ;
+	VertexContent (Graph* g, SampleValue**& svs, SamplePos*& sposs) ;
 
-	/**
-	 * set the degree of this vertex content
-	 * \param deg the degree (calculated by the calling function)
-	 **/
-	void setDegree (unsigned long deg) ;
+	bool operator== (VertexContent vc) const ;
 
-	/**
-	 * get the degree
-	 **/
+	bool operator!= (VertexContent vc) const
+		{ return !(operator==(vc)) ; } ;
+
+	// FIXME nc - ev. stattdessen operator [] - ev. const return value
+	SampleValue *getSampleValue (unsigned short i) const
+		{ return SampleValues[i] ; } ; 
+
+	// FIXME nc - konstante Rückgabe
+	SampleValue **getSampleValues (void) const
+		{ return SampleValues ; } ;
+
+	size_t getHash (void) const ;
+
 	unsigned long getDegree (void) const ;
 
+#if 0
 	/**
-	 * decrement the degree
-	 **/
-	void decDegree (void) ;
-
-	SampleValueLabel getSampleValueLabel (unsigned short n) const ;
-	const vector<SampleValueLabel> &getSampleValueLabels (void) const ;
-
-	/**
-	 * add a vertex to the vertex occurences of this vertex content
+	 * add a vertex to the Occurences list of this vertex content
 	 * \param v the vertex to add
 	 * \return the iterator pointing to the added vertex in the Occurences list (should be used as argument to deleteFromOccurences)
 	 **/
-	list<Vertex*>::iterator addOccurence (Vertex *v) ;
-
-	/**
-	 * get the list of vertices where this content occurs
-	 **/
-	const list<Vertex*> &getOccurences (void) const ;
+	list<Vertex*>::iterator addOccurence (Vertex *v)
+		{ return Occurences.insert (Occurences.end(), v) ; } ;
 
 	/**
 	 * delete a vertex from the Occurences list
 	 * \param it the iterator pointing to the vertex to be deleted
 	 **/
-	void deleteFromOccurences (list<Vertex*>::iterator it) ;
+	list<Vertex*>::iterator markDeletedFromOccurences (list<Vertex*>::iterator it) ;
+
+	list<Vertex*>::iterator unmarkDeletedFromOccurences (list<Vertex*>::iterator it) ;
+#endif
 	
 	private:
-	vector<SampleValueLabel> SampleValueLabels ;
+	/// the sample values of this vertex content
+	SampleValue** SampleValues ;
+	/// the number of loop edges vertices with this content _would_ have
+	unsigned long SelfDegree ;
+#if 0
+	/// the vertices whose content is this vertex content
 	list<Vertex*> Occurences ;
-	unsigned long Degree ;
+	/// the vertices that have been delted from Occurences
+	list<Vertex*> DeletedOccurences ;
+#endif
 } ;
 
 struct VertexContentsEqual : binary_function<VertexContent*, VertexContent*, bool> {

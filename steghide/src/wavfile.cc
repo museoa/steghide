@@ -99,7 +99,7 @@ unsigned int WavFile::getSamplesPerEBit()
 	return 2 ;
 }
 
-SampleValue *WavFile::getSample (SamplePos pos)
+SampleValue *WavFile::getSampleValue (SamplePos pos)
 {
 	int value = 0 ;
 	if (FormatChunk->getBitsPerSample() <= 8) {

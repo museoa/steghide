@@ -34,8 +34,8 @@ class BmpSampleValue : public SampleValue {
 	BmpSampleValue (void) ;
 	BmpSampleValue (CvrStgFile *f) ;
 
-	bool isNeighbour (SampleValue *s) const ;
-	float calcDistance (SampleValue *s) const ;
+	bool isNeighbour (const SampleValue *s) const ;
+	float calcDistance (const SampleValue *s) const ;
 
 	float getRadius (void) const ;
 

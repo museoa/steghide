@@ -297,7 +297,7 @@ void JpegEntropyCoded::replaceSample (SamplePos pos, SampleValue *s)
 	dctcoeffs[pos] = sample->getDctCoeff() ;
 }
 
-SampleValue *JpegEntropyCoded::getSample (SamplePos pos)
+SampleValue *JpegEntropyCoded::getSampleValue (SamplePos pos)
 {
 	assert (pos < dctcoeffs.size()) ;
 	JpegScan *p_scan = (JpegScan *) getParent() ;

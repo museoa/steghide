@@ -60,7 +60,7 @@ class CvrStgObject {
 	 * The sample object is created in this function and can safely be deleted afterwards.
 	 * The derived class should check the condition(s) given above in its Implementation of this function.
 	 **/
-	virtual SampleValue* getSample (SamplePos pos) = 0 ;
+	virtual SampleValue* getSampleValue (SamplePos pos) = 0 ;
 } ;
 
 #endif //ndef SH_CVRSTGOBJECT_H

@@ -23,22 +23,47 @@
 
 #include <vector>
 
-#include "samplevalue.h"
 #include "common.h"
+#include "graphaccess.h"
+#include "samplevalue.h"
 
-class SampleValueOppositeNeighbourhood {
+class SampleValueOppositeNeighbourhood : private GraphAccess {
 	public:
 	SampleValueOppositeNeighbourhood (void) {} ;
-	SampleValueOppositeNeighbourhood (const vector<SampleValue*> &svalues) ;
+	SampleValueOppositeNeighbourhood (Graph *g, const vector<SampleValue*> &svalues) ;
 
-	const vector<SampleValueLabel> &operator[] (SampleValueLabel l) const { return OppNeighs[l] ; } ;
+	const vector<SampleValue*>& operator[] (const SampleValueLabel lbl) const
+		{ return OppNeighs[lbl] ; } ;
+
+	const vector<SampleValue*>& operator[] (const SampleValue* sv) const
+		{ return OppNeighs[sv->getLabel()] ; } ;
 
 	private:
-	vector<vector<SampleValueLabel> > OppNeighs ;
+	/**
+	 * a strict weak ordering with sv1 < sv2 iff sv1 is nearer to sv (as given in constructor)
+	 **/
+	class SmallerDistance {
+		public:
+		SmallerDistance (SampleValue *sv)
+			: SrcSampleValue(sv) {} ;
+
+		bool operator() (const SampleValue* sv1, const SampleValue* sv2)
+			{ return (SrcSampleValue->calcDistance(sv1) < SrcSampleValue->calcDistance(sv2)) ; } ;
+
+		private:
+		SampleValue* SrcSampleValue ;
+	} ;
+
+	vector<vector<SampleValue*> > OppNeighs ;
 
 	void calcOppNeighs_generic (const vector<SampleValue*> &svalues) ;
 	void calcOppNeighs_rgb (const vector<SampleValue*> &svalues) ;
 	void calcOppNeighs_wav (const vector<SampleValue*> &svalues) ;
+
+	/**
+	 * return the smallest integer that is >= x
+	 **/
+	int roundup (float x) ;
 } ;
 
 #endif // ndef SH_SVALUEOPPNEIGHS_H

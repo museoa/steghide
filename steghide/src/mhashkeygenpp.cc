@@ -52,7 +52,7 @@ MHashKeyGenpp::~MHashKeyGenpp ()
 
 vector<unsigned char> MHashKeyGenpp::createKey (string password)
 {
-	// FIXME - assert (ready) ;
+	// FIXME nc - assert (ready) ;
 
 	char *passwd = (char *) s_malloc (password.size() + 1) ;
 	strcpy (passwd, password.c_str()) ;

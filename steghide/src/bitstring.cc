@@ -170,7 +170,7 @@ unsigned long BitString::getValue (unsigned long s, unsigned int l) const
 vector<unsigned char> BitString::getBytes() const
 {
 	assert (length % 8 == 0) ;
-	return data ; // FIXME - ? vector as reference
+	return data ; // FIXME nc - ? vector as reference
 }
 
 BitString& BitString::pad (unsigned long mult, Bit v)

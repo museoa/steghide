@@ -22,42 +22,8 @@
 #include "samplevalue.h"
 #include "cvrstgfile.h"
 
-SampleValue::SampleValue (void)
-	: File(NULL), Label(0)
+void SampleValue::decNumEdges ()
 {
-}
-
-SampleValue::SampleValue (CvrStgFile *f)
-	: File(f), Label(0)
-{
-}
-
-Bit SampleValue::getBit (void) const
-{
-	return SBit ;
-}
-
-unsigned long SampleValue::getKey (void) const
-{
-	return Key ;
-}
-
-CvrStgFile *SampleValue::getFile (void) const
-{
-	return File ;
-}
-
-void SampleValue::setFile (CvrStgFile *f)
-{
-	File = f ;
-}
-
-unsigned long SampleValue::getLabel (void) const
-{
-	return Label ;
-}
-
-void SampleValue::setLabel (unsigned long l)
-{
-	Label = l ;
+	assert (NumEdges > 0) ;
+	NumEdges-- ;
 }

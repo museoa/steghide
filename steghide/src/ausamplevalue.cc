@@ -30,7 +30,7 @@ unsigned char AuSampleValue::getValue () const
 	return Value ;
 }
 
-bool AuSampleValue::isNeighbour (SampleValue *s) const
+bool AuSampleValue::isNeighbour (const SampleValue *s) const
 {
 	return (calcDistance (s) <= Radius) ;
 }
@@ -55,9 +55,9 @@ SampleValue *AuSampleValue::getNearestOppositeSampleValue() const
 	return ((SampleValue *) new AuSampleValue (getFile(), n_value)) ;
 }
 
-float AuSampleValue::calcDistance (SampleValue *s) const
+float AuSampleValue::calcDistance (const SampleValue *s) const
 {
-	AuSampleValue *sample = dynamic_cast<AuSampleValue*> (s) ;
+	const AuSampleValue* sample = dynamic_cast<const AuSampleValue*> (s) ;
 	assert (sample != NULL) ;
 	return (abs (((float) Value) - ((float) sample->getValue()))) ;
 }

@@ -31,59 +31,44 @@
 #include "msg.h"
 #include "vertex.h"
 
-Graph::Graph()
-{
-}
-
-Graph::Graph (CvrStgFile *f)
+Graph::Graph (CvrStgFile *f, vector<SamplePos*>& sposs)
 {
 	File = f ;
 	SamplesPerEBit = File->getSamplesPerEBit() ;
+
+	vector<SampleValue**> svalues ;
+	hash_set<VertexContent*,hash<VertexContent*>,VertexContentsEqual> vc_set ;
+	constructSamples (sposs, svalues) ;
+	constructVertices (sposs, svalues, vc_set) ;
+	constructEdges (vc_set) ;
 }
 
-Graph::~Graph()
+void Graph::constructSamples (const vector<SamplePos*>& sposs,
+	vector<SampleValue**>& svalues)
 {
-	for (vector<Vertex*>::iterator i = Vertices.begin() ; i != Vertices.end() ; i++) {
-		delete *i ;
-	}
-	// TODO - delete more...
-}
+	const VertexLabel numvertices = sposs.size() ;
+	svalues.clear() ;
+	svalues.resize (numvertices) ;
 
-void Graph::startAdding()
-{
-	Vertices.clear() ;
-}
-
-void Graph::addVertex (const vector<SamplePos> &poss)
-{
-	assert (poss.size() == SamplesPerEBit) ;
-
-	static VertexLabel CurVertexLabel = 0 ;
-	Vertex *v = new Vertex (CurVertexLabel, SamplesPerEBit) ;
-
-	for (vector<SamplePos>::const_iterator i = poss.begin() ; i != poss.end() ; i++) {
-		SampleValue *sv = File->getSample (*i) ;
-
-		hash_set<SampleValue*,hash<SampleValue*>,SampleValuesEqual>::iterator j = SampleValues_set.find (sv) ;
-		if (j == SampleValues_set.end()) { // sample has not been found - add it !
-			SampleValues_set.insert (sv) ;
+	// fill a hash table with the (unique) sample values
+	hash_set<SampleValue*,hash<SampleValue*>,SampleValuesEqual> SampleValues_set ;
+	for (unsigned long i = 0 ; i < numvertices ; i++) {
+		svalues[i] = new SampleValue*[SamplesPerEBit] ;
+		for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
+			SampleValue *sv = File->getSampleValue (sposs[i][j]) ;
+			hash_set<SampleValue*,hash<SampleValue*>,SampleValuesEqual>::iterator res = SampleValues_set.find (sv) ;
+			if (res == SampleValues_set.end()) { // sample has not been found - add it !
+				SampleValues_set.insert (sv) ;
+				svalues[i][j] = sv ;
+			}
+			else { // sample value is already in SampleValues_set
+				delete sv ;
+				svalues[i][j] = *res ;
+			} 
 		}
-		else { // sample value is already in SampleValues_map
-			delete sv ;
-			sv = *j ;
-		} 
-
-		v->addSample (*i, sv) ;
 	}
 
-	Vertices.push_back (v) ;
-	CurVertexLabel++ ;
-}
-
-void Graph::finishAdding()
-{
-	// move the hash_set Samples_set into the vector Samples, set sample labels
-	// needs: filled Sample_set
+	// move the hash_set SampleValues_set into the vector SampleValues, set sample labels
 	SampleValues = vector<SampleValue*> (SampleValues_set.size()) ;
 	unsigned long label = 0 ;
 	for (hash_set<SampleValue*,hash<SampleValue*>,SampleValuesEqual>::const_iterator i = SampleValues_set.begin() ; i != SampleValues_set.end() ; i++) {
@@ -91,199 +76,107 @@ void Graph::finishAdding()
 		SampleValues[label]->setLabel (label) ;
 		label++ ;
 	}
-	SampleValues_set.clear() ;
-
-	SValueOppNeighs = SampleValueOppositeNeighbourhood (SampleValues) ;
 }
 
-unsigned long Graph::absdiff (unsigned long a, unsigned long b)
+void Graph::constructVertices (vector<SamplePos*>& sposs, vector<SampleValue**>& svalues,
+	hash_set<VertexContent*,hash<VertexContent*>,VertexContentsEqual>& vc_set)
 {
-	return ((a > b) ? (a - b) : (b - a)) ;
-}
-
-Vertex *Graph::getVertex (VertexLabel i) const
-{
-	assert (i < Vertices.size()) ;
-	return Vertices[i] ;
-}
-
-void Graph::updateShortestEdge (Vertex *v1)
-{
-	printDebug (3, "updating shortest edge for vertex %lu\n", v1->getLabel()) ;
-
-	if (v1->getDegree() == 0) {
-		if (v1->getShortestEdge() != NULL) {
-			delete v1->getShortestEdge() ;
-		}
-		v1->setShortestEdge (NULL) ;
-	}
-	else {
-		bool found = false ;
-		unsigned short v1_idx = 0 , v2_idx = 0 ;
-		Vertex *v2 = NULL ;
-		unsigned long min_weight = ULONG_MAX ;
-
-		for (unsigned short i = 0 ; i < SamplesPerEBit ; i++) {
-			const vector<SampleValueLabel> &oppneighbours = SValueOppNeighs[v1->getSample(i)->getLabel()] ;
-			for (vector<SampleValueLabel>::const_iterator j = oppneighbours.begin() ; j != oppneighbours.end() ; j++) {
-				// search the nearest samples to v1->getSamplePos(i)
-				map<SamplePos,pair<Vertex*,unsigned short> >::iterator upbound = SampleOccurences[(*j)].upper_bound (v1->getSamplePos(i)) ;
-				map<SamplePos,pair<Vertex*,unsigned short> >::iterator lowbound = upbound ;
-
-				// do not use samples in vertex v1 (no loops)
-				while ((upbound != SampleOccurences[(*j)].end()) && (upbound->second.first->getLabel() == v1->getLabel())) {
-					upbound++ ;
-				}
-
-				if (lowbound == SampleOccurences[(*j)].begin()) {
-					lowbound = SampleOccurences[(*j)].end() ;
-				}
-				else {
-					lowbound-- ;
-					// do not use samples in vertex v1 (no loops)
-					while ((lowbound != SampleOccurences[(*j)].begin()) && (lowbound->second.first->getLabel() == v1->getLabel())) {
-						lowbound-- ;
-					}
-					if ((lowbound == SampleOccurences[(*j)].begin()) && (lowbound->second.first->getLabel() == v1->getLabel())) {
-						lowbound = SampleOccurences[(*j)].end() ;
-					}
-				}
-
-				if (upbound != SampleOccurences[(*j)].end()) {
-					// upbound is next larger SamplePos in another vertex
-					unsigned long weight = absdiff (upbound->first, v1->getSamplePos(i)) ;
-					if (weight < min_weight) {
-						v1_idx = i ;
-						v2_idx = upbound->second.second ;
-						v2 = upbound->second.first ;
-						min_weight = weight ;
-						found = true ;
-					}
-				}
-				if (lowbound != SampleOccurences[(*j)].end()) {
-					// lowbound is next larger SamplePos in another vertex
-					unsigned long weight = absdiff (lowbound->first, v1->getSamplePos(i)) ;
-					if (weight < min_weight) {
-						v1_idx = i ;
-						v2_idx = lowbound->second.second ;
-						v2 = lowbound->second.first ;
-						min_weight = weight ;
-						found = true ;
-					}
-				}
-			}
-		}
-
-		assert (found) ;
-		assert (v1->getLabel() != v2->getLabel()) ;
-		Edge *e = new Edge (v1, v1_idx, v2, v2_idx, min_weight) ;
-		replaceShortestEdge (v1, e) ;
-	}
-}
-
-void Graph::replaceShortestEdge (Vertex *v1, Edge *e)
-{
-	Edge *oldedge_v1 = v1->getShortestEdge() ;
-	if (oldedge_v1 != NULL) {
-		Vertex *oldmate_v1 = oldedge_v1->getOtherVertex(v1) ;
-		if (oldmate_v1->getShortestEdge() == oldedge_v1) {
-			oldmate_v1->setShortestEdge (NULL) ;
-		}
-		delete oldedge_v1 ;
-	}
-
-	v1->setShortestEdge (e) ;
-}
-
-void Graph::replaceMatchingEdge (Vertex *v1, Vertex *v2, Edge *e)
-{
-	Edge *oldedge_v1 = v1->getMatchingEdge(), *oldedge_v2 = v2->getMatchingEdge() ;
-	if (oldedge_v1 != NULL) {
-		oldedge_v1->getOtherVertex(v1)->setMatchingEdge (NULL) ;
-		delete oldedge_v1 ;
-	}
-	if (oldedge_v2 != NULL) {
-		oldedge_v2->getOtherVertex(v2)->setMatchingEdge (NULL) ;
-		delete oldedge_v2 ;
-	}
-
-	v1->setMatchingEdge (e) ;
-	v2->setMatchingEdge (e) ;
-}
-
-void Graph::insertInMatching (vector<Edge*> *m, Edge *e)
-{
-	Vertex *v1 = e->getVertex1() ;
-	Vertex *v2 = e->getVertex2() ;
-	printDebug (2, "inserting vertices %lu and %lu in matching\n", v1->getLabel(), v2->getLabel()) ;
-
-	assert (!v1->isMatched() && !v2->isMatched()) ;
-
-	replaceMatchingEdge (v1, v2, e) ;
-	m->push_back (e) ;
-
-	// delete samples of these vertices from SampleOccurences
-	for (unsigned short i = 0 ; i < SamplesPerEBit ; i++) {
-		SampleOccurences[v1->getSample(i)->getLabel()].erase (v1->getSamplePos(i)) ;
-		SampleOccurences[v2->getSample(i)->getLabel()].erase (v2->getSamplePos(i)) ;
-	}
-
-	// get all opposite neighbour samples of these two vertices
-	vector<SampleValueLabel> oppneighbours ;	// duplicates are necessary(!)
-	for (unsigned short i = 0 ; i < SamplesPerEBit ; i++) {
-		// FIXME - rewrite this! - don't use copy - use references
-		vector<SampleValueLabel> tmp = SValueOppNeighs[v1->getSample(i)->getLabel()] ; // copy for Vertex1
-		copy (tmp.begin(), tmp.end(), back_inserter(oppneighbours)) ;
-		tmp = SValueOppNeighs[v2->getSample(i)->getLabel()] ;	// copy for Vertex2
-		copy (tmp.begin(), tmp.end(), back_inserter(oppneighbours)) ;
-	}
-
-	// for all neighbour samples decrement the degree of all vertex contents
-	for (vector<SampleValueLabel>::iterator i = oppneighbours.begin() ; i != oppneighbours.end() ; i++) {
-		for (list<VertexContent*>::iterator j = VertexContents[(*i)].begin() ; j != VertexContents[(*i)].end() ; j++) {
-			(*j)->decDegree() ;
-			if ((*j)->getDegree() == 1) {
-				// move all vertices with this vertex content to the VerticesDeg1 Priority Queue
-				list<Vertex*> occ = (*j)->getOccurences() ;
-				for (list<Vertex*>::iterator k = occ.begin() ; k != occ.end() ; k++) {
-					VerticesDeg1.push (*k) ;
-					// vertices are deleted from VerticesDegG in doConstrHeuristic
-				}
-			}
-		}
-	}
-
-	// delete vertices from their vertex contents
-	v1->deleteFromContent() ;
-	v2->deleteFromContent() ;
-}
-
-void Graph::printVOutputVertices()
-{
-#ifdef DEBUG
-	if (Args.Verbosity.getValue() == VERBOSE || Args.DebugCommand.getValue() == PRINTSTATS) {
-#else
-	if (Args.Verbosity.getValue() == VERBOSE) {
+	const VertexLabel numvertices = sposs.size() ;
+#if 0
+	VertexContents = vector<list<VertexContent*> > (SampleValues.size()) ;
 #endif
-		VerboseMessage vmsg1 (_("number of distinct sample values: %lu"), SampleValues.size()) ;
-		vmsg1.printMessage() ;
+	Vertices = vector<Vertex*> (numvertices) ;
+	vc_set = hash_set<VertexContent*,hash<VertexContent*>,VertexContentsEqual>() ;
 
-		VerboseMessage vmsg2 (_("number of vertices: %lu"), Vertices.size()) ;
-		vmsg2.printMessage() ;
+	for (VertexLabel i = 0 ; i < numvertices ; i++) {
+		// has vertex content already been created ?
+		VertexContent *vc = new VertexContent (this, svalues[i], sposs[i]) ;
+		hash_set<VertexContent*,hash<VertexContent*>,VertexContentsEqual>::iterator res = vc_set.find (vc) ;
+		if (res == vc_set.end()) { // vc has not been found - add it!
+			vc_set.insert (vc) ;
+		}
+		else { // vc is already there
+			delete vc ;
+			vc = *res ;
+		}
 
-#ifdef DEBUG
-		if (Args.DebugCommand.getValue() == PRINTSTATS) {
-			printf ("%lu:%lu:",
-					(unsigned long) SampleValues.size(),	// number of distinct sample values
-					(unsigned long) Vertices.size()	// number of vertices
-				   ) ;
+		// fill Vertices and VertexContents
+		Vertices[i] = new Vertex (this, i, sposs[i], vc) ;
+#if 0
+		for (unsigned short j = 0 ; j < SamplesPerEBit ; i++) {
+			VertexContents[vc->getSampleValue(j)->getLabel()].push_back (vc) ;
 		}
 #endif
 	}
 
+#ifdef DEBUG
+	if (Args.DebugCommand.getValue() == PRINTSTATS) {
+		NumVertexContents = vc_set.size() ;
+	}
+#endif
 }
 
-void Graph::printVOutputEdges()
+void Graph::constructEdges (const hash_set<VertexContent*,hash<VertexContent*>,VertexContentsEqual>& vc_set)
+{
+	// create SampleValueOppositeNeighbourhood
+	SValueOppNeighs = SampleValueOppositeNeighbourhood (this, SampleValues) ;
+
+	// fill SampleOccurences
+	SampleOccurences = vector<list<SampleOccurence> > (SampleValues.size()) ;
+	for (vector<Vertex*>::iterator it = Vertices.begin() ; it != Vertices.end() ; it++) {
+		for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
+			SampleOccurence occ (*it, j) ;
+			SampleOccurences[(*it)->getSampleValue(j)->getLabel()].push_back (occ) ;
+		}
+	}
+
+	// compute NumEdges for all sample values
+	for (SampleValueLabel lbl = 0 ; lbl < SampleValues.size() ; lbl++) {
+		unsigned long numedges = 0 ;
+		unsigned long noppneighs = SValueOppNeighs[lbl].size() ;
+		for (unsigned long i = 0 ; i < noppneighs ; i++) {
+			// FIXME nc - .size() needs linear time!
+			numedges += SampleOccurences[SValueOppNeighs[lbl][i]->getLabel()].size() ;
+		}
+		SampleValues[lbl]->setNumEdges (numedges) ;
+	}
+}
+
+
+Graph::~Graph()
+{
+	for (vector<Vertex*>::iterator i = Vertices.begin() ; i != Vertices.end() ; i++) {
+		delete *i ;
+	}
+	// TODO nc - delete more...
+}
+
+void Graph::unmarkDeletedAllVertices ()
+{
+	for (vector<Vertex*>::iterator it = Vertices.begin() ; it != Vertices.end() ; it++) {
+		(*it)->unmarkDeleted() ;
+	}
+}
+
+list<SampleOccurence>::iterator Graph::markDeletedSampleOccurence (list<SampleOccurence>::iterator it)
+{
+	Vertex *v = it->getVertex() ;
+	unsigned short i = it->getIndex() ;
+	SampleValueLabel lbl = v->getSampleValue(i)->getLabel() ;
+	SampleOccurences[lbl].erase (it) ;
+	return DeletedSampleOccurences[lbl].insert (DeletedSampleOccurences[lbl].end(), SampleOccurence (v, i)) ;
+}
+
+list<SampleOccurence>::iterator Graph::unmarkDeletedSampleOccurence (list<SampleOccurence>::iterator it)
+{
+	Vertex *v = it->getVertex() ;
+	unsigned short i = it->getIndex() ;
+	SampleValueLabel lbl = v->getSampleValue(i)->getLabel() ;
+	DeletedSampleOccurences[lbl].erase (it) ;
+	return SampleOccurences[lbl].insert (SampleOccurences[lbl].end(), SampleOccurence (v, i)) ;
+}
+
+void Graph::printVerboseInfo()
 {
 #ifdef DEBUG
 	if (Args.Verbosity.getValue() == VERBOSE || Args.DebugCommand.getValue() == PRINTSTATS) {
@@ -305,333 +198,40 @@ void Graph::printVOutputEdges()
 			}
 		}
 		float avgdeg = ((float) sumdeg / (float) Vertices.size()) ;
-
-		VerboseMessage vmsg3 (_("average vertex degree: %.1f"), avgdeg) ;
-		vmsg3.printMessage() ;
-		VerboseMessage vmsg4 (_("minimum vertex degree: %lu"), mindeg) ;
-		vmsg4.printMessage() ;
-		VerboseMessage vmsg5 (_("maximum vertex degree: %lu"), maxdeg) ;
-		vmsg5.printMessage() ;
-
 		assert (sumdeg % 2 == 0) ;
-
-		VerboseMessage vmsg6 (_("number of edges: %lu"), sumdeg / 2) ;
-		vmsg6.printMessage() ;
-		VerboseMessage vmsg7 (_("calculating the matching...")) ;
-		vmsg7.printMessage() ;
 
 #ifdef DEBUG
 		if (Args.DebugCommand.getValue() == PRINTSTATS) {
-			unsigned long nvertexcontents = 0 ;
-			for (vector<list<VertexContent*> >::iterator i = VertexContents.begin() ; i != VertexContents.end() ; i++) {
-				nvertexcontents += i->size() ; // is linear
-			}
-			assert (nvertexcontents % SamplesPerEBit == 0) ;
-			nvertexcontents /= SamplesPerEBit ;
-
-			printf ("%lu:%lu:%lu:%.1f:%lu:",
+			printf ("%lu:%lu:%lu:%lu:%lu:%.1f:%lu:",
+					(unsigned long) SampleValues.size(),	// number of distinct sample values
+					(unsigned long) Vertices.size(),	// number of vertices
 					sumdeg / 2, // number of edges
 					mindeg, // minimum vertex degree
 					maxdeg, // maximum vertex degree
 					avgdeg, // average vertex degree
-					nvertexcontents // number of distinct vertex contents
+					NumVertexContents // number of distinct vertex contents
 				   ) ;
 		}
 #endif
-	}
-}
 
-void Graph::printVOutputMatching (vector<Edge*> *m)
-{
-#ifdef DEBUG
-	if (Args.Verbosity.getValue() == VERBOSE || Args.DebugCommand.getValue() == PRINTSTATS) {
-#else
-	if (Args.Verbosity.getValue() == VERBOSE) {
-#endif
-		VerboseMessage vmsg8 (_("size of the matching: %lu"), m->size()) ;
-		vmsg8.printMessage() ;
-		unsigned long numvertices = Vertices.size() - (2 * m->size()) ;
-		VerboseMessage vmsg9 (_("number of unmatched vertices: %lu (%.1f%)"), numvertices, 100.0 * ((float) numvertices / (float) Vertices.size())) ;
-		vmsg9.printMessage() ;
+		if (Args.Verbosity.getValue() == VERBOSE) {
+			VerboseMessage vmsg1 (_("number of distinct sample values: %lu"), SampleValues.size()) ;
+			vmsg1.printMessage() ;
 
-		unsigned long sumweights = 0 ;
-		for (vector<Edge*>::iterator i = m->begin() ; i != m->end() ; i++) {
-			sumweights += (*i)->getWeight() ;
-		}
+			VerboseMessage vmsg2 (_("number of vertices: %lu"), Vertices.size()) ;
+			vmsg2.printMessage() ;
 
-		VerboseMessage vmsg10 (_("average edge weight: %.1f"), ((float) sumweights / (float) m->size())) ;
-		vmsg10.printMessage() ;
+			VerboseMessage vmsg3 (_("average vertex degree: %.1f"), avgdeg) ;
+			vmsg3.printMessage() ;
+			VerboseMessage vmsg4 (_("minimum vertex degree: %lu"), mindeg) ;
+			vmsg4.printMessage() ;
+			VerboseMessage vmsg5 (_("maximum vertex degree: %lu"), maxdeg) ;
+			vmsg5.printMessage() ;
 
-#ifdef DEBUG
-		if (Args.DebugCommand.getValue() == PRINTSTATS) {
-			printf ("%.3f:%.1f:",
-					((float) numvertices / (float) Vertices.size()), // ratio of unmatched vertices
-					((float) sumweights / (float) m->size()) // average edge weight
-				   ) ;
-		}
-#endif
-	}
-}
-
-void Graph::calcMatching()
-{
-	vector<Edge*> *bestmatching = new vector<Edge*>(), *curmatching = NULL ;
-	unsigned int nconstrheur = NConstrHeur ;
-#ifdef DEBUG
-	if (Args.NConstrHeur.is_set()) {
-		nconstrheur = Args.NConstrHeur.getValue() ;
-	}
-#endif
-
-	printVOutputVertices() ;
-
-	bool firsttime = true ;
-	for (unsigned int i = 0 ; i < nconstrheur ; i++) {
-		setupConstrHeuristic() ;
-		if (firsttime) {
-			printVOutputEdges() ;
-			firsttime = false ;
-		}
-		curmatching = doConstrHeuristic() ;
-		if (curmatching->size() > bestmatching->size()) {
-			delete bestmatching ;
-			bestmatching = curmatching ;
+			VerboseMessage vmsg6 (_("number of edges: %lu"), sumdeg / 2) ;
+			vmsg6.printMessage() ;
 		}
 	}
-
-	printVOutputMatching (bestmatching) ;
-
-#ifdef DEBUG
-	//check_matching (bestmatching) ;
-#endif
-}
-
-//
-// Construction Heuristic (modified Karp&Sisper)
-//
-void Graph::setupConstrHeuristic()
-{
-	// initializations
-	SampleOccurences = vector<map<SamplePos,pair<Vertex*,unsigned short> > > (SampleValues.size()) ;
-	VertexContents = vector<list<VertexContent*> > (SampleValues.size()) ;
-
-	// create the (hash_)set of (unique) vertex contents and set vertex contents in vertices
-	// needs: filled Vertices
-	hash_set<VertexContent*,hash<VertexContent*>,VertexContentsEqual> vc_set ;
-	for (vector<Vertex*>::iterator i = Vertices.begin() ; i != Vertices.end() ; i++) {
-		vector<SampleValueLabel> samplelabels (SamplesPerEBit) ;
-		for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
-			samplelabels[j] = (*i)->getSample(j)->getLabel() ;
-		}
-		VertexContent *vcontent = new VertexContent (samplelabels) ;
-
-		hash_set<VertexContent*,hash<VertexContent*>,VertexContentsEqual>::iterator uvc = vc_set.find (vcontent) ;
-		if (uvc == vc_set.end()) { // vcontent has not been found - add it!
-			vc_set.insert (vcontent) ;
-		}
-		else { // vcontent is already there
-			delete vcontent ;
-			vcontent = *uvc ;
-		}
-
-		(*i)->connectToContent (vcontent) ;
-	}
-
-	// fill the SampleOccurences data structure
-	// needs: filled Vertices, sorted SampleData in Vertex Contents and Vertices
-	for (vector<Vertex*>::iterator i = Vertices.begin() ; i != Vertices.end() ; i++) {
-		for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
-			pair<SamplePos,pair<Vertex*,unsigned short> > occ ((*i)->getSamplePos(j), pair<Vertex*,unsigned short> (*i, j)) ;
-			pair<map<SamplePos,pair<Vertex*,unsigned short> >::iterator,bool> res = SampleOccurences[(*i)->getSample(j)->getLabel()].insert (occ) ;
-			assert (res.second) ;
-		}
-	}
-
-	// compute degrees and fill the VertexContents data structure
-	// needs: filled vc_set, filled SampleOccurences
-	for (hash_set<VertexContent*,hash<VertexContent*>,VertexContentsEqual>::iterator i = vc_set.begin() ; i != vc_set.end() ; i++) {
-		unsigned long degree = 0 ;
-		for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
-			const vector<SampleValueLabel> &oppneighbours = SValueOppNeighs[(*i)->getSampleValueLabel(j)] ;
-			for (vector<SampleValueLabel>::const_iterator k = oppneighbours.begin() ; k != oppneighbours.end() ; k++) {
-				degree += SampleOccurences[*k].size() ;
-
-				// no loops
-				for (unsigned short l = 0 ; l < SamplesPerEBit ; l++) {
-					if (*k == (*i)->getSampleValueLabel(l)) {
-						degree-- ;
-					}
-				}
-			}
-		}
-		assert (degree >= 0) ;
-		(*i)->setDegree (degree) ;
-
-		for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
-			VertexContents[(*i)->getSampleValueLabel(j)].insert (VertexContents[(*i)->getSampleValueLabel(j)].end(), *i) ;
-		}
-	}
-
-	// calculate the shortest edge for each vertex
-	for (vector<Vertex*>::iterator i = Vertices.begin() ; i != Vertices.end() ; i++) {
-		updateShortestEdge (*i) ;
-		(*i)->setMatchingEdge (NULL) ; // FIXME - only needed after matching has been done at least once
-	}
-
-	// fill the VerticesDeg1 and VerticesDegG priority queues
-	VerticesDeg1 = priority_queue<Vertex*, vector<Vertex*>, LongerShortestEdge> () ;
-	VerticesDegG = priority_queue<Vertex*, vector<Vertex*>, LongerShortestEdge> () ;
-
-	for (vector<Vertex*>::iterator i = Vertices.begin() ; i != Vertices.end() ; i++) {
-		unsigned long degree = (*i)->getDegree() ;
-		if (degree != 0) {
-			if (degree == 1) {
-				VerticesDeg1.push (*i) ;
-			}
-			else {
-				VerticesDegG.push (*i) ;
-			}
-		}
-	}
-
-
-#ifdef DEBUG
-	if (Args.DebugCommand.getValue() == PRINTGRAPH) {
-		print() ;
-		exit (EXIT_SUCCESS) ;
-	}
-#endif
-
-#if 0
-	cerr << "checking data structures:" << endl ;
-	assert (check_ds()) ;
-	// TODO: run this with many test cases
-#endif
-	
-}
-
-Vertex *Graph::findVertexDeg1 (unsigned int k)
-{
-	Vertex *v = NULL ;
-	vector<Vertex*> topk ;
-	bool usethisvertex = false ;
-
-	// get the vertex that is the k-nearest to top and still has degree 1
-	do {
-		assert (!VerticesDeg1.empty()) ;
-		v = VerticesDeg1.top() ;
-		VerticesDeg1.pop() ;
-		assert (v->getDegree() <= 1) ;
-
-		if ((v->getDegree() == 1) && (!v->isMatched())) { // implicitly delete vertices that have degree zero or have already been matched
-			// v is valid vertex
-			updateShortestEdge (v) ; // FIXME - is this necessary here ?
-			if (topk.size() == k - 1) {
-				for (unsigned int i = 0 ; i < k - 1 ; i++) {
-					VerticesDeg1.push (topk[i]) ;
-				}
-				usethisvertex = true ;	// v is the vertex k-nearest to top with degree 1
-			}
-			else {
-				topk.push_back (v) ;
-			}
-		}
-
-		if (k != 1 && VerticesDeg1.empty()) {	// there were less than k vertices with degree 1 in VerticesDegree1
-			assert (!usethisvertex) ;
-			unsigned int nfound = topk.size() ;
-			if (nfound > 0) {
-				usethisvertex = true ;
-				v = topk[nfound - 1] ;
-				for (unsigned int i = 0 ; i < nfound - 1 ; i++) {
-					VerticesDeg1.push (topk[i]) ;
-				}
-			}
-		}
-	} while (!(usethisvertex || VerticesDeg1.empty())) ;
-
-	return (usethisvertex ? v : NULL) ;
-}
-
-Vertex *Graph::findVertexDegG (unsigned int k)
-{
-	Vertex *v = NULL ;
-	vector<Vertex*> topk ;
-	bool usethisvertex = false ;
-
-	// get the vertex that is the k-nearest to top (with updated len of shortest edge) and has degree > 1
-	do {
-		assert (!VerticesDegG.empty()) ;
-		v = VerticesDegG.top() ;
-		VerticesDegG.pop() ;
-
-		if ((v->getDegree() > 1) && (!v->isMatched())) { // implicitly delete vertices that have been moved to VerticesDeg1 or have already been matched
-			// v is valid vertex
-			unsigned long weight_before = v->getShortestEdge()->getWeight() ;
-			updateShortestEdge (v) ;
-			if (v->getShortestEdge()->getWeight() == weight_before) {
-				if (topk.size() == k - 1) {
-					for (unsigned int i = 0 ; i < k - 1 ; i++) {
-						VerticesDegG.push (topk[i]) ;
-					}
-					usethisvertex = true ;
-				}
-				else {
-					topk.push_back (v) ;
-				}
-			}
-			else {
-				assert (v->getShortestEdge()->getWeight() > weight_before) ;	// weight can only rise
-				VerticesDegG.push (v) ; // push v into a position that is further away from top
-			}
-		}
-
-		if (k != 1 && VerticesDegG.empty()) { // there were less than k valid vertices in VerticesDegree1
-			assert (!usethisvertex) ;
-			unsigned int nfound = topk.size() ;
-			if (nfound > 0) {
-				usethisvertex = true ;
-				v = topk[nfound - 1] ;
-				for (unsigned int i = 0 ; i < nfound - 1 ; i++) {
-					VerticesDegG.push (topk[i]) ;
-				}
-			}
-		}
-	} while (!(usethisvertex || VerticesDegG.empty())) ;
-
-	return (usethisvertex ? v : NULL) ;
-}
-
-vector<Edge*> *Graph::doConstrHeuristic()
-{
-	vector<Edge*> *Matching = new vector<Edge*> ;
-	unsigned int pqr = PriorityQueueRange ;
-#ifdef DEBUG
-	if (Args.PriorityQueueRange.is_set()) {
-		pqr = Args.PriorityQueueRange.getValue() ;
-	}
-#endif
-
-	while (!(VerticesDegG.empty() && VerticesDeg1.empty())) {
-		Vertex *v = NULL ;
-		unsigned int k = 1 ;
-		if (pqr > 1) {
-			k = RndSrc.getValue (pqr) + 1 ;
-		}
-
-		if (!VerticesDeg1.empty()) {
-			v = findVertexDeg1 (k) ;
-		}
-		else {
-			v = findVertexDegG (k) ;
-		}
-
-		if (v != NULL) {
-			insertInMatching (Matching, v->getShortestEdge()) ;
-		}
-	}
-
-	return Matching ;
 }
 
 #ifdef DEBUG
@@ -648,12 +248,13 @@ void Graph::print (void) const
 		cout << Vertices[i]->getDegree() << " " << (i + 1) << " 0 0" << endl ;
 
 		for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
-			SampleValue *srcsample = Vertices[i]->getSample(j) ;
+			SampleValue *srcsample = Vertices[i]->getSampleValue(j) ;
 			for (unsigned long k = 0 ; k != Vertices.size() ; k++) {
 				if (i != k) { // no loops
 					for (unsigned short l = 0 ; l < SamplesPerEBit ; l++) {
-						SampleValue *destsample = Vertices[k]->getSample(l) ;
-						if ((srcsample->isNeighbour(destsample)) && (srcsample->getBit() != destsample->getBit())) { // is opposite neighbour
+						SampleValue *destsample = Vertices[k]->getSampleValue(l) ;
+						if ((srcsample->isNeighbour(destsample)) && (srcsample->getBit() != destsample->getBit())) {
+							// is opposite neighbour
 							cout << (k + 1) << " 0" << endl ;
 						}
 					}
@@ -664,6 +265,8 @@ void Graph::print (void) const
 	}
 }
 
+#if 0
+// TODO nc - move to Matching
 void Graph::printUnmatchedVertices (void) const
 {
 	unsigned long num = 0 ;
@@ -681,6 +284,7 @@ void Graph::printUnmatchedVertices (void) const
 	}
 	cerr << num << " unmatched vertices found." << endl ;
 }
+#endif
 
 bool Graph::check_matching (vector<Edge*> *m) const
 {
@@ -721,15 +325,14 @@ unsigned long Graph::check_degree (Vertex *v) const
 {
 	unsigned long degree = 0 ;
 	for (unsigned short i = 0 ; i < SamplesPerEBit ; i++) {
-		SampleValue *srcsample = v->getSample(i) ;
+		SampleValue *srcsample = v->getSampleValue(i) ;
 		for (vector<Vertex*>::const_iterator j = Vertices.begin() ; j != Vertices.end() ; j++) {
 			if ((*j)->getLabel() != v->getLabel()) { // no loops
-				if (!(*j)->isMatched()) { // only umatched vertices
-					for (unsigned short k = 0 ; k < SamplesPerEBit ; k++) {
-						SampleValue *destsample = (*j)->getSample(k) ;
-						if ((srcsample->isNeighbour(destsample)) && (srcsample->getBit() != destsample->getBit())) { // is opposite neighbour
-							degree++ ;
-						}
+				for (unsigned short k = 0 ; k < SamplesPerEBit ; k++) {
+					SampleValue *destsample = (*j)->getSampleValue(k) ;
+					if ((srcsample->isNeighbour(destsample)) && (srcsample->getBit() != destsample->getBit())) {
+						// is opposite neighbour
+						degree++ ;
 					}
 				}
 			}
@@ -753,13 +356,11 @@ bool Graph::check_ds (void) const
 	return retval ;
 }
 
-// FIXME - why does every vertexcontent need to know which vertices belong to him ??
-
 bool Graph::check_sizes (void) const
 {
 	cerr << "checking sizes" << endl ;
 	unsigned long n = SampleValues.size() ;
-	bool retval = ((n == VertexContents.size()) && (n == SampleOccurences.size())) ;
+	bool retval = (n == SampleOccurences.size()) ;
 	if (!retval) {
 		cerr << "FAILED: sizes don't match" << endl ;
 	}
@@ -840,10 +441,10 @@ bool Graph::check_sampleoppositeneighbourhood (void) const
 
 	cerr << "checking SampleValueOppositeNeighbourhood: sample values are opposite" << endl ;
 	for (SampleValueLabel srclbl = 0 ; srclbl < SampleValues.size() ; srclbl++) {
-		const vector<SampleValueLabel> &oppneighs = SValueOppNeighs[srclbl] ;
-		for (vector<SampleValueLabel>::const_iterator destlbl = oppneighs.begin() ; destlbl != oppneighs.end() ; destlbl++) {
+		const vector<SampleValue*> &oppneighs = SValueOppNeighs[srclbl] ;
+		for (vector<SampleValue*>::const_iterator destsv = oppneighs.begin() ; destsv != oppneighs.end() ; destsv++) {
 			Bit srcbit = SampleValues[srclbl]->getBit() ;
-			Bit destbit = SampleValues[*destlbl]->getBit() ;
+			Bit destbit = (*destsv)->getBit() ;
 			if (srcbit == destbit) {
 				retval = false ;
 				cerr << "FAILED: SampleOppositeNeighbourhood contains a non-opposite sample" << endl ;
@@ -852,7 +453,7 @@ bool Graph::check_sampleoppositeneighbourhood (void) const
 		}
 	}
 
-	// FIXME - also check all are neighbours
+	// FIXME nc - also check all are neighbours
 
 	cerr << "checking SampleValueOppositeNeighbourhood: all oppneighs are in this list" << endl ;
 	for (unsigned long i = 0 ; i < SampleValues.size() ; i++) {
@@ -862,10 +463,10 @@ bool Graph::check_sampleoppositeneighbourhood (void) const
 				if (SampleValues[i]->isNeighbour (SampleValues[j])) {
 					// ...and they are neighbours => there must be an entry in SampleOppositeNeighbourhood
 					assert (SampleValues[j]->isNeighbour (SampleValues[i])) ;
-					const vector<SampleValueLabel> &oppneighs = SValueOppNeighs[i] ;
+					const vector<SampleValue*> &oppneighs = SValueOppNeighs[i] ;
 					bool found = false ;
-					for (vector<SampleValueLabel>::const_iterator k = oppneighs.begin() ; k != oppneighs.end() ; k++) {
-						if (*k == j) {
+					for (vector<SampleValue*>::const_iterator k = oppneighs.begin() ; k != oppneighs.end() ; k++) {
+						if ((*k)->getLabel() == j) {
 							found = true ;
 						}
 					}
@@ -881,9 +482,11 @@ bool Graph::check_sampleoppositeneighbourhood (void) const
 	return retval ;
 }
 
+// FIXME nc - needs Vertex::getContent().... !?
 bool Graph::check_vertexcontents (void) const
 {
 	bool retval = true ;
+#if 0
 
 	cerr << "checking VertexContents: vcontent sample labels are pointer equivalent to those in Samples" << endl ;
 	for (vector<Vertex*>::const_iterator i = Vertices.begin() ; i != Vertices.end() ; i++) {
@@ -917,12 +520,15 @@ bool Graph::check_vertexcontents (void) const
 		}
 	}
 
+#endif
 	return retval ;
 }
 
+// FIXME nc - fix this
 bool Graph::check_sampleoccurences (void) const
 {
 	bool retval = true ;
+#if 0
 
 	unsigned long nsamples = File->getNumSamples() ;
 
@@ -950,9 +556,12 @@ bool Graph::check_sampleoccurences (void) const
 		}
 	}
 
+#endif
 	return retval ;
 }
 
+#if 0
+// move to Matching - TODO nc
 void Graph::printUnmatchedVerticescontaining (unsigned long samplekey) const
 {
 	for (unsigned long i = 0 ; i < Vertices.size() ; i++) {
@@ -964,3 +573,4 @@ void Graph::printUnmatchedVerticescontaining (unsigned long samplekey) const
 	}
 }
 #endif
+#endif // def DEBUG

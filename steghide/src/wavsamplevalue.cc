@@ -25,6 +25,8 @@
 #include "wavfile.h"
 #include "wavsamplevalue.h"
 
+// TODO nc - ? derive WavPCMsmallSampleValue and WavPCMlargeSampleValue from WavPCMSampleValueValue
+
 WavPCMSampleValue::WavPCMSampleValue (CvrStgFile *f, int v)
 	: SampleValue(f), Value(v)
 {
@@ -67,9 +69,8 @@ WavPCMSampleValue::WavPCMSampleValue (CvrStgFile *f, int v)
 		Radius = getRadius() ;
 	}
 }
-// FIXME - ? derive WavPCMsmallSampleValue and WavPCMlargeSampleValue from WavPCMSampleValueValue
 
-bool WavPCMSampleValue::isNeighbour (SampleValue *s) const
+bool WavPCMSampleValue::isNeighbour (const SampleValue *s) const
 {
 	return (calcDistance (s) <= Radius) ;
 }
@@ -94,9 +95,9 @@ SampleValue *WavPCMSampleValue::getNearestOppositeSampleValue () const
 	return ((SampleValue *) new WavPCMSampleValue (getFile(), n_value)) ;
 }
 
-float WavPCMSampleValue::calcDistance (SampleValue *s) const
+float WavPCMSampleValue::calcDistance (const SampleValue *s) const
 {
-	WavPCMSampleValue *sample = dynamic_cast<WavPCMSampleValue*> (s) ;
+	const WavPCMSampleValue *sample = dynamic_cast<const WavPCMSampleValue*> (s) ;
 	assert (sample != NULL) ;
 	return (abs ((float) Value - (float) sample->getValue())) ;
 }

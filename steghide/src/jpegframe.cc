@@ -130,7 +130,7 @@ void JpegFrame::read (BinaryIO *io)
 			framehdr = new JpegFrameHeader (marker, io) ;
 			appendObj (framehdr) ;
 
-			// TODO - support more than one scan
+			// TODO nc - support more than one scan
 			scan = new JpegScan (this, io) ;
 			appendObj (scan) ;
 			if (scan->getTerminatingMarker() == JpegElement::MarkerEOI) {
@@ -143,7 +143,7 @@ void JpegFrame::read (BinaryIO *io)
 			appendObj (new JpegUnusedSegment (marker, io)) ;
 		}
 		else if (marker == JpegElement::MarkerSOF2) {
-			// TODO - support progressive DCT
+			// TODO nc - support progressive DCT
 			if (io->is_std()) {
 				throw SteghideError (_("the jpeg file on standard input uses progressive DCT mode which is not supported in this version.")) ;
 			}

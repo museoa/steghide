@@ -18,109 +18,154 @@
  *
  */
 
-#include <string>
+#include <cfloat>
 
+#include "augheur.h"
 #include "bitstring.h"
 #include "common.h"
+#include "constrheur.h"
 #include "cvrstgfile.h"
 #include "embdata.h"
 #include "embedder.h"
 #include "error.h"
+#include "matching.h"
 #include "msg.h"
 #include "permutation.h"
 #include "vertex.h"
 
 Embedder::Embedder ()
 {
-	CoverFileName = Args.CvrFn.getValue() ;
-	StegoFileName = Args.StgFn.getValue() ;
-	EmbedFileName = Args.EmbFn.getValue() ;
-}
-
-void Embedder::embed ()
-{
-	EmbData embdata (EmbData::EMBED, EmbedFileName) ;
+	// create bitstring to be embedded
+	EmbData embdata (EmbData::EMBED, Args.EmbFn.getValue()) ;
 	embdata.setEncAlgo (Args.EncAlgo.getValue()) ;
 	embdata.setEncMode (Args.EncMode.getValue()) ;
 	embdata.setCompression (false) ;
 	embdata.setChecksum (Args.Checksum.getValue()) ;
+	ToEmbed = embdata.getBitString() ;
 
-	CvrStgFile *cvrstgfile = CvrStgFile::readFile (CoverFileName) ;
-
-	BitString toembed = embdata.getBitString() ;
-	unsigned long n = toembed.getLength() ;
-
-	if ((n * cvrstgfile->getSamplesPerEBit()) > cvrstgfile->getNumSamples()) {
-		throw SteghideError (_("the cover file is too short to embed the data.")) ;
-	}
-
-	VerboseMessage vmsg (_("embedding %lu bits in %lu samples."), n, cvrstgfile->getNumSamples()) ;
-	vmsg.printMessage() ;
-
-	calculate (cvrstgfile, toembed) ;
-
-	unsigned long i_modify = 0 ; // is the vertex label
-	for (unsigned long i = 0 ; i < n ; i++) {
-		if (NeedsChange[i]) {
-			embedVertex (cvrstgfile, MGraph.getVertex (i_modify)) ;
-			i_modify++ ;
-		}
-	}
-
-	cvrstgfile->transform (StegoFileName) ;
-	cvrstgfile->write() ;
-}
-
-void Embedder::calculate (CvrStgFile *csf, const BitString &e)
-{
-	Permutation perm (csf->getNumSamples(), Args.Passphrase.getValue()) ;
-
-	MGraph = Graph (csf) ;
-	MGraph.startAdding() ;
+	// read cover-/stego-file
+	TheCvrStgFile = CvrStgFile::readFile (Args.CvrFn.getValue()) ;
 	
-	unsigned long n = e.getLength() ;
-	unsigned int sam_ebit = csf->getSamplesPerEBit() ;
+	// create graph
+	vector<SamplePos*> sampleposs ;
+	Permutation perm (TheCvrStgFile->getNumSamples(), Args.Passphrase.getValue()) ;
+	unsigned long n = ToEmbed.getLength() ;
+	unsigned int sam_ebit = TheCvrStgFile->getSamplesPerEBit() ;
 	for (unsigned long i = 0 ; i < n ; i++) {
-		vector<SamplePos> poss ;
-		Bit xorresult = 0 ;
+		SamplePos *poss = new SamplePos[sam_ebit] ;
+		Bit parity = 0 ;
 		for (unsigned int j = 0 ; j < sam_ebit ; j++) {
-			poss.push_back (*perm) ;
-			xorresult ^= csf->getSampleBit (*perm) ;
+			poss[j] = *perm ;
+			parity ^= TheCvrStgFile->getSampleBit (*perm) ;
 			++perm ;
 		}
 
-		if (xorresult == e[i]) {
-			NeedsChange.push_back (false) ;
-		}
-		else {
-			MGraph.addVertex (poss) ;
-			NeedsChange.push_back (true) ;
+		if (parity != ToEmbed[i]) {
+			sampleposs.push_back (poss) ;
 		}
 	}
+	TheGraph = new Graph (TheCvrStgFile, sampleposs) ;
+}
 
-	MGraph.finishAdding() ;
+Embedder::~Embedder ()
+{
+	delete TheCvrStgFile ;
+	delete TheGraph ;
+}
+	
+void Embedder::embed ()
+{
+	unsigned long n = ToEmbed.getLength() ;
 
-	MGraph.calcMatching() ;
+	if ((n * TheCvrStgFile->getSamplesPerEBit()) > TheCvrStgFile->getNumSamples()) {
+		throw SteghideError (_("the cover file is too short to embed the data.")) ;
+	}
+
+	VerboseMessage vmsg (_("embedding %lu bits in %lu samples."), n, TheCvrStgFile->getNumSamples()) ;
+	vmsg.printMessage() ;
+
+	const Matching* M = calculateMatching() ;
+
+	// embed matched edges
+	const list<Edge*> medges = M->getEdges() ;
+	for (list<Edge*>::const_iterator it = medges.begin() ; it != medges.end() ; it++) {
+		embedEdge (*it) ;
+	}
+
+	// embed exposed vertices
+	const list<Vertex*> *expvertices = M->getExposedVerticesLink() ;
+	for (list<Vertex*>::const_iterator it = expvertices->begin() ; it != expvertices->end() ; it++) {
+		embedExposedVertex (*it) ;
+	}
+
+	TheCvrStgFile->transform (Args.StgFn.getValue()) ;
+	TheCvrStgFile->write() ;
+}
+
+const Matching *Embedder::calculateMatching ()
+{
+	TheGraph->printVerboseInfo() ;
+	VerboseMessage vmsg (_("calculating the matching...")) ;
+	vmsg.printMessage() ;
+
+	// do construction heuristic (maybe more than once)
+	unsigned int nconstrheur = Default_NConstrHeur ;
+#ifdef DEBUG
+	if (Args.NConstrHeur.is_set()) {
+		nconstrheur = Args.NConstrHeur.getValue() ;
+	}
+#endif
+	Matching *bestmatching = NULL ;
+	for (unsigned int i = 0 ; i < nconstrheur ; i++) {
+		ConstructionHeuristic ch (TheGraph) ;
+		ch.run() ;
+
+		if (bestmatching && (ch.getMatching()->getCardinality() > bestmatching->getCardinality())) {
+			bestmatching = ch.getMatching() ;
+		}
+
+	}
+
+	// do augmenting path heuristic
+	if (true) { // TODO nc - make augmenting path heuristic optional ?
+		AugmentingPathHeuristic aph (TheGraph, bestmatching) ;
+		aph.run() ;
+		bestmatching = aph.getMatching() ;
+	}
+
+	return bestmatching ;
 }
  
-void Embedder::embedVertex (CvrStgFile *csf, Vertex *v)
+void Embedder::embedEdge (Edge *e)
+{
+	SamplePos samplepos1 = e->getSamplePos (e->getVertex1()) ;
+	SamplePos samplepos2 = e->getSamplePos (e->getVertex2()) ;
+
+	SampleValue *tmp = TheCvrStgFile->getSampleValue (samplepos1) ;
+	TheCvrStgFile->replaceSample (samplepos1, TheCvrStgFile->getSampleValue (samplepos2)) ;
+	TheCvrStgFile->replaceSample (samplepos2, tmp) ;
+}
+
+void Embedder::embedExposedVertex (Vertex *v)
 {
 	SamplePos samplepos = 0 ;
 	SampleValue *newsample = NULL ;
-	if (v->isMatched()) {
-		Edge *e = v->getMatchingEdge() ;
-		samplepos = e->getSamplePos (v) ;
-		newsample = e->getReplacingSample (v) ;
-	}
-	else {
-		// choose a random sample (of those that are in the vertex) to embed data
-		// FIXME - the sample with the nearest NearestOppositeSample() should be chosen
-		unsigned short rnd = RndSrc.getValue (csf->getSamplesPerEBit()) ;
-		samplepos = v->getSamplePos (rnd) ;
-		newsample = v->getSample(rnd)->getNearestOppositeSampleValue() ;
+	float mindistance = FLT_MAX ;
+	for (unsigned short i = 0 ; i < TheCvrStgFile->getSamplesPerEBit() ; i++) {
+		SampleValue *curold = v->getSampleValue(i) ;
+		SampleValue *curnew = v->getSampleValue(i)->getNearestOppositeSampleValue() ;
+		if (curold->calcDistance (curnew) < mindistance) {
+			samplepos = v->getSamplePos(i) ;
+			newsample = curnew ;
+			mindistance = curold->calcDistance (curnew) ;
+		}
+		else {
+			delete curnew ;
+		}
 	}
 
-	Bit oldbit = csf->getSampleBit (samplepos) ;
-	csf->replaceSample (samplepos, newsample) ;
-	assert (oldbit != csf->getSampleBit (samplepos)) ;
+	Bit oldbit = TheCvrStgFile->getSampleBit (samplepos) ;
+	TheCvrStgFile->replaceSample (samplepos, newsample) ;
+	assert (oldbit != TheCvrStgFile->getSampleBit (samplepos)) ;
+	delete newsample ;
 }

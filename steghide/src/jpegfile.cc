@@ -79,7 +79,7 @@ unsigned int JpegFile::getSamplesPerEBit()
 	return 2 ;
 }
 
-SampleValue *JpegFile::getSample (SamplePos pos)
+SampleValue *JpegFile::getSampleValue (SamplePos pos)
 {
-	return frame->getSample(pos) ;
+	return frame->getSampleValue(pos) ;
 }

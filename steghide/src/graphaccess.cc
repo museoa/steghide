@@ -18,36 +18,23 @@
  *
  */
 
-#ifndef SH_AUSAMPLE_H
-#define SH_AUSAMPLE_H
-
-#include "samplevalue.h"
 #include "common.h"
+#include "graph.h"
+#include "graphaccess.h"
 
-class AuSampleValue : public SampleValue {
-	public:
-	AuSampleValue (void)
-		: SampleValue(NULL) {} ;
-	AuSampleValue (CvrStgFile *f, unsigned char v)
-		: SampleValue(f), Value(v)
-		{ SBit = (Bit) (Value & 1) ; Key = (unsigned long) Value ; } ;
+//DEBUG
+GraphAccess::GraphAccess (Graph *g)
+{
+	if (TheGraph == NULL) {
+//		cerr << "graph access first time" << endl ;
+		TheGraph = g ;
+		SamplesPerVertex = TheGraph->getSamplesPerVertex() ;
+	}
+	else {
+		//cerr << "graph access with " << TheGraph->getNumVertices() << " vertices." << endl ;
+		assert (TheGraph == g) ;
+	}
+}
 
-	bool isNeighbour (const SampleValue *s) const ;
-	SampleValue* getNearestOppositeSampleValue (void) const ;
-	float calcDistance (const SampleValue *s) const ;
-
-	virtual float getRadius() const ;
-
-	unsigned char getValue (void) const ;
-
-	private:
-	/**
-	 * every pair of au samples whose distance is smaller than this constant are neighbours
-	 **/
-	static const float DefaultRadius = 1.0 ;
-	static float Radius ;
-
-	unsigned char Value ;
-} ;
-
-#endif // ndef SH_AUSAMPLE_H
+Graph* GraphAccess::TheGraph = NULL ;
+unsigned short GraphAccess::SamplesPerVertex = 0 ;
