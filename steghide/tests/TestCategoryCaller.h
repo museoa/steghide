@@ -18,21 +18,26 @@
  *
  */
 
-#ifndef SH_ASSERTIONFAILED_H
-#define SH_ASSERTIONFAILED_H
+#ifndef SH_TESTCALLER_H
+#define SH_TESTCALLER_H
 
-#include "common.h"
-#include "SteghideError.h"
+#include "TestCategory.h"
 
-class AssertionFailed : public SteghideError {
+template<class UTType> class TestCategoryCaller : public TestCategory {
 	public:
-	AssertionFailed (const char* fn, unsigned int l)
-		: SteghideError(_("assertion failed in %s at line number %d."), stripDir(fn), l) { printMessage() ; } ;
+	typedef void (UTType::*TCMType)();
 
-	void printMessage (void) const ;
+	TestCategoryCaller (std::string n, TestSuite* s, UTType* o, TCMType m)
+		: TestCategory(n,s), UTObject(o), TestMethod(m) {} ;
+
+	void run (void)
+	{
+		(UTObject->*TestMethod)() ;
+	}
 
 	private:
-	char* stripDir (const char* fn) ;
+	TCMType TestMethod ;
+	UTType* UTObject ;
 } ;
 
-#endif // ndef SH_ASSERTION_FAILED
+#endif // ndef SH_TESTCALLER_H

@@ -18,21 +18,14 @@
  *
  */
 
-#ifndef SH_ASSERTIONFAILED_H
-#define SH_ASSERTIONFAILED_H
+#ifndef SH_TESTCATEGORY_H
+#define SH_TESTCATEGORY_H
 
-#include "common.h"
-#include "SteghideError.h"
+#include "Test.h"
 
-class AssertionFailed : public SteghideError {
+class TestCategory : public Test {
 	public:
-	AssertionFailed (const char* fn, unsigned int l)
-		: SteghideError(_("assertion failed in %s at line number %d."), stripDir(fn), l) { printMessage() ; } ;
-
-	void printMessage (void) const ;
-
-	private:
-	char* stripDir (const char* fn) ;
+	TestCategory (const std::string& n, TestSuite* s) : Test(n, s) {} ;
 } ;
 
-#endif // ndef SH_ASSERTION_FAILED
+#endif // ndef SH_TESTCATEGORY_H

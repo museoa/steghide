@@ -18,21 +18,11 @@
  *
  */
 
-#ifndef SH_ASSERTIONFAILED_H
-#define SH_ASSERTIONFAILED_H
+#ifndef SH_UTCOMMON_H
+#define SH_UTCOMMON_H
 
-#include "common.h"
-#include "SteghideError.h"
+#define DATADIR "./data/"
+#define REMOVE	"rm -f"
+#define COMPARE	"cmp -s"
 
-class AssertionFailed : public SteghideError {
-	public:
-	AssertionFailed (const char* fn, unsigned int l)
-		: SteghideError(_("assertion failed in %s at line number %d."), stripDir(fn), l) { printMessage() ; } ;
-
-	void printMessage (void) const ;
-
-	private:
-	char* stripDir (const char* fn) ;
-} ;
-
-#endif // ndef SH_ASSERTION_FAILED
+#endif // ndef SH_UTCOMMON_H

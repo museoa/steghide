@@ -20,8 +20,8 @@
 
 #include <iostream>
 
-#include "common.h"
 #include "SteghideError.h"
+#include "common.h"
 
 SteghideError::SteghideError (void)
 	: MessageBase(_("error, exiting. (no error message defined)."))

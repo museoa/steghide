@@ -1,6 +1,6 @@
 /*
  * steghide 0.5.1 - a steganography program
- * Copyright (C) 2002 Stefan Hetzl <shetzl@chello.at>
+ * Copyright (C) 2002 Stefan Hetzl <shetzl.at>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,21 +18,31 @@
  *
  */
 
-#ifndef SH_ASSERTIONFAILED_H
-#define SH_ASSERTIONFAILED_H
+#ifndef SH_BITSTRINGTEST_H
+#define SH_BITSTRINGTEST_H
 
-#include "common.h"
-#include "SteghideError.h"
+#define private public
+#define protected public
+#include "BitString.h"
+#undef private
+#undef protected
 
-class AssertionFailed : public SteghideError {
+#include "UnitTest.h"
+#include "TestSuite.h"
+
+class BitStringTest : public UnitTest {
 	public:
-	AssertionFailed (const char* fn, unsigned int l)
-		: SteghideError(_("assertion failed in %s at line number %d."), stripDir(fn), l) { printMessage() ; } ;
+	BitStringTest (TestSuite* s) ;
+	~BitStringTest (void) ;
 
-	void printMessage (void) const ;
+	void testBitInputOutput (void) ;
+	void testLength (void) ;
+	void testDatatypeInput (void) ;
+	void testDatatypeOutput (void) ;
+	void testEquality (void) ;
 
 	private:
-	char* stripDir (const char* fn) ;
+	BitString *bs_0, *bs_1, *bs_10010, *bs_10101110, *bs_101011101 ;
 } ;
 
-#endif // ndef SH_ASSERTION_FAILED
+#endif // ndef SH_BITSTRINGTEST_H

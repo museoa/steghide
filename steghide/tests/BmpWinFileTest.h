@@ -1,6 +1,6 @@
 /*
  * steghide 0.5.1 - a steganography program
- * Copyright (C) 2002 Stefan Hetzl <shetzl@chello.at>
+ * Copyright (C) 2002 Stefan Hetzl <shetzl.at>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,21 +18,28 @@
  *
  */
 
-#ifndef SH_ASSERTIONFAILED_H
-#define SH_ASSERTIONFAILED_H
+#ifndef SH_BMPWINFILETEST_H
+#define SH_BMPWINFILETEST_H
 
-#include "common.h"
-#include "SteghideError.h"
+#define private public
+#define protected public
+#include "BmpFile.h"
+#undef private
+#undef protected
+#include "CvrStgFileTest.h"
 
-class AssertionFailed : public SteghideError {
+class BmpWinFileTest : public CvrStgFileTest {
 	public:
-	AssertionFailed (const char* fn, unsigned int l)
-		: SteghideError(_("assertion failed in %s at line number %d."), stripDir(fn), l) { printMessage() ; } ;
+	BmpWinFileTest (TestSuite* s) ;
+	~BmpWinFileTest (void) ;
 
-	void printMessage (void) const ;
+	void testReadWrite (void) ;
+	void testReadEmbedExtract (void) ;
+	void testReadEmbedWriteReadExtract (void) ;
 
 	private:
-	char* stripDir (const char* fn) ;
+	std::string *datadir ;
+	BitString *bs1, *bs2, *bs3, *bs4 ;
 } ;
 
-#endif // ndef SH_ASSERTION_FAILED
+#endif // ndef SH_BMPWINFILETEST_H

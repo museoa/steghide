@@ -24,6 +24,17 @@
 #include "Graph.h"
 #include "Matching.h"
 
+/**
+ * \class ConstructionHeuristic
+ * \brief a heuristic algorithm for constructing a matching
+ *
+ * This class implements a construction heuristic for the maximum matching
+ * problem. The idea for the algorithm is taken from Michael Sipser, Richard M. Karp:
+ * "Maximum matchings in sparse random graphs", in 22nd Annual Symposium on Foundations
+ * of Computer Science. The modification consists of the priority queues, resp. of
+ * the fact that the vertices in the priority queues are ordered by the length of their
+ * shortest edge. This biases the heuristic to choosing shorter edges on average.
+ **/
 class ConstructionHeuristic : private GraphAccess {
 	public:
 	ConstructionHeuristic (Graph* g) ;

@@ -1,6 +1,6 @@
 /*
  * steghide 0.5.1 - a steganography program
- * Copyright (C) 2002 Stefan Hetzl <shetzl@chello.at>
+ * Copyright (C) 2002 Stefan Hetzl <shetzl.at>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,21 +18,34 @@
  *
  */
 
-#ifndef SH_ASSERTIONFAILED_H
-#define SH_ASSERTIONFAILED_H
+#ifndef SH_PERMUTATIONTEST_H
+#define SH_PERMUTATIONTEST_H
 
-#include "common.h"
-#include "SteghideError.h"
+#define private public
+#define protected public
+#include "Permutation.h"
+#undef private
+#undef protected
 
-class AssertionFailed : public SteghideError {
+#include "UnitTest.h"
+#include "TestSuite.h"
+
+class PermutationTest : public UnitTest {
 	public:
-	AssertionFailed (const char* fn, unsigned int l)
-		: SteghideError(_("assertion failed in %s at line number %d."), stripDir(fn), l) { printMessage() ; } ;
+	PermutationTest (TestSuite* s) ;
+	~PermutationTest (void) ;
 
-	void printMessage (void) const ;
+	void testIsPermutation (void) ;
 
 	private:
-	char* stripDir (const char* fn) ;
+	Permutation *p1, *p2, *p3, *p4, *p5, *p6, *p7, *p8 ;
+
+	/**
+	 * tests if p is a permutation, i.e. if
+	 * every i \in {0...Width-1} occures exactly once in p and
+	 * that no i >= Width occures in p.
+	 **/
+	bool genericTestIsPermutation (Permutation& p) ;
 } ;
 
-#endif // ndef SH_ASSERTION_FAILED
+#endif // ndef SH_PERMUTATIONTEST_H

@@ -18,21 +18,42 @@
  *
  */
 
-#ifndef SH_ASSERTIONFAILED_H
-#define SH_ASSERTIONFAILED_H
-
-#include "common.h"
 #include "SteghideError.h"
 
-class AssertionFailed : public SteghideError {
-	public:
-	AssertionFailed (const char* fn, unsigned int l)
-		: SteghideError(_("assertion failed in %s at line number %d."), stripDir(fn), l) { printMessage() ; } ;
+#include "TestCategory.h"
+#include "UnitTest.h"
+#include "TestSuite.h"
 
-	void printMessage (void) const ;
+UnitTest::~UnitTest()
+{
+	for (std::vector<TestCategory*>::const_iterator it = TestCategories.begin() ; it != TestCategories.end() ; it++) {
+		delete *it ;
+	}
+}
 
-	private:
-	char* stripDir (const char* fn) ;
-} ;
+void UnitTest::run()
+{
+	getSuite()->startUnit (getName()) ;
+	for (std::vector<TestCategory*>::const_iterator it = TestCategories.begin() ; it != TestCategories.end() ; it++) {
+		getSuite()->startCategory ((*it)->getName()) ;
+		try {
+			(*it)->run() ;
+		}
+		catch (SteghideError& e) {
+			getSuite()->addTestResult (TestSuite::EXCEPTION) ;
+			e.printMessage() ;
+		}
+		getSuite()->endCategory ((*it)->getName()) ;
+	}
+	getSuite()->endUnit (getName()) ;
+}
 
-#endif // ndef SH_ASSERTION_FAILED
+void UnitTest::addTestCategory (TestCategory* tc)
+{
+	TestCategories.push_back (tc) ;
+}
+
+void UnitTest::addTestResult (bool r)
+{
+	getSuite()->addTestResult (r) ;
+}

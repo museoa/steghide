@@ -18,21 +18,30 @@
  *
  */
 
-#ifndef SH_ASSERTIONFAILED_H
-#define SH_ASSERTIONFAILED_H
+#ifndef SH_TEST_H
+#define SH_TEST_H
 
-#include "common.h"
-#include "SteghideError.h"
+#include <string>
 
-class AssertionFailed : public SteghideError {
+class TestSuite ;
+
+class Test {
 	public:
-	AssertionFailed (const char* fn, unsigned int l)
-		: SteghideError(_("assertion failed in %s at line number %d."), stripDir(fn), l) { printMessage() ; } ;
+	Test (void) : Name(std::string("unnamed test")), Suite(NULL) {} ;
+	Test (const std::string& n) : Name(n), Suite(NULL) {} ;
+	Test (const std::string& n, TestSuite* s) : Name(n), Suite(s) {} ;
 
-	void printMessage (void) const ;
+	const std::string& getName (void)
+		{ return Name ; } ;
+
+	TestSuite* getSuite (void)
+		{ return Suite ; } ;
+
+	virtual void run (void) = 0 ;
 
 	private:
-	char* stripDir (const char* fn) ;
+	std::string Name ;
+	TestSuite* Suite ;
 } ;
 
-#endif // ndef SH_ASSERTION_FAILED
+#endif // ndef SH_TEST_H

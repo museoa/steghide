@@ -1,6 +1,6 @@
 /*
  * steghide 0.5.1 - a steganography program
- * Copyright (C) 2002 Stefan Hetzl <shetzl@chello.at>
+ * Copyright (C) 2002 Stefan Hetzl <shetzl.at>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,21 +18,27 @@
  *
  */
 
-#ifndef SH_ASSERTIONFAILED_H
-#define SH_ASSERTIONFAILED_H
+#ifndef SH_CVRSTGFILETEST_H
+#define SH_CVRSTGFILETEST_H
 
-#include "common.h"
-#include "SteghideError.h"
+#include "BitString.h"
+#include "CvrStgFile.h"
 
-class AssertionFailed : public SteghideError {
+#include "UnitTest.h"
+#include "TestSuite.h"
+
+class CvrStgFileTest : public UnitTest {
 	public:
-	AssertionFailed (const char* fn, unsigned int l)
-		: SteghideError(_("assertion failed in %s at line number %d."), stripDir(fn), l) { printMessage() ; } ;
+	CvrStgFileTest (std::string n, TestSuite* s) : UnitTest(n,s) {} ;
 
-	void printMessage (void) const ;
+	protected:
+	bool genericTestReadWrite (const std::string& rfn) const ;
+	bool genericTestReadEmbedExtract (const std::string& fn, const BitString& emb) const ;
+	bool genericTestReadEmbedWriteReadExtract (const std::string& cvrfn, const BitString& emb) const ;
 
 	private:
-	char* stripDir (const char* fn) ;
+	bool areEqual (const std::string& fn1, const std::string& fn2) const ;
+	void removeFile (const std::string& fn) const ;
 } ;
 
-#endif // ndef SH_ASSERTION_FAILED
+#endif // ndef SH_CVRSTGFILETEST_H

@@ -18,21 +18,42 @@
  *
  */
 
-#ifndef SH_ASSERTIONFAILED_H
-#define SH_ASSERTIONFAILED_H
+#ifndef SH_UNITTEST_H
+#define SH_UNITTEST_H
 
-#include "common.h"
-#include "SteghideError.h"
+#include <string>
+#include <vector>
 
-class AssertionFailed : public SteghideError {
+#include "Test.h"
+#include "TestCategoryCaller.h"
+// declared here to avoid circulating includes
+class TestCategory ;
+class TestSuite ;
+
+#define ADDTESTCATEGORY(UTCLASS,CMETHOD) \
+	addTestCategory (new TestCategoryCaller<UTCLASS> (strip_test(#CMETHOD), getSuite(), this, &UTCLASS::CMETHOD))
+
+class UnitTest : public Test {
 	public:
-	AssertionFailed (const char* fn, unsigned int l)
-		: SteghideError(_("assertion failed in %s at line number %d."), stripDir(fn), l) { printMessage() ; } ;
+	/**
+	 * \param n name of this unit test (probably the name of the tested class)
+	 **/
+	UnitTest (std::string n, TestSuite* s) : Test(n,s) {} ;
 
-	void printMessage (void) const ;
+	~UnitTest (void) ;
+
+	void run (void) ;
+
+	protected:
+	void addTestCategory (TestCategory *tc) ;
+
+	void addTestResult (bool r) ;
+
+	char *strip_test (char* s)
+		{ return (s + 4) ; } ;
 
 	private:
-	char* stripDir (const char* fn) ;
+	std::vector<TestCategory*> TestCategories ;
 } ;
 
-#endif // ndef SH_ASSERTION_FAILED
+#endif // ndef SH_UNITTEST_H

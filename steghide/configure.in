@@ -37,10 +37,6 @@ else
 	AC_DEFINE(USE_LIBMCRYPT,1,[use the libmcrypt library (header and lib are present)])
 fi	
 
-dnl check for cppunit unit testing library
-AM_PATH_CPPUNIT(1.6.1)
-AM_CONDITIONAL(HAVE_CPPUNIT, test "$CPPUNIT_LIBS")
-
 dnl Checks for header files.
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
@@ -110,7 +106,7 @@ case "${target}" in
 esac
 
 dnl check if needed/recommended libraries are present
-AC_OUTPUT([Makefile cppunit/Makefile doc/Makefile intl/Makefile po/Makefile.in src/Makefile])
+AC_OUTPUT([Makefile doc/Makefile intl/Makefile po/Makefile.in src/Makefile tests/Makefile])
 
 
 

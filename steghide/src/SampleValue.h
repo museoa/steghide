@@ -141,6 +141,12 @@ class SampleValue {
 	void print (unsigned short spc = 0) const ;
 #endif
 
+	/**
+	 * reset the static File variable to be able to use samples from different files (one after the other)
+	 * in one execution of a program linked to SampleValue.o (is needed by unit tests)
+	 **/
+	static void resetstatic (void) ;
+
 	protected:
 	// FIXME - time/memory: use SBit, Key ?
 
@@ -151,6 +157,7 @@ class SampleValue {
 	unsigned long Key ;
 
 	private:
+	/// the CvrStgFile this sample value belongs to - static to save memory
 	static CvrStgFile* File ;
 
 	unsigned long Label ;

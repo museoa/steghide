@@ -38,6 +38,11 @@ void SampleValue::decNumEdges ()
 	NumEdges-- ;
 }
 
+void SampleValue::resetstatic()
+{
+	File = NULL ;
+}
+
 CvrStgFile* SampleValue::File = NULL ;
 
 #ifdef DEBUG

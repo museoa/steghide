@@ -18,21 +18,48 @@
  *
  */
 
-#ifndef SH_ASSERTIONFAILED_H
-#define SH_ASSERTIONFAILED_H
+#ifndef SH_TESTSUITE_H
+#define SH_TESTSUITE_H
 
-#include "common.h"
-#include "SteghideError.h"
+#include <string>
+#include <vector>
+#include <iostream>
 
-class AssertionFailed : public SteghideError {
+#include "Test.h"
+#include "UnitTest.h"
+
+class TestSuite : public Test {
 	public:
-	AssertionFailed (const char* fn, unsigned int l)
-		: SteghideError(_("assertion failed in %s at line number %d."), stripDir(fn), l) { printMessage() ; } ;
+	TestSuite (void) ;
 
-	void printMessage (void) const ;
+	void addUnitTest (UnitTest* ut) ;
+
+	void run (void) ;
+
+	/**
+	 * \return true iff all tests were ok
+	 **/
+	bool getResult (void)
+		{ return SuiteOk ; } ;
+
+	// used during testing
+	void startUnit (std::string n) ;
+	void endUnit (std::string n) ;
+	void startCategory (std::string n) ;
+	void endCategory (std::string n) ;
+	void addTestResult (bool r) ;
+	enum TESTRESULT { EXCEPTION } ;
+	void addTestResult (TESTRESULT r) ;
 
 	private:
-	char* stripDir (const char* fn) ;
+	std::vector<UnitTest*> UnitTests ;
+
+	std::string runningUnit ;
+	std::string runningCategory ;
+	bool runningCategoryOk ;
+	bool SuiteOk ;
+	unsigned short TestNumber ;
+	std::ostream* OutStream ;
 } ;
 
-#endif // ndef SH_ASSERTION_FAILED
+#endif // ndef SH_TESTSUITE_H

@@ -18,21 +18,30 @@
  *
  */
 
-#ifndef SH_ASSERTIONFAILED_H
-#define SH_ASSERTIONFAILED_H
+#include "TestSuite.h"
 
-#include "common.h"
-#include "SteghideError.h"
+#include "BitStringTest.h"
+#include "BmpWinFileTest.h"
+#include "MHashTest.h"
+#include "PermutationTest.h"
 
-class AssertionFailed : public SteghideError {
-	public:
-	AssertionFailed (const char* fn, unsigned int l)
-		: SteghideError(_("assertion failed in %s at line number %d."), stripDir(fn), l) { printMessage() ; } ;
+int main (void)
+{
+	TestSuite ts ;
 
-	void printMessage (void) const ;
+	BitStringTest bst (&ts) ;
+	ts.addUnitTest (&bst) ;
 
-	private:
-	char* stripDir (const char* fn) ;
-} ;
+	BmpWinFileTest bmpwt (&ts) ;
+	ts.addUnitTest (&bmpwt) ;
 
-#endif // ndef SH_ASSERTION_FAILED
+	MHashTest mht (&ts) ;
+	ts.addUnitTest (&mht) ;
+
+	PermutationTest pt (&ts) ;
+	ts.addUnitTest (&pt) ;
+
+	ts.run() ;
+
+	return (ts.getResult() ? 0 : -1) ;
+}
