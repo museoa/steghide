@@ -32,8 +32,16 @@ made available to the public under the GPL. For more information, see the
 <?php pBoxEnd(); ?>
 
 <?php pBoxHead("News:"); ?>
-<b>XX.YY.ZZZZ: steghide 0.5.1 released!</b><br>
-release announcement, changes
+<!-- take news from http://sourceforge.net/export/projnews.php?group_id=15895&limit=3&flat=1&show_summaries=1 -->
+<b>Sept. 30, 2003: steghide 0.5.1beta released!</b><br>
+I have released a beta version for the upcoming 0.5.1 release. It is intended for testing
+purposes. If you find a bug, please <a href="mailto:<shetzl@chello.at>">tell me</a>. You
+can download steghide 0.5.1beta from the
+<a href="http://www.sourceforge.net/projects/steghide">sourceforge project page</a>.
+The package for MS Windows is not yet released. I will create and upload it in the next few days.<br>
+If you download the source code and compile steghide yourself, please do not forget to
+run "make check" after running "make" to execute a bunch of unit and system tests.
+<p>
 <?php pBoxEnd(); ?>
 
 <?php pBoxHead("Dependencies:"); ?>
@@ -53,7 +61,8 @@ You should have the following libraries installed to use steghide.
  <dd>A lossless data compression library. If you compile steghide without having this library installed you will not be able
  to use steghide to compress data before embedding nor to extract compressed data from a stego-file.</dd>
 </dl>
-Libmhash is absolutly required to compile steghide. While you
+<p>
+Libmhash is absolutely required to compile steghide. While you
 can compile it without the other libraries they are highly recommended as major functionality will not be available without them. If
 you download the Windows version you do not have to worry about the libraries because they come with the package. If you use a major
 Linux Distribution you probably do not have to worry about the libraries as well, most of them will likely be installed already.
@@ -76,23 +85,10 @@ The author of steghide is <a href="mailto:Stefan Hetzl <shetzl@chello.at>">Stefa
 <?php pBoxEnd(); ?>
 
 <?php pBoxHead("Hosting:"); ?>
-<table width=\"100%\">
-<tr>
-<td>
 Thanks for hosting the website, the cvs, the mailing lists and all the other stuff goes
-to <a href="http://sourceforge.net">sourceforge.net</a> !
-<p>
-The SourceForge project information website for steghide can be found <a href="http://sourceforge.net/projects/steghide/">here</a>.
-</td>
-<td>
-sf.net logo
-<!-- FIXME not included to avoid influencing page visit stats too much
-<a href="http://sourceforge.net"><img src="http://sourceforge.net/sflogo.php?group_id=15895" width="88"
-height="31" border="0" alt="SourceForge Logo"></a>
--->
-</td>
-</tr>
-</table>
+to <a href="http://sourceforge.net">sourceforge.net</a> !<br>
+The SourceForge project information website for steghide can
+be found <a href="http://sourceforge.net/projects/steghide/">here</a>.
 <?php pBoxEnd(); ?>
 
 <?php pBodyEpilogue(getlastmod()); ?>

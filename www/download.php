@@ -9,32 +9,36 @@ init("download");
 <body>
 <?php pBodyPrologue(); ?>
 
+You can download the current version of steghide (0.5.1) on this page.
+The download links point directly into the sourceforge.net download area.
+As an alternative to this page you can select the files directly in the
+<a href="http://sourceforge.net/project/showfiles.php?group_id=15895">sourceforge.net download area</a> for
+steghide (also go there if you look for an older version).<br>
+
 <h2>Windows:</h2>
-<a href="download/steghide-0.5.1.win32.zip">steghide.exe with libraries</a> (1.4 MB)
-After downloading unzip the contents of the zip file into a directory of your choice. You can use steghide from the DOS command prompt.
+<a href="http://prdownloads.sourceforge.net/steghide/steghide-0.5.1.win32.zip?download">steghide.exe with libraries</a>
 <p>
-NOTE: If you are using Windows NT or Windows 2000 and you get an error message
-saying that a libmcrypt module could not be opened, try copying the contents of
-the steghide\modules folder into the main steghide folder.
+After downloading unzip the contents of the zip file into a directory of your choice.
+You can use steghide from the DOS command prompt.
 
 <h2>Linux:</h2>
-<a href="download/steghide-0.5.1-1.i386.rpm">binary rpm package</a> (453 KB)
+<a href="http://prdownloads.sourceforge.net/steghide/steghide-0.5.1-1.i386.rpm?download">binary rpm package</a>
 <br>
-<a href="download/steghide-0.5.1-1.src.rpm">source rpm package</a> (225 KB)
+<a href="http://prdownloads.sourceforge.net/steghide/steghide-0.5.1-1.src.rpm?download">source rpm package</a>
+<p>
+These rpm packages have been built on a SuSE 8.2 system but they should work on other systems too.
 
 <h2>Source Code:</h2>
-<a href="download/steghide-0.5.1.tar">as .tar</a> (1.1 MB)
+<a href="http://prdownloads.sourceforge.net/steghide/steghide-0.5.1.tar.gz?download">compressed as .tar.gz</a>
 <br>
-<a href="download/steghide-0.5.1.tar.gz">compressed as .tar.gz</a> (222 KB)
+<a href="http://prdownloads.sourceforge.net/steghide/steghide-0.5.1.tar.bz2?download">compressed as .tar.bz2</a>
 <br>
-<a href="download/steghide-0.5.1.tar.bz2">compressed as .tar.bz2</a> (186 KB)
-<br>
-<a href="download/steghide-0.5.1.zip">compressed as .zip</a> (312 KB)
+<a href="http://prdownloads.sourceforge.net/steghide/steghide-0.5.1.zip?download">compressed as .zip</a>
 
 <h2>3rd Party Packages:</h2>
 Some Linux distributions provide steghide packages: SuSE, Mandrake,
 <a href="http://packages.debian.org/stable/non-us/steghide.html">debian</a>.
-To find rpm packages you might want to try <a href="http://www.rpmfind.net/">rpmfind.net</a>.
+To find other rpm packages you might want to try <a href="http://www.rpmfind.net/">rpmfind.net</a>.
 There also exists a FreeBSD port of steghide.
 
 <?php pBodyEpilogue(getlastmod()); ?>

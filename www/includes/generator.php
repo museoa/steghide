@@ -282,7 +282,13 @@ function pBodyEpilogue ($ts_lastupdate)
 	echo "   </td>\n";
 	echo "  </tr>\n"; // end of second row in 3,2 table
 	echo "  <tr>\n"; // lower area (lastupdate)
-	echo "   <td id=\"lastupdate\" valign=\"bottom\">last update:<br>";
+	echo "   <td id=\"lastupdate\" valign=\"bottom\">\n" ;
+	echo "    hosting by:<br>\n";
+	echo "    sourceforge.net<p>\n";
+	echo "<!-- FIXME not included to avoid influencing page visit stats too much
+<a href=\"http://sourceforge.net\"><img src=\"http://sourceforge.net/sflogo.php?group_id=15895&amp;type=1\" width=\"88\" height=\"31\" border=\"0\" alt=\"SourceForge.net Logo\"></a>
+-->";
+	echo "    last update:<br>";
 	echo date("F j, Y", $ts_lastupdate) . "</td>\n"; // print last update
 	echo "  </tr>\n";
 	echo " </table>\n"; // end of main table
