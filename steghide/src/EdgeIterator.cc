@@ -25,17 +25,18 @@
 #include "Vertex.h"
 #include "common.h"
 
-EdgeIterator::EdgeIterator (Vertex *v)
+EdgeIterator::EdgeIterator (Vertex *v, ITERATIONMODE m)
 {
 	SrcVertex = v ;
 	SVOppNeighsIndices = new unsigned long[Globs.TheGraph->getSamplesPerVertex()] ;
-	reset() ;
+	reset(m) ;
 }
 
 EdgeIterator::EdgeIterator (const EdgeIterator& eit)
 {
 	SrcVertex = eit.SrcVertex ;
 	SrcIndex = eit.SrcIndex ;
+	Mode = eit.Mode ;
 	SVOppNeighsIndices = new unsigned long[Globs.TheGraph->getSamplesPerVertex()] ;
 	for (unsigned short i = 0 ; i < Globs.TheGraph->getSamplesPerVertex() ; i++) {
 		SVOppNeighsIndices[i] = eit.SVOppNeighsIndices[i] ;
@@ -61,18 +62,31 @@ Edge* EdgeIterator::operator* ()
 EdgeIterator& EdgeIterator::operator++ ()
 {
 	myassert (!Finished) ;
-	SampleValue* srcsv = SrcVertex->getSampleValue(SrcIndex) ;
-	SampleValue* destsv = Globs.TheGraph->SampleValueOppNeighs[srcsv][SVOppNeighsIndices[SrcIndex]] ;
 
-	do { // to avoid looping edge (SrcVertex,SrcVertex)
-		SampleOccurenceIt++ ;
-	} while ((SampleOccurenceIt != Globs.TheGraph->SampleOccurences[destsv->getLabel()].end()) &&
-		(SampleOccurenceIt->getVertex()->getLabel() == SrcVertex->getLabel())) ;
+	switch (Mode) {
+		case SAMPLEOCCURENCE:
+		{
+			SampleValue* srcsv = SrcVertex->getSampleValue(SrcIndex) ;
+			SampleValue* destsv = Globs.TheGraph->SampleValueOppNeighs[srcsv][SVOppNeighsIndices[SrcIndex]] ;
 
-	if (SampleOccurenceIt == Globs.TheGraph->SampleOccurences[destsv->getLabel()].end()) {
-		// search new destination sample value
-		SVOppNeighsIndices[SrcIndex]++ ;
-		findNextEdge() ;
+			do { // to avoid looping edge (SrcVertex,SrcVertex)
+				SampleOccurenceIt++ ;
+			} while ((SampleOccurenceIt != Globs.TheGraph->SampleOccurences[destsv->getLabel()].end()) &&
+				(SampleOccurenceIt->getVertex()->getLabel() == SrcVertex->getLabel())) ;
+
+			if (SampleOccurenceIt == Globs.TheGraph->SampleOccurences[destsv->getLabel()].end()) {
+				// search new destination sample value
+				SVOppNeighsIndices[SrcIndex]++ ;
+				findNextEdge() ;
+			}
+			break ;
+		}
+		case SAMPLEVALUE:
+		{
+			SVOppNeighsIndices[SrcIndex]++ ;
+			findNextEdge() ;
+			break ;
+		}
 	}
 
 	// increment EdgeIndex while checking that it has not become too high
@@ -83,8 +97,9 @@ EdgeIterator& EdgeIterator::operator++ ()
 	return *this ;
 }
 
-void EdgeIterator::reset ()
+void EdgeIterator::reset (ITERATIONMODE m)
 {
+	Mode = m ;
 	Finished = false ;
 	for (unsigned short i = 0 ; i < Globs.TheGraph->getSamplesPerVertex() ; i++) {
 		SVOppNeighsIndices[i] = 0 ;

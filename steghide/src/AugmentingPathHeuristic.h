@@ -21,11 +21,11 @@
 #ifndef SH_AUGMENTINGPATHHEURISTIC
 #define SH_AUGMENTINGPATHHEURISTIC
 
+#include "EdgeIterator.h"
 #include "MatchingAlgorithm.h"
 #include "Vertex.h"
 
 class Edge ;
-class EdgeIterator ;
 class Graph ;
 class Matching ;
 
@@ -45,16 +45,16 @@ class AugmentingPathHeuristic : public MatchingAlgorithm {
 	 * \param m the matching to start with
 	 * \param goal the percentage of matched vertices that should be reached
 	 * \param mne the maximum number of edges that should be considered for every vertex
+	 * \param mo the mode for edge iteration
 	 **/
-	AugmentingPathHeuristic (Graph* g, Matching* m, float goal, UWORD32 mne = UWORD32_MAX) ;
-
+	AugmentingPathHeuristic (Graph* g, Matching* m, float goal, UWORD32 mne = UWORD32_MAX, EdgeIterator::ITERATIONMODE mo = EdgeIterator::SAMPLEOCCURENCE) ;
 	virtual ~AugmentingPathHeuristic (void) {} ;
 
 	/**
 	 * reset the state of this AugmentingPathHeuristic, esp. the EdgeIterators
 	 * \param mne the maximum number of edges that should be considered for every vertex for now on
 	 **/
-	void reset (UWORD32 mne = UWORD32_MAX) ;
+	void reset (UWORD32 mne = UWORD32_MAX, EdgeIterator::ITERATIONMODE mo = EdgeIterator::SAMPLEOCCURENCE) ;
 
 	void run (void) ;
 

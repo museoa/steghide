@@ -25,23 +25,23 @@
 #include "Matching.h"
 #include "common.h"
 
-AugmentingPathHeuristic::AugmentingPathHeuristic (Graph* g, Matching* m, float goal, UWORD32 mne)
+AugmentingPathHeuristic::AugmentingPathHeuristic (Graph* g, Matching* m, float goal, UWORD32 mne, EdgeIterator::ITERATIONMODE mo)
 	: MatchingAlgorithm (g, m, goal)
 {
 	unsigned long numvertices = g->getNumVertices() ;
-VertexOnPath = std::vector<bool> (numvertices, false) ;
+	VertexOnPath = std::vector<bool> (numvertices, false) ;
 
 	TimeCounter = 0 ;
 	TimeCounters = std::vector<UWORD32> (numvertices, 0) ;
 
 	EdgeIterators.reserve (numvertices) ;
 	for (VertexLabel l = 0 ; l < numvertices ; l++) {
-		EdgeIterators.push_back (EdgeIterator (g->getVertex(l))) ;
+		EdgeIterators.push_back (EdgeIterator (g->getVertex(l), mo)) ;
 	}
 	EdgeIterator::setMaxNumEdges (mne) ;
 }
 
-void AugmentingPathHeuristic::reset (UWORD32 mne)
+void AugmentingPathHeuristic::reset (UWORD32 mne, EdgeIterator::ITERATIONMODE mo)
 {
 	EdgeIterator::setMaxNumEdges (mne) ;
 	unsigned long numvertices = TheGraph->getNumVertices() ;
@@ -49,7 +49,7 @@ void AugmentingPathHeuristic::reset (UWORD32 mne)
 	TimeCounter = 0 ;
 	TimeCounters.assign (numvertices, 0) ;
 	for (VertexLabel l = 0 ; l < numvertices ; l++) {
-		EdgeIterators[l].reset() ;
+		EdgeIterators[l].reset(mo) ;
 	}
 }
 

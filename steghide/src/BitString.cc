@@ -356,7 +356,6 @@ BitString& BitString::operator^= (const BitString &v)
 	return *this ;
 }
 
-#ifdef DEBUG
 void BitString::print (unsigned short spc) const
 {
 	char* space = new char[spc + 1] ;
@@ -378,6 +377,7 @@ void BitString::print (unsigned short spc) const
 	std::cerr << std::endl ;
 }
 
+#ifdef DEBUG
 void BitString::printDebug (unsigned short level, unsigned short spc) const
 {
 	if (RUNDEBUGLEVEL(level)) {

@@ -168,14 +168,13 @@ const Matching* Embedder::calculateMatching (ProgressOutput* prout)
 		bestmatching->printVerboseInfo() ;
 
 		if (Args.Algorithm.getValue() == Arguments::Algorithm_BoundedAPH) {
-			AugmentingPathHeuristic aph (Globs.TheGraph, bestmatching, Args.Goal.getValue(), (UWORD32) (Globs.TheGraph->getAvgVertexDegree() / 20)) ;
+			AugmentingPathHeuristic aph (Globs.TheGraph, bestmatching, Args.Goal.getValue(), (UWORD32) (Globs.TheGraph->getAvgVertexDegree() / 20), EdgeIterator::SAMPLEVALUE) ;
 			aph.run() ;
 			bestmatching = aph.getMatching() ;
 
 			VerboseMessage vmsg3 (_("best matching after bounded augmenting path heuristic:")) ;
 			vmsg3.printMessage() ;
 			bestmatching->printVerboseInfo() ;
-
 		}
 		else if (Args.Algorithm.getValue() == Arguments::Algorithm_UnboundedAPH) {
 			AugmentingPathHeuristic aph (Globs.TheGraph, bestmatching, Args.Goal.getValue()) ;

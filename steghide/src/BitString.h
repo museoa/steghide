@@ -212,8 +212,8 @@ class BitString {
 	 **/
 	bool operator!= (const BitString& v) const ;
 
-#ifdef DEBUG
 	void print (unsigned short spc = 0) const ;
+#ifdef DEBUG
 	void printDebug (unsigned short level, unsigned short spc = 0) const ;
 #endif
 

@@ -59,12 +59,14 @@ int main (int argc, char *argv[])
 		if (std::string(argv[argi]) == "-v" || std::string(argv[argi]) == "--verbose") {
 			ArgVerbose = true ;
 		}
+#ifdef DEBUG
 		else if (std::string(argv[argi]) == "--debuglevel") {
 			argi++ ;
 			unsigned int tmp = 0 ;
 			sscanf (argv[argi], "%u", &tmp) ;
 			Args.DebugLevel.setValue (tmp) ;
 		}
+#endif
 		else {
 			std::cerr << "unknown argument: " << argv[argi] << std::endl ;
 			exit (EXIT_FAILURE) ;

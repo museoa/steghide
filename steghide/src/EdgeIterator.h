@@ -47,10 +47,14 @@ class Vertex ;
  **/
 class EdgeIterator {
 	public:
+	enum ITERATIONMODE {	SAMPLEOCCURENCE,	// incrementing increments to next sample occurence (possibly of the same sample value) thus using every edge of the source vertex
+				SAMPLEVALUE		// incrementing increments to the next sample value thus not using all edges in general
+	} ;
+
 	/**
 	 * \param v the source vertex
 	 **/
-	EdgeIterator (Vertex *v) ;
+	EdgeIterator (Vertex *v, ITERATIONMODE m = SAMPLEOCCURENCE) ;
 
 	/**
 	 * the copy constructor
@@ -76,7 +80,7 @@ class EdgeIterator {
 	/**
 	 * reset this iterator to first (shortest) edge
 	 **/
-	void reset (void) ;
+	void reset (ITERATIONMODE m = SAMPLEOCCURENCE) ;
 
 	/**
 	 * \return true iff this EdgeIterator points to the end of the list of edges of SrcVertex
@@ -103,6 +107,9 @@ class EdgeIterator {
 
 	/// the index of the sample value in the source vertex that is part of the current edge
 	unsigned short SrcIndex ;
+
+	/// mode of iteration
+	ITERATIONMODE Mode ;
 
 	/// contains (for every sample value) an index to the current opposite neighbour
 	unsigned long* SVOppNeighsIndices ;

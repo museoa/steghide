@@ -21,6 +21,8 @@
 #ifndef SH_GLOBALS_H
 #define SH_GLOBALS_H
 
+#include <cstdlib>
+
 class CvrStgFile ;
 class Graph ;
 
