@@ -274,9 +274,16 @@ std::vector<std::string> MCryptPP::getListAlgorithms ()
 	int size = 0 ;
 	char **list = mcrypt_list_algorithms (MCRYPTPP_LIBDIR, &size) ;
 
+	/**
+	 * There is a bug in libmcrypt, at least in version 2.5.5 that has the
+	 * effect that the algorithm list contains every algorithm twice.
+	 **/
+
 	std::vector<std::string> retval ;
 	for (int i = 0 ; i < size ; i++) {
-		retval.push_back (std::string (list[i])) ;
+		if ((i == 0) || (strcmp(list[i], list[i - 1]) != 0)) { // workaround for the bug mentioned above
+			retval.push_back (std::string (list[i])) ;
+		}
 	}
 	mcrypt_free_p (list, size) ;
 
