@@ -23,7 +23,9 @@
 
 #define SIZE_BLOWFISHKEY	16
 
-unsigned long get32hash (char *passphrase) ;
+unsigned long getseed (char *passphrase) ;
+void *getcrc32 (PLNFILE *plnfile) ;
+int checkcrc32 (PLNFILE *plnfile, void *crc32) ;
 void *getblowfishkey (char *passphrase) ;
 
 #endif

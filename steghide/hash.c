@@ -22,10 +22,12 @@
 
 #include <mhash.h>
 
+#include "bufmanag.h"
+#include "io.h"
 #include "support.h"
 #include "msg.h"
 
-unsigned long get32hash (char *passphrase)
+unsigned long getseed (char *passphrase)
 {
 	MHASH hashd ;
 	unsigned char *hash = NULL ;
@@ -44,6 +46,40 @@ unsigned long get32hash (char *passphrase)
 	}
 
 	cp32uc2ul_be (&retval, tmp) ;
+
+	return retval ;
+}
+
+void *getcrc32 (PLNFILE *plnfile)
+{
+	MHASH hashd ;
+	unsigned long i = 0, n = 0 ;
+	unsigned char c ;
+
+	if ((hashd = mhash_init (MHASH_CRC32)) == MHASH_FAILED) {
+		exit_err ("could not initialize libmhash CRC32 algorithm.") ;
+	}
+
+	n = buflength (plnfile->plnbuflhead) ;
+	for (i = 0 ; i < n ; i++) {
+		c = (char) bufgetbyte (plnfile->plnbuflhead, i) ;
+		mhash (hashd, &c, 1) ;
+	}
+
+	return mhash_end (hashd) ;
+}
+
+int checkcrc32 (PLNFILE *plnfile, void *crc32)
+{
+	unsigned char *uc_crc32_1 = crc32 ;
+	unsigned char *uc_crc32_2 = getcrc32 (plnfile) ;
+	int i = 0, retval = 1 ;
+
+	for (i = 0 ; i < 4 ; i++) {
+		if (uc_crc32_1[i] != uc_crc32_2[i]) {
+			retval = 0 ;
+		}
+	}
 
 	return retval ;
 }

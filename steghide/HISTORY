@@ -7,6 +7,7 @@ steghide 0.4.2 :
 
 * prompt for passphrase if not given on command line
 
+
 steghide 0.4.1 :
 ================
 

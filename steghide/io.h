@@ -21,6 +21,8 @@
 #ifndef SH_IO_H
 #define SH_IO_H
 
+#include <stdio.h>
+
 /*** au file format ***/
 typedef struct struct_AUHEADERS {
 	char			id[4] ;

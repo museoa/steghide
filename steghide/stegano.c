@@ -179,7 +179,7 @@ void embedsthdr (BUFFER *cvrbuflhead, int dmtd, DMTDINFO dmtdinfo, int enc, char
 
 	/* compression and checksum are not yet implemented */
 	bit = cp_bits_to_buf_le (hdrbuf, bit, (unsigned long) COMPR_NONE, SIZE_COMPRESSION) ;
-	bit = cp_bits_to_buf_le (hdrbuf, bit, (unsigned long) CKSUM_NONE, SIZE_CHECKSUM) ;
+	bit = cp_bits_to_buf_le (hdrbuf, bit, (unsigned long) sthdr.checksum, SIZE_CHECKSUM) ;
 
 	/* eventually encrypt the buffer */
 	if (enc) {
@@ -296,9 +296,6 @@ void extractsthdr (BUFFER *stgbuflhead, int dmtd, DMTDINFO dmtdinfo, int enc, ch
 
 	bit = cp_bits_from_buf_le (hdrbuf, bit, &tmp, SIZE_CHECKSUM) ;
 	sthdr.checksum = (unsigned int) tmp ;
-	if (sthdr.checksum != CKSUM_NONE) {
-		exit_err ("the stego file contains a checksum. this is not implemented yet (file corruption ?).") ;
-	}
 
 	/* set *firstplnpos */
 	if (enc) {

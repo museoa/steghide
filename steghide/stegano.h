@@ -65,7 +65,7 @@ typedef struct struct_STEGOHEADER {
 	/* compression - NOT YET IMPLEMENTED */
 	unsigned int	compression ;
 
-	/* checksum - NOT YET IMPLEMENTED */
+	/* checksum */
 	unsigned int	checksum ;
 
 	/* the plain file name is not embedded together with the other fields of
@@ -114,7 +114,8 @@ typedef struct struct_STEGOHEADER {
 #define COMPR_NONE	0
 
 /* checksum constants */
-#define CKSUM_NONE	0
+#define CHECKSUM_NONE	0
+#define CHECKSUM_CRC32	1
 
 /* max len for plain file name */
 #define PLNFILENAME_MAXLEN 255

@@ -228,8 +228,12 @@ static void parsearguments (int argc, char* argv[])
 			args_sthdrenc = ENC_MCRYPT ;
 		}
 
-		else if ((strncmp (argv[i], "-H\0", 3) == 0) || (strncmp (argv[i], "-nosthdrencryption\0", 20) == 0)) {
+		else if ((strncmp (argv[i], "-H\0", 3) == 0) || (strncmp (argv[i], "--nosthdrencryption\0", 20) == 0)) {
 			args_sthdrenc = ENC_NONE ;
+		}
+
+		else if ((strncmp (argv[i], "-k\0", 3) == 0) || (strncmp (argv[i], "--checksum\0", 11) == 0)) {
+			sthdr.checksum = CHECKSUM_CRC32 ;
 		}
 
 		else if ((strncmp (argv[i], "-p\0", 3) == 0) || (strncmp (argv[i], "--passphrase\0", 12) == 0)) {
@@ -349,7 +353,7 @@ static void parsearguments (int argc, char* argv[])
 	}
 
 	sthdr_dmtd = DMTD_PRNDI ;
-	sthdr_dmtdinfo.prndi.seed = get32hash (args_passphrase) ;
+	sthdr_dmtdinfo.prndi.seed = getseed (args_passphrase) ;
 	sthdr_dmtdinfo.prndi.interval_maxlen = 2 * INTERVAL_DEFAULT ;
 }
 
@@ -369,10 +373,11 @@ static void setdefaults (void)
 	sthdr.mask = 1 ;
 	sthdr.encryption = ENC_MCRYPT ;
 
-	/* compression and checksum are not yet implemented but included
+	sthdr.checksum = CHECKSUM_NONE ;
+
+	/* compression is not yet implemented but included
 	   to enable 0.4.2 to read not compressed post 0.4.2 files */
 	sthdr.compression = COMPR_NONE ;
-	sthdr.checksum = CKSUM_NONE ;
 
 	args_sthdrenc = 1 ;
 }
@@ -397,6 +402,7 @@ static void usage (void)
 	printf ("   -cf <filename>        use <filename> as cover file\n") ;
 	printf (" -e, --encryption        encrypt plain data before embedding (default)\n") ;
 	printf (" -E, --noencryption      do not encrypt plain data before embedding\n") ;
+	printf (" -k, --checksum          embed crc32 checksum of plain data\n") ;
 
 	printf ("\noptions for embedding and extracting:\n") ;
 
@@ -469,6 +475,8 @@ static void embedfile (const char *cvrfilename, const char *stgfilename, const c
 	}
 	plnfile = readplnfile (plnfilename) ;
 
+	assemble_plndata (plnfile) ;
+
 	if (sthdr.encryption) {
 		if (args_verbose) {
 			pmsg ("encrypting plain data.") ;
@@ -481,10 +489,10 @@ static void embedfile (const char *cvrfilename, const char *stgfilename, const c
 		
 		if (args_verbose) {
 			if (sthdr.dmtd == DMTD_CNSTI) {
-				pmsg ("set interval length to %d.", sthdr.dmtdinfo.cnsti.interval_len) ;
+				pmsg ("setting interval length to %d.", sthdr.dmtdinfo.cnsti.interval_len) ;
 			}
 			else if (sthdr.dmtd == DMTD_PRNDI) {
-				pmsg ("set maximum interval length to %d.", sthdr.dmtdinfo.prndi.interval_maxlen) ;
+				pmsg ("setting maximum interval length to %d.", sthdr.dmtdinfo.prndi.interval_maxlen) ;
 			}
 		}
 	}
@@ -543,6 +551,8 @@ static void extractfile (const char *stgfilename, const char *plnfilename)
 		}
 		decrypt_plnfile (plnfile, args_passphrase) ;
 	}
+
+	deassemble_plndata (plnfile) ;
 
 	if (args_verbose) {
 		pmsg ("writing plain file \"%s\".", plnfilename) ;

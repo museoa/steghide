@@ -29,6 +29,7 @@
 #include "msg.h"
 #include "support.h"
 #include "stegano.h"
+#include "hash.h"
 
 /* auto-detects file format while reading headers into file->headers */
 void readheaders (CVRFILE *file)
@@ -147,10 +148,20 @@ void assemble_plndata (PLNFILE *plnfile)
 		}
 	}
 
+	if (sthdr.checksum == CHECKSUM_CRC32) {
+		unsigned char *uc_crc32 = getcrc32 (plnfile) ;
+		bufsetbyte (buf, pos++, (int) uc_crc32[0]) ;
+		bufsetbyte (buf, pos++, (int) uc_crc32[1]) ;
+		bufsetbyte (buf, pos++, (int) uc_crc32[2]) ;
+		bufsetbyte (buf, pos++, (int) uc_crc32[3]) ;
+	}
+
 	tmpbuf = bufcat (buf, plnfile->plnbuflhead) ;
 	buffree (plnfile->plnbuflhead) ;
 	buffree (buf) ;
 	plnfile->plnbuflhead = tmpbuf ;
+
+	sthdr.nbytesplain = buflength (plnfile->plnbuflhead) ;
 }
 
 void deassemble_plndata (PLNFILE *plnfile)
@@ -160,6 +171,7 @@ void deassemble_plndata (PLNFILE *plnfile)
 	int nbytes_plnfilename = 0 ;
 	BUFFER *tmp = NULL ;
 	int i = 0 ;
+	unsigned char *uc_crc32 = NULL ;
 
 	nbytes_plnfilename = bufgetbyte (plnfile->plnbuflhead, pos++) ;
 	if (nbytes_plnfilename == 0) {
@@ -210,6 +222,18 @@ void deassemble_plndata (PLNFILE *plnfile)
 				sthdr.plnfilename = s_malloc (strlen (args_fn_pln) + 1) ;
 				strcpy (sthdr.plnfilename, args_fn_pln) ;
 			}
+		}
+	}
+
+	if (sthdr.checksum == CHECKSUM_CRC32) {
+		uc_crc32 = s_malloc (4) ;
+		uc_crc32[0] = (unsigned char) bufgetbyte (plnfile->plnbuflhead, pos++) ;
+		uc_crc32[1] = (unsigned char) bufgetbyte (plnfile->plnbuflhead, pos++) ;
+		uc_crc32[2] = (unsigned char) bufgetbyte (plnfile->plnbuflhead, pos++) ;
+		uc_crc32[3] = (unsigned char) bufgetbyte (plnfile->plnbuflhead, pos++) ;
+
+		if (!checkcrc32 (plnfile, uc_crc32)) {
+			pwarn ("crc32 checksum failed! extracted data is probably corrupted.") ;
 		}
 	}
 
@@ -425,10 +449,6 @@ PLNFILE *readplnfile (const char *filename)
 		}
 	}
 
-	assemble_plndata (plnfile) ;
-
-	sthdr.nbytesplain = buflength (plnfile->plnbuflhead) ;
-
 	return plnfile ;
 }
 
@@ -437,8 +457,6 @@ void writeplnfile (PLNFILE *plnfile)
 {
 	int c = ENDOFBUF ;
 	unsigned long bufpos = 0 ;
-
-	deassemble_plndata (plnfile) ;
 
 	if (plnfile->filename == NULL) {
 		plnfile->stream = stdout ;
