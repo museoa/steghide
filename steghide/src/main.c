@@ -429,6 +429,13 @@ static void parsearguments (int argc, char* argv[])
 		}
 
 		else if ((strncmp (argv[i], "-f\0", 3) == 0) || (strncmp (argv[i], "--force\0", 8) == 0)) {
+			if (args.force.is_set) {
+				exit_err (_("the force argument can be used only once. type \"%s --help\" for help."), argv[0]) ;
+			}
+			else {
+				args.force.is_set = 1 ;
+			}
+
 			args.force.value = 1 ;
 		}
 
@@ -438,8 +445,9 @@ static void parsearguments (int argc, char* argv[])
 			}
 			else {
 				args.verbosity.is_set = 1 ;
-				args.verbosity.value = ARGS_VERBOSITY_QUIET ;
 			}
+
+			args.verbosity.value = ARGS_VERBOSITY_QUIET ;
 		}
 
 		else if ((strncmp (argv[i], "-v\0", 3) == 0) || (strncmp (argv[i], "--verbose\0", 10) == 0)) {
@@ -448,8 +456,9 @@ static void parsearguments (int argc, char* argv[])
 			}
 			else {
 				args.verbosity.is_set = 1 ;
-				args.verbosity.value = ARGS_VERBOSITY_VERBOSE ;
 			}
+
+			args.verbosity.value = ARGS_VERBOSITY_VERBOSE ;
 		}
 
 		else {
