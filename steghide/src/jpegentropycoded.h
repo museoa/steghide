@@ -44,6 +44,13 @@ class JpegEntropyCoded : public JpegObject, public CvrStgObject {
 	void embedBit (unsigned long pos, int bit) ;
 	int extractBit (unsigned long pos) const ;
 
+	/**
+	 * get the frequencies of the AC rs values in this entropy coded segment
+	 * \return a table containing the frequencies of the AC rs values sorted by
+	 * the AC table destination specifiers, i.e. freqs[d][v] denotes the frequency
+	 * of the value v in the part of the entropy coded segment that is encoded using
+	 * the AC table with destination specifier d.
+	 **/
 	vector<vector<unsigned long> > getFreqs (void) ;
 
 	JpegMarker getTerminatingMarker (void) ;

@@ -28,6 +28,7 @@
 #include "error.h"
 #include "jpegbase.h"
 #include "jpeghufftable.h"
+#include "jpegrestart.h"
 #include "jpegscan.h"
 #include "jpegscanhdr.h"
 
@@ -35,7 +36,6 @@ JpegScan::JpegScan ()
 	: JpegContainer()
 {
 	scanhdr = NULL ;
-	ecs = NULL ;
 	ACTables = vector<JpegHuffmanTable*> (4) ;
 	DCTables = vector<JpegHuffmanTable*> (4) ;
 }
@@ -44,7 +44,6 @@ JpegScan::JpegScan (BinaryIO *io)
 	: JpegContainer()
 {
 	scanhdr = NULL ;
-	ecs = NULL ;
 	ACTables = vector<JpegHuffmanTable*> (4) ;
 	DCTables = vector<JpegHuffmanTable*> (4) ;
 
@@ -55,7 +54,6 @@ JpegScan::JpegScan (JpegObject *p, BinaryIO *io)
 	: JpegContainer (p)
 {
 	scanhdr = NULL ;
-	ecs = NULL ;
 	ACTables = vector<JpegHuffmanTable*> (4) ;
 	DCTables = vector<JpegHuffmanTable*> (4) ;
 
@@ -95,24 +93,23 @@ JpegHuffmanTable *JpegScan::getACTable (unsigned char ds)
 void JpegScan::read (BinaryIO *io)
 {
 	bool scanread = false ;
-	unsigned char marker[2] ;
 	bool havemarker = false ;
+	JpegMarker marker ;
 
 	while (!scanread) {
 		if (!havemarker) {
-			if ((marker[0] = io->read8()) != 0xff) {
+			if (io->read8() != 0xff) {
 				throw CorruptJpegError (io, _("could not find start of marker (0xff).")) ;
 			}
-			marker[1] = io->read8() ;
+			while ((marker = io->read8()) == 0xff)
+				;
 		}
 
-		JpegHuffmanTable *hufft = NULL ;
 		havemarker = false ;
-		switch (marker[1]) {
-			case JpegElement::MarkerDHT:
-			//cerr << "found DHT" << endl ;
+		if (marker == JpegElement::MarkerDHT) {
+			cerr << "found DHT" << endl ;
 
-			hufft = new JpegHuffmanTable (io) ;
+			JpegHuffmanTable *hufft = new JpegHuffmanTable (io) ;
 
 			if (hufft->getDestId() > 3) {
 				throw CorruptJpegError (io, _("huffman table has destination specifier %u (0-3 is allowed)."), hufft->getDestId()) ;
@@ -128,37 +125,49 @@ void JpegScan::read (BinaryIO *io)
 			}
 			
 			appendObj (hufft) ;
-			break ;
-
-			case JpegElement::MarkerSOS:
-			//cerr << "found SOS" << endl ;
+		}
+		else if (marker == JpegElement::MarkerDRI) {
+			cerr << "found DRI" << endl ;
+			appendObj (new JpegDefineRestartInterval (io)) ;
+		}
+		else if (marker == JpegElement::MarkerSOS) {
+			cerr << "found SOS" << endl ;
 
 			scanhdr = new JpegScanHeader (io) ;
 			appendObj (scanhdr) ;
 
-			// TODO - support more than one ecs (also deal with restart markers)
-			ecs = new JpegEntropyCoded (this, io) ;
+			JpegEntropyCoded *ecs = new JpegEntropyCoded (this, io) ;
 			appendObj (ecs) ;
+			ECSegs.push_back (ecs) ;
 
-			marker[0] = 0xFF ;
-			marker[1] = ecs->getTerminatingMarker() ;
-			havemarker = true ;
-			break ;
+			if ((marker = ecs->getTerminatingMarker()) != 0x00) {
+				havemarker = true ;
+			}
+		}
+		else if ((marker >= JpegElement::MarkerRST0) && (marker <= JpegElement::MarkerRST7)) {
+			cerr << "found restart marker: " << hex << (unsigned int) marker << endl ;
+			appendObj (new JpegElement (marker)) ;
 
-			case JpegElement::MarkerEOI:
-			//cerr << "found EOI" << endl ;
+			JpegEntropyCoded *ecs = new JpegEntropyCoded (this, io) ;
+			appendObj (ecs) ;
+			ECSegs.push_back (ecs) ;
+
+			if ((marker = ecs->getTerminatingMarker()) != 0x00) {
+				havemarker = true ;
+			}
+		}
+		else if (marker == JpegElement::MarkerEOI) {
+			cerr << "found EOI" << endl ;
 			termmarker = JpegElement::MarkerEOI ;
 			scanread = true ;
-			break ;
-
-			default:
+		}
+		else {
 			if (io->is_std()) {
-				throw SteghideError (_("encountered unknown marker code 0x%x in jpeg file on standard input while reading scan."), marker[1]) ;
+				throw SteghideError (_("encountered unknown marker code 0x%x in jpeg file on standard input while reading scan."), marker) ;
 			}
 			else {
-				throw SteghideError (_("encountered unknown marker code 0x%x in jpeg file \"%s\" while reading scan."), marker[1], io->getName().c_str()) ;
+				throw SteghideError (_("encountered unknown marker code 0x%x in jpeg file \"%s\" while reading scan."), marker, io->getName().c_str()) ;
 			}
-			break ;
 		}
 	}
 }
@@ -171,7 +180,17 @@ void JpegScan::write (BinaryIO *io)
 
 void JpegScan::recalcACTables (void)
 {
-	vector<vector <unsigned long> > freqs = ecs->getFreqs() ;
+	vector<vector <unsigned long> > freqs = ECSegs[0]->getFreqs() ;
+	for (vector<JpegEntropyCoded*>::iterator i = ECSegs.begin() + 1 ; i != ECSegs.end() ; i++) {
+		vector<vector <unsigned long> > addfreqs = (*i)->getFreqs() ;
+		for (unsigned int j = 0 ; j < addfreqs.size() ; j++) {
+			for (unsigned int k = 0 ; k < 256 ; k++) {
+				// don't touch freqs[j][256], must remain 1
+				freqs[j][k] += addfreqs[j][k] ;
+			}
+		}
+	}
+
 	vector<JpegObject*> jpegobjs = getJpegObjects() ;
 	
 	for (vector<JpegObject*>::iterator i = jpegobjs.begin() ; i != jpegobjs.end() ; i++) {	

@@ -136,6 +136,12 @@ class JpegElement : public JpegObject {
 	static const JpegMarker MarkerDHT = 0xC4 ;
 	/// start of scan marker
 	static const JpegMarker MarkerSOS = 0xDA ;
+	/// define restart interval marker
+	static const JpegMarker MarkerDRI = 0xDD ;
+	/// restart marker 0
+	static const JpegMarker MarkerRST0 = 0xD0 ;
+	/// restart marker 7
+	static const JpegMarker MarkerRST7 = 0xD7 ;
 
 	JpegElement (void) ;
 	JpegElement (JpegMarker m) ;

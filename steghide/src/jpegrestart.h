@@ -18,39 +18,32 @@
  *
  */
 
-#ifndef SH_JPEGQUANTTABLE_H
-#define SH_JPEGQUANTTABLE_H
+#ifndef SH_JPEGRESTART_H
+#define SH_JPEGRESTART_H
 
+#include "binaryio.h"
 #include "jpegbase.h"
 
-/**
- * \class JpegQuantizationTable
- * \brief a segment containing a quantization table
- **/
-class JpegQuantizationTable : public JpegSegment {
+class JpegDefineRestartInterval : public JpegSegment {
 	public:
-	JpegQuantizationTable (void) ;
-	JpegQuantizationTable (BinaryIO *io) ;
-	virtual ~JpegQuantizationTable (void) ;
+	JpegDefineRestartInterval (void) ;
+	JpegDefineRestartInterval (BinaryIO *io) ;
+	virtual ~JpegDefineRestartInterval (void) ;
 
 	/**
-	 * read a quantization table marker segment
+	 * read a marker segment which defines the restart interval
 	 * \param io the jpeg stream
 	 **/
 	void read (BinaryIO *io) ;
 
 	/**
-	 * write a quantization table marker segment
+	 * write a marker segment which defines the restart interval
 	 * \param io the jpeg stream
 	 **/
 	void write (BinaryIO *io) ;
 
 	private:
-	static const unsigned char SizeQuantTable = 64 ;
-
-	unsigned char precision ;
-	unsigned char destination ;
-	unsigned int quanttable[SizeQuantTable] ;
+	unsigned int restartinterval ;
 } ;
 
-#endif // ndef SH_JPEGQUANTTABLE_H
+#endif //ndef SH_JPEGRESTART_H

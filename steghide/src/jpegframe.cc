@@ -26,7 +26,6 @@
 #include "jpegframe.h"
 #include "jpegframehdr.h"
 #include "jpegjfifapp0.h"
-#include "jpegquanttable.h"
 #include "jpegscan.h"
 #include "jpegunsupseg.h"
 
@@ -68,19 +67,21 @@ void JpegFrame::read (BinaryIO *io)
 			;
 
 		if (marker == JpegElement::MarkerAPP0) {
-			//cerr << "found APP0" << endl ;
+			cerr << "found APP0" << endl ;
 			appendObj (new JpegJFIFAPP0 (io)) ;
 		}
 		else if (marker == JpegElement::MarkerCOM) {
-			//cerr << "found COM" << endl ;
+			cerr << "found COM" << endl ;
 			appendObj (new JpegComment (io)) ;
 		}
+#if 0
 		else if (marker == JpegElement::MarkerDQT) {
-			//cerr << "found DQT" << endl ;
+			cerr << "found DQT" << endl ;
 			appendObj (new JpegQuantizationTable (io)) ;
 		}
+#endif
 		else if (marker == JpegElement::MarkerSOF0) {
-			//cerr << "found SOF0" << endl ;
+			cerr << "found SOF0" << endl ;
 			framehdr = new JpegFrameHeader (marker, io) ;
 			appendObj (framehdr) ;
 
@@ -92,8 +93,8 @@ void JpegFrame::read (BinaryIO *io)
 			}
 		}
 		else if (((marker >= JpegElement::MarkerAPP1) && (marker <= JpegElement::MarkerAPP15)) ||
-				(false)) {
-			//cerr << "found unsupported: " << hex << (unsigned int) marker << endl ;
+				(marker == JpegElement::MarkerDQT)) {
+			cerr << "found unsupported: " << hex << (unsigned int) marker << endl ;
 			appendObj (new JpegUnsupportedSegment (marker, io)) ;
 		}
 		else {

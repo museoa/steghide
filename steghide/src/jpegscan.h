@@ -60,6 +60,15 @@ class JpegScan : public JpegContainer {
 	 **/
 	JpegHuffmanTable *getACTable (unsigned char ds) ;
 
+	protected:
+#if 0
+	/**
+	 * is a restart interval defined ?
+	 * \return true iff a DRI marker has been read
+	 **/
+	bool is_RIdefined (void) ;
+#endif
+
 	private:
 	void recalcACTables (void) ;
 	vector<unsigned int> calcCodeSize (vector<unsigned long> freq) ;
@@ -68,8 +77,7 @@ class JpegScan : public JpegContainer {
 
 	JpegScanHeader *scanhdr ;
 
-	JpegEntropyCoded *ecs ;
-
+	vector<JpegEntropyCoded*> ECSegs ;
 	vector<JpegHuffmanTable*> DCTables ;
 	vector<JpegHuffmanTable*> ACTables ;
 
