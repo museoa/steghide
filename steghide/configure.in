@@ -35,10 +35,15 @@ AC_CHECK_FUNCS(tcgetattr)
 AC_CHECK_FUNCS(tcsetattr)
 AC_CHECK_FUNCS(strtoul)
 
-dnl link against libintl on cygwin
+dnl system-specific internationalization settings
 case "${target}" in
 	*-cygwin*)
+	AC_DEFINE(WIN32,1,target system is win32)
+	AC_DEFINE(LOCALEDIR,"./locale/",directory containing locale files)
 	LIBS="${LIBS} -lintl"
+	;;
+	*)
+	AC_DEFINE(LOCALEDIR,"$datadir/locale")
 	;;
 esac
 
