@@ -35,9 +35,6 @@
 
 Graph::Graph (CvrStgFile *cvr, const BitString& emb, Selector& sel)
 {
-	VerboseMessage v (_("creating the graph...")) ;
-	v.printMessage() ;
-
 	Globs.TheGraph = this ;
 
 	File = cvr ;
@@ -253,21 +250,8 @@ void Graph::printVerboseInfo()
 				   ) ;
 		}
 		else { // Verbosity is VERBOSE
-			VerboseMessage vmsg1 (_("number of distinct sample values: %lu"), SampleValues.size()) ;
+			VerboseMessage vmsg1 (_(" %lu sample values, %lu vertices, %lu edges"), SampleValues.size(), Vertices.size(), sumdeg / 2) ;
 			vmsg1.printMessage() ;
-
-			VerboseMessage vmsg2 (_("number of vertices: %lu"), Vertices.size()) ;
-			vmsg2.printMessage() ;
-
-			VerboseMessage vmsg3 (_("average vertex degree: %.1f"), avgdeg) ;
-			vmsg3.printMessage() ;
-			VerboseMessage vmsg4 (_("minimum vertex degree: %lu"), mindeg) ;
-			vmsg4.printMessage() ;
-			VerboseMessage vmsg5 (_("maximum vertex degree: %lu"), maxdeg) ;
-			vmsg5.printMessage() ;
-
-			VerboseMessage vmsg6 (_("number of edges: %lu"), sumdeg / 2) ;
-			vmsg6.printMessage() ;
 		}
 	}
 }

@@ -66,6 +66,12 @@ class EmbData {
 	void setChecksum (bool c) ;
 	bool getChecksum (void) const ;
 
+	/**
+	 * check if crc32 checksum is ok (needs filled Data and CRC32 fields)
+	 * \return true iff checksum is ok
+	 **/
+	bool checksumOK (void) const ;
+
 	void setData (const std::vector<BYTE> data)
 		{ Data = data ; } ;
 
@@ -114,6 +120,8 @@ class EmbData {
 	int Compression ;
 	/// will a checksum be embedded ?
 	bool Checksum ;
+	/// the checksum
+	unsigned long CRC32 ;
 	std::string FileName ;
 	/// contains the actual message to be embedded
 	std::vector<BYTE> Data ;

@@ -65,7 +65,17 @@ class VerboseMessage : public MessageBase {
 	VerboseMessage (std::string msg) : MessageBase (msg) {} ;
 	VerboseMessage (const char *msgfmt, ...) ;
 
+	/**
+	 * toggle newline printing on/off
+	 * \param prnl wether to print a newline character after the message
+	 **/
+	void setNewline (bool prnl)
+		{ Newline = prnl ; } ;
+
 	void printMessage (void) const ;
+
+	private:
+	bool Newline ;
 } ;
 
 class Warning : public MessageBase {

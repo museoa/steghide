@@ -84,6 +84,7 @@ class Matching {
 	 * does this matching include the edge e ?
 	 * \return true iff the edge e is element of this matching
 	 **/
+	bool includesEdge (const Edge* e) const { return includesEdge(*e) ; } ;
 	bool includesEdge (const Edge& e) const ;
 
 	/**
@@ -94,6 +95,17 @@ class Matching {
 
 	const std::list<Vertex*>& getExposedVertices (void) const
 		{ return ExposedVertices ; } ;
+
+	/**
+	 * get the rate of vertices of the underlying graph that are currently matched in this matching
+	 * \return a value between 0 and 1
+	 **/
+	float getMatchedRate (void) const ;
+
+	/**
+	 * get the average weight of all edges that are in this matching
+	 **/
+	float getAvgEdgeWeight (void) const ;
 
 	/**
 	 * get access to the std::list of exposed vertices
@@ -114,6 +126,7 @@ class Matching {
 	 * to an edge that is already in the matching, 
 	 **/
 	void addEdge (const Edge& e) ;
+	void addEdge (Edge* e) { addEdge(*e) ; } ;
 
 	/**
 	 * remove an edge from the matching

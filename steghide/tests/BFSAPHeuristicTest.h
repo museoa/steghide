@@ -18,30 +18,35 @@
  *
  */
 
-#ifndef SH_MATCHINGALGORITHM_H
-#define SH_MATCHINGALGORITHM_H
+#ifndef SH_BFSAPHEURISTICTEST_H
+#define SH_BFSAPHEURISTICTEST_H
 
-class Graph ;
+class BFSAPHeuristic ;
+class BitString ;
+class CvrStgFile ;
 class Matching ;
+class Selector ;
 
-class MatchingAlgorithm {
+#include "UnitTest.h"
+#include "TestSuite.h"
+
+class BFSAPHeuristicTest : public UnitTest {
 	public:
-	MatchingAlgorithm (Graph* g, Matching* m, float goal) ;
-	virtual ~MatchingAlgorithm (void) {} ;
+	BFSAPHeuristicTest (TestSuite* s) ;
 
-	virtual void run (void) = 0 ;
+	void setup (void) ;
+	void cleanup (void) ;
 
-	Matching* getMatching (void) const
-		{ return TheMatching ; } ;
+	void testAlgorithm (void) ;
 
-	void setGoal (float goal) ;
-
-	virtual const char* getName (void) const = 0 ;
-
-	protected:
-	Graph* TheGraph ;
-	Matching* TheMatching ;
-	unsigned long CardinalityGoal ;
+	private:
+	BitString *bs1, *bs2, *bs3, *bs4, *bs5 ;
+	CvrStgFile *f1, *f2, *f3, *f4, *f5 ;
+	Selector *s1, *s2, *s3, *s4, *s5 ;
+	Graph *g1, *g2, *g3, *g4, *g5 ;
+	Matching *m1, *m2, *m3, *m4, *m5 ;
+	BFSAPHeuristic *aph1, *aph2, *aph3, *aph4, *aph5 ;
+	Globals gl1, gl2, gl3, gl4, gl5 ;
 } ;
 
-#endif // ndef SH_MATCHINGALGORITHM
+#endif // ndef SH_BFSAPHEURISTICTEST_H

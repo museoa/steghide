@@ -18,8 +18,8 @@
  *
  */
 
-#ifndef SH_AUGMENTINGPATHHEURISTIC
-#define SH_AUGMENTINGPATHHEURISTIC
+#ifndef SH_DFSAPHEURISTIC
+#define SH_DFSAPHEURISTIC
 
 #include "EdgeIterator.h"
 #include "MatchingAlgorithm.h"
@@ -30,28 +30,32 @@ class Edge ;
 class Matching ;
 
 /**
- * \class AugmentingPathHeuristic
+ * \class DFSAPHeuristic
  * \brief a matching algorithm implementing a heuristic search for augmenting paths
  *
  * This class implements the heuristic augmenting path search presented by
  * Rolf H. Moehring and Matthias Mueller-Hannemann in their paper: "Cardinality
  * Matching: Heuristic Search for Augmenting Paths".
  **/
-class AugmentingPathHeuristic : public MatchingAlgorithm {
+class DFSAPHeuristic : public MatchingAlgorithm {
 	public:
 	/**
-	 * construct an AugmentingPathHeuristic object
+	 * construct an DFSAPHeuristic object
 	 * \param g the graph on which this heuristic should run
 	 * \param m the matching to start with
 	 * \param goal the percentage of matched vertices that should be reached
 	 * \param mne the maximum number of edges that should be considered for every vertex
 	 * \param mo the mode for edge iteration
 	 **/
-	AugmentingPathHeuristic (Graph* g, Matching* m, float goal = 100.0, UWORD32 mne = UWORD32_MAX, EdgeIterator::ITERATIONMODE mo = EdgeIterator::SAMPLEOCCURENCE) ;
-	virtual ~AugmentingPathHeuristic (void) ;
+	DFSAPHeuristic (Graph* g, Matching* m, float goal = 100.0, UWORD32 mne = UWORD32_MAX, EdgeIterator::ITERATIONMODE mo = EdgeIterator::SAMPLEOCCURENCE) ;
+
+	virtual ~DFSAPHeuristic (void) ;
+
+	const char* getName (void) const
+		{ return "DFS Augmenting Path Heuristic" ; } ;
 
 	/**
-	 * reset the state of this AugmentingPathHeuristic, esp. the EdgeIterators
+	 * reset the state of this DFSAPHeuristic, esp. the EdgeIterators
 	 * \param mne the maximum number of edges that should be considered for every vertex for now on
 	 **/
 	void reset (UWORD32 mne = UWORD32_MAX, EdgeIterator::ITERATIONMODE mo = EdgeIterator::SAMPLEOCCURENCE) ;
@@ -100,4 +104,4 @@ class AugmentingPathHeuristic : public MatchingAlgorithm {
 #endif
 } ;
 
-#endif // ndef SH_AUGMENTINGPATHHEURISTIC
+#endif // ndef SH_DFSAPHEURISTIC

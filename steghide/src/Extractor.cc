@@ -31,10 +31,27 @@
 
 EmbData* Extractor::extract ()
 {
-	Globs.TheCvrStgFile = CvrStgFile::readFile (StegoFileName) ;
-	EmbData* embdata = new EmbData (EmbData::EXTRACT, Passphrase) ;
+	VerboseMessage vrs ;
+	if (Args.StgFn.getValue() == "") {
+		vrs.setMessage (_("reading stego file from standard input...")) ;
+	}
+	else {
+		vrs.setMessage (_("reading stego file \"%s\"..."), Args.StgFn.getValue().c_str()) ;
+	}
+	vrs.setNewline (false) ;
+	vrs.printMessage() ;
 
+	Globs.TheCvrStgFile = CvrStgFile::readFile (StegoFileName) ;
+
+	VerboseMessage vd (_(" done")) ;
+	vd.printMessage() ;
+
+	EmbData* embdata = new EmbData (EmbData::EXTRACT, Passphrase) ;
 	Selector sel (Globs.TheCvrStgFile->getNumSamples(), Passphrase) ;
+
+	VerboseMessage ve (_("extracting data...")) ;
+	ve.setNewline (false) ;
+	ve.printMessage() ;
 
 	unsigned long sv_idx = 0 ;
 	while (!embdata->finished()) {
@@ -57,6 +74,23 @@ EmbData* Extractor::extract ()
 			bits.appendNAry(ev) ;
 		}
 		embdata->addBits (bits) ;
+	}
+
+	vd.printMessage() ;
+
+	VerboseMessage vc (_("checking crc32 checksum...")) ;
+	vc.setNewline (false) ;
+	vc.printMessage() ;
+	if (embdata->checksumOK()) {
+		VerboseMessage vok (_(" ok")) ;
+		vok.printMessage() ;
+	}
+	else {
+		VerboseMessage vfailed (_(" FAILED!")) ;
+		vfailed.printMessage() ;
+
+		CriticalWarning w (_("crc32 checksum failed! extracted data is probably corrupted.")) ;
+		w.printMessage() ;
 	}
 
 	return embdata ;

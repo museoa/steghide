@@ -100,16 +100,18 @@ The basic usage is as follows:
   $ steghide embed -cf picture.jpg -ef secret.txt
   Enter passhrase:
   Re-Enter passphrase:
-  embedding secret.txt in picture.jpg...97.8% done
+  embedding secret.txt in picture.jpg...100.0% done
 
-This command will embed the file secret.txt in the cover-file picture.jpg. The
-percentage at the end of the output does not mean that 97.8% of the secret data
-have been embedded but rather that 97.8% of the secret data have been embedded
-just by exchanging pixels. The higher this percentage the less likely is it that
+This command will embed the file secret.txt in the cover-file picture.jpg. If the
+percentage at the end of the output is not 100%, you do not have to worry. It does
+does not mean that less than 100% of the secret data
+have been embedded but rather that less than 100% of the secret data have been embedded
+just by exchanging pixels. The rest of the secret data had to be embedded by overwriting pixels.
+The higher this percentage the less likely is it that
 the embedded data is detected by a statistical test that is based on pixel/sample frequencies.
 
-After you have done that you can send picture.jpg to the designated receiver of the secret
-message. The Receiver has to call steghide in the following way:
+After you have embedded your secret data as shown above you can send picture.jpg to the designated receiver of the secret
+message. The receiver has to call steghide in the following way:
 
   $ steghide extract -sf picture.jpg
   Enter passphrase:

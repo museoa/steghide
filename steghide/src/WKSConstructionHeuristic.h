@@ -55,6 +55,9 @@ class WKSConstructionHeuristic : public MatchingAlgorithm {
 
 	virtual ~WKSConstructionHeuristic (void) {} ;
 
+	const char* getName (void) const
+		{ return "Weighted Karp&Sipser Construction Heuristic" ; } ;
+
 	void run (void) ;
 
 	/**

@@ -56,6 +56,7 @@ class JpegFile : public CvrStgFile {
 	unsigned long getNumSamples (void) const ;
 	void replaceSample (const SamplePos pos, const SampleValue* s) ;
 	SampleValue* getSampleValue (const SamplePos pos) const ;
+	EmbValue getEmbeddedValue (const SamplePos pos) const ;
 
 #ifdef DEBUG
 	std::map<SampleKey,unsigned long>* getFrequencies (void) ;

@@ -151,6 +151,7 @@ EmbValue Vertex::getEmbeddedValue () const
 	return retval ;
 }
 
+#define BMINUS(A,B) ((A > B) ? (A - B) : (0))
 UWORD32 Vertex::getDegree () const
 {
 	UWORD32 degree = 0 ;
@@ -159,7 +160,7 @@ UWORD32 Vertex::getDegree () const
 		degree += SampleValues[i]->getNumEdges(TargetValues[i]) ;
 	}
 
-	return AUtils::bminus<UWORD32> (degree, SelfDegree) ;
+	return BMINUS(degree, SelfDegree) ;
 }
 
 void Vertex::print (unsigned short spc) const

@@ -24,36 +24,50 @@
 #include "common.h"
 
 ProgressOutput::ProgressOutput ()
+	: Message("__nomessage__")
 {
-	if (Args.EmbFn.getValue() == "") {
-		EmbString = _("standard input") ;
-	}
-	else {
-		EmbString = Args.EmbFn.getValue() ;
-	}
-
-	if (Args.CvrFn.getValue() == "") {
-		CvrString = _("standard input") ;
-	}
-	else {
-		CvrString = Args.CvrFn.getValue() ;
-	}
-
 	LastUpdate = time(NULL) - 1 ; // -1 to ensure that message is written first time
 }
- 
-void ProgressOutput::update (float rate, bool done)
+
+ProgressOutput::ProgressOutput (const std::string& m)
+	: Message(m)
 {
-	if (done) {
-		printf (_("\rembedding \"%s\" in \"%s\"...%.1f%% done\n"), EmbString.c_str(), CvrString.c_str(), rate * 100.0) ;
+	LastUpdate = time(NULL) - 1 ; // -1 to ensure that message is written first time
+}
+
+void ProgressOutput::setMessage (const char *msgfmt, ...)
+{
+	va_list ap ;
+	va_start (ap, msgfmt) ;
+	setMessage (vcompose (msgfmt, ap)) ;
+	va_end (ap) ;
+}
+
+std::string ProgressOutput::vcompose (const char *msgfmt, va_list ap) const
+{
+	char *str = new char[200] ;
+	vsnprintf (str, 200, msgfmt, ap) ;
+	std::string retval (str) ;
+	delete[] str ;
+	return retval ;
+}
+
+void ProgressOutput::update (float rate)
+{
+	time_t now = time(NULL) ;
+	if (LastUpdate < now) {
+		LastUpdate = now ;
+		printf ("\r%s %.1f%%", Message.c_str(), 100.0 * rate) ;
 		fflush (stdout) ;
 	}
-	else {
-		time_t now = time(NULL) ;
-		if (LastUpdate < now) {
-			LastUpdate = now ;
-			printf (_("\rembedding \"%s\" in \"%s\"...%.1f%%"), EmbString.c_str(), CvrString.c_str(), rate * 100.0) ;
-			fflush (stdout) ;
-		}
+}
+
+void ProgressOutput::done (float rate, float avgweight) const
+{
+	printf ("\r%s %.1f%%", Message.c_str(), 100.0 * rate) ;
+	if (avgweight != NoAvgWeight) {
+		printf (" (%.1f)", avgweight) ;
 	}
+	printf (_(" done\n")) ;
+	fflush (stdout) ;
 }

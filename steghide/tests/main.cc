@@ -26,13 +26,14 @@
 #include "AudioSampleValueTest.h"
 #include "AuFileTest.h"
 #include "AUtilsTest.h"
-#include "AugmentingPathHeuristicTest.h"
+#include "BFSAPHeuristicTest.h"
 #include "BitStringTest.h"
 #include "BmpFileTest.h"
 #include "BmpRGBSampleValueTest.h"
 #include "BmpPaletteSampleValueTest.h"
 #include "BmpOS2FileTest.h"
 #include "BmpWinFileTest.h"
+#include "DFSAPHeuristicTest.h"
 #include "EdgeIteratorTest.h"
 #include "EmbDataTest.h"
 #include "WKSConstructionHeuristicTest.h"
@@ -150,8 +151,11 @@ int main (int argc, char *argv[])
 	WKSConstructionHeuristicTest cht (&ts) ;
 	ts.addUnitTest (&cht) ;
 
-	AugmentingPathHeuristicTest apht (&ts) ;
-	ts.addUnitTest (&apht) ;
+	BFSAPHeuristicTest bfsapht (&ts) ;
+	ts.addUnitTest (&bfsapht) ;
+
+	DFSAPHeuristicTest dfsapht (&ts) ;
+	ts.addUnitTest (&dfsapht) ;
 
 	ts.run() ;
 

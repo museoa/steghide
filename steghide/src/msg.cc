@@ -104,12 +104,16 @@ VerboseMessage::VerboseMessage (const char *msgfmt, ...)
 	va_start (ap, msgfmt) ;
 	setMessage (vcompose (msgfmt, ap)) ;
 	va_end (ap) ;
+	setNewline (true) ;
 }
 
 void VerboseMessage::printMessage () const
 {
 	if (Args.Verbosity.getValue() == VERBOSE) {
-		std::cerr << getMessage() << std::endl ;
+		std::cerr << getMessage() ;
+		if (Newline) {
+			std::cerr << std::endl ;
+		}
 	}
 }
 

@@ -18,10 +18,10 @@
  *
  */
 
-#ifndef SH_AUGMENTINGPATHHEURISTICTEST_H
-#define SH_AUGMENTINGPATHHEURISTICTEST_H
+#ifndef SH_DFSAPHEURISTICTEST_H
+#define SH_DFSAPHEURISTICTEST_H
 
-class AugmentingPathHeuristic ;
+class DFSAPHeuristic ;
 class BitString ;
 class CvrStgFile ;
 class Matching ;
@@ -30,9 +30,9 @@ class Selector ;
 #include "UnitTest.h"
 #include "TestSuite.h"
 
-class AugmentingPathHeuristicTest : public UnitTest {
+class DFSAPHeuristicTest : public UnitTest {
 	public:
-	AugmentingPathHeuristicTest (TestSuite* s) ;
+	DFSAPHeuristicTest (TestSuite* s) ;
 
 	void setup (void) ;
 	void cleanup (void) ;
@@ -45,8 +45,8 @@ class AugmentingPathHeuristicTest : public UnitTest {
 	Selector *s1, *s2, *s3, *s4, *s5 ;
 	Graph *g1, *g2, *g3, *g4, *g5 ;
 	Matching *m1, *m2, *m3, *m4, *m5 ;
-	AugmentingPathHeuristic *aph1, *aph2, *aph3, *aph4, *aph5 ;
+	DFSAPHeuristic *aph1, *aph2, *aph3, *aph4, *aph5 ;
 	Globals gl1, gl2, gl3, gl4, gl5 ;
 } ;
 
-#endif // ndef SH_AUGMENTINGPATHHEURISTICTEST_H
+#endif // ndef SH_DFSAPHEURISTICTEST_H

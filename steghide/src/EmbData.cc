@@ -184,11 +184,10 @@ void EmbData::addBits (BitString addbits)
 #ifdef DEBUG
 			printDebug (2, " checksum: %d\n", plain[pos - 1]) ;
 #endif
-			unsigned long extcrc32 = 0 ;
 			if (Checksum) {
-				extcrc32 = plain.getValue (pos, NBitsCrc32) ;
+				CRC32 = plain.getValue (pos, NBitsCrc32) ;
 #ifdef DEBUG
-				printDebug (2, " crc32: 0x%x\n", extcrc32) ;
+				printDebug (2, " crc32: 0x%x\n", CRC32) ;
 #endif
 				pos += NBitsCrc32 ;
 			}
@@ -215,25 +214,6 @@ void EmbData::addBits (BitString addbits)
 				pos += 8 ;
 			}
 
-			// test if checksum is ok
-			if (Checksum) {
-				MHashPP hash (MHASH_CRC32) ;
-				for (std::vector<unsigned char>::iterator i = Data.begin() ; i != Data.end() ; i++) {
-					hash << *i ;
-				}
-				hash << MHashPP::endhash ;
-				unsigned long calccrc32 = hash.getHashBits().getValue(0, NBitsCrc32) ;
-
-				if (calccrc32 == extcrc32) {
-					VerboseMessage v (_("crc32 checksum test ok.")) ;
-					v.printMessage() ;
-				}
-				else {
-					CriticalWarning w (_("crc32 checksum failed! extracted data is probably corrupted.")) ;
-					w.printMessage() ;
-				}
-			}
-
 			NumBitsNeeded = 0 ;
 			NumBitsRequested = 0 ;
 			State = END ;
@@ -244,6 +224,28 @@ void EmbData::addBits (BitString addbits)
 			myassert (0) ;
 		break ; }
 	}
+}
+
+bool EmbData::checksumOK (void) const
+{
+	// test if checksum is ok
+	bool ok = true ;
+	if (Checksum) {
+		MHashPP hash (MHASH_CRC32) ;
+		for (std::vector<BYTE>::const_iterator i = Data.begin() ; i != Data.end() ; i++) {
+			hash << *i ;
+		}
+		hash << MHashPP::endhash ;
+		unsigned long calccrc32 = hash.getHashBits().getValue(0, NBitsCrc32) ;
+
+		if (calccrc32 == CRC32) {
+			ok = true ;
+		}
+		else {
+			ok = false ;
+		}
+	}
+	return ok ;
 }
 
 void EmbData::setEncAlgo (EncryptionAlgorithm a)

@@ -18,30 +18,36 @@
  *
  */
 
-#ifndef SH_MATCHINGALGORITHM_H
-#define SH_MATCHINGALGORITHM_H
+#ifndef SH_SMDCONSTRUCTIONHEURISTIC_H
+#define SH_SMDCONSTRUCTIONHEURISTIC_H
 
-class Graph ;
-class Matching ;
+#include "MatchingAlgorithm.h"
+#include "Vertex.h"
+#include "common.h"
 
-class MatchingAlgorithm {
+/**
+ * \class SMDConstructionHeuristic
+ * \brief an implementation of the "static minimum degree" heuristic for contructing a matching
+ **/
+class SMDConstructionHeuristic : public MatchingAlgorithm {
 	public:
-	MatchingAlgorithm (Graph* g, Matching* m, float goal) ;
-	virtual ~MatchingAlgorithm (void) {} ;
+	SMDConstructionHeuristic (Graph* g, Matching* m, float goal = 100.0) ;
 
-	virtual void run (void) = 0 ;
+	virtual ~SMDConstructionHeuristic (void) {} ;
 
-	Matching* getMatching (void) const
-		{ return TheMatching ; } ;
+	const char* getName (void) const
+		{ return "Static Minimum Degree Construction Heuristic" ; } ;
 
-	void setGoal (float goal) ;
+	void run (void) ;
 
-	virtual const char* getName (void) const = 0 ;
+	private:
+	class SmallerVertexDegree {
+		public:
+		bool operator() (const Vertex* v1, const Vertex* v2)
+			{ return (v1->getDegree() < v2->getDegree()) ; } ;
+	} ;
 
-	protected:
-	Graph* TheGraph ;
-	Matching* TheMatching ;
-	unsigned long CardinalityGoal ;
+	std::vector<Vertex*> Vertices ;
 } ;
 
-#endif // ndef SH_MATCHINGALGORITHM
+#endif // ndef SH_SMDCONSTRUCTIONHEURISTIC_H

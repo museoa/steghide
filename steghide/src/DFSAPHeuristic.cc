@@ -18,14 +18,14 @@
  *
  */
 
-#include "AugmentingPathHeuristic.h"
+#include "DFSAPHeuristic.h"
 #include "Edge.h"
 #include "EdgeIterator.h"
 #include "Graph.h"
 #include "Matching.h"
 #include "common.h"
 
-AugmentingPathHeuristic::AugmentingPathHeuristic (Graph* g, Matching* m, float goal, UWORD32 mne, EdgeIterator::ITERATIONMODE mo)
+DFSAPHeuristic::DFSAPHeuristic (Graph* g, Matching* m, float goal, UWORD32 mne, EdgeIterator::ITERATIONMODE mo)
 	: MatchingAlgorithm (g, m, goal)
 {
 	unsigned long numvertices = g->getNumVertices() ;
@@ -51,14 +51,14 @@ AugmentingPathHeuristic::AugmentingPathHeuristic (Graph* g, Matching* m, float g
 #endif
 }
 
-AugmentingPathHeuristic::~AugmentingPathHeuristic ()
+DFSAPHeuristic::~DFSAPHeuristic ()
 {
 	delete[] EdgeIterators ;
 	delete[] TimeCounters ;
 	delete[] VertexOnPath ;
 }
 
-void AugmentingPathHeuristic::reset (UWORD32 mne, EdgeIterator::ITERATIONMODE mo)
+void DFSAPHeuristic::reset (UWORD32 mne, EdgeIterator::ITERATIONMODE mo)
 {
 	EdgeIterator::setMaxNumEdges (mne) ;
 	unsigned long numvertices = TheGraph->getNumVertices() ;
@@ -70,10 +70,11 @@ void AugmentingPathHeuristic::reset (UWORD32 mne, EdgeIterator::ITERATIONMODE mo
 	}
 }
 
-void AugmentingPathHeuristic::run ()
+void DFSAPHeuristic::run ()
 {
 	const Edge** path = new const Edge*[TheGraph->getNumVertices()] ;
 
+	// FIXME - ? as reference
 	const std::list<Vertex*> ExposedVertices = TheMatching->getExposedVertices() ;
 	for (std::list<Vertex*>::const_iterator expv = ExposedVertices.begin() ;
 		(expv != ExposedVertices.end()) && (TheMatching->getCardinality() < CardinalityGoal) ; expv++) {
@@ -82,11 +83,11 @@ void AugmentingPathHeuristic::run ()
 
 #ifdef DEBUG
 			if (pathlength == 0) {
-				printDebug (5, "AugmentingPathHeuristic: could not find augmenting path for vertex %lu", (*expv)->getLabel()) ;
+				printDebug (5, "DFSAPHeuristic: could not find augmenting path for vertex %lu", (*expv)->getLabel()) ;
 			}
 			else {
 				if (RUNDEBUGLEVEL(5)) {
-					std::cerr << "AugmentingPathHeuristic: found augmenting path for vertex " << (*expv)->getLabel() << ": " ;
+					std::cerr << "DFSAPHeuristic: found augmenting path for vertex " << (*expv)->getLabel() << ": " ;
 					for (unsigned long i = 0 ; i < pathlength ; i++) {
 						std::cerr << path[i]->getVertex1()->getLabel() << "-" << path[i]->getVertex2()->getLabel() ;
 						if (i != pathlength - 1) {
@@ -112,7 +113,7 @@ void AugmentingPathHeuristic::run ()
 
 #ifdef DEBUG
 #define pushOnPath(EDGE) \
-printDebug (6, "AugmentingPathHeuristic: pushing edge on path: %lu - %lu", EDGE->getVertex1()->getLabel(), EDGE->getVertex2()->getLabel()) ; \
+printDebug (6, "DFSAPHeuristic: pushing edge on path: %lu - %lu", EDGE->getVertex1()->getLabel(), EDGE->getVertex2()->getLabel()) ; \
 path[pathlen] = EDGE ; \
 pathlen++ ; \
 VertexOnPath[EDGE->getVertex1()->getLabel()] = true ; \
@@ -126,10 +127,10 @@ VertexOnPath[EDGE->getVertex1()->getLabel()] = true ; \
 VertexOnPath[EDGE->getVertex2()->getLabel()] = true ;
 #endif
 
-unsigned long AugmentingPathHeuristic::searchAugmentingPath (Vertex *v0, const Edge** path)
+unsigned long DFSAPHeuristic::searchAugmentingPath (Vertex *v0, const Edge** path)
 {
 #ifdef DEBUG
-	printDebug (5, "AugmentingPathHeuristic: searching augmenting path for vertex with label %lu", v0->getLabel()) ;
+	printDebug (5, "DFSAPHeuristic: searching augmenting path for vertex with label %lu", v0->getLabel()) ;
 	unsigned long long NEdgesPushed = 0 ;
 #endif
 
@@ -177,20 +178,20 @@ unsigned long AugmentingPathHeuristic::searchAugmentingPath (Vertex *v0, const E
 			}
 			else { // could not find next edge
 #ifdef DEBUG
-				printDebug (6, "AugmentingPathHeuristic: could not find next edge from vertex with label %lu", w_next->getLabel()) ;
-				printDebug (6, "AugmentingPathHeuristic: popping edge %lu - %lu from path", path[pathlen - 1]->getVertex1()->getLabel(), path[pathlen - 1]->getVertex2()->getLabel()) ;
-				printDebug (6, "AugmentingPathHeuristic: popping edge %lu - %lu from path", path[pathlen - 2]->getVertex1()->getLabel(), path[pathlen - 2]->getVertex2()->getLabel()) ;
+				printDebug (6, "DFSAPHeuristic: could not find next edge from vertex with label %lu", w_next->getLabel()) ;
+				printDebug (6, "DFSAPHeuristic: popping edge %lu - %lu from path", path[pathlen - 1]->getVertex1()->getLabel(), path[pathlen - 1]->getVertex2()->getLabel()) ;
+				printDebug (6, "DFSAPHeuristic: popping edge %lu - %lu from path", path[pathlen - 2]->getVertex1()->getLabel(), path[pathlen - 2]->getVertex2()->getLabel()) ;
 #endif
 
 				VertexOnPath[e->getVertex1()->getLabel()] = false ;
 				VertexOnPath[e->getVertex2()->getLabel()] = false ;
 				
 				// matched edge: pop from path
-				myassert (TheMatching->includesEdge(*(path[pathlen - 1])) && path[pathlen - 1] == e) ;
+				myassert (path[pathlen - 1] == e) ;
 				pathlen-- ;
 
 				// unmatched edge: pop from path and delete (has been created only for path)
-				myassert (!TheMatching->includesEdge(*(path[pathlen - 1]))) ;
+				myassert (!TheMatching->includesEdge(path[pathlen - 1])) ;
 				pathlen-- ;
 
 				// set w,e,w_next to complete backtracking step
@@ -223,7 +224,7 @@ unsigned long AugmentingPathHeuristic::searchAugmentingPath (Vertex *v0, const E
 }
 
 // FIXME - speed, readability !!
-const Edge* AugmentingPathHeuristic::getNextEdge (Vertex *v)
+const Edge* DFSAPHeuristic::getNextEdge (Vertex *v)
 {
 	if (isVisited(v)) {
 		if (EdgeIterators[v->getLabel()].isFinished()) {
@@ -242,7 +243,7 @@ const Edge* AugmentingPathHeuristic::getNextEdge (Vertex *v)
 		if (EdgeIterators[v->getLabel()].isFinished()) {
 			// no more unexamined edges for this vertex
 #ifdef DEBUG
-			printDebug (7, "AugmentingPathHeuristic::getNextEdge: no more unexamined edges for vertex %lu", v->getLabel()) ;
+			printDebug (7, "DFSAPHeuristic::getNextEdge: no more unexamined edges for vertex %lu", v->getLabel()) ;
 #endif
 			found = true ;
 		}
@@ -252,7 +253,7 @@ const Edge* AugmentingPathHeuristic::getNextEdge (Vertex *v)
 				e = *EdgeIterators[v->getLabel()] ;
 				found = true ;
 #ifdef DEBUG
-				printDebug (7, "AugmentingPathHeuristic::getNextEdge: admissible edge for vertex %lu goes to vertex %lu", v->getLabel(), pvlbl) ;
+				printDebug (7, "DFSAPHeuristic::getNextEdge: admissible edge for vertex %lu goes to vertex %lu", v->getLabel(), pvlbl) ;
 #endif
 			}
 			else {

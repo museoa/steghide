@@ -31,19 +31,40 @@
 class ProgressOutput {
 	public:
 	/**
-	 * create a ProgressOutput object
+	 * create an empty ProgressOutput object
 	 **/
-	ProgressOutput () ;
+	ProgressOutput (void) ;
+
+	/**
+	 * create a ProgressOutput object
+	 * \param m the message to be displayed
+	 **/
+	ProgressOutput (const std::string& m) ;
+
+	void setMessage (const std::string& m)
+		{ Message = m ; } ;
+
+	void setMessage (const char *msgfmt, ...) ;
 
 	/**
 	 * update the output (taking update frequency into account) with rate as percentage
 	 **/
-	void update (float rate, bool done = false) ;
+	void update (float rate) ;
+
+	/**
+	 * update the output appending average edge weight, "done" and a newline
+	 * \param rate the rate of matched vertices
+	 * \param avgweight the average edge weight (is not printed if not given)
+	 **/
+	void done (float rate, float avgweight = NoAvgWeight) const ;
+
+	static const float NoAvgWeight = -1.0 ;
+
+	protected:
+	std::string vcompose (const char *msgfmt, va_list ap) const ;
 
 	private:
-	std::string EmbString ;
-	std::string CvrString ;
-
+	std::string Message ;
 	time_t LastUpdate ;
 } ;
 

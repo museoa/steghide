@@ -49,6 +49,8 @@ void DMDConstructionHeuristic::run (void)
 		AvailableVertices[v1->getLabel()] = NULL ;
 		AvailableVertices[v2->getLabel()] = NULL ;
 	}
+
+	TheGraph->unmarkDeletedAllVertices() ;
 }
 
 VertexLabel DMDConstructionHeuristic::findMinDegIndex (const std::vector<Vertex*>& vertices)

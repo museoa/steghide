@@ -92,9 +92,11 @@ void WKSConstructionHeuristic::run ()
 		}
 	}
 
+#if 0
 	if (Args.Verbosity.getValue() == STATS) {
 		printf ("%.4f:", ((float) numDeg1) / ((float) (numDeg1 + numDegG))) ; // rate of appliances of Deg1-rule
 	}
+#endif
 
 	TheGraph->unmarkDeletedAllVertices() ;
 }

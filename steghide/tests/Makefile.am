@@ -4,7 +4,7 @@ AM_CPPFLAGS = -I../src
 check_PROGRAMS = unittests
 EXTRA_DIST = systemtests.pl STSupport.pm st_fileformats.pl
 noinst_HEADERS = \
-AuFileTest.h AUtilsTest.h AudioSampleValueTest.h AugmentingPathHeuristicTest.h \
+AuFileTest.h AUtilsTest.h AudioSampleValueTest.h BFSAPHeuristicTest.h DFSAPHeuristicTest.h \
 BitStringTest.h BmpOS2FileTest.h BmpPaletteSampleValueTest.h \
 BmpRGBSampleValueTest.h BmpWinFileTest.h WKSConstructionHeuristicTest.h \
 BmpFileTest.h CvrStgFileTest.h DummyFile.h \
@@ -14,7 +14,7 @@ MatchingTest.h SampleValueAdjacencyListTest.h SampleValueTest.h SelectorTest.h \
 Test.h TestCategory.h TestCategoryCaller.h TestSuite.h UnitTest.h \
 WavFileTest.h WavPCMSampleValueTest.h utcommon.h
 unittests_SOURCES = \
-AuFileTest.cc AUtilsTest.cc AudioSampleValueTest.cc AugmentingPathHeuristicTest.cc \
+AuFileTest.cc AUtilsTest.cc AudioSampleValueTest.cc BFSAPHeuristicTest.cc DFSAPHeuristicTest.cc \
 BitStringTest.cc BmpOS2FileTest.cc BmpPaletteSampleValueTest.cc \
 BmpRGBSampleValueTest.cc BmpWinFileTest.cc WKSConstructionHeuristicTest.cc \
 BmpFileTest.cc CvrStgFileTest.cc \
@@ -25,7 +25,7 @@ SampleValueAdjacencyListTest.cc SampleValueTest.cc SelectorTest.cc \
 TestSuite.cc UnitTest.cc WavFileTest.cc WavPCMSampleValueTest.cc main.cc
 unittests_LDADD = \
 ../src/Arg.o ../src/Arguments.o ../src/AssertionFailed.o ../src/AuFile.o \
-../src/AuSampleValues.o ../src/AugmentingPathHeuristic.o ../src/BinaryIO.o \
+../src/AuSampleValues.o ../src/DFSAPHeuristic.o ../src/BFSAPHeuristic.o ../src/BinaryIO.o \
 ../src/BitString.o ../src/BmpFile.o ../src/BmpPaletteSampleValue.o \
 ../src/BmpRGBSampleValue.o ../src/BmpSampleValue.o \
 ../src/WKSConstructionHeuristic.o ../src/CvrStgFile.o \
@@ -39,5 +39,5 @@ unittests_LDADD = \
 ../src/Selector.o ../src/Session.o ../src/SteghideError.o ../src/Terminal.o \
 ../src/Utils.o ../src/Vertex.o ../src/WavChunk.o ../src/WavChunkHeader.o \
 ../src/WavChunkUnused.o ../src/WavFile.o ../src/WavFormatChunk.o \
-../src/WavPCMSampleValue.o ../src/error.o ../src/msg.o
+../src/WavPCMSampleValue.o ../src/error.o ../src/msg.o ../src/SMDConstructionHeuristic.o
 MAINTAINERCLEANFILES = Makefile.in

@@ -25,11 +25,14 @@
 #include <cstdio>
 #include <iostream>
 
+#include "AUtils.h"
 #include "BinaryIO.h"
-#include "DMDConstructionHeuristic.h"
+#include "BFSAPHeuristic.h"
+#include "DFSAPHeuristic.h"
 #include "JpegFile.h"
 #include "JpegSampleValue.h"
-#include "AUtils.h"
+#include "SMDConstructionHeuristic.h"
+#include "WKSConstructionHeuristic.h"
 #include "error.h"
 
 JpegFile::JpegFile (BinaryIO* io)
@@ -196,10 +199,17 @@ void JpegFile::replaceSample (const SamplePos pos, const SampleValue* s)
 	LinDctCoeffs[StegoIndices[pos]] = sample->getDctCoeff() ;
 }
 
+EmbValue JpegFile::getEmbeddedValue (const SamplePos pos) const
+{
+	myassert (pos < StegoIndices.size()) ;
+	return JpegSampleValue::calcEValue (LinDctCoeffs[StegoIndices[pos]]) ;
+}
+
 std::vector<MatchingAlgorithm*> JpegFile::getMatchingAlgorithms (Graph* g, Matching* m) const
 {
 	std::vector<MatchingAlgorithm*> retval ;
-	retval.push_back (new DMDConstructionHeuristic (g, m)) ;
+	retval.push_back (new SMDConstructionHeuristic (g, m)) ;
+	retval.push_back (new DFSAPHeuristic (g, m)) ;
 	return retval ;
 }
 

@@ -21,7 +21,7 @@
 #include <cfloat>
 #include <cstdlib>
 
-#include "AugmentingPathHeuristic.h"
+#include "DFSAPHeuristic.h"
 #include "BitString.h"
 #include "CvrStgFile.h"
 #include "DMDConstructionHeuristic.h"
@@ -43,12 +43,25 @@ Globals Globs ;
 Embedder::Embedder ()
 {
 	// read embfile
+	VerboseMessage vrs ;
+	if (Args.EmbFn.getValue() == "") {
+		vrs.setMessage (_("reading secret data from standard input...")) ;
+	}
+	else {
+		vrs.setMessage (_("reading secret file \"%s\"..."), Args.EmbFn.getValue().c_str()) ;
+	}
+	vrs.setNewline (false) ;
+	vrs.printMessage() ;
+
 	std::vector<BYTE> emb ;
 	BinaryIO embio (Args.EmbFn.getValue(), BinaryIO::READ) ;
 	while (!embio.eof()) {
 		emb.push_back (embio.read8()) ;
 	}
 	embio.close() ;
+
+	VerboseMessage vdone (_(" done")) ;
+	vdone.printMessage() ;
 
 	// create bitstring to be embedded
 	std::string fn = "" ;
@@ -64,15 +77,31 @@ Embedder::Embedder ()
 	ToEmbed = embdata.getBitString() ;
 
 	// read cover-/stego-file
+	VerboseMessage vrc ;
+	if (Args.CvrFn.getValue() == "") {
+		vrc.setMessage (_("reading cover file from standard input...")) ;
+	}
+	else {
+		vrc.setMessage (_("reading cover file \"%s\"..."), Args.CvrFn.getValue().c_str()) ;
+	}
+	vrc.setNewline (false) ;
+	vrc.printMessage() ;
+
 	CvrStgFile::readFile (Args.CvrFn.getValue()) ;
+
+	vdone.printMessage() ;
+
 	ToEmbed.setArity (Globs.TheCvrStgFile->getEmbValueModulus()) ;
-	
 	if ((ToEmbed.getNAryLength() * Globs.TheCvrStgFile->getSamplesPerVertex()) > Globs.TheCvrStgFile->getNumSamples()) {
 		throw SteghideError (_("the cover file is too short to embed the data.")) ;
 	}
 
 	// create graph
 	Selector sel (Globs.TheCvrStgFile->getNumSamples(), Args.Passphrase.getValue()) ;
+
+	VerboseMessage v (_("creating the graph...")) ;
+	v.setNewline (false) ;
+	v.printMessage() ;
 	new Graph (Globs.TheCvrStgFile, ToEmbed, sel) ;
 	Globs.TheGraph->printVerboseInfo() ;
 
@@ -106,6 +135,25 @@ void Embedder::embed ()
 {
 	ProgressOutput* prout = NULL ;
 	if (Args.Verbosity.getValue() == NORMAL) {
+		std::string embstring, cvrstring ;
+		if (Args.EmbFn.getValue() == "") {
+			embstring = _("standard input") ;
+		}
+		else {
+			embstring = "\"" + Args.EmbFn.getValue() + "\"" ;
+		}
+		if (Args.CvrFn.getValue() == "") {
+			cvrstring = _("standard input") ;
+		}
+		else {
+			cvrstring = "\"" + Args.CvrFn.getValue() + "\"" ;
+		}
+		char buf[200] ;
+		sprintf (buf, _("embedding %s in %s..."), embstring.c_str(), cvrstring.c_str()) ;
+
+		prout = new ProgressOutput (std::string(buf)) ;
+	}
+	else if (Args.Verbosity.getValue() == VERBOSE) {
 		prout = new ProgressOutput () ;
 	}
 
@@ -125,16 +173,28 @@ void Embedder::embed ()
 
 	delete M ;
 
+	// write stego file
 	Globs.TheCvrStgFile->transform (Args.StgFn.getValue()) ;
+
+	VerboseMessage vws ;
+	if (Globs.TheCvrStgFile->is_std()) {
+		vws.setMessage (_("writing stego file to standard output... ")) ;
+	}
+	else {
+		vws.setMessage (_("writing stego file \"%s\"... "), Globs.TheCvrStgFile->getName().c_str()) ;
+	}
+	vws.setNewline(false) ;
+	vws.printMessage() ;
+
 	Globs.TheCvrStgFile->write() ;
+
+	VerboseMessage vwsd (_("done")) ;
+	vwsd.printMessage() ;
 }
 
 const Matching* Embedder::calculateMatching (ProgressOutput* prout)
 {
-	VerboseMessage vmsg1 (_("calculating the matching...")) ;
-	vmsg1.printMessage() ;
-
-	Matching* matching = new Matching (Globs.TheGraph) ;
+	Matching* matching = new Matching (Globs.TheGraph, prout) ;
 
 	std::vector<MatchingAlgorithm*> MatchingAlgos ;
 	if (Args.Algorithm.is_set()) {
@@ -149,12 +209,12 @@ const Matching* Embedder::calculateMatching (ProgressOutput* prout)
 
 			case Arguments::Algorithm_BoundedAPH:
 			MatchingAlgos.push_back (new WKSConstructionHeuristic (Globs.TheGraph, matching)) ;
-			MatchingAlgos.push_back (new AugmentingPathHeuristic (Globs.TheGraph, matching, Args.Goal.getValue(), (UWORD32) (Globs.TheGraph->getAvgVertexDegree() / 20), EdgeIterator::SAMPLEVALUE)) ;
+			MatchingAlgos.push_back (new DFSAPHeuristic (Globs.TheGraph, matching, Args.Goal.getValue(), (UWORD32) (Globs.TheGraph->getAvgVertexDegree() / 20), EdgeIterator::SAMPLEVALUE)) ;
 			break ;
 
 			case Arguments::Algorithm_UnboundedAPH:
 			MatchingAlgos.push_back (new WKSConstructionHeuristic (Globs.TheGraph, matching)) ;
-			MatchingAlgos.push_back (new AugmentingPathHeuristic (Globs.TheGraph, matching, Args.Goal.getValue())) ;
+			MatchingAlgos.push_back (new DFSAPHeuristic (Globs.TheGraph, matching, Args.Goal.getValue())) ;
 			break ;
 
 			default:
@@ -167,16 +227,27 @@ const Matching* Embedder::calculateMatching (ProgressOutput* prout)
 		MatchingAlgos = Globs.TheCvrStgFile->getMatchingAlgorithms (Globs.TheGraph, matching) ;
 	}
 
-	for (std::vector<MatchingAlgorithm*>::iterator ait = MatchingAlgos.begin() ; ait != MatchingAlgos.end() ; ait++) {
+	for (std::vector<MatchingAlgorithm*>::const_iterator ait = MatchingAlgos.begin() ; ait != MatchingAlgos.end() ; ait++) {
+		if (Args.Verbosity.getValue() == VERBOSE) {
+			prout->setMessage (_("executing %s..."), (*ait)->getName()) ;
+		}
+
 		(*ait)->setGoal (Args.Goal.getValue()) ;
 		(*ait)->run() ;
-		delete (*ait) ;
+		delete *ait ;
+
+		if (Args.Verbosity.getValue() == VERBOSE) {
+			prout->done (matching->getMatchedRate(), matching->getAvgEdgeWeight()) ;
+		}
 	}
 
-	matching->printVerboseInfo() ;
+	matching->printVerboseInfo() ; // only print info for best matching
+
+	if (Args.Verbosity.getValue() == NORMAL) {
+		prout->done (matching->getMatchedRate()) ;
+	}
 
 	if (prout) {
-		prout->update (((float) (2 * matching->getCardinality())) / ((float) Globs.TheGraph->getNumVertices()), true) ;
 		delete prout ;
 	}
 

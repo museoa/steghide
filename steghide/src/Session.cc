@@ -65,6 +65,16 @@ void Session::run ()
 				}
 			}
 
+			VerboseMessage vwe ;
+			if (fn == "") {
+				vwe.setMessage (_("writing extracted data to standard output...")) ;
+			}
+			else {
+				vwe.setMessage (_("writing extracted data to \"%s\"..."), fn.c_str()) ;
+			}
+			vwe.setNewline (false) ;
+			vwe.printMessage() ;
+
 			BinaryIO io (fn, BinaryIO::WRITE) ;
 			std::vector<BYTE> data = embdata->getData() ;
 			for (std::vector<BYTE>::iterator i = data.begin() ; i != data.end() ; i++) {
@@ -72,8 +82,13 @@ void Session::run ()
 			}
 			io.close() ;
 
-			Message m (_("wrote embedded data to \"%s\"."), fn.c_str()) ;
-			m.printMessage() ;
+			VerboseMessage vdone (_(" done")) ;
+			vdone.printMessage() ;
+
+			if (Args.Verbosity.getValue() < VERBOSE) {
+				Message m (_("wrote extracted data to \"%s\"."), fn.c_str()) ;
+				m.printMessage() ;
+			}
 		break ; }
 
 		case INFO: {

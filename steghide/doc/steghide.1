@@ -38,7 +38,7 @@ contain the embedded data. When you start steghide you will notice a percentage 
 This percentage indicates the rate of positions that are members of pairs (as mentioned above). This value
 can also be seen as the percentage of the secret data that can be embedded without changing the
 color- respectivly sample-frequencies. Having a high percentage there means that the frequencies are
-not chaninged much and that therefore the embedding is secure against detection by statistical tests
+not changed much and that therefore the embedding is secure against detection by statistical tests
 that analyze the color- or sample-frequencies.
 
 The default encryption algorithm is rijndael with a key size of 128 bits (which is AES \- 
@@ -148,7 +148,20 @@ int the stego file. If this argument is omitted, the embedded data will be
 saved to the current directory under its original name.
 
 .SH GETTING INFORMATION ABOUT A COVER/STEGO FILE
-test
+You can use the \fbinfo\fP command to get some information about a cover or
+stego file (e.g. the capacity). You might want to use this if you have received a file and you are
+not sure if it contains an embedded message or if you consider using a certain
+file as cover file and want to find out it's capacity.
+
+The command line steghide info <file> will print information about <file> and
+then ask you if you would like to get information about data that is embedded
+in that file. If you answer with yes you have to supply the passphrase that was
+used to embed the data in that file.
+
+You can also supply the \fb"-p, --passphrase"\fP argument (see below) to the
+\fbinfo\fP command which has the effect that steghide will automatically try
+to get information about the data that has been embedded using the given
+passphrase.
 
 .SH COMMON OPTIONS
 The following options can be used with all commands (where it makes sense).
