@@ -18,46 +18,24 @@
  *
  */
 
-#include "TestSuite.h"
+#ifndef SH_BMPRGBSAMPLEVALUETEST_H
+#define SH_BMPRGBSAMPLEVALUETEST_H
 
-#include "BitStringTest.h"
-#include "BmpRGBSampleValueTest.h"
-#include "BmpOS2FileTest.h"
-#include "BmpWinFileTest.h"
-#include "GraphTest.h"
-#include "MHashTest.h"
-#include "PermutationTest.h"
+#include "SampleValueTest.h"
 
-int main (void)
-{
-	TestSuite ts ;
+class CvrStgFile ;
 
-	// basic classes
-	BitStringTest bst (&ts) ;
-	ts.addUnitTest (&bst) ;
+class BmpRGBSampleValueTest : public SampleValueTest {
+	public:
+	BmpRGBSampleValueTest (TestSuite* s) ;
+	~BmpRGBSampleValueTest (void) ;
 
-	MHashTest mht (&ts) ;
-	ts.addUnitTest (&mht) ;
+	void testDistance (void) ;
 
-	PermutationTest pt (&ts) ;
-	ts.addUnitTest (&pt) ;
+	private:
+	std::string* datadir ;
+	CvrStgFile *f_win, *f_os2 ;
+	SampleValue *sv_0_0_0, *sv_1_1_1, *sv_0_3_4, *sv_12_13_14, *sv_128_128_128, *sv_210_0_120, *sv_255_255_255 ;
+} ;
 
-	// SampleValues
-	BmpRGBSampleValueTest rgbsvt (&ts) ;
-	ts.addUnitTest (&rgbsvt) ;
-
-	// CvrStgFiles
-	BmpOS2FileTest bmpot (&ts) ;
-	ts.addUnitTest (&bmpot) ;
-
-	BmpWinFileTest bmpwt (&ts) ;
-	ts.addUnitTest (&bmpwt) ;
-
-	// graph-theoretic stuff
-	GraphTest gt (&ts) ;
-	ts.addUnitTest (&gt) ;
-
-	ts.run() ;
-
-	return (ts.getResult() ? 0 : -1) ;
-}
+#endif // ndef SH_BMPRGBSAMPLEVALUETEST_H

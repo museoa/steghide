@@ -18,46 +18,22 @@
  *
  */
 
-#include "TestSuite.h"
+#include "SampleValueTest.h"
 
-#include "BitStringTest.h"
-#include "BmpRGBSampleValueTest.h"
-#include "BmpOS2FileTest.h"
-#include "BmpWinFileTest.h"
-#include "GraphTest.h"
-#include "MHashTest.h"
-#include "PermutationTest.h"
+#include "SampleValue.h"
 
-int main (void)
+bool SampleValueTest::areOpposite (SampleValue* s1, SampleValue* s2)
 {
-	TestSuite ts ;
+	return (s1->getBit() != s2->getBit()) ;
+}
 
-	// basic classes
-	BitStringTest bst (&ts) ;
-	ts.addUnitTest (&bst) ;
+bool SampleValueTest::areNeighbours (SampleValue* s1, SampleValue* s2)
+{
+	return ((s1->isNeighbour(s2) == s2->isNeighbour(s1)) && (s1->isNeighbour(s2))) ;
+}
 
-	MHashTest mht (&ts) ;
-	ts.addUnitTest (&mht) ;
-
-	PermutationTest pt (&ts) ;
-	ts.addUnitTest (&pt) ;
-
-	// SampleValues
-	BmpRGBSampleValueTest rgbsvt (&ts) ;
-	ts.addUnitTest (&rgbsvt) ;
-
-	// CvrStgFiles
-	BmpOS2FileTest bmpot (&ts) ;
-	ts.addUnitTest (&bmpot) ;
-
-	BmpWinFileTest bmpwt (&ts) ;
-	ts.addUnitTest (&bmpwt) ;
-
-	// graph-theoretic stuff
-	GraphTest gt (&ts) ;
-	ts.addUnitTest (&gt) ;
-
-	ts.run() ;
-
-	return (ts.getResult() ? 0 : -1) ;
+bool SampleValueTest::genericTestDistance (SampleValue* s1, SampleValue* s2, float dist)
+{
+	return ((s1->calcDistance(s2) == s2->calcDistance(s1)) &&
+			(s1->calcDistance(s2) == dist)) ;
 }
