@@ -367,7 +367,7 @@ static void parsearguments (int argc, char* argv[])
 		}
 
 		else if ((strncmp (argv[i], "-p\0", 3) == 0) || (strncmp (argv[i], "--passphrase\0", 13) == 0)) {
-			int j = 0 ;
+			unsigned int j = 0 ;
 
 			if (args.passphrase.is_set) {
 				exit_err (_("the passphrase argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
@@ -383,7 +383,7 @@ static void parsearguments (int argc, char* argv[])
 			if (strlen (argv[i]) > PASSPHRASE_MAXLEN) {
 				exit_err (_("the maximum length of the passphrase is %d characters."), PASSPHRASE_MAXLEN) ;
 			}
-			args.passphrase.value = s_malloc (strlen (argv[i]) + 1) ;
+			args.passphrase.value = (char *) s_malloc (strlen (argv[i]) + 1) ;
 			strcpy (args.passphrase.value, argv[i]) ;
 
 			/* overwrite passphrase in argv in order to avoid that it can be read with the ps command  */
@@ -412,7 +412,7 @@ static void parsearguments (int argc, char* argv[])
 				args.cvrfn.value = NULL ;
 			}
 			else {
-				args.cvrfn.value = s_malloc (strlen (argv[i]) + 1) ;
+				args.cvrfn.value = (char *) s_malloc (strlen (argv[i]) + 1) ;
 				strcpy (args.cvrfn.value, argv[i]) ;
 			}
 		}
@@ -431,7 +431,7 @@ static void parsearguments (int argc, char* argv[])
 				args.stgfn.value = NULL ;
 			}
 			else {
-				args.stgfn.value = s_malloc (strlen (argv[i]) + 1) ;
+				args.stgfn.value = (char *) s_malloc (strlen (argv[i]) + 1) ;
 				strcpy (args.stgfn.value, argv[i]) ;
 			}
 		}
@@ -450,7 +450,7 @@ static void parsearguments (int argc, char* argv[])
 				args.plnfn.value = NULL ;
 			}
 			else {
-				args.plnfn.value = s_malloc (strlen (argv[i]) + 1) ;
+				args.plnfn.value = (char *) s_malloc (strlen (argv[i]) + 1) ;
 				strcpy (args.plnfn.value, argv[i]) ;
 			}
 		}

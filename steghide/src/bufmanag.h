@@ -32,7 +32,7 @@ typedef struct struct_BUFFER {
 
 #define ENDOFBUF -1
 
-extern int subbuflength ;
+extern unsigned long subbuflength ;
 
 /* function prototypes */
 BUFFER *bufcreate (unsigned long length) ;

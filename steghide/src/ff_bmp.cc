@@ -272,7 +272,7 @@ static void bmpwin_readheaders (CVRSTGFILE *file)
 	}
 	else {
 		/* a color table exists */
-		int i = 0 ;
+		unsigned int i = 0 ;
 
 		switch (bmp_contents->bmi.win.bmih.biBitCount) {
 			case 1:
@@ -301,7 +301,7 @@ static void bmpwin_readheaders (CVRSTGFILE *file)
 			bmp_contents->bmi.win.ncolors = bmp_contents->bmi.win.bmih.biClrUsed ;
 		}
 
-		bmp_contents->bmi.win.colors = s_malloc ((sizeof (RGBQUAD)) * bmp_contents->bmi.win.ncolors) ;
+		bmp_contents->bmi.win.colors = (RGBQUAD *) s_malloc ((sizeof (RGBQUAD)) * bmp_contents->bmi.win.ncolors) ;
 		for (i = 0 ; i < bmp_contents->bmi.win.ncolors ; i++) {
 			bmp_contents->bmi.win.colors[i].rgbBlue = (unsigned char) getc (file->stream) ;
 			bmp_contents->bmi.win.colors[i].rgbGreen = (unsigned char) getc (file->stream) ;
@@ -336,7 +336,7 @@ static void bmpos2_readheaders (CVRSTGFILE *file)
 	}
 	else {
 		/* a color table exists */
-		int i = 0 ;
+		unsigned int i = 0 ;
 
 		switch (bmp_contents->bmi.os2.bmch.bcBitCount) {
 			case 1:
@@ -362,7 +362,7 @@ static void bmpos2_readheaders (CVRSTGFILE *file)
 			break ;
 		}
 
-		bmp_contents->bmi.os2.colors = s_malloc ((sizeof (RGBTRIPLE)) * bmp_contents->bmi.os2.ncolors) ;
+		bmp_contents->bmi.os2.colors = (RGBTRIPLE *) s_malloc ((sizeof (RGBTRIPLE)) * bmp_contents->bmi.os2.ncolors) ;
 		for (i = 0 ; i < bmp_contents->bmi.os2.ncolors ; i++) {
 			bmp_contents->bmi.os2.colors[i].rgbtBlue = (unsigned char) getc (file->stream) ;
 			bmp_contents->bmi.os2.colors[i].rgbtGreen = (unsigned char) getc (file->stream) ;
@@ -429,7 +429,7 @@ static void bmpwin_writeheaders (CVRSTGFILE *file)
 
 	if (bmp_contents->bmi.win.ncolors > 0) {
 		/* a color table exists */
-		int i = 0 ;
+		unsigned int i = 0 ;
 
 		for (i = 0 ; i < bmp_contents->bmi.win.ncolors ; i++) {
 			putc ((int) bmp_contents->bmi.win.colors[i].rgbBlue, file->stream) ;
@@ -454,7 +454,7 @@ static void bmpos2_writeheaders (CVRSTGFILE *file)
 
 	if (bmp_contents->bmi.os2.ncolors > 0) {
 		/* a color table exists */
-		int i = 0 ;
+		unsigned int i = 0 ;
 
 		for (i = 0 ; i < bmp_contents->bmi.os2.ncolors ; i++) {
 			putc ((int) bmp_contents->bmi.os2.colors[i].rgbtBlue, file->stream) ;
@@ -539,11 +539,11 @@ static void bmp_readdata (CVRSTGFILE *file)
 		paddinglength = 4 - (linelength % 4) ;
 	}
 
-	bmp_contents->bitmap = s_malloc ((sizeof (void*)) * height) ;
+	bmp_contents->bitmap = (unsigned char **) s_malloc ((sizeof (unsigned char*)) * height) ;
 
 	for (line = height - 1 ; line >= 0 ; line--) {
-		bmp_contents->bitmap[line] = s_malloc (linelength) ;
-		if (fread (bmp_contents->bitmap[line], 1, linelength, file->stream) != linelength) {
+		bmp_contents->bitmap[line] = (unsigned char *) s_malloc (linelength) ;
+		if (fread (bmp_contents->bitmap[line], 1, linelength, file->stream) != (size_t) linelength) {
 			bmp_readerror (file) ;
 		}
 
@@ -580,7 +580,7 @@ static void bmp_writedata (CVRSTGFILE *file)
 	}
 
 	for (line = height - 1 ; line >= 0 ; line--) {
-		if (fwrite (bmp_contents->bitmap[line], 1, linelength, file->stream) != linelength) {
+		if (fwrite (bmp_contents->bitmap[line], 1, linelength, file->stream) != (size_t) linelength) {
 			bmp_writeerror (file) ;
 		}
 

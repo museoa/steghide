@@ -41,7 +41,7 @@ unsigned long getseed (char *passphrase)
 		exit_err (_("could not initialize libmhash MD5 algorithm.")) ;
 	}
 	mhash (hashd, passphrase, strlen (passphrase)) ;
-	hash = mhash_end (hashd) ;
+	hash = (unsigned char *) mhash_end (hashd) ;
 
 	for (i = 0 ; i < 4 ; i++) {
 		tmp[i] = hash[0 + i] ^ hash[4 + i] ^ hash[8 + i] ^ hash[12 + i] ;
@@ -73,8 +73,8 @@ void *getcrc32 (PLNFILE *plnfile)
 
 int checkcrc32 (PLNFILE *plnfile, void *crc32)
 {
-	unsigned char *uc_crc32_1 = crc32 ;
-	unsigned char *uc_crc32_2 = getcrc32 (plnfile) ;
+	unsigned char *uc_crc32_1 = (unsigned char *) crc32 ;
+	unsigned char *uc_crc32_2 = (unsigned char *) getcrc32 (plnfile) ;
 	int i = 0, retval = 1 ;
 
 	for (i = 0 ; i < 4 ; i++) {

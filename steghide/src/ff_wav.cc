@@ -155,7 +155,7 @@ static void wav_readdata (CVRSTGFILE *file)
 		while ((c = getc (file->stream)) != EOF) {
 			wav_contents->unsupchunks2.len++ ;
 			wav_contents->unsupchunks2.data = s_realloc (wav_contents->unsupchunks2.data, wav_contents->unsupchunks2.len) ;
-			ptrunsupdata2 = wav_contents->unsupchunks2.data ;
+			ptrunsupdata2 = (unsigned char *) wav_contents->unsupchunks2.data ;
 			ptrunsupdata2[wav_contents->unsupchunks2.len - 1] = c ;
 		}			
 	}
@@ -184,7 +184,7 @@ static void wav_writedata (CVRSTGFILE *file)
 	}
 
 	if (wav_contents->unsupchunks2.len > 0) {
-		unsigned char *ptrunsupdata2 = wav_contents->unsupchunks2.data ;
+		unsigned char *ptrunsupdata2 = (unsigned char *) wav_contents->unsupchunks2.data ;
 		for (i = 0; i < wav_contents->unsupchunks2.len; i++) {
 			putc ((int) ptrunsupdata2[i], file->stream) ;
 		}
@@ -206,7 +206,7 @@ static void wav_writedata (CVRSTGFILE *file)
 static void wav_readheaders (CVRSTGFILE *file)
 {
 	CHUNKHEADER tmpchhdr = { { '\0', '\0', '\0', '\0' }, 0 } ;
-	int i = 0;
+	unsigned int i = 0 ;
 	WAV_CONTENTS *wav_contents = ((WAV_CONTENTS *) file->contents) ;
 
 	wav_getchhdr (file->stream, &wav_contents->riffchhdr) ;
@@ -248,7 +248,7 @@ static void wav_readheaders (CVRSTGFILE *file)
 
 		wav_contents->unsupchunks1.data = s_realloc (wav_contents->unsupchunks1.data, (wav_contents->unsupchunks1.len + WAV_SIZE_CHHDR + tmpchhdr.len)) ;
 
-		ptrunsupdata1 = wav_contents->unsupchunks1.data ;
+		ptrunsupdata1 = (unsigned char *) wav_contents->unsupchunks1.data ;
 		for (i = 0; i < 4; i++) {
 			ptrunsupdata1[wav_contents->unsupchunks1.len++] = (unsigned char) tmpchhdr.id[i] ;
 		}
@@ -297,7 +297,7 @@ static void wav_writeheaders (CVRSTGFILE *file)
 	write16_le (file->stream, wav_contents->fmtch.BitsPerSample) ;
 
 	if (wav_contents->unsupchunks1.len > 0) {
-		unsigned char *ptrunsupdata1 = wav_contents->unsupchunks1.data ;
+		unsigned char *ptrunsupdata1 = (unsigned char *) wav_contents->unsupchunks1.data ;
 		for (i = 0; i < wav_contents->unsupchunks1.len; i++)
 			putc ((int) ptrunsupdata1[i], file->stream) ;
 	}

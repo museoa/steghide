@@ -35,8 +35,10 @@
 
 STEGOHEADER sthdr = { 0, 0, { { 0 } }, '\0', 0, 0, 0 } ;
 
+#if 0
 static int setbits (int cvrbyte, int plnbits) ;
 static int getbits (int stgbyte) ;
+#endif 
 static int nstgbits (void) ;
 #ifndef DEBUG
 void dmtd_reset (unsigned int dmtd, DMTDINFO dmtdinfo, unsigned long resetpos) ;
@@ -151,7 +153,7 @@ BUFFER *extractdata (CVRSTGFILE *cvrstgfile, unsigned long firststgpos)
 
 void embedsthdr (CVRSTGFILE *cvrstgfile, int dmtd, DMTDINFO dmtdinfo, int enc, char *passphrase, unsigned long *firstplnpos)
 {
-	int hdrbuflen = STHDR_NBYTES_BLOWFISH ;
+	unsigned int hdrbuflen = STHDR_NBYTES_BLOWFISH ;
 	unsigned char *hdrbuf = NULL ;
 	unsigned int bit = 0, sthdrbuflen = 0 ;
 	unsigned int bitval = 0 ;
@@ -159,7 +161,7 @@ void embedsthdr (CVRSTGFILE *cvrstgfile, int dmtd, DMTDINFO dmtdinfo, int enc, c
 
 	pverbose (_("embedding stego header.")) ;
 
-	hdrbuf = s_calloc (STHDR_NBYTES_BLOWFISH, 1) ;
+	hdrbuf = (unsigned char *) s_calloc (STHDR_NBYTES_BLOWFISH, 1) ;
 
 	/* assemble bits that make up sthdr in a buffer */
 	bit = cp_bits_to_buf_le (hdrbuf, bit, (unsigned long) nbits (sthdr.nbytesplain), SIZE_NBITS_NBYTESPLAIN) ;
@@ -201,7 +203,7 @@ void embedsthdr (CVRSTGFILE *cvrstgfile, int dmtd, DMTDINFO dmtdinfo, int enc, c
 	if (enc) {
 		/* pad with random bits */
 		while (bit < hdrbuflen * 8) {
-			bit = cp_bits_to_buf_le (hdrbuf, bit, (2.0 * rand() / (RAND_MAX + 1.0)), 1) ;
+			bit = cp_bits_to_buf_le (hdrbuf, bit, (unsigned long) (2.0 * rand() / (RAND_MAX + 1.0)), 1) ;
 		}
 		assert (bit == hdrbuflen * 8) ;
 
@@ -230,7 +232,7 @@ void embedsthdr (CVRSTGFILE *cvrstgfile, int dmtd, DMTDINFO dmtdinfo, int enc, c
 
 void extractsthdr (CVRSTGFILE *cvrstgfile, int dmtd, DMTDINFO dmtdinfo, int enc, char *passphrase, unsigned long *firstplnpos)
 {
-	int hdrbuflen = STHDR_NBYTES_BLOWFISH ;
+	unsigned int hdrbuflen = STHDR_NBYTES_BLOWFISH ;
 	unsigned char hdrbuf[STHDR_NBYTES_BLOWFISH] ;
 	unsigned long oldcvrbytepos[(8 * STHDR_NBYTES_BLOWFISH) + 1] ;
 	unsigned long cvrbytepos = 0 ;
@@ -335,6 +337,7 @@ void extractsthdr (CVRSTGFILE *cvrstgfile, int dmtd, DMTDINFO dmtdinfo, int enc,
 	return ;
 }
 
+#if 0
 /* writes plnbits to cvrbyte as determined by sthdr.mask resulting in return value stgbyte */
 static int setbits (int cvrbyte, int plnbits)
 {
@@ -382,6 +385,7 @@ static int getbits (int stgbyte)
 
 	return plnbits ;
 }
+#endif
 
 /* returns the number of set bits in sthdr.mask */
 static int nstgbits (void)
@@ -392,7 +396,7 @@ static int nstgbits (void)
 		if (sthdr.mask & (1 << i))
 			n++ ;
 
-	/* FIXME - raushauen */
+	/* FIXME muss jetzt 1 sein - keine Möglichkeit mehr andere mask zu behandeln - ? Funktion raushauen */
 	assert (n == 1) ;
 
 	return n ;

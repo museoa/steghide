@@ -90,15 +90,17 @@ int pquestion (char *fmt, ...)
 
 void pwarn (char *fmt, ...)
 {
-	va_list ap ;
+	if (args.verbosity.value != ARGS_VERBOSITY_QUIET) {
+		va_list ap ;
 
-	fprintf (stderr, _("%s: warning: "), PROGNAME) ;
+		fprintf (stderr, _("%s: warning: "), PROGNAME) ;
 
-	va_start(ap, fmt) ;
-	vfprintf (stderr, fmt, ap) ;
-	va_end (ap) ;
+		va_start(ap, fmt) ;
+		vfprintf (stderr, fmt, ap) ;
+		va_end (ap) ;
 
-	putc ('\n', stderr) ;
+		putc ('\n', stderr) ;
+	}
 
 	return ;
 }

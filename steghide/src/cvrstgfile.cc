@@ -65,7 +65,7 @@ CVRSTGFILE *cvrstg_readfile (char *filename)
 	}
 
 	/* fill CVRSTGFILE structure */
-	file = s_malloc (sizeof *file) ;
+	file = (CVRSTGFILE *) s_malloc (sizeof *file) ;
 
 	if (filename == NULL) {
 		file->stream = stdin ;

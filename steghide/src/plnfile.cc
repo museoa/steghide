@@ -46,7 +46,7 @@ PLNFILE *pln_readfile (char *filename)
 		pverbose (_("reading plain file \"%s\"."), filename) ;
 	}
 
-	plnfile = s_malloc (sizeof *plnfile) ;
+	plnfile = (PLNFILE *) s_malloc (sizeof *plnfile) ;
 
 	if (filename == NULL) {
 		plnfile->stream = stdin ;
@@ -162,7 +162,7 @@ void assemble_plndata (PLNFILE *plnfile)
 	}
 
 	if (args.checksum.value) {
-		unsigned char *uc_crc32 = getcrc32 (plnfile) ;
+		unsigned char *uc_crc32 = (unsigned char *) getcrc32 (plnfile) ;
 		bufsetbyte (buf, pos++, (int) uc_crc32[0]) ;
 		bufsetbyte (buf, pos++, (int) uc_crc32[1]) ;
 		bufsetbyte (buf, pos++, (int) uc_crc32[2]) ;
@@ -200,7 +200,7 @@ void deassemble_plndata (PLNFILE *plnfile)
 		}
 		else {
 			/* write pln data to file with given name */
-			plnfile->filename = s_malloc (strlen (args.plnfn.value) + 1) ;
+			plnfile->filename = (char *) s_malloc (strlen (args.plnfn.value) + 1) ;
 			strcpy (plnfile->filename, args.plnfn.value) ;
 		}
 	}
@@ -212,12 +212,12 @@ void deassemble_plndata (PLNFILE *plnfile)
 			exit_err (_("please specify a name for the plain file (there is none embedded in the stego file).")) ;
 		}
 
-		plnfile->filename = s_malloc (strlen (plnfilename) + 1) ;
+		plnfile->filename = (char *) s_malloc (strlen (plnfilename) + 1) ;
 		strcpy (plnfile->filename, plnfilename) ;
 	}
 
 	if (sthdr.checksum == CHECKSUM_CRC32) {
-		uc_crc32 = s_malloc (4) ;
+		uc_crc32 = (unsigned char *) s_malloc (4) ;
 		uc_crc32[0] = (unsigned char) bufgetbyte (plnfile->plndata, pos++) ;
 		uc_crc32[1] = (unsigned char) bufgetbyte (plnfile->plndata, pos++) ;
 		uc_crc32[2] = (unsigned char) bufgetbyte (plnfile->plndata, pos++) ;
@@ -245,7 +245,7 @@ PLNFILE *pln_createfile (void)
 {
 	PLNFILE *plnfile = NULL ;
 
-	plnfile = s_malloc (sizeof *plnfile) ;
+	plnfile = (PLNFILE *) s_malloc (sizeof *plnfile) ;
 
 	plnfile->filename = NULL ;	/* will be filled later by deassemble_plndata() */
 	plnfile->stream = NULL ;	/* will be filled later be deassemble_plndata() */

@@ -84,8 +84,8 @@ char *get_passphrase (int doublecheck)
 	int i = 0 ;
 	int c = '\n' ;
 
-	p1 = s_malloc (PASSPHRASE_MAXLEN) ;
-	p2 = s_malloc (PASSPHRASE_MAXLEN) ;
+	p1 = (char *) s_malloc (PASSPHRASE_MAXLEN) ;
+	p2 = (char *) s_malloc (PASSPHRASE_MAXLEN) ;
 
 	fprintf (stderr, _("Enter passphrase: ")) ;
 	oldattr = termios_echo_off () ;
@@ -202,7 +202,7 @@ char *stripdir (char *filename)
 	}
 	start = i + 1 ;
 
-	retval = s_malloc (end - start + 2) ;
+	retval = (char *) s_malloc (end - start + 2) ;
 
 	j = 0 ;
 	for (i = start ; i <= end ; i++, j++) {
@@ -353,7 +353,7 @@ unsigned int cp_bits_to_buf_le (void *buf, unsigned int bufbitpos, unsigned long
 {
 	unsigned int curbit = 0 ;
 	unsigned int valbitpos = 0 ;
-	unsigned char *dest = buf ;
+	unsigned char *dest = (unsigned char *) buf ;
 
 	for (valbitpos = 0 ; valbitpos < val_nbits ; valbitpos++) {
 		curbit = ((1 << valbitpos) & val) >> valbitpos ;
@@ -368,7 +368,7 @@ unsigned int cp_bits_from_buf_le (void *buf, unsigned int bufbitpos, unsigned lo
 {
 	unsigned int curbit = 0 ;
 	unsigned int valbitpos = 0 ;
-	unsigned char *src = buf ;
+	unsigned char *src = (unsigned char *) buf ;
 
 	*val = 0 ;
 	for (valbitpos = 0 ; valbitpos < val_nbits ; valbitpos++) {

@@ -32,7 +32,7 @@
 
 #define CALCNSUBBUFS(LEN,SUBBUFLEN)	(((LEN) % (SUBBUFLEN) == 0) ? ((LEN) / (SUBBUFLEN)) : (((LEN) / (SUBBUFLEN)) + 1))
 
-int subbuflength = 32768 ; /* default sub-buffer length is 32 Kilobytes */
+unsigned long subbuflength = 32768 ; /* default sub-buffer length is 32 Kilobytes */
 
 /* creates a linked list of BUFFER structures */
 BUFFER *bufcreate (unsigned long length)
@@ -41,12 +41,12 @@ BUFFER *bufcreate (unsigned long length)
 	unsigned long nsubbufs = CALCNSUBBUFS (length, subbuflength) ;
 	unsigned long i = 0 ;
 
-	newbuf = s_malloc (sizeof *newbuf) ;
+	newbuf = (BUFFER *) s_malloc (sizeof *newbuf) ;
 	newbuf->length = length ;
 	newbuf->subbuflength = subbuflength ;
 
 	if (nsubbufs > 0) {
-		newbuf->subbufs = s_malloc (nsubbufs * sizeof (void *)) ;
+		newbuf->subbufs = (void **) s_malloc (nsubbufs * sizeof (void *)) ;
 		for (i = 0 ; i < nsubbufs ; i++) {
 			newbuf->subbufs[i] = s_calloc (subbuflength, 1) ;
 		}
@@ -81,7 +81,7 @@ void bufsetbyte (BUFFER *buf, unsigned long pos, int byteval)
 			unsigned long i = 0 ;
 			unsigned long nsubbufs_toadd = CALCNSUBBUFS (pos + 1, buf->subbuflength) - nsubbufs ;
 
-			buf->subbufs = s_realloc (buf->subbufs, (nsubbufs + nsubbufs_toadd) * sizeof (void *)) ;
+			buf->subbufs = (void **) s_realloc (buf->subbufs, (nsubbufs + nsubbufs_toadd) * sizeof (void *)) ;
 			for (i = nsubbufs ; i < (nsubbufs + nsubbufs_toadd) ; i++) {
 				buf->subbufs[i] = s_calloc (buf->subbuflength, 1) ;
 			}

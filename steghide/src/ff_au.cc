@@ -96,7 +96,7 @@ static void au_readheaders (CVRSTGFILE *file)
 {
 	AU_CONTENTS *au_contents = ((AU_CONTENTS *) file->contents) ;
 
-	au_contents->header = s_malloc (sizeof *au_contents->header) ;
+	au_contents->header = (AU_HEADER *) s_malloc (sizeof *au_contents->header) ;
 
 	au_contents->header->id[0] = getc (file->stream) ;
 	au_contents->header->id[1] = getc (file->stream) ;
@@ -112,11 +112,11 @@ static void au_readheaders (CVRSTGFILE *file)
 
 	if ((au_contents->len_infofield = (au_contents->header->offset - AU_SIZE_HEADER)) != 0) {
 		unsigned char *ptr = NULL ;
-		int i = 0 ;
+		unsigned int i = 0 ;
 
 		au_contents->infofield = s_malloc (au_contents->len_infofield) ;
 
-		ptr = au_contents->infofield ;
+		ptr = (unsigned char *) au_contents->infofield ;
 		for (i = 0 ; i < au_contents->len_infofield ; i++) {
 			ptr[i] = (unsigned char) getc (file->stream) ;
 		}
@@ -149,8 +149,8 @@ static void au_writeheaders (CVRSTGFILE *file)
 	write32_be (file->stream, au_contents->header->channels) ;
 
 	if (au_contents->len_infofield != 0) {
-		unsigned char *ptr = au_contents->infofield ;
-		int i = 0 ;
+		unsigned char *ptr = (unsigned char *) au_contents->infofield ;
+		unsigned int i = 0 ;
 
 		for (i = 0 ; i < au_contents->len_infofield ; i++) {
 			putc ((int) ptr[i], file->stream) ;
