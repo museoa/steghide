@@ -554,7 +554,7 @@ void BmpFile::readdata ()
 
 			for (int i = 0 ; i < paddinglength ; i++) {
 				if (getBinIO()->read8() != 0) {
-					Warning w (_("maybe corrupted bmp data (padding byte set to non-zero).")) ;
+					Warning w (_("maybe corrupted bmp data (padding byte at 0x%lx set to non-zero)."), getBinIO()->getPos() - 1) ;
 					w.printMessage() ;
 				}
 			}

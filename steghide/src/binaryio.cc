@@ -90,6 +90,11 @@ void BinaryIO::setMode (BinaryIO::MODE m)
 	mode = m ;
 }
 
+unsigned long BinaryIO::getPos (void) const
+{
+	return ftell (stream) ;
+}
+
 bool BinaryIO::Fileexists (string fn)
 {
 	bool retval = false ;

@@ -41,6 +41,7 @@ class BinaryIO {
 	bool is_open (void) ;
 	bool is_std (void) ;
 	bool eof (void) ;
+	unsigned long getPos (void) const ;
 
 	void open (string fn, MODE m) ;	
 	void close (void) ;
