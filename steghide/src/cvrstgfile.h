@@ -25,6 +25,7 @@
 
 #include "binaryio.h"
 #include "cvrstgobject.h"
+#include "cvrstgsample.h"
 
 class CvrStgFile : public CvrStgObject {
 	public:
@@ -39,6 +40,16 @@ class CvrStgFile : public CvrStgObject {
 	void transform (string fn) ;
 
 	virtual unsigned int getSamplesPerEBit (void) = 0 ;
+
+	/**
+	 * get the bit that is embedded in the Sample pos
+	 * \param pos the position of the sample
+	 * \return the bit that is embedded in the sample corresponding to the given sample position
+	 *
+	 * This is equivalent to getSample(pos)->getBit().
+	 **/
+	// FIXME - implement this in *File to save some time
+	Bit getSampleBit (SamplePos pos) { return (getSample(pos)->getBit()) ; }
 
 	protected:
 	void setBinIO (BinaryIO *io) ;

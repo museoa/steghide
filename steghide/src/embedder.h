@@ -37,25 +37,14 @@ class Embedder {
 
 	protected:
 	/**
-	 * calculate everything that is necessary to respond to getIndex and getSample
+	 * do the graph algorithms
 	 **/
-	void calculate (CvrStgFile *csf, BitString e) ;
+	void calculate (CvrStgFile *csf, const BitString &e) ;
 
 	/**
-	 * get the sample index that has been selected for modification for embedding of the n-th ebit
-	 * of those who need modification of the cvrstgfile
-	 * \param n the index of an ebit (of those who need modification of the cvrstgfile)
-	 * \return the index of the sample that needs to be modified
+	 * embed the bit represented by the Vertex v
 	 **/
-	SamplePos getIndex (unsigned long n) ;
-
-	/**
-	 * get the new sample value that has been selected for embedding of the n-th ebit
-	 * of those who need modification of the cvrstgfile
-	 * \param n the index of an ebit (of those who need modification of the cvrstgfile)
-	 * \return a pointer to a sample value
-	 **/
-	CvrStgSample *getSample (unsigned long n) ;
+	void embedVertex (CvrStgFile *csf, Vertex *v) ;
 
 	private:
 	string CoverFileName ;

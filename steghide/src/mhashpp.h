@@ -83,11 +83,6 @@ class MHashpp {
 
 	string getAlgorithmName (void) ;
 	static string getAlgorithmName (hashid id) ;
-
-#if 0
-	vector<unsigned char> getcrc32 (vector<unsigned char> data) ;
-	bool checkcrc32 (vector<unsigned char> data, vector<unsigned char> crc32) ;
-#endif
 } ;
 
 #endif // ndef SH_MHASHPP_H

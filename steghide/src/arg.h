@@ -45,4 +45,4 @@ typedef Arg<VERBOSITY> ArgVerbosity ;
 typedef Arg<bool> ArgBool ;
 typedef Arg<string> ArgString ;
 
-#endif /* ndef SH_ARG_H */
+#endif // ndef SH_ARG_H

@@ -31,21 +31,23 @@ typedef int Bit ;
 class BitString {
 	public:
 	BitString (void) ;
+	
 	/**
 	 * construct a BitString containing l zeros
 	 **/
 	BitString (unsigned long l) ;
+	
 	/**
 	 * construct a BitString containing the data in d
 	 **/
-	BitString (vector<unsigned char> d) ;
+	BitString (const vector<unsigned char> &d) ;
 	
 	/**
 	 * construct a BitString containing the characters in d as 8 bit unsigned chars
 	 **/
-	BitString (string d) ;
+	BitString (const string &d) ;
 	
-	unsigned long getLength (void) ;
+	unsigned long getLength (void) const ;
 
 	/**
 	 * delete the contents of this Bitstring
@@ -83,18 +85,18 @@ class BitString {
 	/**
 	 * append the string v to this BitString
 	 **/
-	BitString& append (string v) ;
+	BitString& append (const string &v) ;
 
 	/**
 	 * append the vector v byte-wise to this BitString
 	 **/
-	BitString& append (vector<unsigned char> v) ;
+	BitString& append (const vector<unsigned char> &v) ;
 
 	/**
 	 * append the BitString v to this BitString
 	 * \param v the BitString to be appended
 	 **/
-	BitString& append (BitString v) ;
+	BitString& append (const BitString &v) ;
 
 	/**
 	 * get a BitString that is a part of this BitString
@@ -102,7 +104,7 @@ class BitString {
 	 * \param e the index of the last bit to be copied from this BitString
 	 * \return the BitString containing of the bits [s...e] of this BitString
 	 **/
-	BitString getBits (unsigned long s, unsigned long e) ;
+	BitString getBits (unsigned long s, unsigned long e) const ;
 
 	/**
 	 * return an unsigned long value composed from bits in this BitString (msb first)
@@ -110,7 +112,7 @@ class BitString {
 	 * \param l the total number of bits to be used for the return value (must be <= 32)
 	 * \return the unsigned long value (*this)[s],...,(*this)[s+l-1]
 	 **/
-	unsigned long getValue (unsigned long s, unsigned int l) ;
+	unsigned long getValue (unsigned long s, unsigned int l) const ;
 
 	/**
 	 * get the contents of this BitString as vector of unsigned char
@@ -118,7 +120,7 @@ class BitString {
 	 *
 	 * getLength() % 8 must be 0 to call this function
 	 **/
-	vector<unsigned char> getBytes (void) ;
+	vector<unsigned char> getBytes (void) const ;
 
 	/**
 	 * pad this BitString with the value in v
@@ -135,22 +137,22 @@ class BitString {
 	/**
 	 * get the value of the i-th bit
 	 **/
-	Bit operator[] (unsigned long i) ;
+	Bit operator[] (unsigned long i) const ;
 
 	/**
 	 * xor v with this BitString, saving the result in this Bitstring - the result has the same length as this BitString
 	 **/
-	BitString& operator^= (BitString v) ;
+	BitString& operator^= (const BitString &v) ;
 
 	/**
 	 * compare this BitString with the BitString v
 	 * \return true iff the lengths are equal and for every valid index the value is equal
 	 **/
-	bool operator== (BitString v) ;
+	bool operator== (const BitString &v) const ;
 
 	private:
-	unsigned long calcBytePos (unsigned long n) ;
-	unsigned int calcBitPos (unsigned long n) ;
+	unsigned long calcBytePos (unsigned long n) const ;
+	unsigned int calcBitPos (unsigned long n) const ;
 
 	unsigned long length ;
 	vector<unsigned char> data ;

@@ -29,11 +29,14 @@ class JpegSample : public CvrStgSample {
 	JpegSample (void) : CvrStgSample(NULL) {} ;
 	JpegSample (CvrStgFile *f, int c) : CvrStgSample(f), DctCoeff (c) {} ;
 
-	Bit getBit (void) ;
-	float calcDistance (CvrStgSample *s) ;
-	CvrStgSample* getNearestOppositeNeighbour (void) ;
+	Bit getBit (void) const ;
+	bool isNeighbour (CvrStgSample *s) const ;
+	list<CvrStgSample*> *getOppositeNeighbours (void) const ;
+	CvrStgSample* getNearestOppositeNeighbour (void) const ;
+	float calcDistance (CvrStgSample *s) const ;
+	unsigned long getKey (void) const ;
 
-	int getDctCoeff (void) ;
+	int getDctCoeff (void) const ;
 
 	private:
 	int DctCoeff ;

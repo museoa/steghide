@@ -29,11 +29,14 @@ class AuSample : public CvrStgSample {
 	AuSample (void) : CvrStgSample(NULL) {} ;
 	AuSample (CvrStgFile *f, unsigned char v) : CvrStgSample(f), Value(v) {} ;
 
-	Bit getBit (void) ;
-	float calcDistance (CvrStgSample *s) ;
-	CvrStgSample* getNearestOppositeNeighbour (void) ;
+	Bit getBit (void) const ;
+	bool isNeighbour (CvrStgSample *s) const ;
+	list<CvrStgSample*> *getOppositeNeighbours (void) const ;
+	CvrStgSample* getNearestOppositeNeighbour (void) const ;
+	float calcDistance (CvrStgSample *s) const ;
+	unsigned long getKey (void) const ;
 
-	unsigned char getValue (void) ;
+	unsigned char getValue (void) const ;
 
 	private:
 	unsigned char Value ;

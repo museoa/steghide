@@ -41,13 +41,13 @@ BitString::BitString (unsigned long l)
 	length = l ;
 }
 
-BitString::BitString (vector<unsigned char> d)
+BitString::BitString (const vector<unsigned char> &d)
 {
 	data = d ;
 	length = 8 * data.size() ;
 }
 
-BitString::BitString (string d)
+BitString::BitString (const string &d)
 {
 	length = 0 ;
 	for (unsigned int i = 0 ; i < d.size() ; i++) {
@@ -55,7 +55,7 @@ BitString::BitString (string d)
 	}
 }
 
-unsigned long BitString::getLength ()
+unsigned long BitString::getLength () const
 {
 	return length ;
 }
@@ -113,7 +113,7 @@ BitString& BitString::append (unsigned long v, unsigned int n)
 	return *this ;
 }
 
-BitString& BitString::append (BitString v)
+BitString& BitString::append (const BitString &v)
 {
 	unsigned long n = v.getLength() ;
 	for (unsigned long i = 0 ; i < n ; i++) {
@@ -123,33 +123,30 @@ BitString& BitString::append (BitString v)
 	return *this ;
 }
 
-BitString& BitString::append (vector<unsigned char> v)
+BitString& BitString::append (const vector<unsigned char> &v)
 {
-	for (vector<unsigned char>::iterator i = v.begin() ; i != v.end() ; i++) {
+	for (vector<unsigned char>::const_iterator i = v.begin() ; i != v.end() ; i++) {
 		append (*i) ;
 	}
 	return *this ;
 }
 
-BitString& BitString::append (string v)
+BitString& BitString::append (const string &v)
 {
-	for (string::iterator i = v.begin() ; i != v.end() ; i++) {
+	for (string::const_iterator i = v.begin() ; i != v.end() ; i++) {
 		append ((unsigned char) *i) ;
 	}
 	return *this ;
 }
 
-//DEBUG
-Bit BitString::operator[] (unsigned long i)
+Bit BitString::operator[] (unsigned long i) const
 {
-	if (i >= length) {
-		assert (i < length) ;
-	}
+	assert (i < length) ;
 	Bit bit = (data[calcBytePos(i)] & (1 << calcBitPos(i))) >> calcBitPos(i) ;
 	return bit ;
 }
 
-BitString BitString::getBits (unsigned long s, unsigned long e)
+BitString BitString::getBits (unsigned long s, unsigned long e) const
 {
 	BitString retval ;
 	for (unsigned long i = s ; i <= e ; i++) {
@@ -158,7 +155,7 @@ BitString BitString::getBits (unsigned long s, unsigned long e)
 	return retval ;
 }
 
-unsigned long BitString::getValue (unsigned long s, unsigned int l)
+unsigned long BitString::getValue (unsigned long s, unsigned int l) const
 {
 	assert (l <= 32) ;
 	unsigned long retval = 0 ;
@@ -169,7 +166,7 @@ unsigned long BitString::getValue (unsigned long s, unsigned int l)
 	return retval ;
 }
 
-vector<unsigned char> BitString::getBytes ()
+vector<unsigned char> BitString::getBytes() const
 {
 	assert (length % 8 == 0) ;
 	return data ;
@@ -191,7 +188,7 @@ BitString& BitString::padRandom (unsigned long mult)
 	return *this ;
 }
 
-bool BitString::operator== (BitString v)
+bool BitString::operator== (const BitString &v) const
 {
 	bool retval = true ;
 
@@ -210,7 +207,7 @@ bool BitString::operator== (BitString v)
 	return retval ;
 }
 
-BitString& BitString::operator^= (BitString v)
+BitString& BitString::operator^= (const BitString &v)
 {
 	for (unsigned long i = 0 ; i < length ; i++) {
 		unsigned long bytepos = calcBytePos (i) ;
@@ -222,12 +219,12 @@ BitString& BitString::operator^= (BitString v)
 	return *this ;
 }
 
-unsigned long BitString::calcBytePos (unsigned long n)
+unsigned long BitString::calcBytePos (unsigned long n) const
 {
 	return n / 8 ;
 }
 
-unsigned int BitString::calcBitPos (unsigned long n)
+unsigned int BitString::calcBitPos (unsigned long n) const
 {
 	return n % 8 ;
 }

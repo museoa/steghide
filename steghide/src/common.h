@@ -49,5 +49,7 @@ extern RandomSource RndSrc ;
 // typedefs
 typedef int Bit ;
 typedef unsigned long SamplePos ;
+typedef unsigned long VertexLabel ;
+typedef unsigned long SampleLabel ;
 
 #endif // ndef SH_COMMON_H

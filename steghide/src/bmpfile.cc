@@ -148,28 +148,6 @@ CvrStgSample *BmpFile::getSample (SamplePos pos)
 	return retval ;
 }
 
-#if 0
-void BmpFile::embedBit (unsigned long pos, int value)
-{
-	assert (pos < getCapacity()) ;
-	assert (value == 0 || value == 1) ;
-
-	unsigned long row = 0, column = 0 ;
-	calcRC (pos, &row, &column) ;
-	bitmap[row][column] = (bitmap[row][column] & (unsigned char) ~0x01) | value ;
-}
-
-int BmpFile::extractBit (unsigned long pos) const
-{
-	assert (pos < getCapacity()) ;
-
-	unsigned long row = 0, column = 0 ;
-	calcRC (pos, &row, &column) ;
-	return (bitmap[row][column] & 0x01) ;
-}
-#endif
-
-// FIXME - test this!
 void BmpFile::calcRCB (SamplePos pos, unsigned long *row, unsigned long *column, unsigned short *firstbit) const
 {
 	unsigned long width = getWidth(), height = getHeight(), bitcount = getBitCount() ;

@@ -22,18 +22,7 @@
 #include "cvrstgsample.h"
 #include "cvrstgfile.h"
 
-// FIXME - don't use 1.0 for RGB
-bool CvrStgSample::is_Neighbour (CvrStgSample *s)
-{
-	return (calcDistance(s) <= 1.0) ;
-}
-
-bool CvrStgSample::is_equal (CvrStgSample *s)
-{
-	return (calcDistance(s) == 0.0) ;
-}
-
-CvrStgFile *CvrStgSample::getFile()
+CvrStgFile *CvrStgSample::getFile() const
 {
 	return File ;
 }
@@ -41,4 +30,14 @@ CvrStgFile *CvrStgSample::getFile()
 void CvrStgSample::setFile (CvrStgFile *f)
 {
 	File = f ;
+}
+
+unsigned long CvrStgSample::getLabel() const
+{
+	return Label ;
+}
+
+void CvrStgSample::setLabel (unsigned long l)
+{
+	Label = l ;
 }

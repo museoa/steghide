@@ -69,24 +69,29 @@ WavPCMSample::WavPCMSample (CvrStgFile *f, int v)
 	assert (Value <= MaxValue) ;
 }
 
-Bit WavPCMSample::getBit()
+Bit WavPCMSample::getBit() const
 {
 	return ((Bit) (Value & 1)) ;
 }
+
+bool WavPCMSample::isNeighbour (CvrStgSample *s) const
+{
+	return (calcDistance (s) <= 1.0) ;
+}
+
+list<CvrStgSample*> *WavPCMSample::getOppositeNeighbours() const
+{
+	list<CvrStgSample*> *retval = new list<CvrStgSample*> ;
+	if (Value != MinValue) {
+		retval->push_back ((CvrStgSample *) new WavPCMSample (getFile(), Value - 1)) ;
+	}
+	if (Value != MaxValue) {
+		retval->push_back ((CvrStgSample *) new WavPCMSample (getFile(), Value + 1)) ;
+	}
+	return retval ;
+}
 	
-float WavPCMSample::calcDistance (CvrStgSample *s)
-{
-	WavPCMSample *sample = dynamic_cast<WavPCMSample*> (s) ;
-	assert (sample != NULL) ;
-	return (abs ((float) Value - (float) sample->getValue())) ;
-}
-
-int WavPCMSample::getValue()
-{
-	return Value ;
-}
-
-CvrStgSample *WavPCMSample::getNearestOppositeNeighbour()
+CvrStgSample *WavPCMSample::getNearestOppositeNeighbour() const
 {
 	int n_value = 0 ;
 	if (Value == MinValue) {
@@ -104,4 +109,21 @@ CvrStgSample *WavPCMSample::getNearestOppositeNeighbour()
 		}
 	}
 	return ((CvrStgSample *) new WavPCMSample (getFile(), n_value)) ;
+}
+
+float WavPCMSample::calcDistance (CvrStgSample *s) const
+{
+	WavPCMSample *sample = dynamic_cast<WavPCMSample*> (s) ;
+	assert (sample != NULL) ;
+	return (abs ((float) Value - (float) sample->getValue())) ;
+}
+
+unsigned long WavPCMSample::getKey() const
+{
+	return ((unsigned long) Value) ;
+}
+
+int WavPCMSample::getValue() const
+{
+	return Value ;
 }

@@ -67,6 +67,7 @@ class Permutation {
 	BitString Key3 ;
 	BitString Key4 ;
 
+	// FIXME - pass values by reference - it is rather slow now
 	BitString keyhash (BitString key, BitString arg) ;
 } ;
 

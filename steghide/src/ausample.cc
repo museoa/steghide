@@ -25,24 +25,35 @@
 #include "common.h"
 #include "randomsource.h"
 
-unsigned char AuSample::getValue ()
+unsigned char AuSample::getValue () const
 {
 	return Value ;
 }
 
-Bit AuSample::getBit()
+Bit AuSample::getBit() const
 {
 	return ((Bit) (Value & 1)) ;
 }
 
-float AuSample::calcDistance (CvrStgSample *s)
+bool AuSample::isNeighbour (CvrStgSample *s) const
 {
-	AuSample *sample = dynamic_cast<AuSample*> (s) ;
-	assert (sample != NULL) ;
-	return (abs (((float) Value) - ((float) sample->getValue()))) ;
+	return (calcDistance (s) <= 1.0) ;
 }
 
-CvrStgSample *AuSample::getNearestOppositeNeighbour()
+list<CvrStgSample*> *AuSample::getOppositeNeighbours() const
+{
+	// FIXME - it is assumed that the neighbourhood radius is 1 - other file formats too
+	list<CvrStgSample*> *retval = new list<CvrStgSample*> ;
+	if (Value != 0) {
+		retval->push_back ((CvrStgSample *) new AuSample (getFile(), Value - 1)) ;
+	}
+	if (Value != 255) {
+		retval->push_back ((CvrStgSample *) new AuSample (getFile(), Value + 1)) ;
+	}
+	return retval ;
+}
+
+CvrStgSample *AuSample::getNearestOppositeNeighbour() const
 {
 	unsigned char n_value = 0 ;
 	if (Value == 0) {
@@ -60,4 +71,16 @@ CvrStgSample *AuSample::getNearestOppositeNeighbour()
 		}
 	}
 	return ((CvrStgSample *) new AuSample (getFile(), n_value)) ;
+}
+
+float AuSample::calcDistance (CvrStgSample *s) const
+{
+	AuSample *sample = dynamic_cast<AuSample*> (s) ;
+	assert (sample != NULL) ;
+	return (abs (((float) Value) - ((float) sample->getValue()))) ;
+}
+
+unsigned long AuSample::getKey() const
+{
+	return ((unsigned long) Value) ;
 }

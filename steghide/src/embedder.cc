@@ -53,7 +53,7 @@ void Embedder::embed ()
 	unsigned long i_modify = 0 ; // is the vertex label
 	for (unsigned long i = 0 ; i < n ; i++) {
 		if (NeedsChange[i]) {
-			cvrstgfile->replaceSample (getIndex (i_modify), getSample (i_modify)) ;
+			embedVertex (cvrstgfile, MGraph.getVertex (i_modify)) ;
 			i_modify++ ;
 		}
 	}
@@ -62,49 +62,53 @@ void Embedder::embed ()
 	cvrstgfile->write() ;
 }
 
-void Embedder::calculate (CvrStgFile *csf, BitString e)
+void Embedder::calculate (CvrStgFile *csf, const BitString &e)
 {
 	Permutation perm (csf->getNumSamples(), Args.Passphrase.getValue()) ;
 
+	MGraph = Graph (csf) ;
+	MGraph.startAdding() ;
+	
 	unsigned long n = e.getLength() ;
 	unsigned int sam_ebit = csf->getSamplesPerEBit() ;
 	for (unsigned long i = 0 ; i < n ; i++) {
-		vector<SamplePos> sampleposs ;
-		vector<CvrStgSample*> samples ;	// FIXME - the same samples (i.e. with the same values) are kept more than one time in vertices in graph
+		vector<SamplePos> poss ;
 		Bit xorresult = 0 ;
 		for (unsigned int j = 0 ; j < sam_ebit ; j++) {
-			sampleposs.push_back (*perm) ;
-			CvrStgSample *sample = csf->getSample (*perm) ;
-			samples.push_back (sample) ;
-			xorresult ^= sample->getBit() ;
+			poss.push_back (*perm) ;
+			xorresult ^= csf->getSampleBit (*perm) ;
 			++perm ;
 		}
 
 		if (xorresult == e[i]) {
 			NeedsChange.push_back (false) ;
-			for (vector<CvrStgSample*>::iterator i = samples.begin() ; i != samples.end() ; i++) {
-				delete *i ;
-			}
 		}
 		else {
-			Vertex *v = new Vertex (sampleposs, samples) ;
-			MGraph.addVertex (v) ;
+			MGraph.addVertex (poss) ;
 			NeedsChange.push_back (true) ;
 		}
 	}
-}
 
-SamplePos Embedder::getIndex (unsigned long n)
-{
-	// FIXME
-	Vertex *v = MGraph.getVertex(n) ;
-	return v->getSamplePos(0) ;
-}
+	MGraph.finishAdding() ;
 
-CvrStgSample* Embedder::getSample (unsigned long n)
+	MGraph.calcMatching() ;
+}
+ 
+void Embedder::embedVertex (CvrStgFile *csf, Vertex *v)
 {
-	// FIXME
-	Vertex *v = MGraph.getVertex(n) ;
-	CvrStgSample *sample = v->getSample(0) ;
-	return sample->getNearestOppositeNeighbour() ;
+	SamplePos samplepos = 0 ;
+	CvrStgSample *newsample = NULL ;
+	if (v->isMatched()) {
+		Edge *e = v->getMatchingEdge() ;
+		samplepos = e->getSamplePos (v) ;
+		newsample = e->getSample (v) ;
+	}
+	else {
+		// choose a random sample (of those that are in the vertex) to embed data
+		unsigned short rnd = RndSrc.getValue (csf->getSamplesPerEBit()) ;
+		samplepos = v->getSamplePos (rnd) ;
+		newsample = v->getSample(rnd)->getNearestOppositeNeighbour() ;
+	}
+
+	csf->replaceSample (samplepos, newsample) ;
 }

@@ -29,11 +29,14 @@ class WavPCMSample : public CvrStgSample {
 	WavPCMSample (void) : CvrStgSample(NULL) {} ;
 	WavPCMSample (CvrStgFile *f, int v) ;
 
-	Bit getBit (void) ;
-	float calcDistance (CvrStgSample *s) ;
-	CvrStgSample* getNearestOppositeNeighbour (void) ;
+	Bit getBit (void) const ;
+	bool isNeighbour (CvrStgSample *s) const ;
+	list<CvrStgSample*> *getOppositeNeighbours (void) const ;
+	CvrStgSample* getNearestOppositeNeighbour (void) const ;
+	float calcDistance (CvrStgSample *s) const ;
+	unsigned long getKey (void) const ;
 
-	int getValue (void) ;
+	int getValue (void) const ;
 
 	private:
 	int Value ;

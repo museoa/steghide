@@ -91,20 +91,4 @@ class EmbData {
 	vector<unsigned char> Data ;
 } ;
 
-#if 0
-Format:
-cryptalgo
-cryptmode
-<encrypted>
-5 lenofnbytes
-? nbytes
-1 compression
-1 checksum
-[32 checksum]
-8 len of filename
-[8*lofn filename]
-data
-</encrypted>
-#endif
-
 #endif // ndef SH_EMBDATA_H

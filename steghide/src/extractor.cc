@@ -47,8 +47,7 @@ void Extractor::extract ()
 		for (unsigned long i = 0 ; i < bitsneeded ; i++) {
 			Bit xorresult = 0 ;
 			for (unsigned int j = 0 ; j < sam_ebit ; j++) {
-				CvrStgSample *sample = stgfile->getSample (*perm) ;
-				xorresult ^= sample->getBit() ;
+				xorresult ^= stgfile->getSampleBit (*perm) ;
 				++perm ;
 			}
 			bits.append (xorresult) ;

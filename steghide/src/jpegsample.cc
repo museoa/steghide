@@ -24,27 +24,32 @@
 #include "common.h"
 #include "jpegsample.h"
 
-int JpegSample::getDctCoeff()
+int JpegSample::getDctCoeff() const
 {
 	return DctCoeff ;
 }
 
-Bit JpegSample::getBit()
+Bit JpegSample::getBit() const
 {
 	int dctcoeff = ((DctCoeff >= 0) ? DctCoeff : -DctCoeff) ;
 	return ((Bit) (dctcoeff % 2)) ;
 }
 
-// FIXME - for jpeg samples: implement a bias towards zero in calcDistance and getNearestOppositeNeighbour ?
-float JpegSample::calcDistance (CvrStgSample *s)
+bool JpegSample::isNeighbour (CvrStgSample *s) const
 {
-	JpegSample *sample = dynamic_cast<JpegSample*> (s) ;
-	assert (sample != NULL) ;
-	return (abs (((float) DctCoeff) - ((float) sample->getDctCoeff()))) ;
+	return (calcDistance (s) <= 1.0) ;
 }
 
-// FIXME - it is assumed that the maximum and the minimum values are never touched
-CvrStgSample *JpegSample::getNearestOppositeNeighbour()
+list<CvrStgSample*> *JpegSample::getOppositeNeighbours() const
+{
+	list<CvrStgSample*> *retval = new list<CvrStgSample*> ;
+	retval->push_back ((CvrStgSample *) new JpegSample (getFile(), DctCoeff - 1)) ;
+	retval->push_back ((CvrStgSample *) new JpegSample (getFile(), DctCoeff + 1)) ;
+	return retval ;
+}
+
+// FIXME - it is assumed that the maximum and the minimum values are never touched (also in getOppositeNeighbours)
+CvrStgSample *JpegSample::getNearestOppositeNeighbour() const
 {
 	int n_coeff = 0 ;
 	if (RndSrc.getBit()) {
@@ -54,4 +59,17 @@ CvrStgSample *JpegSample::getNearestOppositeNeighbour()
 		n_coeff = DctCoeff + 1 ;
 	}
 	return ((CvrStgSample *) new JpegSample (getFile(), n_coeff)) ;
+}
+
+// FIXME - for jpeg samples: implement a bias towards zero in calcDistance and getNearestOppositeNeighbour ?
+float JpegSample::calcDistance (CvrStgSample *s) const
+{
+	JpegSample *sample = dynamic_cast<JpegSample*> (s) ;
+	assert (sample != NULL) ;
+	return (abs (((float) DctCoeff) - ((float) sample->getDctCoeff()))) ;
+}
+
+unsigned long JpegSample::getKey() const
+{
+	return ((unsigned long) DctCoeff) ;
 }

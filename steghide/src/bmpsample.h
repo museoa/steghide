@@ -29,11 +29,14 @@ class BmpPaletteSample : public CvrStgSample {
 	BmpPaletteSample (void) : CvrStgSample(NULL) {} ;
 	BmpPaletteSample (CvrStgFile *f, unsigned char i) ;
 
-	Bit getBit (void) ;
-	float calcDistance (CvrStgSample *s) ;
-	CvrStgSample* getNearestOppositeNeighbour (void) ;
+	Bit getBit (void) const ;
+	bool isNeighbour (CvrStgSample *s) const ;
+	list<CvrStgSample*> *getOppositeNeighbours (void) const ;
+	CvrStgSample* getNearestOppositeNeighbour (void) const ;
+	float calcDistance (CvrStgSample *s) const ;
+	unsigned long getKey (void) const ;
 
-	unsigned char getIndex (void) ;
+	unsigned char getIndex (void) const ;
 
 	private:
 	unsigned char Index ;
@@ -46,20 +49,25 @@ class BmpRGBSample : public CvrStgSample {
 	BmpRGBSample (void) : CvrStgSample(NULL) {} ;
 	BmpRGBSample (CvrStgFile *f, unsigned char r, unsigned char g, unsigned char b) : CvrStgSample (f), Red(r), Green(g), Blue(b) {} ;
 
-	Bit getBit (void) ;
-	float calcDistance (CvrStgSample *s) ;
-	CvrStgSample* getNearestOppositeNeighbour (void) ;
+	Bit getBit (void) const ;
+	bool isNeighbour (CvrStgSample *s) const ;
+	list<CvrStgSample*> *getOppositeNeighbours (void) const ;
+	CvrStgSample* getNearestOppositeNeighbour (void) const ;
+	float calcDistance (CvrStgSample *s) const ;
+	unsigned long getKey (void) const ;
 
-	unsigned char getRed (void) ;
-	unsigned char getGreen (void) ;
-	unsigned char getBlue (void) ;
+	unsigned char getRed (void) const ;
+	unsigned char getGreen (void) const ;
+	unsigned char getBlue (void) const ;
 
 	private:
 	unsigned char Red ;
 	unsigned char Green ;
 	unsigned char Blue ;
 
-	unsigned char getNearestOppositeComponent (unsigned char c) ;
+	unsigned char getNearestOppositeComponent (unsigned char c) const ;
+	unsigned char plus (unsigned char a, unsigned char b) const ;
+	unsigned char minus (unsigned char a, unsigned char b) const ;
 } ;
 
 #endif // ndef SH_BMPSAMPLE_H

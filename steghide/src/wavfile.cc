@@ -77,23 +77,6 @@ unsigned long WavFile::getNumSamples()
 
 void WavFile::replaceSample (SamplePos pos, CvrStgSample *s)
 {
-#if 0
-	unsigned long bytepos = 0 ;
-	unsigned short firstbitpos = 0 ;
-	calcpos (pos, &bytepos, &firstbitpos) ;
-
-	WavPCMSample *sample = dynamic_cast<WavPCMSample*> (s) ;
-	assert (sample != NULL) ;
-
-	int value = sample->getValue() ;
-	for (unsigned short bitpos = 0 ; bitpos < fmtch.BitsPerSample ; bitpos++) {
-		unsigned short byteincrement = (firstbitpos + bitpos) / 8 ;
-		unsigned short databitpos = (firstbitpos + bitpos) % 8 ;
-		Bit addbit = (value & (1 << bitpos)) >> bitpos ;
-		data[bytepos + byteincrement] = data[bytepos + byteincrement] & (~(1 << databitpos)) ;
-		data[bytepos + byteincrement] |= (addbit << databitpos) ;
-	}
-#endif
 	WavPCMSample *sample = dynamic_cast<WavPCMSample*> (s) ;
 	assert (sample != NULL) ;
 	if (fmtch.BitsPerSample <= 8) {

@@ -104,11 +104,11 @@ void Permutation::setWidth (unsigned long w)
 	}
 }
 
-void Permutation::setKey (string passphrase)
+void Permutation::setKey (string pp)
 {
 	// FIXME - use mhash_key_generation here ?
 	MHashpp hash (MHASH_MD5) ;
-	hash << passphrase << endhash ;
+	hash << pp << endhash ;
 	BitString hashbits = hash.getHashBits() ;
 
 	//DEBUG
