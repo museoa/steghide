@@ -49,13 +49,6 @@ class EmbData {
 	void setChecksum (bool c) ;
 	bool getChecksum (void) ;
 
-	protected:
-	string stripDir (string s) ;
-	/**
-	 * return minimal number of bits needed to save x
-	 **/
-	unsigned int nbits (unsigned long x) ;
-
 	/**
 	 * read the file FileName and put contents into Data
 	 **/
@@ -65,6 +58,13 @@ class EmbData {
 	 * write the contents of Data into FileName
 	 **/
 	void write (void) ;
+
+	protected:
+	string stripDir (string s) ;
+	/**
+	 * return minimal number of bits needed to save x
+	 **/
+	unsigned int nbits (unsigned long x) ;
 
 	private:
 	/// number of bits needed to code nbytes

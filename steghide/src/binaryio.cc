@@ -257,6 +257,24 @@ unsigned long BinaryIO::read32_be (void)
 	return ((bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | bytes[3]) ;
 }
 
+unsigned long BinaryIO::read_le (unsigned short n)
+{
+	assert (getMode() == READ) ;
+	assert (is_open()) ;
+	assert (n <= 4) ;
+
+	unsigned long retval = 0 ;
+	for (unsigned short i = 0 ; i < n ; i++) {
+		int byte = EOF ;
+		if ((byte = fgetc (getStream())) == EOF) {
+			throw BinaryInputError (getName(), getStream()) ;
+		}
+		retval |= ((byte & 0xFF) << (8 * i)) ;
+	}
+
+	return retval ;
+}
+
 string BinaryIO::readstring (unsigned int len)
 {
 	ostringstream ost ;
@@ -318,6 +336,19 @@ void BinaryIO::write32_be (unsigned long val)
 	assert (is_open()) ;
 
 	for (int i = 3 ; i >= 0 ; i--) {
+		if (fputc ((val >> (8 * i)) & 0xFF, getStream()) == EOF) {
+			throw BinaryOutputError (getName()) ;
+		}
+	}
+}
+
+void BinaryIO::write_le (unsigned long val, unsigned short n)
+{
+	assert (getMode() == WRITE) ;
+	assert (is_open()) ;
+	assert (n <= 4) ;
+
+	for (short i = 0 ; i < n ; i++) {
 		if (fputc ((val >> (8 * i)) & 0xFF, getStream()) == EOF) {
 			throw BinaryOutputError (getName()) ;
 		}

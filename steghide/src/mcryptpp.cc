@@ -75,14 +75,14 @@ void MCryptpp::close ()
 
 BitString MCryptpp::encrypt (BitString p, string pp)
 {
-	p.padRandom (mcrypt_enc_get_block_size (MCryptD)) ; // blocksize is 1 for stream algorithms
+	p.padRandom (8 * mcrypt_enc_get_block_size (MCryptD)) ; // blocksize is 1 for stream algorithms
 	vector<unsigned char> ciphertext = _encrypt (p.getBytes(), pp) ;
 	return BitString (ciphertext) ;
 }
 
 BitString MCryptpp::decrypt (BitString c, string pp)
 {
-	assert (c.getLength() % mcrypt_enc_get_block_size (MCryptD) == 0) ;
+	assert (c.getLength() % (8 * mcrypt_enc_get_block_size (MCryptD)) == 0) ;
 	vector<unsigned char> plaintext = _decrypt (c.getBytes(), pp) ;
 	return BitString (plaintext) ;
 }
@@ -91,7 +91,7 @@ BitString MCryptpp::decrypt (BitString c, string pp)
 void* MCryptpp::createKey (string pp)
 {
 	unsigned int keysize = mcrypt_enc_get_key_size (MCryptD) ;
-	MHashKeyGenpp keygen (KEYGEN_MCRYPT, keysize) ;
+	MHashKeyGenpp keygen (KEYGEN_MCRYPT, MHASH_MD5, keysize) ;
 	vector<unsigned char> key = keygen.createKey (pp) ;
 	unsigned char *retval = (unsigned char *) s_malloc (keysize) ;
 	for (unsigned int i = 0 ; i < keysize ; i++) {
@@ -307,18 +307,18 @@ unsigned long MCryptpp::getEncryptedSize (Algorithm a, Mode m, unsigned long pln
 
 	unsigned long retval = 0 ;
 	if (mcrypt_enc_mode_has_iv (td)) {
-		retval += mcrypt_enc_get_iv_size(td) ;
+		retval += (8 * mcrypt_enc_get_iv_size(td)) ;
 	}
 
 	unsigned long blocks = 0 ;
-	const unsigned long blocksize = mcrypt_enc_get_block_size(td) ; // is 1 for stream algorithms
+	const unsigned long blocksize = 8 * mcrypt_enc_get_block_size(td) ; // is 1 for stream algorithms
 	if (plnsize % blocksize == 0) {
 		blocks = plnsize / blocksize ;
 	}
 	else {
 		blocks = (plnsize / blocksize) + 1;
 	}
-	retval += blocks * blocksize ;
+	retval += (blocks * blocksize) ;
 
 	mcrypt_module_close (td) ;
 

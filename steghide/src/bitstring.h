@@ -122,13 +122,13 @@ class BitString {
 
 	/**
 	 * pad this BitString with the value in v
-	 * \param mult this BitString is padded until size is a multiple of mult
+	 * \param mult this BitString is padded until size is a multiple of mult (given in bits)
 	 **/
 	BitString& pad (unsigned long mult, Bit v) ;
 
 	/**
 	 * pad this BitString with random data
-	 * \param mult this BitString is padded until size is a multiple of mult
+	 * \param mult this BitString is padded until size is a multiple of mult (given in bits)
 	 **/
 	BitString& padRandom (unsigned long mult) ;
 

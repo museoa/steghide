@@ -106,6 +106,7 @@ void EmbData::addBits (BitString bits)
 			}
 
 			unsigned int lenoffilename = (unsigned int) decrypted.getValue (pos, NBitsLenOfFileName) ;
+			pos += 8 ;
 			string filename = "" ;
 			for (unsigned int i = 0 ; i < lenoffilename ; i++) {
 				filename += (char) decrypted.getValue (pos, 8) ;
@@ -119,7 +120,7 @@ void EmbData::addBits (BitString bits)
 				}
 				else {
 					// file name given by extracting user overrides embedded file name
-					FileName = Args.ExtFn.getValue().c_str() ;
+					FileName = Args.ExtFn.getValue() ;
 				}
 			}
 			else {

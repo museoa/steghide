@@ -45,6 +45,11 @@ class BinaryIO {
 	unsigned int read16_be (void) ;
 	unsigned long read32_le (void) ;
 	unsigned long read32_be (void) ;
+	/**
+	 * read n bytes (little endian byte ordering)
+	 * \param n the number of bytes to read (must be <= 4)
+	 **/
+	unsigned long read_le (unsigned short n) ;
 	string readstring (unsigned int len) ;
 
 	void write8 (unsigned char val) ;
@@ -52,6 +57,12 @@ class BinaryIO {
 	void write16_be (unsigned int val) ;
 	void write32_le (unsigned long val) ;
 	void write32_be (unsigned long val) ;
+	/**
+	 * write n bytes of val (little endian byte ordering)
+	 * \param n the number of bytes to write (must be <= 4)
+	 * \param val the value
+	 **/
+	void write_le (unsigned long val, unsigned short n) ;
 	void writestring (string s) ;
 
 	protected:

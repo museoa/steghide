@@ -72,7 +72,11 @@ class WavFile : public CvrStgFile {
 	PCMFormatChunk fmtch ;
 	UnsupChunks unsupchunks1 ;
 	ChunkHeader datachhdr ;
-	vector<unsigned char> data ;
+	/// this vector contains the wav data if BitsPerSample <= 8
+	vector<unsigned char> data_small ;
+	/// this vector contains the wav data if BitsPerSample >8
+	vector<int> data_large ;	// it is assumed that an int can hold 32 bits
+	
 	UnsupChunks	unsupchunks2 ;
 
 	void readheaders (void) ;
@@ -84,6 +88,12 @@ class WavFile : public CvrStgFile {
 	void putChhdr (ChunkHeader *chhdr) ;
 	void *s_realloc (void *ptr, size_t size) ;
 	void cp32ul2uc_le (unsigned char *dest, unsigned long src) ;
+	/**
+	 * get the position of the first bit (of the first byte) containing the actual sample data
+	 * \return the bit position (where 0 is the lsb and 7 the msb)
+	 **/
+	unsigned short getFirstBitPosinSample (void) ;
+	unsigned short getBytesPerSample (void) ;
 } ;
 
 #endif // ndef SH_WAVFILE_H

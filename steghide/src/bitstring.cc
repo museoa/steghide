@@ -44,7 +44,7 @@ BitString::BitString (unsigned long l)
 BitString::BitString (vector<unsigned char> d)
 {
 	data = d ;
-	length = data.size() ;
+	length = 8 * data.size() ;
 }
 
 BitString::BitString (string d)
@@ -139,9 +139,12 @@ BitString& BitString::append (string v)
 	return *this ;
 }
 
+//DEBUG
 Bit BitString::operator[] (unsigned long i)
 {
-	assert (i < length) ;
+	if (i >= length) {
+		assert (i < length) ;
+	}
 	Bit bit = (data[calcBytePos(i)] & (1 << calcBitPos(i))) >> calcBitPos(i) ;
 	return bit ;
 }

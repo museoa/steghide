@@ -55,4 +55,6 @@ void Extractor::extract ()
 		}
 		embdata.addBits (bits) ;
 	}
+
+	embdata.write() ;
 }

@@ -65,22 +65,19 @@ void WavFile::write ()
 
 unsigned long WavFile::getNumSamples()
 {
-	unsigned int bytespersample = 0 ;
-
-	if (fmtch.BitsPerSample % 8 == 0) {
-		bytespersample = fmtch.BitsPerSample / 8 ;
+	unsigned long retval = 0 ;
+	if (fmtch.BitsPerSample <= 8) {
+		retval = data_small.size() ;
 	}
 	else {
-		bytespersample = (fmtch.BitsPerSample / 8) + 1 ;
+		retval = data_large.size() ;
 	}
-
-	assert (data.size() % bytespersample == 0) ;
-
-	return data.size() / bytespersample ;
+	return retval ;
 }
 
 void WavFile::replaceSample (SamplePos pos, CvrStgSample *s)
 {
+#if 0
 	unsigned long bytepos = 0 ;
 	unsigned short firstbitpos = 0 ;
 	calcpos (pos, &bytepos, &firstbitpos) ;
@@ -96,6 +93,15 @@ void WavFile::replaceSample (SamplePos pos, CvrStgSample *s)
 		data[bytepos + byteincrement] = data[bytepos + byteincrement] & (~(1 << databitpos)) ;
 		data[bytepos + byteincrement] |= (addbit << databitpos) ;
 	}
+#endif
+	WavPCMSample *sample = dynamic_cast<WavPCMSample*> (s) ;
+	assert (sample != NULL) ;
+	if (fmtch.BitsPerSample <= 8) {
+		data_small[pos] = (unsigned char) sample->getValue() ;
+	}
+	else {
+		data_large[pos] = sample->getValue() ;
+	}
 }
 
 unsigned int WavFile::getSamplesPerEBit()
@@ -105,35 +111,14 @@ unsigned int WavFile::getSamplesPerEBit()
 
 CvrStgSample *WavFile::getSample (SamplePos pos)
 {
-	unsigned long bytepos = 0 ;
-	unsigned short firstbitpos = 0 ;
-	calcpos (pos, &bytepos, &firstbitpos) ;
-
-	// FIXME - how to deal with negative numbers ?
 	int value = 0 ;
-	for (unsigned short bitpos = 0 ; bitpos < fmtch.BitsPerSample ; bitpos++) {
-		unsigned short byteincrement = (firstbitpos + bitpos) / 8 ;
-		unsigned short databitpos = (firstbitpos + bitpos) % 8 ;
-		value |= (data[bytepos + byteincrement] & (1 << databitpos)) >> bitpos ;
-	}
-	return ((CvrStgSample *) new WavPCMSample (this, value)) ;
-}
-
-void WavFile::calcpos (SamplePos n, unsigned long *bytepos, unsigned short *firstbitpos) const
-{
-	unsigned short bytespersample = 0 ;
-	unsigned short emptybitspersample = 0 ;
-	if (fmtch.BitsPerSample % 8 == 0) {
-		bytespersample = fmtch.BitsPerSample / 8 ;
-		emptybitspersample = 0 ;
+	if (fmtch.BitsPerSample <= 8) {
+		value = (int) data_small[pos] ;
 	}
 	else {
-		bytespersample = (fmtch.BitsPerSample / 8) + 1 ;
-		emptybitspersample = 8 - (fmtch.BitsPerSample % 8) ;
+		value = data_large[pos] ;
 	}
-
-	*bytepos = n * bytespersample ;
-	*firstbitpos = emptybitspersample ;
+	return ((CvrStgSample *) new WavPCMSample (this, value)) ;
 }
 
 unsigned short WavFile::getBitsPerSample()
@@ -141,13 +126,69 @@ unsigned short WavFile::getBitsPerSample()
 	return fmtch.BitsPerSample ;
 }
 
+unsigned short WavFile::getBytesPerSample()
+{
+	unsigned short retval = 0 ;
+	if (fmtch.BitsPerSample % 8 == 0) {
+		retval = fmtch.BitsPerSample / 8 ;
+	}
+	else {
+		retval = (fmtch.BitsPerSample / 8) + 1 ;
+	}
+	return retval ;
+}
+
+unsigned short WavFile::getFirstBitPosinSample()
+{
+	unsigned short retval = 0 ;
+	if (fmtch.BitsPerSample % 8 == 0) {
+		retval = 0 ;
+	}
+	else {
+		retval = 8 - (fmtch.BitsPerSample % 8) ;
+	}
+	return retval ;
+}
+
 /* reads the wav file data from disk */
 void WavFile::readdata (void)
 {
 	try {
-		data.clear() ;
-		while (!getBinIO()->eof()) {
-			data.push_back (getBinIO()->read8()) ;
+		data_small.clear() ;
+		data_large.clear() ;
+		unsigned short bytespersample = getBytesPerSample() ;
+		unsigned short firstbitpos = getFirstBitPosinSample() ;
+			
+		unsigned long readpos = 0 ;
+		while (readpos < datachhdr.len) {
+			if (fmtch.BitsPerSample <= 8) {
+				data_small.push_back ((getBinIO()->read8()) >> firstbitpos) ;
+			}
+			else {
+				// decode two's complement
+				unsigned int value = (unsigned int) getBinIO()->read_le (bytespersample) ;
+				value = value >> firstbitpos ;
+					
+				int sign = 0 ;
+				if (((value & (1 << (fmtch.BitsPerSample - 1))) >> (fmtch.BitsPerSample - 1)) == 0) {
+					sign = 1 ;
+				}
+				else {
+					sign = -1 ;
+					value = ~value ;
+					value++ ;
+				}
+
+				unsigned int mask = 0 ;
+				for (unsigned short i = 0 ; i < fmtch.BitsPerSample ; i++) {
+					mask <<= 1 ;
+					mask |= 1 ;
+				}
+				value &= mask ;
+
+				data_large.push_back (sign * ((int) value)) ;
+			}
+			readpos += bytespersample ;
 		}
 
 		unsupchunks2.data = NULL ;
@@ -185,12 +226,31 @@ void WavFile::readdata (void)
 	}
 }
 
-/* writes a wav file to disk */
 void WavFile::writedata (void)
 {
 	try {
-		for (vector<unsigned char>::iterator i = data.begin() ; i != data.end() ; i++) {
-			getBinIO()->write8 (*i) ;
+		unsigned short bytespersample = getBytesPerSample() ;
+		unsigned short firstbitpos = getFirstBitPosinSample() ;
+
+		unsigned long writepos = 0 ;
+		while (writepos < datachhdr.len) {
+			if (fmtch.BitsPerSample <= 8) {
+				getBinIO()->write8 (data_small[writepos] << firstbitpos) ;
+			}
+			else {
+				unsigned long value = 0 ;
+				if (data_large[writepos / bytespersample] >= 0) {
+					value = (unsigned long) data_large[writepos / bytespersample] ;
+				}
+				else {
+					value = (unsigned long) -data_large[writepos / bytespersample] ; // value is now |sample|
+					value = ~value ;
+					value++ ;
+				}
+				value <<= firstbitpos ;
+				getBinIO()->write_le (value, bytespersample) ;
+			}
+			writepos += bytespersample ;
 		}
 
 		if (unsupchunks2.len > 0) {

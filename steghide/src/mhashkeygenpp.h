@@ -28,7 +28,7 @@
 class MHashKeyGenpp {
 	public:
 	MHashKeyGenpp (void) ;
-	MHashKeyGenpp (keygenid algo, unsigned int keysize) ;
+	MHashKeyGenpp (keygenid kgalgo, hashid halgo, unsigned int keysize) ;
 	~MHashKeyGenpp (void) ;
 
 	void setKeySize (unsigned int KeySize) ;

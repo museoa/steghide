@@ -42,6 +42,9 @@ BmpPaletteSample::BmpPaletteSample (CvrStgFile *f, unsigned char i)
 
 	MaxIndex = maxindex ;
 	MinIndex = 0 ;
+
+	assert (MinIndex <= Index) ;
+	assert (Index <= MaxIndex) ;
 }
 
 Bit BmpPaletteSample::getBit()

@@ -309,7 +309,7 @@ void Arguments::parse (int argc, char *argv[])
 		}
 
 		else if (string (argv[i]) == "-xf" || string (argv[i]) == "--extractfile") {
-			if (Command.getValue() != EMBED) {
+			if (Command.getValue() != EXTRACT) {
 				throw SteghideError (_("argument \"%s\" can only be used with the \"extract\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
 			}
 

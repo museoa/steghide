@@ -103,8 +103,8 @@ void BmpFile::replaceSample (SamplePos pos, CvrStgSample *s)
 			assert (sample != NULL) ;
 
 			bitmap[row][column] = sample->getRed() ;
-			bitmap[row][column] = sample->getGreen() ;
-			bitmap[row][column] = sample->getBlue() ;
+			bitmap[row][column + 1] = sample->getGreen() ;
+			bitmap[row][column + 2] = sample->getBlue() ;
 		break ; }
 	}
 }

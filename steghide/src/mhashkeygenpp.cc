@@ -28,14 +28,17 @@
 
 MHashKeyGenpp::MHashKeyGenpp ()
 {
+	AlgorithmData.count = 0 ;
 	AlgorithmData.salt = NULL ;
 	AlgorithmData.salt_size = 0 ;
 }
 
-MHashKeyGenpp::MHashKeyGenpp (keygenid algo, unsigned int keysize)
+MHashKeyGenpp::MHashKeyGenpp (keygenid kgalgo, hashid halgo, unsigned int keysize)
 {
-	setKeyGenAlgorithm (algo) ;
+	setKeyGenAlgorithm (kgalgo) ;
 	setKeySize (keysize) ;
+	setHashAlgorithm (halgo) ;
+	AlgorithmData.count = 0 ;
 	AlgorithmData.salt = NULL ;
 	AlgorithmData.salt_size = 0 ;
 }
@@ -49,7 +52,7 @@ MHashKeyGenpp::~MHashKeyGenpp ()
 
 vector<unsigned char> MHashKeyGenpp::createKey (string password)
 {
-	assert (ready) ;
+	// FIXME - assert (ready) ;
 
 	char *passwd = (char *) s_malloc (password.size() + 1) ;
 	strcpy (passwd, password.c_str()) ;

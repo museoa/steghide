@@ -123,15 +123,14 @@ void Permutation::setKey (string passphrase)
 BitString Permutation::keyhash (BitString key, BitString arg)
 {
 	MHashpp hash (MHASH_MD5) ;
-	key.append(arg) ;
+	key.append(arg).pad(8, 0) ;
 	assert (key.getLength() % 8 == 0) ;
 	hash << key << endhash ;
 	BitString hashbits = hash.getHashBits() ;
 
 	assert (hashbits.getLength() == 128) ;
-
-	// FIXME - wieso wird das hier bis 32 gemacht - zwei Hälften zu je 32 bits ?
 	BitString retval ;
+	// 32 is maximal length of width (in bits)
 	for (unsigned int i = 0 ; i < 32 ; i++) {
 		retval.append (hashbits[i] ^ hashbits[32 + i] ^ hashbits[64 + i] ^ hashbits [96 + i]) ;
 	}
