@@ -102,8 +102,8 @@ void CvrStgFile::transform (string stgfn)
 	BinIO = new BinaryIO (stgfn, BinaryIO::WRITE) ;
 }
 
-/* detects file format */
-static int detectff (BinaryIO *io, unsigned long *rifflen)
+// guesses the file format by looking for magic values in the first few bytes
+static int guessff (BinaryIO *io)
 {
 	char buf[4] = { '\0', '\0', '\0', '\0' } ;
 	int retval = FF_UNKNOWN ;
@@ -127,13 +127,7 @@ static int detectff (BinaryIO *io, unsigned long *rifflen)
 			retval = FF_AU ;
 		}
 		else if (strncmp ("RIFF", buf, 4) == 0) {
-			*rifflen = io->read32_le() ;
-			for (unsigned int i = 0 ; i < 4 ; i++) {
-				buf[i] = (char) io->read8() ;
-			}
-			if (strncmp ("WAVE", buf, 4) == 0) {
-				retval = FF_WAV ;
-			}
+			retval = FF_WAV ;
 		}
 	}
 
@@ -145,15 +139,9 @@ CvrStgFile *cvrstg_readfile (string filename)
 	BinaryIO *BinIO = new BinaryIO (filename, BinaryIO::READ) ;
 
 	CvrStgFile *file = NULL ;
-	unsigned long rifflen = 0 ;
-	switch (detectff (BinIO, &rifflen)) {
+	switch (guessff (BinIO)) {
 		case FF_UNKNOWN:
-		if (BinIO->is_std()) {
-			throw SteghideError (_("the file format of the data from standard input is not supported.")) ;
-		}
-		else {
-			throw SteghideError (_("the file format of the file \"%s\" is not supported."), BinIO->getName().c_str()) ;
-		}
+		throw UnSupFileFormat (BinIO) ;	
 		break ;
 
 		case FF_BMP:
@@ -161,7 +149,7 @@ CvrStgFile *cvrstg_readfile (string filename)
 		break ;
 
 		case FF_WAV:
-		file = new WavFile (BinIO, rifflen) ;
+		file = new WavFile (BinIO) ;
 		break ;
 
 		case FF_AU:

@@ -18,38 +18,37 @@
  *
  */
 
-#ifndef SH_JPEGFILE_H
-#define SH_JPEGFILE_H
-
-#include <vector>
-
-#include "binaryio.h"
-#include "bufmanag.h"
-#include "cvrstgfile.h"
-#include "jpegelement.h"
+#ifndef SH_JPEGQUANTTABLE_H
+#define SH_JPEGQUANTTABLE_H
 
 /**
- * \class JpegFile
- * \brief a cover/stego file in jpeg, i.e. jfif format
+ * \class JpegQuantizationTable
+ * \brief a segment containing a quantization table
  **/
-class JpegFile : public CvrStgFile {
+class JpegQuantizationTable : public JpegSegment {
 	public:
-	JpegFile (void) ;
-	JpegFile (BinaryIO *io) ;
-	~JpegFile (void) ;
+	JpegQuantizationTable (void) ;
+	JpegQuantizationTable (BinaryIO *io) ;
+	virtual ~JpegQuantizationTable (void) ;
 
+	/**
+	 * read a quantization table marker segment
+	 * \param io the jpeg stream
+	 **/
 	void read (BinaryIO *io) ;
-	void write (void) ;
-	unsigned long getCapacity (void) ;
-	void embedBit (unsigned long pos, int bit) ;
-	int extractBit (unsigned long pos) ;
 
-	protected:
+	/**
+	 * write a quantization table marker segment
+	 * \param io the jpeg stream
+	 **/
+	void write (BinaryIO *io) ;
 
 	private:
-	vector<JpegElement*> elements ;
-	//vector</*??*/> datasegments ;
-	
+	static const unsigned char SizeQuantTable = 64 ;
+
+	unsigned char precision ;
+	unsigned char destination ;
+	unsigned int quanttable[SizeQuantTable] ;
 } ;
 
-#endif // ndef SH_JPEGFILE_H
+#endif // ndef SH_JPEGQUANTTABLE_H

@@ -38,7 +38,7 @@
 //
 MessageBase::MessageBase ()
 {
-	setMessage (_("no message defined")) ;
+	setMessage (_("__no_message_defined__")) ;
 }
 
 MessageBase::MessageBase (string msg)

@@ -45,17 +45,16 @@ class BinaryIO {
 	unsigned int read16_be (void) ;
 	unsigned long read32_le (void) ;
 	unsigned long read32_be (void) ;
+	string readstring (unsigned int len) ;
 
 	void write8 (unsigned char val) ;
 	void write16_le (unsigned int val) ;
 	void write16_be (unsigned int val) ;
 	void write32_le (unsigned long val) ;
 	void write32_be (unsigned long val) ;
+	void writestring (string s) ;
 
-// FIXME	
-#ifndef DEBUG	
 	protected:
-#endif
 	FILE *getStream (void) ;
 	void setStream (FILE *s) ;
 	MODE getMode (void) ;

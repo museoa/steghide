@@ -106,3 +106,16 @@ void BinaryOutputError::setType (BinaryOutputError::TYPE t)
 {
 	type = t ;
 }
+
+//
+// UnSupFileFormat
+//
+UnSupFileFormat::UnSupFileFormat (BinaryIO *io)
+{
+	if (io->is_std()) {
+		SteghideError (_("the file format of the data from standard input is not supported.")) ;
+	}
+	else {
+		SteghideError (compose (_("the file format of the file \"%s\" is not supported."), io->getName().c_str())) ;
+	}
+}

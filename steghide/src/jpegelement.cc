@@ -18,38 +18,39 @@
  *
  */
 
-#ifndef SH_JPEGFILE_H
-#define SH_JPEGFILE_H
-
-#include <vector>
+#include <assert.h>
 
 #include "binaryio.h"
-#include "bufmanag.h"
-#include "cvrstgfile.h"
 #include "jpegelement.h"
 
-/**
- * \class JpegFile
- * \brief a cover/stego file in jpeg, i.e. jfif format
- **/
-class JpegFile : public CvrStgFile {
-	public:
-	JpegFile (void) ;
-	JpegFile (BinaryIO *io) ;
-	~JpegFile (void) ;
+JpegElement::JpegElement ()
+{
+	marker_isset = false ;
+}
 
-	void read (BinaryIO *io) ;
-	void write (void) ;
-	unsigned long getCapacity (void) ;
-	void embedBit (unsigned long pos, int bit) ;
-	int extractBit (unsigned long pos) ;
+JpegElement::JpegElement (JpegMarker m)
+{
+	setMarker (m) ;
+}
 
-	protected:
+JpegElement::~JpegElement ()
+{
+}
 
-	private:
-	vector<JpegElement*> elements ;
-	//vector</*??*/> datasegments ;
-	
-} ;
+void JpegElement::write (BinaryIO *io)
+{
+	io->write8 (0xFF) ;
+	io->write8 ((unsigned char) getMarker()) ;
+}
 
-#endif // ndef SH_JPEGFILE_H
+JpegMarker JpegElement::getMarker ()
+{
+	assert (marker_isset) ;
+	return marker ;
+}
+
+void JpegElement::setMarker (JpegMarker m)
+{
+	marker = m ;
+	marker_isset = true ;
+}

@@ -46,13 +46,6 @@ WavFile::WavFile (BinaryIO *io)
 	read (io) ;
 }
 
-WavFile::WavFile (BinaryIO *io, unsigned long rl)
-	: CvrStgFile()
-{
-	riffchhdr.len = rl ;
-	read (io) ;
-}
-
 WavFile::~WavFile ()
 {
 	free (unsupchunks1.data) ;
@@ -213,11 +206,18 @@ void WavFile::readheaders ()
 		riffchhdr.id[1] = 'I' ;
 		riffchhdr.id[2] = 'F' ;
 		riffchhdr.id[3] = 'F' ;
-		// riffchhdr->len has been set in constructor or is undefined
-		id_wave[0] = 'W' ;
-		id_wave[1] = 'A' ;
-		id_wave[2] = 'V' ;
-		id_wave[3] = 'E' ;
+
+		riffchhdr.len = BinIO->read32_le() ;
+
+		for (unsigned int i = 0 ; i < 4 ; i++) {
+			id_wave[i] = BinIO->read8() ;
+		}
+		if (!(id_wave[0] == 'W' &&
+			id_wave[1] == 'A' &&
+			id_wave[2] == 'V' &&
+			id_wave[3] == 'E')) {
+			throw UnSupFileFormat (BinIO) ;
+		}
 
 		fmtchhdr = *getChhdr() ;
 		if (!(fmtchhdr.id[0] == 'f' &&

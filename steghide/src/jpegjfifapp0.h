@@ -18,57 +18,45 @@
  *
  */
 
-#ifndef SH_ERROR_H
-#define SH_ERROR_H
+#ifndef SH_JPEGJFIFAPP0_H
+#define SH_JPEGJFIFAPP0_H
 
-#include <cstdio>
 #include <string>
 
 #include "binaryio.h"
-#include "msg.h"
+#include "jpegsegment.h"
 
-class SteghideError : MessageBase {
+/**
+ * \class JpegJFIFAPP0
+ * \brief JFIF APP0 segment
+ **/
+class JpegJFIFAPP0 : public JpegSegment {
 	public:
-	SteghideError (void) : MessageBase() {} ;
-	SteghideError (string msg) : MessageBase (msg) {} ;
-	SteghideError (const char *msgfmt, ...) ;
+	JpegJFIFAPP0 (void) ;
+	JpegJFIFAPP0 (BinaryIO *io) ;
+	virtual ~JpegJFIFAPP0 (void) ;
 
-	void printMessage (void) ;	
-} ;
+	/**
+	 * read a JFIF APP0 marker segment
+	 * \param io the jpeg stream
+	 **/
+	void read (BinaryIO *io) ;
 
-class BinaryInputError : public SteghideError {
-	public:
-	enum TYPE { FILE_ERR, FILE_EOF, STDIN_ERR, STDIN_EOF } ;
-
-	BinaryInputError (string fn, FILE* s) ;
-
-	TYPE getType (void) ;
-
-	protected:
-	void setType (TYPE t) ;
+	/**
+	 * write a JFIF APP0 marker segment
+	 * \param io the jpeg stream
+	 **/
+	void write (BinaryIO *io) ;
 
 	private:
-	TYPE type ;
+	string identifier ;	
+	unsigned int version ;
+	unsigned char units ;
+	unsigned int Xdensity ;
+	unsigned int Ydensity ;
+	unsigned char Xthumbnail ;
+	unsigned char Ythumbnail ;
+	BUFFER *thumbnail ;
 } ;
 
-class BinaryOutputError : public SteghideError {
-	public:
-	enum TYPE { FILE_ERR, STDOUT_ERR } ;
-
-	BinaryOutputError (string fn) ;
-
-	TYPE getType (void) ;
-
-	protected:
-	void setType (TYPE t) ;
-
-	private:
-	TYPE type ;
-} ;
-
-class UnSupFileFormat : public SteghideError {
-	public:
-	UnSupFileFormat (BinaryIO *io) ;
-} ;
-
-#endif
+#endif // ndef SH_JPEGJFIFAPP0_H

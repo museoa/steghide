@@ -19,6 +19,7 @@
  */
 
 #include <stdio.h>
+#include <sstream>
 
 #include <libintl.h>
 #define _(S) gettext (S)
@@ -232,6 +233,15 @@ unsigned long BinaryIO::read32_be (void)
 	return ((bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | bytes[3]) ;
 }
 
+string BinaryIO::readstring (unsigned int len)
+{
+	ostringstream ost ;
+	for (unsigned int i = 0 ; i < len ; i++) {
+		ost << read8() ;
+	}
+	return ost.str() ;
+}
+
 void BinaryIO::write8 (unsigned char val)
 {
 	assert (getMode() == WRITE) ;
@@ -287,5 +297,12 @@ void BinaryIO::write32_be (unsigned long val)
 		if (fputc ((val >> (8 * i)) & 0xFF, getStream()) == EOF) {
 			throw BinaryOutputError (getName()) ;
 		}
+	}
+}
+
+void BinaryIO::writestring (string s)
+{
+	if (fputs (s.c_str(), getStream()) == EOF) {
+		throw BinaryOutputError (getName()) ;
 	}
 }

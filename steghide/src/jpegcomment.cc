@@ -18,57 +18,34 @@
  *
  */
 
-#ifndef SH_ERROR_H
-#define SH_ERROR_H
-
-#include <cstdio>
 #include <string>
 
 #include "binaryio.h"
-#include "msg.h"
+#include "jpegcomment.h"
 
-class SteghideError : MessageBase {
-	public:
-	SteghideError (void) : MessageBase() {} ;
-	SteghideError (string msg) : MessageBase (msg) {} ;
-	SteghideError (const char *msgfmt, ...) ;
+JpegComment::JpegComment ()
+	: JpegSegment (JpegElement::MarkerCOM)
+{
+}
 
-	void printMessage (void) ;	
-} ;
+JpegComment::JpegComment (BinaryIO *io)
+	: JpegSegment (JpegElement::MarkerCOM)
+{
+	read (io) ;
+}
 
-class BinaryInputError : public SteghideError {
-	public:
-	enum TYPE { FILE_ERR, FILE_EOF, STDIN_ERR, STDIN_EOF } ;
+JpegComment::~JpegComment ()
+{
+}
 
-	BinaryInputError (string fn, FILE* s) ;
+void JpegComment::read (BinaryIO *io)
+{
+	JpegSegment::read (io) ;
+	comment = io->readstring (getLength() - 2) ;
+}
 
-	TYPE getType (void) ;
-
-	protected:
-	void setType (TYPE t) ;
-
-	private:
-	TYPE type ;
-} ;
-
-class BinaryOutputError : public SteghideError {
-	public:
-	enum TYPE { FILE_ERR, STDOUT_ERR } ;
-
-	BinaryOutputError (string fn) ;
-
-	TYPE getType (void) ;
-
-	protected:
-	void setType (TYPE t) ;
-
-	private:
-	TYPE type ;
-} ;
-
-class UnSupFileFormat : public SteghideError {
-	public:
-	UnSupFileFormat (BinaryIO *io) ;
-} ;
-
-#endif
+void JpegComment::write (BinaryIO *io)
+{
+	JpegSegment::write (io) ;
+	io->writestring (comment) ;
+}
