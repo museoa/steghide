@@ -44,7 +44,7 @@ BmpSampleValue::BmpSampleValue (const CvrStgFile* f)
 bool BmpSampleValue::isNeighbour (const SampleValue *s) const
 {
 	const BmpSampleValue *sample = dynamic_cast<const BmpSampleValue*> (s) ;
-	myassert (sample != NULL) ;
+	myassert (sample) ;
 	int dr = (int) getRed() - (int) sample->getRed() ;
 	int dg = (int) getGreen() - (int) sample->getGreen() ;
 	int db = (int) getBlue() - (int) sample->getBlue() ;
@@ -54,7 +54,7 @@ bool BmpSampleValue::isNeighbour (const SampleValue *s) const
 float BmpSampleValue::calcDistance (const SampleValue *s) const
 {
 	const BmpSampleValue *sample = dynamic_cast<const BmpSampleValue*> (s) ;
-	myassert (sample != NULL) ;
+	myassert (sample) ;
 	float dr = (float) getRed() - (float) sample->getRed() ;
 	float dg = (float) getGreen() - (float) sample->getGreen() ;
 	float db = (float) getBlue() - (float) sample->getBlue() ;

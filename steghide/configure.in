@@ -12,6 +12,7 @@ AC_PROG_LN_S
 
 dnl GNU gettext
 ALL_LINGUAS="de fr"
+AC_CHECK_FUNCS(strchr)
 AM_GNU_GETTEXT
 
 dnl Check for libmhash
@@ -97,9 +98,7 @@ AC_CHECK_FILE(/dev/random, [AC_DEFINE(HAVE_DEV_RANDOM,1,/dev/random is available
 
 dnl Checks for library functions.
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS(tcgetattr)
-AC_CHECK_FUNCS(tcsetattr)
-AC_CHECK_FUNCS(strtoul)
+AC_CHECK_FUNCS(tcgetattr tcsetattr strtoul)
 
 dnl system-specific settings
 case "${target}" in

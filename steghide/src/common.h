@@ -66,7 +66,7 @@ typedef UWORD32 SampleKey ;
 // every class should (be able to) do assertions
 // (myassert(expr) is more verbose than the standard C assert)
 #include "AssertionFailed.h"
-#define myassert(expr)		(void) ((expr) ? 0 : throw AssertionFailed (__FILE__, __LINE__)) ;
+#define myassert(expr)		if (!(expr)) throw AssertionFailed (__FILE__, __LINE__)
 
 //
 // every class can have debugging output

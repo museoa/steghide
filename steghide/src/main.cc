@@ -19,6 +19,7 @@
  */
 
 #include <cstdlib>
+#include <clocale>
 
 #include "common.h"
 #include "error.h"

@@ -21,6 +21,7 @@
 #ifndef SH_ERROR_H
 #define SH_ERROR_H
 
+#include <cstdio>
 #include <string>
 
 #include "SteghideError.h"

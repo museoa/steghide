@@ -26,7 +26,7 @@ BmpPaletteSampleValue::BmpPaletteSampleValue (const CvrStgFile* f, unsigned char
 	: BmpSampleValue(f), Index(i)
 {
 	const BmpFile* bmpfile = dynamic_cast<const BmpFile*> (f) ;
-	myassert (bmpfile != NULL) ;
+	myassert (bmpfile) ;
 	Palette = bmpfile->getPalette() ;
 	SBit = (BIT) (Index & 1) ;
 	Key = ((unsigned long) getIndex() << 24) | ((unsigned long) getRed() << 16) |

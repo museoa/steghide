@@ -93,7 +93,7 @@ void BmpFile::replaceSample (const SamplePos pos, const SampleValue* s)
 	switch (bitcount) {
 		case 1: case 4: case 8: {
 			const BmpPaletteSampleValue* sample = dynamic_cast<const BmpPaletteSampleValue*> (s) ;
-			myassert (sample != NULL) ;
+			myassert (sample) ;
 
 			for (unsigned short i = 0 ; i < bitcount ; i++) {
 				bitmap[row][column] = bitmap[row][column] & (~(1 << (firstbit + i))) ;
@@ -103,7 +103,7 @@ void BmpFile::replaceSample (const SamplePos pos, const SampleValue* s)
 
 		case 24: {
 			const BmpRGBSampleValue* sample = dynamic_cast<const BmpRGBSampleValue*> (s) ;
-			myassert (sample != NULL) ;
+			myassert (sample) ;
 
 			bitmap[row][column] = sample->getRed() ;
 			bitmap[row][column + 1] = sample->getGreen() ;
@@ -236,7 +236,7 @@ unsigned long BmpFile::getHeight() const
 ColorPalette *BmpFile::getPalette() const
 {
 	myassert (getBitCount() != 24) ;
-	myassert (Palette != NULL) ;
+	myassert (Palette) ;
 	return Palette ;
 }
 

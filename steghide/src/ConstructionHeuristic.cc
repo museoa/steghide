@@ -38,11 +38,11 @@ ConstructionHeuristic::ConstructionHeuristic (Graph* g)
 		v->updateShortestEdge() ;
 		if (v->getDegree() != 0) {
 			if (v->getDegree() == 1) {
-				myassert (v->getShortestEdge() != NULL) ;
+				myassert (v->getShortestEdge()) ;
 				VerticesDeg1.push (v) ;
 			}
 			else {
-				myassert (v->getShortestEdge() != NULL) ;
+				myassert (v->getShortestEdge()) ;
 				VerticesDegG.push (v) ;
 			}
 		}
