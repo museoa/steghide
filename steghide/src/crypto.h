@@ -30,7 +30,7 @@
 #define CRYPTOALGO_DATA		"blowfish"
 #define CRYPTOMODE_DATA		"cbc"
 
-#ifdef WINDOWS
+#ifdef __CYGWIN__
 #define CRYPTOALGODIR	"./modules/"
 #define CRYPTOMODEDIR	"./modules/"
 #else
