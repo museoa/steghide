@@ -24,6 +24,7 @@
 #include <cppunit/TextTestResult.h>
 
 #include "BitStringTest.h"
+#include "MHashTest.h"
 #include "PermutationTest.h"
 
 int main (void)
@@ -35,6 +36,9 @@ int main (void)
 
 	PermutationTest pt ("Permutation Test") ;
 	pt.registerTests (&suite) ;
+
+	MHashTest mht ("MHash Test") ;
+	mht.registerTests (&suite) ;
 
 	CppUnit::TextTestResult res ;
 	suite.run (&res) ;
