@@ -105,6 +105,7 @@ static void gettext_init (void)
 	/* initialize gettext */
 	setlocale (LC_ALL, "") ;
 	bindtextdomain (PACKAGE, LOCALEDIR) ;
+	bind_textdomain_codeset (PACKAGE, "ISO-8859-1") ;
 	textdomain (PACKAGE) ;
 
 #ifdef WIN32

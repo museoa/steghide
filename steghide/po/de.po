@@ -78,7 +78,7 @@ msgstr ""
 
 #: src/Arguments.cc:271
 msgid "the cover file name argument can be used only once."
-msgstr "Die Trägerdatei-Argument kann nur einmal verwendet werden."
+msgstr "Das Trägerdatei-Argument kann nur einmal verwendet werden."
 
 #: src/Arguments.cc:275
 #, c-format
