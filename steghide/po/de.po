@@ -1,13 +1,13 @@
 # german translation of steghide 0.4.6b messages
 # Copyright (C) 2002 Free Software Foundation, Inc.
-# Stefan Hetzl <shetzl@teleweb.at>, 2002.
+# Stefan Hetzl <shetzl@chello.at>, 2002.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: steghide 0.4.6b\n"
 "POT-Creation-Date: 2002-05-14 07:54+0200\n"
 "PO-Revision-Date: 2002-05-09 00:40+0200\n"
-"Last-Translator: Stefan Hetzl <shetzl@teleweb.at>\n"
+"Last-Translator: Stefan Hetzl <shetzl@chello.at>\n"
 "Language-Team: Deutsch\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
