@@ -14,7 +14,7 @@ $DefSections = array (
 		"link" => "documentation.php",
 		"subsections" => array (
 			"manpage" => array (
-				"title" => "Steghide - man page",
+				"title" => "Steghide - man(ual) page",
 				"linkname" => "man page",
 				"link" => "documentation/manpage.php"
 			)

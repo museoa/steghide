@@ -8,8 +8,8 @@ init("documentation/manpage");
 <?php pHead(); ?>
 </head>
 <body>
-<?php pBodyPrologue(); ?>
-man page
-<?php pBodyEpilogue(getlastmod()); ?>
+<?php pBodyPrologue();
+include "manpage.html";
+pBodyEpilogue(getlastmod()); ?>
 </body>
 </html>

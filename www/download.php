@@ -17,7 +17,7 @@ As an alternative to this page you can select the files directly in the
 steghide (also go there if you look for an older version).<br>
 
 <h2>Windows:</h2>
-<a href="http://prdownloads.sourceforge.net/steghide/steghide-0.5.1.win32.zip?download">steghide.exe with libraries</a>
+<a href="http://prdownloads.sourceforge.net/steghide/steghide-0.5.1.win32.zip?download">Windows package</a>
 <p>
 After downloading unzip the contents of the zip file into a directory of your choice.
 You can use steghide from the DOS command prompt.
