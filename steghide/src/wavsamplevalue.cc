@@ -63,6 +63,9 @@ WavPCMSampleValue::WavPCMSampleValue (CvrStgFile *f, int v)
 
 	SBit = (Bit) (Value & 1) ;
 	Key = (unsigned long) Value ;
+	if (Radius == 0.0) {
+		Radius = getRadius() ;
+	}
 }
 // FIXME - ? derive WavPCMsmallSampleValue and WavPCMlargeSampleValue from WavPCMSampleValueValue
 
@@ -115,4 +118,4 @@ float WavPCMSampleValue::getRadius () const
 	return retval ;
 }
 
-float WavPCMSampleValue::Radius = WavPCMSampleValue::DefaultRadius ;
+float WavPCMSampleValue::Radius = 0.0 ;

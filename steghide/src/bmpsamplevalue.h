@@ -58,9 +58,6 @@ class BmpSampleValue : public SampleValue {
 	static const float DefaultRadius = 20.0 ;
 	static float Radius ;
 	static float RadiusSquared ;
-
-	private:
-	void setRadius (void) ;
 } ;
 
 /**

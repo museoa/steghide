@@ -33,7 +33,8 @@ BmpSampleValue::BmpSampleValue (void)
 		: SampleValue()
 {
 	if (Radius == 0.0) {
-		setRadius() ;
+		Radius = getRadius() ;
+		RadiusSquared = Radius * Radius ;
 	}
 }
 
@@ -41,14 +42,9 @@ BmpSampleValue::BmpSampleValue (CvrStgFile *f)
 		: SampleValue (f)
 {
 	if (Radius == 0.0) {
-		setRadius() ;
+		Radius = getRadius() ;
+		RadiusSquared = Radius * Radius ;
 	}
-}
-
-void BmpSampleValue::setRadius (void)
-{
-	Radius = getRadius() ;
-	RadiusSquared = Radius * Radius ;
 }
 
 bool BmpSampleValue::isNeighbour (SampleValue *s) const

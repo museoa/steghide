@@ -357,7 +357,8 @@ void Arguments::parse (int argc, char *argv[])
 				ExtFn.setValue (argv[i]) ;
 			}
 		}
-
+		
+		// FIXME - add this to --help
 		else if (std::string (argv[i]) == "-r" || std::string (argv[i]) == "--radius") {
 			if (Command.getValue() != EMBED) {
 				throw SteghideError (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
