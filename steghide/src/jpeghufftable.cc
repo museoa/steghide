@@ -42,14 +42,16 @@ void JpegHuffmanTable::read (BinaryIO *io)
 	JpegSegment::read (io) ;
 
 	splitByte (io->read8(), &tableclass, &tableid) ;
-	for (unsigned char i = 0 ; i < Numnumcodes ; i++) {
-		numcodes.push_back (io->read8()) ;
+	for (unsigned char i = 0 ; i < Len_bits ; i++) {
+		bits.push_back (io->read8()) ;
 	}
-	for (unsigned char i = 0 ; i < Numnumcodes ; i++) {
-		for (unsigned char j = 0 ; j < numcodes[i] ; j++) {
+	for (unsigned char i = 0 ; i < Len_bits ; i++) {
+		for (unsigned char j = 0 ; j < bits[i] ; j++) {
 			huffval.push_back (io->read8()) ;
 		}
 	}
+
+	calcTable() ;
 }
 
 void JpegHuffmanTable::write (BinaryIO *io)
@@ -57,14 +59,38 @@ void JpegHuffmanTable::write (BinaryIO *io)
 	JpegSegment::write (io) ;
 
 	io->write8 (mergeByte (tableclass, tableid)) ;
-	for (unsigned char i = 0 ; i < Numnumcodes ; i++) {
-		io->write8 (numcodes[i]) ;
+	for (unsigned char i = 0 ; i < Len_bits ; i++) {
+		io->write8 (bits[i]) ;
 	}
 	vector<unsigned char>::iterator p = huffval.begin() ;
-	for (unsigned char i = 0 ; i < Numnumcodes ; i++) {
-		for (unsigned char j = 0 ; j < numcodes[i] ; j++) {
+	for (unsigned char i = 0 ; i < Len_bits ; i++) {
+		for (unsigned char j = 0 ; j < bits[i] ; j++) {
 			io->write8 (*p) ;
 			p++ ;
 		}
 	}
+}
+
+void JpegHuffmanTable::calcTable ()
+{
+	// generate huffsize
+	for (unsigned char i = 0 ; i < Len_bits ; i++) {
+		for (unsigned char j = 0 ; j < bits[i] ; j++) {
+			huffsize.push_back (i + 1) ;
+		}
+	}
+
+	// generate huffcode
+	unsigned char cursize = huffsize[0] ;
+	unsigned int code = 0 ;
+	for (unsigned char k = 0 ; k < huffsize.size() ; k++) {
+		while (huffsize[k] != cursize) {
+			code = code << 1 ;
+			cursize++ ;
+		}
+		huffcode.push_back (code) ;
+		code++ ;
+	}
+
+	return ;
 }

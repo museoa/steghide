@@ -126,11 +126,11 @@ void AuFile::readheaders (void)
 		header->id[2] = 'n' ;
 		header->id[3] = 'd' ;
 
-		header->offset = BinIO->read32_be() ;
-		header->size = BinIO->read32_be() ;
-		header->encoding = BinIO->read32_be() ;
-		header->samplerate = BinIO->read32_be() ;
-		header->channels = BinIO->read32_be() ;
+		header->offset = getBinIO()->read32_be() ;
+		header->size = getBinIO()->read32_be() ;
+		header->encoding = getBinIO()->read32_be() ;
+		header->samplerate = getBinIO()->read32_be() ;
+		header->channels = getBinIO()->read32_be() ;
 
 		if ((len_infofield = (header->offset - HeaderSize)) != 0) {
 			unsigned char *ptr = NULL ;
@@ -140,18 +140,18 @@ void AuFile::readheaders (void)
 
 			ptr = (unsigned char *) infofield ;
 			for (i = 0 ; i < len_infofield ; i++) {
-				ptr[i] = BinIO->read8() ;
+				ptr[i] = getBinIO()->read8() ;
 			}
 		}
 	}
 	catch (BinaryInputError e) {
 		switch (e.getType()) {
 			case BinaryInputError::FILE_ERR:
-			throw SteghideError (_("an error occured while reading the au headers from the file \"%s\"."), BinIO->getName().c_str()) ;
+			throw SteghideError (_("an error occured while reading the au headers from the file \"%s\"."), getBinIO()->getName().c_str()) ;
 			break ;
 
 			case BinaryInputError::FILE_EOF:
-			throw SteghideError (_("premature end of file \"%s\" while reading au headers."), BinIO->getName().c_str()) ;
+			throw SteghideError (_("premature end of file \"%s\" while reading au headers."), getBinIO()->getName().c_str()) ;
 			break ;
 
 			case BinaryInputError::STDIN_ERR:
@@ -170,29 +170,29 @@ void AuFile::readheaders (void)
 void AuFile::writeheaders (void)
 {
 	try {
-		BinIO->write8 (header->id[0]) ;
-		BinIO->write8 (header->id[1]) ;
-		BinIO->write8 (header->id[2]) ;
-		BinIO->write8 (header->id[3]) ;
-		BinIO->write32_be (header->offset) ;
-		BinIO->write32_be (header->size) ;
-		BinIO->write32_be (header->encoding) ;
-		BinIO->write32_be (header->samplerate) ;
-		BinIO->write32_be (header->channels) ;
+		getBinIO()->write8 (header->id[0]) ;
+		getBinIO()->write8 (header->id[1]) ;
+		getBinIO()->write8 (header->id[2]) ;
+		getBinIO()->write8 (header->id[3]) ;
+		getBinIO()->write32_be (header->offset) ;
+		getBinIO()->write32_be (header->size) ;
+		getBinIO()->write32_be (header->encoding) ;
+		getBinIO()->write32_be (header->samplerate) ;
+		getBinIO()->write32_be (header->channels) ;
 
 		if (len_infofield != 0) {
 			unsigned char *ptr = (unsigned char *) infofield ;
 			unsigned int i = 0 ;
 
 			for (i = 0 ; i < len_infofield ; i++) {
-				BinIO->write8 (ptr[i]) ;
+				getBinIO()->write8 (ptr[i]) ;
 			}
 		}
 	}
 	catch (BinaryOutputError e) {
 		switch (e.getType()) {
 			case BinaryOutputError::FILE_ERR:
-			throw SteghideError (_("an error occured while writing the au headers to the file \"%s\"."), BinIO->getName().c_str()) ;
+			throw SteghideError (_("an error occured while writing the au headers to the file \"%s\"."), getBinIO()->getName().c_str()) ;
 			break ;
 
 			case BinaryOutputError::STDOUT_ERR:
@@ -217,19 +217,19 @@ void AuFile::readdata (void)
 		}
 
 		unsigned long bufpos = 0 ;
-		while (!BinIO->eof()) {
-			bufsetbyte (data, bufpos, BinIO->read8()) ;
+		while (!getBinIO()->eof()) {
+			bufsetbyte (data, bufpos, getBinIO()->read8()) ;
 			bufpos++ ;
 		}
 	}
 	catch (BinaryInputError e) {
 		switch (e.getType()) {
 			case BinaryInputError::FILE_ERR:
-			throw SteghideError (_("an error occured while reading the audio data from the file \"%s\"."), BinIO->getName().c_str()) ;
+			throw SteghideError (_("an error occured while reading the audio data from the file \"%s\"."), getBinIO()->getName().c_str()) ;
 			break ;
 
 			case BinaryInputError::FILE_EOF:
-			throw SteghideError (_("premature end of file \"%s\" while reading audio data."), BinIO->getName().c_str()) ;
+			throw SteghideError (_("premature end of file \"%s\" while reading audio data."), getBinIO()->getName().c_str()) ;
 			break ;
 
 			case BinaryInputError::STDIN_ERR:
@@ -252,14 +252,14 @@ void AuFile::writedata (void)
 		unsigned long bufpos = 0 ;
 
 		while ((c = bufgetbyte (data, bufpos)) != ENDOFBUF) {
-			BinIO->write8 ((unsigned char) c) ;
+			getBinIO()->write8 ((unsigned char) c) ;
 			bufpos++ ;
 		}
 	}
 	catch (BinaryOutputError e) {
 		switch (e.getType()) {
 			case BinaryOutputError::FILE_ERR:
-			throw SteghideError (_("an error occured while writing the audio data to the file \"%s\"."), BinIO->getName().c_str()) ;
+			throw SteghideError (_("an error occured while writing the audio data to the file \"%s\"."), getBinIO()->getName().c_str()) ;
 			break ;
 
 			case BinaryOutputError::STDOUT_ERR:

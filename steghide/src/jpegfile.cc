@@ -57,10 +57,10 @@ void JpegFile::write ()
 	CvrStgFile::write() ;
 
 	JpegElement SOI (JpegElement::MarkerSOI) ;
-	SOI.write (BinIO) ;
-	frame->write (BinIO) ;
+	SOI.write (getBinIO()) ;
+	frame->write (getBinIO()) ;
 	JpegElement EOI (JpegElement::MarkerEOI) ;
-	EOI.write (BinIO) ;
+	EOI.write (getBinIO()) ;
 }
 
 unsigned long JpegFile::getCapacity (void)

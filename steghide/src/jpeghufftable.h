@@ -49,12 +49,17 @@ class JpegHuffmanTable : public JpegSegment {
 	void write (BinaryIO *io) ;
 
 	private:
-	static const unsigned char Numnumcodes = 16 ;
+	static const unsigned char Len_bits = 16 ;
+
+	void calcTable (void) ;
 
 	unsigned char tableclass ;
 	unsigned char tableid ;
-	vector<unsigned char> numcodes ;
+	vector<unsigned char> bits ;
 	vector<unsigned char> huffval ;
+
+	vector<unsigned char> huffsize ;
+	vector<unsigned int> huffcode ;
 } ;
 
 #endif // ndef SH_JPEGHUFFTABLE_H

@@ -51,30 +51,40 @@ CvrStgFile::CvrStgFile (BinaryIO *io)
 
 CvrStgFile::~CvrStgFile (void)
 {
-	delete BinIO ;
+	delete getBinIO() ;
+}
+
+BinaryIO *CvrStgFile::getBinIO (void) 
+{
+	return BinIO ;
+}
+
+void CvrStgFile::setBinIO (BinaryIO *io)
+{
+	BinIO = io ;
 }
 
 void CvrStgFile::read (BinaryIO *io)
 {
-	BinIO = io ;
+	setBinIO (io) ;
 
 	if (args->command.getValue() == EMBED) {
-		if (BinIO->is_std()) {
+		if (getBinIO()->is_std()) {
 			VerboseMessage v (_("reading cover file from standard input.")) ;
 			v.printMessage() ;
 		}
 		else {
-			VerboseMessage v (_("reading cover file \"%s\"."), BinIO->getName().c_str()) ;
+			VerboseMessage v (_("reading cover file \"%s\"."), getBinIO()->getName().c_str()) ;
 			v.printMessage() ;
 		}
 	}
 	else if (args->command.getValue() == EXTRACT) {
-		if (BinIO->is_std()) {
+		if (getBinIO()->is_std()) {
 			VerboseMessage v (_("reading stego file from standard input.")) ;
 			v.printMessage() ;
 		}
 		else {
-			VerboseMessage v (_("reading stego file \"%s\"."), BinIO->getName().c_str()) ;
+			VerboseMessage v (_("reading stego file \"%s\"."), getBinIO()->getName().c_str()) ;
 			v.printMessage() ;
 		}
 	}
@@ -85,12 +95,12 @@ void CvrStgFile::read (BinaryIO *io)
 
 void CvrStgFile::write (void)
 {
-	if (BinIO->is_std()) {
+	if (getBinIO()->is_std()) {
 		VerboseMessage v (_("writing stego file to standard output.")) ;
 		v.printMessage() ;
 	}
 	else {
-		VerboseMessage v (_("writing stego file \"%s\"."), BinIO->getName().c_str()) ;
+		VerboseMessage v (_("writing stego file \"%s\"."), getBinIO()->getName().c_str()) ;
 		v.printMessage() ;
 	}
 }
@@ -98,8 +108,8 @@ void CvrStgFile::write (void)
 /* 'creates' a stego file from a cover file */
 void CvrStgFile::transform (string stgfn)
 {
-	delete BinIO ;
-	BinIO = new BinaryIO (stgfn, BinaryIO::WRITE) ;
+	delete getBinIO() ;
+	setBinIO (new BinaryIO (stgfn, BinaryIO::WRITE)) ;
 }
 
 // guesses the file format by looking for magic values in the first few bytes

@@ -129,20 +129,20 @@ void WavFile::readdata (void)
 		data = bufcreate (0) ; /* FIXME - set length smarter */
 
 		unsigned long pos = 0 ;
-		while (!BinIO->eof()) {
-			bufsetbyte (data, pos++, BinIO->read8()) ;
+		while (!getBinIO()->eof()) {
+			bufsetbyte (data, pos++, getBinIO()->read8()) ;
 		}
 
 		unsupchunks2.data = NULL ;
 		unsupchunks2.len = 0 ;
-		if (!BinIO->eof()) {
+		if (!getBinIO()->eof()) {
 			unsigned char *ptrunsupdata2 = NULL ;
 
-			while (!BinIO->eof()) {
+			while (!getBinIO()->eof()) {
 				unsupchunks2.data = s_realloc (unsupchunks2.data, unsupchunks2.len + 1) ;
 				ptrunsupdata2 = (unsigned char *) unsupchunks2.data ;
 
-				ptrunsupdata2[unsupchunks2.len] = BinIO->read8() ;
+				ptrunsupdata2[unsupchunks2.len] = getBinIO()->read8() ;
 				unsupchunks2.len++ ;
 			}			
 		}
@@ -150,11 +150,11 @@ void WavFile::readdata (void)
 	catch (BinaryInputError e) {
 		switch (e.getType()) {
 			case BinaryInputError::FILE_ERR:
-			throw SteghideError (_("an error occured while reading the audio data from the file \"%s\"."), BinIO->getName().c_str()) ;
+			throw SteghideError (_("an error occured while reading the audio data from the file \"%s\"."), getBinIO()->getName().c_str()) ;
 			break ;
 
 			case BinaryInputError::FILE_EOF:
-			throw SteghideError (_("premature end of file \"%s\" while reading audio data."), BinIO->getName().c_str()) ;
+			throw SteghideError (_("premature end of file \"%s\" while reading audio data."), getBinIO()->getName().c_str()) ;
 			break ;
 
 			case BinaryInputError::STDIN_ERR:
@@ -176,20 +176,20 @@ void WavFile::writedata (void)
 		unsigned long pos = 0 ;
 
 		while ((c = bufgetbyte (data, pos++)) != ENDOFBUF) {
-			BinIO->write8 ((unsigned char) c) ;
+			getBinIO()->write8 ((unsigned char) c) ;
 		}
 
 		if (unsupchunks2.len > 0) {
 			unsigned char *ptrunsupdata2 = (unsigned char *) unsupchunks2.data ;
 			for (int i = 0; i < unsupchunks2.len; i++) {
-				BinIO->write8 (ptrunsupdata2[i]) ;
+				getBinIO()->write8 (ptrunsupdata2[i]) ;
 			}
 		}
 	}
 	catch (BinaryOutputError e) {
 		switch (e.getType()) {
 			case BinaryOutputError::FILE_ERR:
-			throw SteghideError (_("an error occured while writing the audio data to the file \"%s\"."), BinIO->getName().c_str()) ;
+			throw SteghideError (_("an error occured while writing the audio data to the file \"%s\"."), getBinIO()->getName().c_str()) ;
 			break ;
 
 			case BinaryOutputError::STDOUT_ERR:
@@ -208,16 +208,16 @@ void WavFile::readheaders ()
 		riffchhdr.id[2] = 'F' ;
 		riffchhdr.id[3] = 'F' ;
 
-		riffchhdr.len = BinIO->read32_le() ;
+		riffchhdr.len = getBinIO()->read32_le() ;
 
 		for (unsigned int i = 0 ; i < 4 ; i++) {
-			id_wave[i] = BinIO->read8() ;
+			id_wave[i] = getBinIO()->read8() ;
 		}
 		if (!(id_wave[0] == 'W' &&
 			id_wave[1] == 'A' &&
 			id_wave[2] == 'V' &&
 			id_wave[3] == 'E')) {
-			throw UnSupFileFormat (BinIO) ;
+			throw UnSupFileFormat (getBinIO()) ;
 		}
 
 		fmtchhdr = *getChhdr() ;
@@ -225,33 +225,33 @@ void WavFile::readheaders ()
 			fmtchhdr.id[1] == 'm' &&
 			fmtchhdr.id[2] == 't' &&
 			fmtchhdr.id[3] == ' ')) {
-			if (BinIO->is_std()) {
+			if (getBinIO()->is_std()) {
 				throw SteghideError (_("could not find the format chunk in the wav file from standard input.")) ;
 			}
 			else {
-				throw SteghideError (_("could not find the format chunk in the wav file \"%s\"."), BinIO->getName().c_str()) ;
+				throw SteghideError (_("could not find the format chunk in the wav file \"%s\"."), getBinIO()->getName().c_str()) ;
 			}
 		}
-		if ((fmtch.FormatTag = BinIO->read16_le()) != FormatPCM) {
-			if (BinIO->is_std()) {
+		if ((fmtch.FormatTag = getBinIO()->read16_le()) != FormatPCM) {
+			if (getBinIO()->is_std()) {
 				throw SteghideError (_("the wav file from standard input has a format that is not supported.")) ;
 			}
 			else {
-				throw SteghideError (_("the wav file \"%s\" has a format that is not supported."), BinIO->getName().c_str()) ;
+				throw SteghideError (_("the wav file \"%s\" has a format that is not supported."), getBinIO()->getName().c_str()) ;
 			}
 		}
-		fmtch.Channels = BinIO->read16_le () ;
-		fmtch.SamplesPerSec = BinIO->read32_le () ;
-		fmtch.AvgBytesPerSec = BinIO->read32_le () ;
-		fmtch.BlockAlign = BinIO->read16_le () ;
+		fmtch.Channels = getBinIO()->read16_le () ;
+		fmtch.SamplesPerSec = getBinIO()->read32_le () ;
+		fmtch.AvgBytesPerSec = getBinIO()->read32_le () ;
+		fmtch.BlockAlign = getBinIO()->read16_le () ;
 		/* if a number other than a multiple of 8 is used, we cannot hide data,
 		   because the least significant bits are always set to zero - FIXME */
-		if ((fmtch.BitsPerSample = BinIO->read16_le ()) % 8 != 0) {
-			if (BinIO->is_std()) {
+		if ((fmtch.BitsPerSample = getBinIO()->read16_le ()) % 8 != 0) {
+			if (getBinIO()->is_std()) {
 				throw SteghideError (_("the bits/sample rate of the wav file from standard input is not a multiple of eight.")) ;
 			}
 			else {
-				throw SteghideError (_("the bits/sample rate of the wav file \"%s\" is not a multiple of eight."), BinIO->getName().c_str()) ;
+				throw SteghideError (_("the bits/sample rate of the wav file \"%s\" is not a multiple of eight."), getBinIO()->getName().c_str()) ;
 			}
 		}
 
@@ -270,7 +270,7 @@ void WavFile::readheaders ()
 			unsupchunks1.len += 4 ;
 
 			for (i = 0; i < tmpchhdr->len; i++) {
-				ptrunsupdata1[unsupchunks1.len++] = (unsigned char) BinIO->read8() ;
+				ptrunsupdata1[unsupchunks1.len++] = (unsigned char) getBinIO()->read8() ;
 			}
 
 			tmpchhdr = getChhdr() ;
@@ -282,11 +282,11 @@ void WavFile::readheaders ()
 	catch (BinaryInputError e) {
 		switch (e.getType()) {
 			case BinaryInputError::FILE_ERR:
-			throw SteghideError (_("an error occured while reading the wav headers from the file \"%s\"."), BinIO->getName().c_str()) ;
+			throw SteghideError (_("an error occured while reading the wav headers from the file \"%s\"."), getBinIO()->getName().c_str()) ;
 			break ;
 
 			case BinaryInputError::FILE_EOF:
-			throw SteghideError (_("premature end of file \"%s\" while reading wav headers."), BinIO->getName().c_str()) ;
+			throw SteghideError (_("premature end of file \"%s\" while reading wav headers."), getBinIO()->getName().c_str()) ;
 			break ;
 
 			case BinaryInputError::STDIN_ERR:
@@ -308,21 +308,21 @@ void WavFile::writeheaders ()
 	try {
 		putChhdr (&riffchhdr) ;
 		for (int i = 0 ; i < 4 ; i++) {
-			BinIO->write8 (id_wave[i]) ;
+			getBinIO()->write8 (id_wave[i]) ;
 		}
 
 		putChhdr (&fmtchhdr) ;
-		BinIO->write16_le (fmtch.FormatTag) ;
-		BinIO->write16_le (fmtch.Channels) ;
-		BinIO->write32_le (fmtch.SamplesPerSec) ;
-		BinIO->write32_le (fmtch.AvgBytesPerSec) ;
-		BinIO->write16_le (fmtch.BlockAlign) ;
-		BinIO->write16_le (fmtch.BitsPerSample) ;
+		getBinIO()->write16_le (fmtch.FormatTag) ;
+		getBinIO()->write16_le (fmtch.Channels) ;
+		getBinIO()->write32_le (fmtch.SamplesPerSec) ;
+		getBinIO()->write32_le (fmtch.AvgBytesPerSec) ;
+		getBinIO()->write16_le (fmtch.BlockAlign) ;
+		getBinIO()->write16_le (fmtch.BitsPerSample) ;
 
 		if (unsupchunks1.len > 0) {
 			unsigned char *ptrunsupdata1 = (unsigned char *) unsupchunks1.data ;
 			for (int i = 0; i < unsupchunks1.len; i++)
-				BinIO->write8 (ptrunsupdata1[i]) ;
+				getBinIO()->write8 (ptrunsupdata1[i]) ;
 		}
 
 		putChhdr (&datachhdr) ;
@@ -330,7 +330,7 @@ void WavFile::writeheaders ()
 	catch (BinaryOutputError e) {
 		switch (e.getType()) {
 			case BinaryOutputError::FILE_ERR:
-			throw SteghideError (_("an error occured while writing the wav headers to the file \"%s\"."), BinIO->getName().c_str()) ;
+			throw SteghideError (_("an error occured while writing the wav headers to the file \"%s\"."), getBinIO()->getName().c_str()) ;
 			break ;
 
 			case BinaryOutputError::STDOUT_ERR:
@@ -345,11 +345,11 @@ WavFile::ChunkHeader *WavFile::getChhdr ()
 {
 	ChunkHeader *retval = new ChunkHeader ;
 
-	retval->id[0] = BinIO->read8() ;
-	retval->id[1] = BinIO->read8() ;
-	retval->id[2] = BinIO->read8() ;
-	retval->id[3] = BinIO->read8() ;
-	retval->len = BinIO->read32_le() ;
+	retval->id[0] = getBinIO()->read8() ;
+	retval->id[1] = getBinIO()->read8() ;
+	retval->id[2] = getBinIO()->read8() ;
+	retval->id[3] = getBinIO()->read8() ;
+	retval->len = getBinIO()->read32_le() ;
 
 	return retval ;
 }
@@ -357,9 +357,9 @@ WavFile::ChunkHeader *WavFile::getChhdr ()
 /* writes a wav chunk header from chhdr to the file */
 void WavFile::putChhdr (ChunkHeader *chhdr)
 {
-	BinIO->write8 (chhdr->id[0]) ;
-	BinIO->write8 (chhdr->id[1]) ;
-	BinIO->write8 (chhdr->id[2]) ;
-	BinIO->write8 (chhdr->id[3]) ;
-	BinIO->write32_le (chhdr->len) ;
+	getBinIO()->write8 (chhdr->id[0]) ;
+	getBinIO()->write8 (chhdr->id[1]) ;
+	getBinIO()->write8 (chhdr->id[2]) ;
+	getBinIO()->write8 (chhdr->id[3]) ;
+	getBinIO()->write32_le (chhdr->len) ;
 }

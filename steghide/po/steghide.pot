@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-03-28 01:00+0100\n"
+"POT-Creation-Date: 2002-04-10 18:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -75,6 +75,24 @@ msgstr ""
 msgid "Re-Enter passphrase: "
 msgstr ""
 
+#: jpegquanttable.cc:54
+#, c-format
+msgid ""
+"The precision of a quantization table in the jpeg file \"%s\" is set to the "
+"invalid value %d."
+msgstr ""
+
+#: jpegquanttable.cc:51
+#, c-format
+msgid ""
+"The precision of a quantization table in the jpeg file on standard input is "
+"set to the invalid value %d."
+msgstr ""
+
+#: msg.cc:41
+msgid "__no_message_defined__"
+msgstr ""
+
 #: error.cc:65
 msgid "an error occured while reading data from standard input."
 msgstr ""
@@ -84,38 +102,38 @@ msgstr ""
 msgid "an error occured while reading data from the file \"%s\"."
 msgstr ""
 
-#: aufile.cc:154
+#: aufile.cc:158
 msgid "an error occured while reading the au headers from standard input."
 msgstr ""
 
-#: aufile.cc:146
+#: aufile.cc:150
 #, c-format
 msgid "an error occured while reading the au headers from the file \"%s\"."
 msgstr ""
 
-#: aufile.cc:232 wavfile.cc:167
+#: aufile.cc:236 wavfile.cc:161
 msgid "an error occured while reading the audio data from standard input."
 msgstr ""
 
-#: aufile.cc:224 wavfile.cc:159
+#: aufile.cc:228 wavfile.cc:153
 #, c-format
 msgid "an error occured while reading the audio data from the file \"%s\"."
 msgstr ""
 
-#: bmpfile.cc:579
+#: bmpfile.cc:580
 msgid "an error occured while reading the bmp data from standard input."
 msgstr ""
 
-#: bmpfile.cc:571
+#: bmpfile.cc:572
 #, c-format
 msgid "an error occured while reading the bmp data from the file \"%s\"."
 msgstr ""
 
-#: bmpfile.cc:263
+#: bmpfile.cc:264
 msgid "an error occured while reading the bmp headers from standard input."
 msgstr ""
 
-#: bmpfile.cc:255
+#: bmpfile.cc:256
 #, c-format
 msgid "an error occured while reading the bmp headers from the file \"%s\"."
 msgstr ""
@@ -129,11 +147,11 @@ msgstr ""
 msgid "an error occured while reading the plain data from standard input."
 msgstr ""
 
-#: wavfile.cc:292
+#: wavfile.cc:293
 msgid "an error occured while reading the wav headers from standard input."
 msgstr ""
 
-#: wavfile.cc:284
+#: wavfile.cc:285
 #, c-format
 msgid "an error occured while reading the wav headers from the file \"%s\"."
 msgstr ""
@@ -147,38 +165,38 @@ msgstr ""
 msgid "an error occured while writing data to the file \"%s\"."
 msgstr ""
 
-#: aufile.cc:195
+#: aufile.cc:199
 msgid "an error occured while writing the au headers to standard output."
 msgstr ""
 
-#: aufile.cc:191
+#: aufile.cc:195
 #, c-format
 msgid "an error occured while writing the au headers to the file \"%s\"."
 msgstr ""
 
-#: aufile.cc:262 wavfile.cc:202
+#: aufile.cc:266 wavfile.cc:196
 msgid "an error occured while writing the audio data to standard output."
 msgstr ""
 
-#: aufile.cc:258 wavfile.cc:198
+#: aufile.cc:262 wavfile.cc:192
 #, c-format
 msgid "an error occured while writing the audio data to the file \"%s\"."
 msgstr ""
 
-#: bmpfile.cc:620
+#: bmpfile.cc:621
 msgid "an error occured while writing the bitmap data to standard output."
 msgstr ""
 
-#: bmpfile.cc:616
+#: bmpfile.cc:617
 #, c-format
 msgid "an error occured while writing the bitmap data to the file \"%s\"."
 msgstr ""
 
-#: bmpfile.cc:437
+#: bmpfile.cc:438
 msgid "an error occured while writing the bmp headers to standard output."
 msgstr ""
 
-#: bmpfile.cc:433
+#: bmpfile.cc:434
 #, c-format
 msgid "an error occured while writing the bmp headers to the file \"%s\"."
 msgstr ""
@@ -187,11 +205,11 @@ msgstr ""
 msgid "an error occured while writing the plain data to standard output."
 msgstr ""
 
-#: wavfile.cc:336
+#: wavfile.cc:337
 msgid "an error occured while writing the wav headers to standard output."
 msgstr ""
 
-#: wavfile.cc:332
+#: wavfile.cc:333
 #, c-format
 msgid "an error occured while writing the wav headers to the file \"%s\"."
 msgstr ""
@@ -209,11 +227,21 @@ msgid ""
 "\" for help."
 msgstr ""
 
+#: jpegframe.cc:60 jpegscan.cc:57
+#, c-format
+msgid "corrupt jpeg file \"%s\". could not find start of marker (0xff)."
+msgstr ""
+
+#: jpegframe.cc:57 jpegscan.cc:54
+msgid ""
+"corrupt jpeg file on standard input. could not find start of marker (0xff)."
+msgstr ""
+
 #: support.cc:222 support.cc:233
 msgid "could not allocate memory."
 msgstr ""
 
-#: binaryio.cc:153
+#: binaryio.cc:154
 #, c-format
 msgid "could not close the file \"%s\"."
 msgstr ""
@@ -241,12 +269,12 @@ msgstr ""
 msgid "could not encrypt stego header."
 msgstr ""
 
-#: wavfile.cc:231
+#: wavfile.cc:232
 #, c-format
 msgid "could not find the format chunk in the wav file \"%s\"."
 msgstr ""
 
-#: wavfile.cc:228
+#: wavfile.cc:229
 msgid "could not find the format chunk in the wav file from standard input."
 msgstr ""
 
@@ -298,7 +326,7 @@ msgstr ""
 msgid "could not open libmcrypt module \"%s\",\"%s\"."
 msgstr ""
 
-#: binaryio.cc:130
+#: binaryio.cc:131
 #, c-format
 msgid "could not open the file \"%s\"."
 msgstr ""
@@ -340,6 +368,32 @@ msgstr ""
 msgid "embedding stego header."
 msgstr ""
 
+#: jpegframe.cc:101
+#, c-format
+msgid ""
+"encountered unknown marker code 0x%x in jpeg file \"%s\" while reading frame."
+msgstr ""
+
+#: jpegscan.cc:82
+#, c-format
+msgid ""
+"encountered unknown marker code 0x%x in jpeg file \"%s\" while reading scan."
+msgstr ""
+
+#: jpegframe.cc:98
+#, c-format
+msgid ""
+"encountered unknown marker code 0x%x in jpeg file on standard input while "
+"reading frame."
+msgstr ""
+
+#: jpegscan.cc:79
+#, c-format
+msgid ""
+"encountered unknown marker code 0x%x in jpeg file on standard input while "
+"reading scan."
+msgstr ""
+
 #: crypto.cc:125
 msgid "encrypting plain data."
 msgstr ""
@@ -358,20 +412,16 @@ msgid ""
 "line."
 msgstr ""
 
-#: bmpfile.cc:562
+#: bmpfile.cc:563
 msgid "maybe corrupted bmp data (padding byte set to non-zero)."
 msgstr ""
 
-#: bmpfile.cc:341
+#: bmpfile.cc:342
 msgid "maybe corrupted windows bmp data (Reserved in RGBQUAD is non-zero)."
 msgstr ""
 
 #: msg.cc:180 msg.cc:187 msg.cc:194
 msgid "n"
-msgstr ""
-
-#: msg.cc:41
-msgid "no message defined"
 msgstr ""
 
 #: plnfile.cc:205
@@ -380,23 +430,23 @@ msgid ""
 "file)."
 msgstr ""
 
-#: bmpfile.cc:583
+#: bmpfile.cc:584
 msgid "premature end of bmp data from standard input."
 msgstr ""
 
-#: aufile.cc:158
+#: aufile.cc:162
 msgid "premature end of data from standard input while reading au headers."
 msgstr ""
 
-#: aufile.cc:236 wavfile.cc:171
+#: aufile.cc:240 wavfile.cc:165
 msgid "premature end of data from standard input while reading audio data."
 msgstr ""
 
-#: bmpfile.cc:267
+#: bmpfile.cc:268
 msgid "premature end of data from standard input while reading bmp headers."
 msgstr ""
 
-#: wavfile.cc:296
+#: wavfile.cc:297
 msgid "premature end of data from standard input while reading wav headers."
 msgstr ""
 
@@ -404,27 +454,27 @@ msgstr ""
 msgid "premature end of data from standard input."
 msgstr ""
 
-#: aufile.cc:150
+#: aufile.cc:154
 #, c-format
 msgid "premature end of file \"%s\" while reading au headers."
 msgstr ""
 
-#: aufile.cc:228 wavfile.cc:163
+#: aufile.cc:232 wavfile.cc:157
 #, c-format
 msgid "premature end of file \"%s\" while reading audio data."
 msgstr ""
 
-#: bmpfile.cc:575
+#: bmpfile.cc:576
 #, c-format
 msgid "premature end of file \"%s\" while reading bmp data."
 msgstr ""
 
-#: bmpfile.cc:259
+#: bmpfile.cc:260
 #, c-format
 msgid "premature end of file \"%s\" while reading bmp headers."
 msgstr ""
 
-#: wavfile.cc:288
+#: wavfile.cc:289
 #, c-format
 msgid "premature end of file \"%s\" while reading wav headers."
 msgstr ""
@@ -525,32 +575,32 @@ msgstr ""
 msgid "the argument \"%s\" is incomplete. type \"%s --help\" for help."
 msgstr ""
 
-#: bmpfile.cc:288
+#: bmpfile.cc:289
 msgid ""
 "the bitmap data from standard input is compressed which is not supported."
 msgstr ""
 
-#: bmpfile.cc:291
+#: bmpfile.cc:292
 #, c-format
 msgid "the bitmap data in \"%s\" is compressed which is not supported."
 msgstr ""
 
-#: wavfile.cc:253
+#: wavfile.cc:254
 #, c-format
 msgid "the bits/sample rate of the wav file \"%s\" is not a multiple of eight."
 msgstr ""
 
-#: wavfile.cc:250
+#: wavfile.cc:251
 msgid ""
 "the bits/sample rate of the wav file from standard input is not a multiple of "
 "eight."
 msgstr ""
 
-#: bmpfile.cc:244
+#: bmpfile.cc:245
 msgid "the bmp data from standard input has a format that is not supported."
 msgstr ""
 
-#: bmpfile.cc:247
+#: bmpfile.cc:248
 #, c-format
 msgid "the bmp file \"%s\" has a format that is not supported."
 msgstr ""
@@ -613,11 +663,11 @@ msgstr ""
 msgid "the file \"%s\" does already exist. overwrite ?"
 msgstr ""
 
-#: cvrstgfile.cc:152
+#: error.cc:116
 msgid "the file format of the data from standard input is not supported."
 msgstr ""
 
-#: cvrstgfile.cc:155
+#: error.cc:119
 #, c-format
 msgid "the file format of the file \"%s\" is not supported."
 msgstr ""
@@ -711,12 +761,12 @@ msgid ""
 "\" for help."
 msgstr ""
 
-#: wavfile.cc:239
+#: wavfile.cc:240
 #, c-format
 msgid "the wav file \"%s\" has a format that is not supported."
 msgstr ""
 
-#: wavfile.cc:236
+#: wavfile.cc:237
 msgid "the wav file from standard input has a format that is not supported."
 msgstr ""
 
@@ -735,11 +785,11 @@ msgstr ""
 msgid "unknown distribution method \"%s\". type \"%s --help\" for help."
 msgstr ""
 
-#: bmpfile.cc:317 bmpfile.cc:380
+#: bmpfile.cc:318 bmpfile.cc:381
 msgid "using a 16-color bitmap as cover is very insecure!"
 msgstr ""
 
-#: bmpfile.cc:309 bmpfile.cc:372
+#: bmpfile.cc:310 bmpfile.cc:373
 msgid "using a black/white bitmap as cover is very insecure!"
 msgstr ""
 

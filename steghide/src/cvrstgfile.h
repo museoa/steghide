@@ -37,6 +37,10 @@ class CvrStgFile : public CvrStgObject {
 	void transform (string fn) ;
 
 	protected:
+	void setBinIO (BinaryIO *io) ;
+	BinaryIO *getBinIO (void) ;
+
+	private:
 	BinaryIO *BinIO ;
 } ;
 

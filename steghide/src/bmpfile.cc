@@ -225,12 +225,12 @@ void BmpFile::readheaders ()
 {
 	try {
 		bmfh.bfType = IdBm ;
-		bmfh.bfSize = BinIO->read32_le() ;
-		bmfh.bfReserved1 = BinIO->read16_le() ;
-		bmfh.bfReserved2 = BinIO->read16_le() ;
-		bmfh.bfOffBits = BinIO->read32_le() ;
+		bmfh.bfSize = getBinIO()->read32_le() ;
+		bmfh.bfReserved1 = getBinIO()->read16_le() ;
+		bmfh.bfReserved2 = getBinIO()->read16_le() ;
+		bmfh.bfOffBits = getBinIO()->read32_le() ;
 		
-		unsigned long tmpSize = BinIO->read32_le() ;
+		unsigned long tmpSize = getBinIO()->read32_le() ;
 		switch (tmpSize) {
 			case SizeBMINFOHEADER:	/* file has windows bmp format */
 			bmpwin_readheaders () ;
@@ -241,11 +241,11 @@ void BmpFile::readheaders ()
 			break ;
 
 			default:
-			if (BinIO->is_std()) {
+			if (getBinIO()->is_std()) {
 				throw SteghideError (_("the bmp data from standard input has a format that is not supported.")) ;
 			}
 			else {
-				throw SteghideError (_("the bmp file \"%s\" has a format that is not supported."), BinIO->getName().c_str()) ;
+				throw SteghideError (_("the bmp file \"%s\" has a format that is not supported."), getBinIO()->getName().c_str()) ;
 			}
 			break ;
 		}
@@ -253,11 +253,11 @@ void BmpFile::readheaders ()
 	catch (BinaryInputError e) {
 		switch (e.getType()) {
 			case BinaryInputError::FILE_ERR:
-			throw SteghideError (_("an error occured while reading the bmp headers from the file \"%s\"."), BinIO->getName().c_str()) ;
+			throw SteghideError (_("an error occured while reading the bmp headers from the file \"%s\"."), getBinIO()->getName().c_str()) ;
 			break ;
 
 			case BinaryInputError::FILE_EOF:
-			throw SteghideError (_("premature end of file \"%s\" while reading bmp headers."), BinIO->getName().c_str()) ;
+			throw SteghideError (_("premature end of file \"%s\" while reading bmp headers."), getBinIO()->getName().c_str()) ;
 			break ;
 
 			case BinaryInputError::STDIN_ERR:
@@ -274,29 +274,29 @@ void BmpFile::readheaders ()
 void BmpFile::bmpwin_readheaders ()
 {
 	bmi.win.bmih.biSize = SizeBMINFOHEADER ;
-	bmi.win.bmih.biWidth = BinIO->read32_le () ;
-	bmi.win.bmih.biHeight = BinIO->read32_le () ;
-	bmi.win.bmih.biPlanes = BinIO->read16_le () ;
+	bmi.win.bmih.biWidth = getBinIO()->read32_le () ;
+	bmi.win.bmih.biHeight = getBinIO()->read32_le () ;
+	bmi.win.bmih.biPlanes = getBinIO()->read16_le () ;
 	assert (bmi.win.bmih.biPlanes == 1) ;
-	bmi.win.bmih.biBitCount = BinIO->read16_le () ;
+	bmi.win.bmih.biBitCount = getBinIO()->read16_le () ;
 	assert ((bmi.win.bmih.biBitCount == 1) ||
 			(bmi.win.bmih.biBitCount == 4) ||
 			(bmi.win.bmih.biBitCount == 8) || 
 			(bmi.win.bmih.biBitCount == 24)) ;
-	bmi.win.bmih.biCompression = BinIO->read32_le () ;
+	bmi.win.bmih.biCompression = getBinIO()->read32_le () ;
 	if (bmi.win.bmih.biCompression != BI_RGB) {
-		if (BinIO->is_std()) {
+		if (getBinIO()->is_std()) {
 			throw SteghideError (_("the bitmap data from standard input is compressed which is not supported.")) ;
 		}
 		else {
-			throw SteghideError (_("the bitmap data in \"%s\" is compressed which is not supported."), BinIO->getName().c_str()) ;
+			throw SteghideError (_("the bitmap data in \"%s\" is compressed which is not supported."), getBinIO()->getName().c_str()) ;
 		}
 	}
-	bmi.win.bmih.biSizeImage = BinIO->read32_le () ;
-	bmi.win.bmih.biXPelsPerMeter = BinIO->read32_le () ;
-	bmi.win.bmih.biYPelsPerMeter = BinIO->read32_le () ;
-	bmi.win.bmih.biClrUsed = BinIO->read32_le () ;
-	bmi.win.bmih.biClrImportant = BinIO->read32_le () ;
+	bmi.win.bmih.biSizeImage = getBinIO()->read32_le () ;
+	bmi.win.bmih.biXPelsPerMeter = getBinIO()->read32_le () ;
+	bmi.win.bmih.biYPelsPerMeter = getBinIO()->read32_le () ;
+	bmi.win.bmih.biClrUsed = getBinIO()->read32_le () ;
+	bmi.win.bmih.biClrImportant = getBinIO()->read32_le () ;
 
 	if (bmi.win.bmih.biBitCount == 24) {
 		bmi.win.colors = NULL ;
@@ -335,10 +335,10 @@ void BmpFile::bmpwin_readheaders ()
 
 		bmi.win.colors = (RGBQUAD *) s_malloc ((sizeof (RGBQUAD)) * bmi.win.ncolors) ;
 		for (unsigned int i = 0 ; i < bmi.win.ncolors ; i++) {
-			bmi.win.colors[i].rgbBlue = BinIO->read8() ;
-			bmi.win.colors[i].rgbGreen = BinIO->read8() ;
-			bmi.win.colors[i].rgbRed = BinIO->read8() ;
-			if ((bmi.win.colors[i].rgbReserved = BinIO->read8()) != 0) {
+			bmi.win.colors[i].rgbBlue = getBinIO()->read8() ;
+			bmi.win.colors[i].rgbGreen = getBinIO()->read8() ;
+			bmi.win.colors[i].rgbRed = getBinIO()->read8() ;
+			if ((bmi.win.colors[i].rgbReserved = getBinIO()->read8()) != 0) {
 				Warning w (_("maybe corrupted windows bmp data (Reserved in RGBQUAD is non-zero).")) ;
 				w.printMessage() ;
 			}
@@ -351,11 +351,11 @@ void BmpFile::bmpwin_readheaders ()
 void BmpFile::bmpos2_readheaders ()
 {
 	bmi.os2.bmch.bcSize = SizeBMCOREHEADER ;
-	bmi.os2.bmch.bcWidth = BinIO->read16_le () ;
-	bmi.os2.bmch.bcHeight = BinIO->read16_le () ;
-	bmi.os2.bmch.bcPlanes = BinIO->read16_le () ;
+	bmi.os2.bmch.bcWidth = getBinIO()->read16_le () ;
+	bmi.os2.bmch.bcHeight = getBinIO()->read16_le () ;
+	bmi.os2.bmch.bcPlanes = getBinIO()->read16_le () ;
 	assert (bmi.os2.bmch.bcPlanes == 1) ;
-	bmi.os2.bmch.bcBitCount = BinIO->read16_le () ;
+	bmi.os2.bmch.bcBitCount = getBinIO()->read16_le () ;
 	assert ((bmi.os2.bmch.bcBitCount == 1) ||
 			(bmi.os2.bmch.bcBitCount == 4) ||
 			(bmi.os2.bmch.bcBitCount == 8) || 
@@ -395,9 +395,9 @@ void BmpFile::bmpos2_readheaders ()
 
 		bmi.os2.colors = (RGBTRIPLE *) s_malloc ((sizeof (RGBTRIPLE)) * bmi.os2.ncolors) ;
 		for (unsigned int i = 0 ; i < bmi.os2.ncolors ; i++) {
-			bmi.os2.colors[i].rgbtBlue = BinIO->read8() ;
-			bmi.os2.colors[i].rgbtGreen = BinIO->read8() ;
-			bmi.os2.colors[i].rgbtRed = BinIO->read8() ;
+			bmi.os2.colors[i].rgbtBlue = getBinIO()->read8() ;
+			bmi.os2.colors[i].rgbtGreen = getBinIO()->read8() ;
+			bmi.os2.colors[i].rgbtRed = getBinIO()->read8() ;
 		}
 	}
 
@@ -408,11 +408,11 @@ void BmpFile::bmpos2_readheaders ()
 void BmpFile::writeheaders ()
 {
 	try {
-		BinIO->write16_le (bmfh.bfType) ;
-		BinIO->write32_le (bmfh.bfSize) ;
-		BinIO->write16_le (bmfh.bfReserved1) ;
-		BinIO->write16_le (bmfh.bfReserved2) ;
-		BinIO->write32_le (bmfh.bfOffBits) ;
+		getBinIO()->write16_le (bmfh.bfType) ;
+		getBinIO()->write32_le (bmfh.bfSize) ;
+		getBinIO()->write16_le (bmfh.bfReserved1) ;
+		getBinIO()->write16_le (bmfh.bfReserved2) ;
+		getBinIO()->write32_le (bmfh.bfOffBits) ;
 
 		switch (getSubformat()) {
 			case WIN:
@@ -431,7 +431,7 @@ void BmpFile::writeheaders ()
 	catch (BinaryOutputError e) {
 		switch (e.getType()) {
 			case BinaryOutputError::FILE_ERR:
-			throw SteghideError (_("an error occured while writing the bmp headers to the file \"%s\"."), BinIO->getName().c_str()) ;
+			throw SteghideError (_("an error occured while writing the bmp headers to the file \"%s\"."), getBinIO()->getName().c_str()) ;
 			break ;
 
 			case BinaryOutputError::STDOUT_ERR:
@@ -443,41 +443,41 @@ void BmpFile::writeheaders ()
 
 void BmpFile::bmpwin_writeheaders ()
 {
-	BinIO->write32_le (bmi.win.bmih.biSize) ;
-	BinIO->write32_le (bmi.win.bmih.biWidth) ;
-	BinIO->write32_le (bmi.win.bmih.biHeight) ;
-	BinIO->write16_le (bmi.win.bmih.biPlanes) ;
-	BinIO->write16_le (bmi.win.bmih.biBitCount) ;
-	BinIO->write32_le (bmi.win.bmih.biCompression) ;
-	BinIO->write32_le (bmi.win.bmih.biSizeImage) ;
-	BinIO->write32_le (bmi.win.bmih.biXPelsPerMeter) ;
-	BinIO->write32_le (bmi.win.bmih.biYPelsPerMeter) ;
-	BinIO->write32_le (bmi.win.bmih.biClrUsed) ;
-	BinIO->write32_le (bmi.win.bmih.biClrImportant) ;
+	getBinIO()->write32_le (bmi.win.bmih.biSize) ;
+	getBinIO()->write32_le (bmi.win.bmih.biWidth) ;
+	getBinIO()->write32_le (bmi.win.bmih.biHeight) ;
+	getBinIO()->write16_le (bmi.win.bmih.biPlanes) ;
+	getBinIO()->write16_le (bmi.win.bmih.biBitCount) ;
+	getBinIO()->write32_le (bmi.win.bmih.biCompression) ;
+	getBinIO()->write32_le (bmi.win.bmih.biSizeImage) ;
+	getBinIO()->write32_le (bmi.win.bmih.biXPelsPerMeter) ;
+	getBinIO()->write32_le (bmi.win.bmih.biYPelsPerMeter) ;
+	getBinIO()->write32_le (bmi.win.bmih.biClrUsed) ;
+	getBinIO()->write32_le (bmi.win.bmih.biClrImportant) ;
 
 	if (bmi.win.ncolors > 0) {
 		for (unsigned int i = 0 ; i < bmi.win.ncolors ; i++) {
-			BinIO->write8 (bmi.win.colors[i].rgbBlue) ;
-			BinIO->write8 (bmi.win.colors[i].rgbGreen) ;
-			BinIO->write8 (bmi.win.colors[i].rgbRed) ;
-			BinIO->write8 (bmi.win.colors[i].rgbReserved) ;
+			getBinIO()->write8 (bmi.win.colors[i].rgbBlue) ;
+			getBinIO()->write8 (bmi.win.colors[i].rgbGreen) ;
+			getBinIO()->write8 (bmi.win.colors[i].rgbRed) ;
+			getBinIO()->write8 (bmi.win.colors[i].rgbReserved) ;
 		}
 	}
 }
 
 void BmpFile::bmpos2_writeheaders ()
 {
-	BinIO->write32_le (bmi.os2.bmch.bcSize) ;
-	BinIO->write16_le (bmi.os2.bmch.bcWidth) ;
-	BinIO->write16_le (bmi.os2.bmch.bcHeight) ;
-	BinIO->write16_le (bmi.os2.bmch.bcPlanes) ;
-	BinIO->write16_le (bmi.os2.bmch.bcBitCount) ;
+	getBinIO()->write32_le (bmi.os2.bmch.bcSize) ;
+	getBinIO()->write16_le (bmi.os2.bmch.bcWidth) ;
+	getBinIO()->write16_le (bmi.os2.bmch.bcHeight) ;
+	getBinIO()->write16_le (bmi.os2.bmch.bcPlanes) ;
+	getBinIO()->write16_le (bmi.os2.bmch.bcBitCount) ;
 
 	if (bmi.os2.ncolors > 0) {
 		for (unsigned int i = 0 ; i < bmi.os2.ncolors ; i++) {
-			BinIO->write8 (bmi.os2.colors[i].rgbtBlue) ;
-			BinIO->write8 (bmi.os2.colors[i].rgbtGreen) ;
-			BinIO->write8 (bmi.os2.colors[i].rgbtRed) ;
+			getBinIO()->write8 (bmi.os2.colors[i].rgbtBlue) ;
+			getBinIO()->write8 (bmi.os2.colors[i].rgbtGreen) ;
+			getBinIO()->write8 (bmi.os2.colors[i].rgbtRed) ;
 		}
 	}
 }
@@ -555,11 +555,11 @@ void BmpFile::readdata ()
 		for (long line = height - 1 ; line >= 0 ; line--) {
 			bitmap[line] = (unsigned char *) s_malloc (linelength) ;
 			for (long posinline = 0 ; posinline < linelength ; posinline++) {
-				bitmap[line][posinline] = BinIO->read8() ;
+				bitmap[line][posinline] = getBinIO()->read8() ;
 			}
 
 			for (int i = 0 ; i < paddinglength ; i++) {
-				if (BinIO->read8() != 0) {
+				if (getBinIO()->read8() != 0) {
 					Warning w (_("maybe corrupted bmp data (padding byte set to non-zero).")) ;
 					w.printMessage() ;
 				}
@@ -569,11 +569,11 @@ void BmpFile::readdata ()
 	catch (BinaryInputError e) {
 		switch (e.getType()) {
 			case BinaryInputError::FILE_ERR:
-			throw SteghideError (_("an error occured while reading the bmp data from the file \"%s\"."), BinIO->getName().c_str()) ;
+			throw SteghideError (_("an error occured while reading the bmp data from the file \"%s\"."), getBinIO()->getName().c_str()) ;
 			break ;
 
 			case BinaryInputError::FILE_EOF:
-			throw SteghideError (_("premature end of file \"%s\" while reading bmp data."), BinIO->getName().c_str()) ;
+			throw SteghideError (_("premature end of file \"%s\" while reading bmp data."), getBinIO()->getName().c_str()) ;
 			break ;
 
 			case BinaryInputError::STDIN_ERR:
@@ -603,18 +603,18 @@ void BmpFile::writedata ()
 
 		for (long line = height - 1 ; line >= 0 ; line--) {
 			for (long posinline = 0 ; posinline < linelength ; posinline++) {
-				BinIO->write8 (bitmap[line][posinline]) ;
+				getBinIO()->write8 (bitmap[line][posinline]) ;
 			}
 
 			for (unsigned int i = 0 ; i < paddinglength ; i++) {
-				BinIO->write8 (0) ;
+				getBinIO()->write8 (0) ;
 			}
 		}
 	}
 	catch (BinaryOutputError e) {
 		switch (e.getType()) {
 			case BinaryOutputError::FILE_ERR:
-			throw SteghideError (_("an error occured while writing the bitmap data to the file \"%s\"."), BinIO->getName().c_str()) ;
+			throw SteghideError (_("an error occured while writing the bitmap data to the file \"%s\"."), getBinIO()->getName().c_str()) ;
 			break ;
 
 			case BinaryOutputError::STDOUT_ERR:
