@@ -38,6 +38,9 @@ static int nstgbits (void) ;
 void dmtd_reset (unsigned int dmtd, DMTDINFO dmtdinfo, unsigned long resetpos) ;
 unsigned long dmtd_nextpos (void) ;
 #endif
+static unsigned int findmaxilen_cnsti (unsigned long cvrbytes, unsigned long plnbytes, unsigned long firstplnpos) ;
+static unsigned int findmaxilen_prndi (unsigned long cvrbytes, unsigned long plnbytes, unsigned long firstplnpos) ;
+static int simprndi_ok (unsigned long cvrbytes, unsigned long plnbits, unsigned long firstplnpos, unsigned int imlen) ;
 
 static unsigned int curdmtd_dmtd ;
 static DMTDINFO curdmtd_dmtdinfo ;
@@ -410,3 +413,153 @@ unsigned long dmtd_nextpos (void)
 	return curdmtd_curpos ;
 }
 
+void setmaxilen (unsigned long cvrbytes, unsigned long plnbytes, unsigned long firstplnpos)
+{
+	unsigned int maxilen = 0 ;
+
+	switch (sthdr.dmtd) {
+		case DMTD_CNSTI:
+		maxilen = findmaxilen_cnsti (cvrbytes, plnbytes, firstplnpos) ;
+		if (maxilen > DMTD_CNSTI_MAX_ILEN) {
+			maxilen = DMTD_CNSTI_MAX_ILEN ;
+		}
+		sthdr.dmtdinfo.cnsti.interval_len = maxilen ;
+		break ;
+
+		case DMTD_PRNDI:
+		maxilen = findmaxilen_prndi (cvrbytes, plnbytes, firstplnpos) ;
+		if (maxilen > DMTD_PRNDI_MAX_IMLEN) {
+			maxilen = DMTD_PRNDI_MAX_IMLEN ;
+		}
+		sthdr.dmtdinfo.prndi.interval_maxlen = maxilen ;
+		break;
+
+		default:
+		assert (0) ;
+		break ;
+	}
+
+	return ;
+}
+
+static unsigned int findmaxilen_cnsti (unsigned long cvrbytes, unsigned long plnbytes, unsigned long firstplnpos)
+{
+	unsigned long plnbits = 0, restcvrbytes = 0 ;
+
+	plnbits = 8 * plnbytes ;
+	restcvrbytes = cvrbytes - firstplnpos ;
+
+	return (restcvrbytes - plnbits) / (plnbits - 1) ;
+}
+
+static unsigned int findmaxilen_prndi (unsigned long cvrbytes, unsigned long plnbytes, unsigned long firstplnpos)
+{
+	unsigned long plnbits = 0, restcvrbytes = 0 ;
+	unsigned int est_imlen = 0 ;
+	int est_ok[2] = { 0, 0 } ;
+
+	plnbits = 8 * plnbytes ;
+	restcvrbytes = cvrbytes - firstplnpos ;
+
+	est_imlen = 2 * ((cvrbytes - plnbits) / (plnbits - 1)) ;
+
+	est_ok[0] = simprndi_ok (cvrbytes, plnbits, firstplnpos, est_imlen) ;
+	est_ok[1] = simprndi_ok (cvrbytes, plnbits, firstplnpos, est_imlen + 1) ;
+
+	while (!(est_ok[0] && !est_ok[1])) {
+		if (est_ok[0] && est_ok[1]) {
+			est_imlen++ ;
+			est_ok[0] = est_ok[1] ;
+			est_ok[1] = simprndi_ok (cvrbytes, plnbits, firstplnpos, est_imlen + 1) ;
+		}
+
+		else if (!est_ok[0] && !est_ok[1]) {
+			est_imlen-- ;
+			est_ok[1] = est_ok[0] ;
+			est_ok[0] = simprndi_ok (cvrbytes, plnbits, firstplnpos, est_imlen) ;
+		}
+
+		else {
+			assert (0) ;
+		}
+	}
+
+	return est_imlen ;
+}
+
+static int simprndi_ok (unsigned long cvrbytes, unsigned long plnbits, unsigned long firstplnpos, unsigned int imlen)
+{	
+	unsigned long plnpos_bit = 0 ;
+	unsigned long cvrpos_byte = firstplnpos ;
+	int retval = 1 ;
+	DMTDINFO simdmtdinfo ;
+
+	simdmtdinfo.prndi.seed = sthdr.dmtdinfo.prndi.seed ;
+	simdmtdinfo.prndi.interval_maxlen = imlen ;
+
+	dmtd_reset (DMTD_PRNDI, simdmtdinfo, cvrpos_byte) ;
+
+	while (plnpos_bit < plnbits) {
+		plnpos_bit++ ;
+		cvrpos_byte = dmtd_nextpos () ;
+
+		if ((cvrpos_byte >= cvrbytes) && (plnpos_bit < plnbits)) {
+			retval = 0 ;
+			break ;
+		}
+	}
+
+	return retval ;
+}
+
+/* calculates an upper bound for the first postion of a plain data bit in the cover file
+   by simulating the sthdr embedding (with maximal values for the interval length) */
+unsigned long calc_ubfirstplnpos (int dmtd, DMTDINFO dmtdinfo, int enc, char *passphrase)
+{
+	unsigned int bit = 0, sthdrbuflen = 0 ;
+	unsigned long cvrbytepos = 0 ;
+
+	if (enc) {
+		bit = STHDR_NBYTES_BLOWFISH * 8 ;
+	}
+	else {
+		bit += SIZE_NBITS_NBYTESPLAIN ;
+		bit += nbits (sthdr.nbytesplain) ;
+	
+		bit += SIZE_DMTD ;
+		switch (sthdr.dmtd) {
+			case DMTD_CNSTI:
+				bit += SIZE_DMTDINFO_CNSTI_NBITS_ILEN ;
+				bit += MAXSIZE_DMTDINFO_CNSTI_ILEN ;
+			break ;
+
+			case DMTD_PRNDI:
+				bit += SIZE_DMTDINFO_PRNDI_SEED ;
+				bit += SIZE_DMTDINFO_PRNDI_NBITS_IMLEN ;
+				bit += MAXSIZE_DMTDINFO_PRNDI_IMLEN ;
+			break ;
+
+			default:
+			assert (0) ;
+			break ;
+		}
+
+		bit += SIZE_MASKUSED ;
+		if (sthdr.mask != DEFAULTMASK) {
+			bit += SIZE_MASK ;
+		}
+
+		bit += SIZE_ENCRYPTION ;	
+		bit += SIZE_COMPRESSION ;
+		bit += SIZE_CHECKSUM ;
+	}
+
+	/* embed the buffer */
+	sthdrbuflen = bit ;
+	dmtd_reset (dmtd, dmtdinfo, 0) ;
+	for (bit = 0 ; bit < sthdrbuflen ; bit++) {
+		cvrbytepos = dmtd_nextpos () ;
+	}
+
+	return cvrbytepos ;
+}

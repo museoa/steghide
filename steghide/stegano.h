@@ -131,5 +131,7 @@ void extractsthdr (BUFFER *stgbuflhead, int dmtd, DMTDINFO dmtdinfo, int enc, ch
 void dmtd_reset (unsigned int dmtd, DMTDINFO dmtdinfo, unsigned long resetpos) ;
 unsigned long dmtd_nextpos (void) ;
 #endif
+unsigned long calc_ubfirstplnpos (int dmtd, DMTDINFO dmtdinfo, int enc, char *passphrase) ;
+void setmaxilen (unsigned long cvrbytes, unsigned long plnbytes, unsigned long firstplnpos) ;
 
 #endif /* ndef SH_STEGANO_H */

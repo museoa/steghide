@@ -52,6 +52,7 @@ int args_verbose = 0 ;
 
 /* indicates which arguments have already been parsed */
 int arggiven_method = 0 ;
+int arggiven_dmtdmaxilen = 0 ;
 int arggiven_passphrase = 0 ;
 
 static void parsearguments (int argc, char *argv[]) ;
@@ -164,26 +165,36 @@ static void parsearguments (int argc, char* argv[])
 			if (strncmp (argv[i], "cnsti\0", 6) == 0) {
 				sthdr.dmtd = DMTD_CNSTI ;
 				
-				if (++i == argc) {
-					exit_err ("the argument \"%s\" is incomplete. type \"%s --help\" for help.", argv[i - 2], argv[0]) ;
+				if ((i + 1 == argc) || (argv[i + 1][0] == '-')) {
+					arggiven_dmtdmaxilen = 0 ;
 				}
-				
-				if ((tmp = readnum (argv[i])) > DMTD_CNSTI_MAX_ILEN) {
-					exit_err ("the interval length for the cnsti method must be smaller than %d.", DMTD_CNSTI_MAX_ILEN + 1) ;
+				else {
+					i++ ;
+					if ((tmp = readnum (argv[i])) > DMTD_CNSTI_MAX_ILEN) {
+						exit_err ("the interval length for the cnsti method must be smaller than %d.", DMTD_CNSTI_MAX_ILEN + 1) ;
+					}
+
+					sthdr.dmtdinfo.cnsti.interval_len = tmp ;
+
+					arggiven_dmtdmaxilen = 1 ;
 				}
-				sthdr.dmtdinfo.cnsti.interval_len = tmp ;
 			}
 			else if ((strncmp (argv[i], "prndi\0", 6) == 0)) {
 				sthdr.dmtd = DMTD_PRNDI ;
 				
-				if (++i == argc) {
-					exit_err ("the argument \"%s\" is incomplete. type \"%s --help\" for help.", argv[i - 2], argv[0]) ;
+				if ((i + 1 == argc) || (argv[i + 1][0] == '-')) {
+					arggiven_dmtdmaxilen = 0 ;
 				}
-				
-				if ((tmp = readnum (argv[i])) > DMTD_PRNDI_MAX_IMLEN) {
-					exit_err ("the maximum interval length for the prndi method must be smaller than %d.", DMTD_PRNDI_MAX_IMLEN + 1) ;
+				else {
+					i++ ;
+					if ((tmp = readnum (argv[i])) > DMTD_PRNDI_MAX_IMLEN) {
+						exit_err ("the maximum interval length for the prndi method must be smaller than %d.", DMTD_PRNDI_MAX_IMLEN + 1) ;
+					}
+
+					sthdr.dmtdinfo.prndi.interval_maxlen = tmp ;
+	
+					arggiven_dmtdmaxilen = 1 ;
 				}
-				sthdr.dmtdinfo.prndi.interval_maxlen = tmp ;
 			}
 			else {
 				exit_err ("unknown distribution method \"%s\". type \"%s --help\" for help.", argv[i], argv[0]) ;
@@ -454,6 +465,19 @@ static void embedfile (const char *cvrfilename, const char *stgfilename, const c
 			pmsg ("encrypting plain data.") ;
 		}
 		encrypt_plnfile (plnfile, args_passphrase) ;
+	}
+
+	if (!arggiven_dmtdmaxilen) {
+		setmaxilen (buflength (cvrfile->cvrbuflhead), buflength (plnfile->plnbuflhead), calc_ubfirstplnpos(sthdr_dmtd, sthdr_dmtdinfo, args_sthdrenc, args_passphrase)) ;
+		
+		if (args_verbose) {
+			if (sthdr.dmtd == DMTD_CNSTI) {
+				pmsg ("set interval length to %d.", sthdr.dmtdinfo.cnsti.interval_len) ;
+			}
+			else if (sthdr.dmtd == DMTD_PRNDI) {
+				pmsg ("set maximum interval length to %d.", sthdr.dmtdinfo.prndi.interval_maxlen) ;
+			}
+		}
 	}
 
 	if (args_verbose) {
