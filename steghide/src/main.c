@@ -40,6 +40,21 @@
 #include "msg.h"
 #include "support.h"
 
+#ifdef WIN32
+/* locale support on Windows */
+#include <windows.h>
+
+LCIDENTRY LCIDTable[] = {
+	{ 0x0407, "de" },	/* Germany */
+	{ 0x0807, "de" },	/* Switzerland */
+	{ 0x0c07, "de" },	/* Austria */
+	{ 0x1007, "de" },	/* Luxembourg */
+	{ 0x1407, "de" }	/* Liechtenstein */
+	} ;
+
+int LCIDTable_size = 5 ;
+#endif /* WIN32 */
+ 
 #ifdef DEBUG
 #include "test.h"
 #endif
@@ -53,6 +68,7 @@ DMTDINFO sthdr_dmtdinfo ;
 
 static void parsearguments (int argc, char *argv[]) ;
 static void args_setdefaults (void) ;
+static void gettext_init (void) ;
 static void setsthdrdmtd (void) ;
 static void version (void) ;
 static void usage (void) ;
@@ -63,12 +79,7 @@ static void cleanup (void) ;
 
 int main (int argc, char *argv[])
 {
-#ifndef DEBUG
-	/* initialize gettext */
-	setlocale (LC_ALL, "") ;
-	bindtextdomain (PACKAGE, LOCALEDIR) ;
-	textdomain (PACKAGE) ;
-#endif
+	gettext_init () ;
 
 	/* 	the C "rand" generator is used if random numbers need not be reproduceable,
 		the random number generator in support.c "rnd" is used if numbers must be reproduceable */
@@ -488,6 +499,39 @@ static void parsearguments (int argc, char* argv[])
 			args.passphrase.value = get_passphrase (PP_NODOUBLECHECK) ;
 		}
 	}
+
+	return ;
+}
+
+static void gettext_init (void)
+{
+#ifndef DEBUG
+	/* initialize gettext */
+	setlocale (LC_ALL, "") ;
+	bindtextdomain (PACKAGE, LOCALEDIR) ;
+	textdomain (PACKAGE) ;
+
+#ifdef WIN32
+	/* using the Windows API to find out which language should be used
+	   (as there is no environment variable indicating the language set) */
+	{
+		LCID localeID = GetThreadLocale () ;	
+		int i = 0 ;
+
+		for (i = 0 ; i < LCIDTable_size ; i++) {
+			if (localeID == LCIDTable[i].localeID) {
+				setenv ("LANG", LCIDTable[i].language, 1) ;
+				/* Make Change known (see gettext manual) */
+				{
+					extern int _nl_msg_cat_cntr ;
+					++_nl_msg_cat_cntr;
+				}
+				break ;
+			}
+		}
+	}
+#endif /* WIN32 */
+#endif /* DEBUG */
 
 	return ;
 }

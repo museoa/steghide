@@ -33,7 +33,7 @@
 #define CRYPTOALGO_DATA_COMPAT	"blowfish-compat"
 #define CRYPTOMODE_DATA			"cbc"
 
-#ifdef __CYGWIN__
+#ifdef WIN32
 #define CRYPTOALGODIR	"./modules/"
 #define CRYPTOMODEDIR	"./modules/"
 #else

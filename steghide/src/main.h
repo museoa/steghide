@@ -21,6 +21,10 @@
 #ifndef SH_MAIN_H
 #define SH_MAIN_H
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include "stegano.h"
 
 #define PROGNAME	"steghide"
@@ -77,9 +81,19 @@ typedef struct struct_ARGS {
 	ARGSTRING plnfn ;
 	ARGSTRING stgfn ;
 	ARGSTRING passphrase ;
-} ARGS;
+} ARGS ;
 
 extern ARGS args ;
 
+#ifdef WIN32
+#include <windows.h>
+
+typedef struct struct_LCIDENTRY {
+	LCID localeID ;
+	char *language ;
+} LCIDENTRY ;
+#endif
+
 #define INTERVAL_DEFAULT	10
+
 #endif /* ndef SH_MAIN_H */

@@ -23,6 +23,10 @@
 
 #include <stdio.h>
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 extern int noncvrbufuse[] ;
 
 /* is used for parameter freesubstructs of cleanupcvrfile */
@@ -43,6 +47,9 @@ typedef struct struct_AUHEADERS {
 
 
 /*** bmp file format ***/
+#ifdef WIN32
+#include <windows.h>
+#else
 typedef struct struct_BITMAPFILEHEADER {
 	unsigned short	bfType ;
 	unsigned long	bfSize ;
@@ -50,6 +57,7 @@ typedef struct struct_BITMAPFILEHEADER {
 	unsigned short	bfReserved2 ;
 	unsigned long	bfOffBits ;
 } BITMAPFILEHEADER ;
+#endif /* _WINGDI_H_ */
 
 typedef struct struct_BITMAPXHEADER { /* stores data from BITMAPINFO- and BITMAPCORE- HEADER */
 	unsigned long	Size ;
