@@ -217,7 +217,7 @@ const Matching* Embedder::calculateMatching (ProgressOutput* prout)
 	matching->printVerboseInfo() ; // only print info for best matching
 
 	if (Args.Verbosity.getValue() == NORMAL) {
-		prout->done (matching->getMatchedRate()) ;
+		prout->done() ;
 	}
 
 	if (prout) {

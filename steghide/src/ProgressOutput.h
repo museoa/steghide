@@ -53,7 +53,12 @@ class ProgressOutput {
 	void update (float rate) ;
 
 	/**
-	 * update the output appending average edge weight, "done" and a newline
+	 * update the output appending "done" and a newline (no rate nor average weight)
+	 **/
+	void done (void) const ;
+
+	/**
+	 * update the output appending rate, [average edge weight], "done" and a newline
 	 * \param rate the rate of matched vertices
 	 * \param avgweight the average edge weight (is not printed if not given)
 	 **/

@@ -71,3 +71,9 @@ void ProgressOutput::done (float rate, float avgweight) const
 	printf (_(" done\n")) ;
 	fflush (stdout) ;
 }
+
+void ProgressOutput::done () const
+{
+	printf ("\r%s", Message.c_str()) ;
+	printf (_(" done\n")) ;
+}
