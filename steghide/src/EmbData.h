@@ -33,7 +33,7 @@
 class EmbData {
 	public:
 	enum MODE { EMBED, EXTRACT } ;
-	enum STATE { READ_VERSION, READ_ENCINFO, READ_NPLAINBITS, READ_ENCRYPTED, END } ;
+	enum STATE { READ_MAGIC, READ_VERSION, READ_ENCINFO, READ_NPLAINBITS, READ_ENCRYPTED, END } ;
 
 	/**
 	 * construct a new EmbData object
@@ -96,6 +96,10 @@ class EmbData {
 	static const unsigned int NBitsCrc32 = 32 ;
 	/// version of this steghide embedding (stego compatibility of EmbData)
 	static const unsigned short CodeVersion = 0 ;
+	/// steghide magic to recognize embedded data (the string "shm")
+	static const UWORD32 Magic = 0x73688DUL ;
+	/// size (in bits of Magic)
+	static const unsigned int NBitsMagic = 24 ;
 
 	MODE Mode ;
 	STATE State ;

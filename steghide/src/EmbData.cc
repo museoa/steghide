@@ -31,10 +31,9 @@ EmbData::EmbData (MODE m, std::string pp, std::string fn)
 	: Mode(m), Passphrase(pp), FileName(fn)
 {
 	if (m == EXTRACT) {
-		NumBitsNeeded = 1 ;
-		NumBitsRequested = 1 ;
-		Version = 0 ;
-		State = READ_VERSION ;
+		NumBitsNeeded = NumBitsRequested = NBitsMagic ;
+		Version = CodeVersion ;
+		State = READ_MAGIC ;
 		Reservoir = BitString() ;
 	}
 }
@@ -78,6 +77,20 @@ void EmbData::addBits (BitString addbits)
 #endif
 
 	switch (State) {
+		case READ_MAGIC:
+		{
+			printDebug (1, "in the READ_MAGIC state") ;
+			if (bits.getValue(0, NBitsMagic) == Magic) {
+				NumBitsNeeded = 1 ;
+				NumBitsRequested = AUtils::bminus<unsigned long> (NumBitsNeeded, Reservoir.getLength()) ;
+				State = READ_VERSION ;
+			}
+			else {
+				throw SteghideError (_("could not extract any data with that passphrase!")) ;
+			}
+			break ;
+		}	
+
 		case READ_VERSION:
 		{
 #ifdef DEBUG
@@ -324,6 +337,7 @@ BitString EmbData::getBitString ()
 
 	// put it all together
 	BitString main ;
+	main.append(Magic, NBitsMagic) ;
 	for (unsigned short i = 0 ; i < CodeVersion ; i++) {
 		main.append(true) ;
 	}

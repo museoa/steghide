@@ -22,7 +22,9 @@
 #define SH_EMBDATATEST_H
 
 class BitString ;
+#define private public
 #include "EmbData.h"
+#undef private
 
 #include "UnitTest.h"
 #include "TestSuite.h"

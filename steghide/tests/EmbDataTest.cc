@@ -45,6 +45,7 @@ void EmbDataTest::testEmbedding ()
 		emb.setData (data) ;
 
 		BitString shouldbe ;
+		shouldbe.append (EmbData::Magic, EmbData::NBitsMagic) ; // magic
 		shouldbe.append (false) ; // version
 		shouldbe.append ((BYTE) 0, 5) ; // encalgo
 		shouldbe.append ((BYTE) 0, 3) ; // encmode
@@ -63,6 +64,7 @@ void EmbDataTest::testExtracting ()
 {
 	{
 		BitString bs ;
+		bs.append (EmbData::Magic, EmbData::NBitsMagic) ; // magic
 		bs.append (false) ; // version
 		bs.append ((BYTE) 0, 5) ; // encalgo
 		bs.append ((BYTE) 1, 3) ; // encmode
