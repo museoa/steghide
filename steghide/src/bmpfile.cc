@@ -222,7 +222,7 @@ void BmpFile::bmpwin_readheaders ()
 			(bmi_win.bmih.biBitCount == 8) || 
 			(bmi_win.bmih.biBitCount == 24)) ;
 	bmi_win.bmih.biCompression = getBinIO()->read32_le () ;
-	if (bmi_win.bmih.biCompression != BI_RGB) {
+	if (bmi_win.bmih.biCompression != COMPRESSION_BI_RGB) {
 		if (getBinIO()->is_std()) {
 			throw SteghideError (_("the bitmap data from standard input is compressed which is not supported.")) ;
 		}

@@ -107,7 +107,7 @@ class BmpFile : public CvrStgFile {
 	static const unsigned short SizeBMFILEHEADER = 14 ;
 	static const unsigned short SizeBMINFOHEADER = 40 ;
 	static const unsigned short SizeBMCOREHEADER = 12 ;
-	static const unsigned int BI_RGB = 0 ;
+	static const unsigned int COMPRESSION_BI_RGB = 0 ;
 
 	enum SUBFORMAT { WIN, OS2 } ;
 

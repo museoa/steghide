@@ -21,6 +21,7 @@
 #ifndef SH_MSG_H
 #define SH_MSG_H
 
+#include <cstdarg>
 #include <string>
 
 class MessageBase {
