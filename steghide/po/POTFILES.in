@@ -59,6 +59,8 @@ src/JpegSampleValue.cc
 src/JpegSampleValue.h
 src/MCryptPP.cc
 src/MCryptPP.h
+src/MarkerRestricted.cc
+src/MarkerRestricted.h
 src/MHashKeyGen.cc
 src/MHashKeyGen.h
 src/MHashPP.cc

@@ -74,6 +74,7 @@ void Arguments::parse ()
 		if (parse_Passphrase(curarg)) continue ;
 		if (parse_Checksum(curarg)) continue ;
 		if (parse_Compression(curarg)) continue ;
+		if (parse_Marker(curarg)) continue ;
 		if (parse_EmbedEmbFn(curarg)) continue ;
 		if (parse_Encryption(curarg)) continue ;
 		if (parse_Radius(curarg)) continue ;
@@ -585,6 +586,34 @@ bool Arguments::parse_Goal (ArgIt& curarg)
 	return found ;
 }
 
+bool Arguments::parse_Marker (ArgIt& curarg)
+{
+	bool found = false ;
+
+	if (*curarg == "-m" || *curarg == "--marker") {
+		found = true ;
+
+		if (Command.getValue() != EMBED && Command.getValue() != EXTRACT) {
+			throw ArgError (_("the argument \"%s\" can only be used with the \"%s\" and \"%s\" commands."), curarg->c_str(), "embed", "extract") ;
+		}
+
+		if (Marker.is_set()) {
+			throw ArgError (_("the marker argument can be used only once.")) ;
+		}
+
+		++curarg ;
+		if ((curarg != TheArguments.end()) && ((*curarg)[0] != '-')) {
+			if (Command.getValue() != EMBED) {
+				throw ArgError (_("the length specification of the marker argument can only be used with the embed command.")) ;
+			}
+			// save the length specification
+			Marker = *curarg ;
+			++curarg ;
+		}
+	}
+
+	return found ;
+}
 bool Arguments::parse_Force (ArgIt& curarg)
 {
 	bool found = false ;
@@ -716,7 +745,14 @@ bool Arguments::parse_Debug (ArgIt& curarg)
 		++curarg ;
 	}
 	else if (*curarg == "--check") {
-		// TODO usual error checking (omitted due to message freeze)
+		if (Command.getValue() != EMBED) {
+			throw ArgError (_("the argument \"%s\" can only be used with the \"%s\" command."), curarg->c_str(), "embed") ;
+		}
+
+		if (Check.is_set()) {
+			throw ArgError (_("the check argument can be used only once.")) ;
+		}
+
 		Check.setValue (true) ;
 
 		found = true ;
@@ -792,6 +828,7 @@ void Arguments::setDefaults (void)
 	EncMode.setValue (Default_EncMode, false) ;
 	Checksum.setValue (Default_Checksum, false) ;
 	Compression.setValue (Default_Compression, false) ;
+	Marker.setValue ("", false) ;
 	EmbedEmbFn.setValue (Default_EmbedEmbFn, false) ;
 	ExtFn.setValue ("", false) ;
 	Passphrase.setValue ("", false) ;

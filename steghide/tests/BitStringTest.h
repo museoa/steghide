@@ -45,6 +45,7 @@ class BitStringTest : public UnitTest {
 	void testCutting (void) ;
 	void testCompression (void) ;
 	void testArity (void) ;
+	void testXorReduction (void) ;
 
 	private:
 	BitString *bs_0, *bs_1, *bs_10, *bs_001, *bs_100, *bs_1010, *bs_1110, *bs_01011, *bs_10010, *bs_10101110, *bs_101011101 ;

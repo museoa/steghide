@@ -77,6 +77,18 @@ class SampleValue {
 	virtual SampleValue* getNearestTargetSampleValue (EmbValue t) const = 0 ;
 
 	/**
+	 * get the nearest sample value whose embedded bit is b
+	 *
+	 * This is a version of getNearestTargetSampleValue for modulus 2 (will be
+	 * replaced by getNearestTargetSampleValue (EmbValue t, modulus m) in next
+	 * major version).
+	 *
+	 * This _MUST_ be overwritten if the modulus is not two.
+	 **/
+	virtual SampleValue* getNearestBitTargetSampleValue (BIT b) const
+		{ return getNearestTargetSampleValue( (EmbValue) b ) ; } ;
+
+	/**
 	 * calculate the distance between the sample value s and this sample value
 	 * \param s a sample value of the same type as this
 	 * \return the distance
@@ -105,6 +117,15 @@ class SampleValue {
 		{ return EValue ; } ;
 
 	/**
+	 * get the modulo 2 embedded value
+	 *
+	 * This is a dirty hack and must be changed if a modulus m \neq 2^b are possible. This
+	 * is necessary for the markers (this will be replaced by getEValue (m) in next major version)
+	 **/
+	bool getEmbeddedBit (void) const
+		{ return (EValue & 1) ; } ;
+
+	/**
 	 * get the key for this sample
 	 * \return a key which must be different for two different samples values.
 	 **/
@@ -130,7 +151,7 @@ class SampleValue {
 	void print (unsigned short spc = 0) const ;
 
 	protected:
-	/// the bit that is embedded in this sample value - must be set in constructor of derived class
+	/// the value that is embedded in this sample value - must be set in constructor of derived class
 	EmbValue EValue ;
 
 	/// the key of this sample value - must be different for two different sample values - must be set in constructor of derived class

@@ -50,6 +50,9 @@ class WavFile : public CvrStgFile {
 
 	unsigned short getBitsPerSample (void) const ;
 
+	bool parseMarkerRestriction (std::string _spcstr, UWORD32* _pre, UWORD32* _post) const ;
+	void getDefaultMarkerRestriction (UWORD32* _pre, UWORD32* _post) const ;
+
 	private:
 	static const signed short	FormatPCM = 1 ;
 

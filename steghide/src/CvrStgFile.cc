@@ -128,7 +128,27 @@ std::string CvrStgFile::getHRCapacity () const
 	return Utils::formatHRSize (getCapacity()) ;
 }
 
-#ifdef DEBUG
+bool CvrStgFile::parseMarkerRestriction (std::string _spcstr, UWORD32* _pre, UWORD32* _post) const
+{
+	bool found = false ;
+
+	if (isdigit( _spcstr[_spcstr.size() - 1] )) {
+		// given as number of samples
+		int tmp = 0 ;
+		sscanf (_spcstr.c_str(), "%d", &tmp) ;
+		*_pre = tmp ;
+		*_post = tmp ;
+		found = true ;
+	}
+	return found ;
+}
+
+void CvrStgFile::getDefaultMarkerRestriction (UWORD32* _pre, UWORD32* _post) const
+{
+	*_pre = 0 ;
+	*_post = 0 ;
+}
+
 std::map<SampleKey,unsigned long>* CvrStgFile::getFrequencies ()
 {
 	unsigned long n = getNumSamples() ;
@@ -149,8 +169,6 @@ void CvrStgFile::printFrequencies (const std::map<SampleKey,unsigned long>& freq
 		std::cout << fit->first << ": " << fit->second << std::endl ;
 	}
 }
-
-#endif // def DEBUG
 
 CvrStgFile::FILEFORMAT CvrStgFile::guessff (BinaryIO *io)
 {

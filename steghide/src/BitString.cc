@@ -257,6 +257,18 @@ BitString& BitString::padRandom (unsigned long mult)
 	return *this ;
 }
 
+BitString& BitString::xorreduce (const unsigned long len)
+{
+	myassert( len <= getLength() ) ;
+	BitString backup = BitString( *this ) ;
+	truncate( 0, len ) ;
+	do {
+		backup.truncate( len, backup.getLength() ) ; // cut off first len bits of backup
+		operator^=( backup ) ; // and xor with this BitString
+	} while (backup.getLength() >= len) ;
+	return *this ;
+}
+
 BYTE BitString::getNAry (unsigned long p) const
 {
 	unsigned long pbinary = p * ArityNBits ;
@@ -416,9 +428,9 @@ BitString& BitString::operator^= (const BitString &v)
 	for (unsigned long i = 0 ; i < Length ; i++) {
 		unsigned long bytepos = BYTEPOS (i) ;
 		unsigned int bitpos = BITPOS (i) ;
-		BIT bit = (Data[bytepos] & (1 << bitpos)) >> bitpos ;
-		bit ^= v[i] ;
-		Data[bytepos] = (Data[bytepos] & ~(1 << bitpos)) | (bit << bitpos) ;
+		BIT bit = (Data[bytepos] & (1 << bitpos)) >> bitpos ; // get bit from this BitString...
+		bit ^= v[i] ; // ..xor it...
+		Data[bytepos] = (Data[bytepos] & ~(1 << bitpos)) | (bit << bitpos) ; // ... and write it back
 	}
 	return *this ;
 }

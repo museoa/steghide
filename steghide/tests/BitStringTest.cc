@@ -280,6 +280,8 @@ void BitStringTest::testEquality()
 		bs2.append(false).append(true).append(false).append(true) ;
 		addTestResult (bs1 == bs2) ;
 	}
+
+	// TODO - add clone() calls
 }
 
 void BitStringTest::testCutting ()

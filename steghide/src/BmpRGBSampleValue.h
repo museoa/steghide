@@ -36,6 +36,7 @@ class BmpRGBSampleValue : public BmpSampleValue {
 
 	UWORD32 calcDistance (const SampleValue *s) const ;
 	SampleValue* getNearestTargetSampleValue (EmbValue t) const ;
+	SampleValue* getNearestBitTargetSampleValue (BIT b) const ;
 	std::string getName (void) const ;
 
 	BYTE getRed (void) const { return Color.Red ; } ;
@@ -75,6 +76,8 @@ class BmpRGBSampleValue : public BmpSampleValue {
 	 * \param fd the fixed side of the fixed color
 	 **/
 	void addNTSVCandidates (std::vector<RGBTriple>& cands, const BYTE cube[3][2], COLOR fc, DIRECTION fd, COLOR i1, COLOR i2, EmbValue t) const ;
+
+	void addNBTSVCandidates (std::vector<RGBTriple>& cands, const BYTE cube[3][2], COLOR fc, DIRECTION fd, COLOR i1, COLOR i2, BIT b) const ;
 } ;
 
 #endif // ndef SH_BMPRGBSAMPLEVALUE_H

@@ -31,6 +31,7 @@
 
 EmbData* Extractor::extract ()
 {
+	// TODO: marker: first, try to extract without markers, if CorruptData... is thrown, try with marker, search from beginning and end
 	VerboseMessage vrs ;
 	if (Args.StgFn.getValue() == "") {
 		vrs.setMessage (_("reading stego file from standard input...")) ;
@@ -41,7 +42,15 @@ EmbData* Extractor::extract ()
 	vrs.setNewline (false) ;
 	vrs.printMessage() ;
 
-	Globs.TheCvrStgFile = CvrStgFile::readFile (StegoFileName) ;
+	try {
+		Globs.TheCvrStgFile = CvrStgFile::readFile (StegoFileName) ;
+	}
+	catch (SteghideError &e) {
+		if (Args.Verbosity.getValue() == VERBOSE) {
+			std::cerr << std::endl ;	// to make error message start on new line
+		}
+		throw e ;
+	}
 
 	VerboseMessage vd (_(" done")) ;
 	vd.printMessage() ;
@@ -53,45 +62,61 @@ EmbData* Extractor::extract ()
 	ve.setNewline (false) ;
 	ve.printMessage() ;
 
-	unsigned long sv_idx = 0 ;
-	while (!embdata->finished()) {
-		unsigned short bitsperembvalue = AUtils::log2_ceil<unsigned short> (Globs.TheCvrStgFile->getEmbValueModulus()) ;
-		unsigned long embvaluesrequested = AUtils::div_roundup<unsigned long> (embdata->getNumBitsRequested(), bitsperembvalue) ;
-		if (sv_idx + (Globs.TheCvrStgFile->getSamplesPerVertex() * embvaluesrequested) >= Globs.TheCvrStgFile->getNumSamples()) {
-			if (Globs.TheCvrStgFile->is_std()) {
-				throw CorruptDataError (_("the stego data from standard input is too short to contain the embedded data.")) ;
+	try {
+		unsigned long sv_idx = 0 ;
+		while (!embdata->finished()) {
+			unsigned short bitsperembvalue = AUtils::log2_ceil<unsigned short> (Globs.TheCvrStgFile->getEmbValueModulus()) ;
+			unsigned long embvaluesrequested = AUtils::div_roundup<unsigned long> (embdata->getNumBitsRequested(), bitsperembvalue) ;
+			if (sv_idx + (Globs.TheCvrStgFile->getSamplesPerVertex() * embvaluesrequested) >= Globs.TheCvrStgFile->getNumSamples()) {
+				if (Globs.TheCvrStgFile->is_std()) {
+					throw CorruptDataError (_("the stego data from standard input is too short to contain the embedded data.")) ;
+				}
+				else {
+					throw CorruptDataError (_("the stego file \"%s\" is too short to contain the embedded data."), Globs.TheCvrStgFile->getName().c_str()) ;
+				}
 			}
-			else {
-				throw CorruptDataError (_("the stego file \"%s\" is too short to contain the embedded data."), Globs.TheCvrStgFile->getName().c_str()) ;
+			BitString bits (Globs.TheCvrStgFile->getEmbValueModulus()) ;
+			for (unsigned long i = 0 ; i < embvaluesrequested ; i++) {
+				EmbValue ev = 0 ;
+				for (unsigned int j = 0 ; j < Globs.TheCvrStgFile->getSamplesPerVertex() ; j++, sv_idx++) {
+					ev = (ev + Globs.TheCvrStgFile->getEmbeddedValue (sel[sv_idx])) % Globs.TheCvrStgFile->getEmbValueModulus() ;
+				}
+				bits.appendNAry(ev) ;
 			}
+			embdata->addBits (bits) ;
 		}
-		BitString bits (Globs.TheCvrStgFile->getEmbValueModulus()) ;
-		for (unsigned long i = 0 ; i < embvaluesrequested ; i++) {
-			EmbValue ev = 0 ;
-			for (unsigned int j = 0 ; j < Globs.TheCvrStgFile->getSamplesPerVertex() ; j++, sv_idx++) {
-				ev = (ev + Globs.TheCvrStgFile->getEmbeddedValue (sel[sv_idx])) % Globs.TheCvrStgFile->getEmbValueModulus() ;
-			}
-			bits.appendNAry(ev) ;
+	}
+	catch (SteghideError &e) {
+		if (Args.Verbosity.getValue() == VERBOSE) {
+			std::cerr << std::endl ;	// to make error message start on new line
 		}
-		embdata->addBits (bits) ;
+		throw e ;
 	}
 
 	vd.printMessage() ;
 
-	// TODO (postponed due to message freeze): rename into "verifying crc32 checksum..."
-	VerboseMessage vc (_("checking crc32 checksum...")) ;
+	VerboseMessage vc (_("verifying crc32 checksum...")) ;
 	vc.setNewline (false) ;
 	vc.printMessage() ;
-	if (embdata->checksumOK()) {
-		VerboseMessage vok (_(" ok")) ;
-		vok.printMessage() ;
-	}
-	else {
-		VerboseMessage vfailed (_(" FAILED!")) ;
-		vfailed.printMessage() ;
 
-		CriticalWarning w (_("crc32 checksum failed! extracted data is probably corrupted.")) ;
-		w.printMessage() ;
+	try {
+		if (embdata->checksumOK()) {
+			VerboseMessage vok (_(" ok")) ;
+			vok.printMessage() ;
+		}
+		else {
+			VerboseMessage vfailed (_(" FAILED!")) ;
+			vfailed.printMessage() ;
+
+			CriticalWarning w (_("crc32 checksum failed! extracted data is probably corrupted.")) ;
+			w.printMessage() ;
+		}
+	}
+	catch (SteghideError &e) {
+		if (Args.Verbosity.getValue() == VERBOSE) {
+			std::cerr << std::endl ;	// to make error message start on new line
+		}
+		throw e ;
 	}
 
 	return embdata ;

@@ -29,6 +29,7 @@
 #include "Embedder.h"
 #include "Edge.h"
 #include "Graph.h"
+#include "MarkerRestricted.h"
 #include "Matching.h"
 #include "ProgressOutput.h"
 #include "Selector.h"
@@ -43,6 +44,7 @@ Globals Globs ;
 Embedder::Embedder ()
 {
 	// read embfile
+	std::vector<BYTE> emb ;
 	VerboseMessage vrs ;
 	if (Args.EmbFn.getValue() == "") {
 		vrs.setMessage (_("reading secret data from standard input...")) ;
@@ -52,14 +54,19 @@ Embedder::Embedder ()
 		vrs.setNewline (false) ;
 	}
 	vrs.printMessage() ;
-
-	std::vector<BYTE> emb ;
-	BinaryIO embio (Args.EmbFn.getValue(), BinaryIO::READ) ;
-	while (!embio.eof()) {
-		emb.push_back (embio.read8()) ;
+	try {
+		BinaryIO embio (Args.EmbFn.getValue(), BinaryIO::READ) ;
+		while (!embio.eof()) {
+			emb.push_back (embio.read8()) ;
+		}
+		embio.close() ;
 	}
-	embio.close() ;
-
+	catch (SteghideError &e) {
+		if (Args.Verbosity.getValue() == VERBOSE) {
+			std::cerr << std::endl ;	// to make error message start on new line
+		}
+		throw e ;
+	}
 	VerboseMessage vdone (_(" done")) ;
 	if (Args.EmbFn.getValue() != "") {
 		vdone.printMessage() ;
@@ -86,16 +93,40 @@ Embedder::Embedder ()
 	else {
 		vrc.setMessage (_("reading cover file \"%s\"..."), Args.CvrFn.getValue().c_str()) ;
 	}
-	vrc.setNewline (false) ;
-	vrc.printMessage() ;
 
-	CvrStgFile::readFile (Args.CvrFn.getValue()) ;
+	try {
+		vrc.setNewline (false) ;
+		vrc.printMessage() ;
+
+		CvrStgFile::readFile (Args.CvrFn.getValue()) ;
+
+		ToEmbed.setArity (Globs.TheCvrStgFile->getEmbValueModulus()) ;
+		if ((ToEmbed.getNAryLength() * Globs.TheCvrStgFile->getSamplesPerVertex()) > Globs.TheCvrStgFile->getNumSamples()) {
+			throw SteghideError (_("the cover file is too short to embed the data.")) ;
+		}
+	}
+	catch (SteghideError& e) {
+		if (Args.Verbosity.getValue() == VERBOSE) {
+			std::cerr << std::endl ;	// to make error message start on new line
+		}
+		throw e ;
+	}
 
 	vdone.printMessage() ;
 
-	ToEmbed.setArity (Globs.TheCvrStgFile->getEmbValueModulus()) ;
-	if ((ToEmbed.getNAryLength() * Globs.TheCvrStgFile->getSamplesPerVertex()) > Globs.TheCvrStgFile->getNumSamples()) {
-		throw SteghideError (_("the cover file is too short to embed the data.")) ;
+	// use markers ?
+	if (Args.Marker.is_set()) {
+		UWORD32 prespace = 0, postspace = 0 ;
+		if (Args.Marker.getValue() == "") {
+			Globs.TheCvrStgFile->getDefaultMarkerRestriction( &prespace, &postspace ) ;
+		}
+		else {
+			if (!Globs.TheCvrStgFile->parseMarkerRestriction( Args.Marker.getValue(), &prespace, &postspace )) {
+				throw ArgError( _("the format of the space specification \"%s\" is invalid."), Args.Marker.getValue().c_str() ) ;
+			}
+		}
+
+		Globs.TheCvrStgFile = new MarkerRestricted( Globs.TheCvrStgFile, Args.Passphrase.getValue(), prespace, postspace ) ;
 	}
 
 	// create graph
@@ -104,11 +135,19 @@ Embedder::Embedder ()
 	VerboseMessage v (_("creating the graph...")) ;
 	v.setNewline (false) ;
 	v.printMessage() ;
-	new Graph (Globs.TheCvrStgFile, ToEmbed, sel) ;
+	try {
+		new Graph (Globs.TheCvrStgFile, ToEmbed, sel) ;
+	}
+	catch (SteghideError& e) {
+		if (Args.Verbosity.getValue() == VERBOSE) {
+			std::cerr << std::endl ;	// to make error message start on new line
+		}
+		throw e ;
+	}
 	Globs.TheGraph->printVerboseInfo() ;
 	if (Args.Check.getValue()) {
 		if (!Globs.TheGraph->check()) {
-			CriticalWarning w ("integrity checking of graph data structures failed!") ; // TODO: internationalize this
+			CriticalWarning w (_("integrity checking of graph data structures failed!")) ;
 			w.printMessage() ;
 		}
 	}
@@ -165,7 +204,14 @@ void Embedder::embed ()
 		prout = new ProgressOutput () ;
 	}
 
-	const Matching* M = calculateMatching (prout) ;
+	const Matching* M = NULL ;
+	try {
+		M = calculateMatching (prout) ;
+	}
+	catch (SteghideError &e) {
+		std::cerr << std::endl ;	// to make error message start on new line
+		throw e ;
+	}
 
 	// embed matched edges
 	const std::list<Edge*> medges = M->getEdges() ;
@@ -198,7 +244,15 @@ void Embedder::embed ()
 		}
 	}
 
-	Globs.TheCvrStgFile->write() ;
+	try {
+		Globs.TheCvrStgFile->write() ;
+	}
+	catch (SteghideError &e) {
+		if (Args.Verbosity.getValue() == VERBOSE) {
+			std::cerr << std::endl ;	// to make error message start on new line
+		}
+		throw e ;
+	}
 
 	if (displaydone) {
 		Message wsd (_("done")) ;
@@ -228,7 +282,7 @@ const Matching* Embedder::calculateMatching (ProgressOutput* prout)
 
 	if (Args.Check.getValue()) {
 		if (!matching->check()) {
-			CriticalWarning w ("integrity checking of matching data structures failed!") ; // TODO: internationalize this
+			CriticalWarning w (_("integrity checking of matching data structures failed!")) ;
 			w.printMessage() ;
 		}
 	}

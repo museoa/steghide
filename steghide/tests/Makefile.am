@@ -39,6 +39,7 @@ unittests_LDADD = \
 ../src/Selector.o ../src/Session.o ../src/SteghideError.o ../src/Terminal.o \
 ../src/Utils.o ../src/Vertex.o ../src/WavChunk.o ../src/WavChunkHeader.o \
 ../src/WavChunkUnused.o ../src/WavFile.o ../src/WavFormatChunk.o \
-../src/WavPCMSampleValue.o ../src/error.o ../src/msg.o ../src/SMDConstructionHeuristic.o
+../src/WavPCMSampleValue.o ../src/error.o ../src/msg.o ../src/SMDConstructionHeuristic.o \
+../src/MarkerRestricted.o
 LIBS = @LIBINTL@ @LIBS@
 MAINTAINERCLEANFILES = Makefile.in

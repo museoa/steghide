@@ -27,6 +27,10 @@
 
 class BitString ;
 
+/**
+ * \class MHashPP
+ * \brief a wrapper around the hashing functions in the mhash library
+ **/
 class MHashPP {
 	public:
 	enum Command { endhash } ;

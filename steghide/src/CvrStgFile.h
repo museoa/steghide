@@ -97,10 +97,10 @@ class CvrStgFile : public CvrStgObject {
 	/**
 	 * get the name of this cvrstgfile
 	 **/
-	const std::string& getName (void) const
+	virtual const std::string& getName (void) const
 		{ return getBinIO()->getName() ; } ;
 
-	bool is_std (void) const
+	virtual bool is_std (void) const
 		{ return getBinIO()->is_std() ; } ;
 
 	/**
@@ -141,7 +141,24 @@ class CvrStgFile : public CvrStgObject {
 	 **/
 	virtual EmbValue getEmbeddedValue (const SamplePos pos) const ;
 
-#ifdef DEBUG
+	/**
+	 * get the amount of space to be skipped by introducing markers at beginning and end
+	 * \param _spcstr the string that will be parsed ("" for default values)
+	 * \param _pre will be filled with space at beginning (if parsing is succesful)
+	 * \param _post will be filled with space at end (if parsing is sucessful)
+	 * \return true if parsing was sucessful
+	 *
+	 * This method should be overwritten in derived classes to parse data format specific
+	 * strings, like "30 ms" for audio files and to set _pre and _post to data format specific
+	 * default formats if _spcstr == "".
+	 **/
+	virtual bool parseMarkerRestriction (std::string _spcstr, UWORD32* _pre, UWORD32* _post) const ;
+
+	/**
+	 * get the default amount of space (for this file format) to be skipped by introducing markers at beginning and end
+	 **/
+	virtual void getDefaultMarkerRestriction (UWORD32* _pre, UWORD32* _post) const ;
+
 	/**
 	 * return a map that contains the absolute sample frequencies indexed by sample key
 	 **/
@@ -153,7 +170,6 @@ class CvrStgFile : public CvrStgObject {
 	 * of printing a frequency table.
 	 **/
 	virtual void printFrequencies (const std::map<SampleKey,unsigned long>& freqs) ;
-#endif
 
 	protected:
 	void setSamplesPerVertex (unsigned short spv)

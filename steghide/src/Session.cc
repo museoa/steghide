@@ -196,12 +196,20 @@ void Session::writeExtData (const EmbData& ed) const
 	}
 	vwe.printMessage() ;
 
-	BinaryIO io (fn, BinaryIO::WRITE) ;
-	std::vector<BYTE> data = ed.getData() ;
-	for (std::vector<BYTE>::iterator i = data.begin() ; i != data.end() ; i++) {
-		io.write8 (*i) ;
+	try {
+		BinaryIO io (fn, BinaryIO::WRITE) ;
+		std::vector<BYTE> data = ed.getData() ;
+		for (std::vector<BYTE>::iterator i = data.begin() ; i != data.end() ; i++) {
+			io.write8 (*i) ;
+		}
+		io.close() ;
 	}
-	io.close() ;
+	catch (SteghideError &e) {
+		if (Args.Verbosity.getValue() == VERBOSE) {
+			std::cerr << std::endl ;	// to make error message start on new line
+		}
+		throw e ;
+	}
 
 	if (printdone) {
 		VerboseMessage vdone (_(" done")) ;
@@ -289,8 +297,10 @@ void Session::printHelp ()
 		"   -e <a>[<m>]|<m>[<a>]  specify an encryption algorithm and/or mode\n"
 		"   -e none               do not encrypt data before embedding\n"
 		" -z, --compress          compress data before embedding (default)\n"
-		"   -z <l>                 using level <l> (1 best speed...9 best compression)\n"
+		"   -z <l>                using level <l> (1 best speed...9 best compression)\n"
 		" -Z, --dontcompress      do not compress data before embedding\n"
+		" -m, --marker            embed markers for synchronization\n"
+		"   -m [<l>]              leave a space with length <l> at begin and end\n"
 		" -K, --nochecksum        do not embed crc32 checksum of embedded data\n"
 		" -N, --dontembedname     do not embed the name of the original file\n"
 		" -f, --force             overwrite existing files\n"

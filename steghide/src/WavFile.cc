@@ -197,6 +197,43 @@ unsigned short WavFile::getFirstBitPosinSample()
 	return retval ;
 }
 
+bool WavFile::parseMarkerRestriction (std::string _spcstr, UWORD32* _pre, UWORD32* _post) const
+{
+	bool found = false ;
+
+	if (CvrStgFile::parseMarkerRestriction( _spcstr, _pre, _post )) {
+		found = true ; // _spcstr could be parsed by generic parser
+	}
+	else {
+		float nseconds = 0.0 ;
+		if ( std::string( _spcstr, _spcstr.size() - 2, 2 ) == "ms" ) {
+			// given in milliseconds
+			float tmp = 0.0 ;
+			sscanf ( std::string( _spcstr, 0, _spcstr.size() - 2 ).c_str(), "%f", &tmp) ;
+			nseconds = tmp / 1000.0 ;
+			found = true ;
+		}
+		else if ( std::string( _spcstr, _spcstr.size() - 1, 1 ) == "s" ) {
+			// given in seconds
+			sscanf ( std::string( _spcstr, 0, _spcstr.size() - 1 ).c_str(), "%f", &nseconds) ;
+			found = true ;
+		}
+
+		if ( found ) {
+			UWORD32 nsamples = (UWORD32) (nseconds * FormatChunk->getSamplesPerSecond()) ;
+			*_pre = *_post = nsamples ;
+		}
+	}
+
+	return found ;
+}
+
+void WavFile::getDefaultMarkerRestriction (UWORD32* _pre, UWORD32* _post) const
+{
+	*_pre = 100 ; // FIXME - find good value here
+	*_post = 100 ;
+}
+
 /* reads the wav file data from disk */
 void WavFile::readdata (void)
 {

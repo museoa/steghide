@@ -149,7 +149,7 @@ class BitString {
 	 * cut some bits out of this BitString
 	 * \param s the index of the first bit to be removed from this BitString
 	 * \param l the total number of bits to be removed
-	 * \return the BitString containing of the bits [s...s+(l-1)] of this BitString
+	 * \return the BitString containing the bits [s...s+(l-1)] of this BitString
 	 *
 	 * After calling cutBits, this BitString consists of the bits 0,...,s-1,s+l,... .
 	 **/
@@ -191,6 +191,15 @@ class BitString {
 	 * \param mult this BitString is padded until size is a multiple of mult (given in bits)
 	 **/
 	BitString& padRandom (const unsigned long mult) ;
+
+	/**
+	 * reduce the length of this BitString by xor operations
+	 * \param len the desired length
+	 *
+	 * This operation repeatedly xors the first len bits with blocks of length
+	 * len from the rest of the BitString until there are no more blocks.
+	 **/
+	BitString& xorreduce (const unsigned long len) ;
 
 	/**
 	 * get an n-ary digit from this BitString

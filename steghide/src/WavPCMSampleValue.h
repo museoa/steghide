@@ -32,6 +32,8 @@ class WavPCMSampleValue : public SampleValue {
 	WavPCMSampleValue (int v) ;
 
 	SampleValue* getNearestTargetSampleValue (EmbValue t) const ;
+	SampleValue* getNearestBitTargetSampleValue (BIT b) const
+		{ return getNearestTargetSampleValue( b ) ; } ; // works only for modulus = 2 !
 	UWORD32 calcDistance (const SampleValue *s) const ;
 	std::string getName (void) const ;
 

@@ -52,6 +52,9 @@ class AuFile : public CvrStgFile {
 	SampleValue* getSampleValue (SamplePos pos) const
 		{ return Data->getSampleValue(pos) ; } ;
 
+	bool parseMarkerRestriction (std::string _spcstr, UWORD32* _pre, UWORD32* _post) const ;
+	void getDefaultMarkerRestriction (UWORD32* _pre, UWORD32* _post) const ;
+
 	private:
 	enum ENCODING { MULAW8 = 1, PCM8 = 2, PCM16 = 3 } ;
 	class AuHeader {

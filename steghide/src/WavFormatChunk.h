@@ -41,6 +41,9 @@ class WavFormatChunk : public WavChunk {
 	UWORD16 getFormatTag (void) const
 		{ return FormatTag ; } ;
 
+	UWORD32 getSamplesPerSecond (void) const
+		{ return SamplesPerSec ; } ;
+
 	UWORD16 getBitsPerSample (void) const
 		{ return BitsPerSample ; } ;
 

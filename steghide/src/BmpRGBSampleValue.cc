@@ -47,6 +47,78 @@ UWORD32 BmpRGBSampleValue::calcDistance (const SampleValue *s) const
 	return (UWORD32) (dr*dr + dg*dg + db*db) ;
 }
 
+SampleValue *BmpRGBSampleValue::getNearestBitTargetSampleValue (BIT b) const
+{
+	std::vector<RGBTriple> candidates ;
+
+	BYTE cube[3][2] ;
+	cube[RED][UP] = Color.Red ; cube[RED][DOWN] = Color.Red ;
+	cube[GREEN][UP] = Color.Green ; cube[GREEN][DOWN] = Color.Green ;
+	cube[BLUE][UP] = Color.Blue ; cube[BLUE][DOWN] = Color.Blue ;
+
+	do {
+		cube[RED][UP] = plus(cube[RED][UP], 1) ;
+		cube[RED][DOWN] = minus(cube[RED][DOWN], 1) ;
+		cube[GREEN][UP] = plus(cube[GREEN][UP], 1) ;
+		cube[GREEN][DOWN] = minus(cube[GREEN][DOWN], 1) ;
+		cube[BLUE][UP] = plus(cube[BLUE][UP], 1) ;
+		cube[BLUE][DOWN] = minus(cube[BLUE][DOWN], 1) ;
+
+		addNBTSVCandidates (candidates, cube, RED, UP, GREEN, BLUE, b) ;
+		addNBTSVCandidates (candidates, cube, RED, DOWN, GREEN, BLUE, b) ;
+		addNBTSVCandidates (candidates, cube, GREEN, UP, RED, BLUE, b) ;
+		addNBTSVCandidates (candidates, cube, GREEN, DOWN, RED, BLUE, b) ;
+		addNBTSVCandidates (candidates, cube, BLUE, UP, RED, GREEN, b) ;
+		addNBTSVCandidates (candidates, cube, BLUE, DOWN, RED, GREEN, b) ;
+	} while (candidates.empty()) ;
+
+	// calculate minimal distance
+	UWORD32 mindist = UWORD32_MAX ;
+	for (std::vector<RGBTriple>::const_iterator cit = candidates.begin() ; cit != candidates.end() ; cit++) {
+		UWORD32 curdist = Color.calcDistance(*cit) ;
+		if (curdist < mindist) {
+			mindist = curdist ;
+		}
+	}
+
+	// choose only from those with the minimal distance
+	std::vector<RGBTriple> finalcandidates ;
+	for (std::vector<RGBTriple>::const_iterator cit = candidates.begin() ; cit != candidates.end() ; cit++) {
+		if (Color.calcDistance(*cit) == mindist) {
+			finalcandidates.push_back(*cit) ;
+		}
+	}
+
+	unsigned int rnd = (unsigned int) RndSrc.getValue (finalcandidates.size()) ;
+	return ((SampleValue*) new BmpRGBSampleValue (finalcandidates[rnd])) ;
+}
+
+void BmpRGBSampleValue::addNBTSVCandidates (std::vector<RGBTriple>& cands, const BYTE cube[3][2], COLOR fc, DIRECTION fd, COLOR i1, COLOR i2, BIT b) const
+{
+	for (BYTE value1 = cube[i1][DOWN] ; value1 < cube[i1][UP] ; value1++) {
+		for (BYTE value2 = cube[i2][DOWN] ; value2 < cube[i2][UP] ; value2++) {
+			// create an RGBTriple
+			BYTE color[3] ;
+			color[fc] = cube[fc][fd] ;
+			color[i1] = value1 ;
+			color[i2] = value2 ;
+			RGBTriple rgb (color[RED], color[GREEN], color[BLUE]) ;
+			if ((calcEValue( rgb ) & 1) == b) {
+				// add rgb to candidates...
+				bool found = false ;
+				for (std::vector<RGBTriple>::const_iterator cit = cands.begin() ; cit != cands.end() ; cit++) {
+					if (*cit == rgb) {
+						found = true ;
+					}
+				}
+				if (!found) {
+					cands.push_back (rgb) ;
+				}
+			}
+		}
+	}
+}
+
 SampleValue *BmpRGBSampleValue::getNearestTargetSampleValue (EmbValue t) const
 {
 	std::vector<RGBTriple> candidates ;

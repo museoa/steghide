@@ -55,6 +55,28 @@ SampleValue* BmpPaletteSampleValue::getNearestTargetSampleValue (EmbValue t) con
 	return ((SampleValue*) sv_mindist) ;
 }
 
+SampleValue* BmpPaletteSampleValue::getNearestBitTargetSampleValue (BIT b) const
+{
+	BmpPaletteSampleValue* sv_mindist = NULL ;
+	UWORD32 mindist = UWORD32_MAX ;
+	for (unsigned int i = 0 ; i < Palette->getSize() ; i++) {
+		if ((calcEValue(i) & 1) == b) {
+			BmpPaletteSampleValue* destsv = new BmpPaletteSampleValue (i) ;
+			UWORD32 curdist = calcDistance (destsv) ;
+			if (curdist < mindist) {
+				delete sv_mindist ;
+				sv_mindist = destsv ;
+				mindist = curdist ;
+			}
+			else {
+				delete destsv ;
+			}
+		}
+	}
+	myassert (sv_mindist != NULL) ;
+	return ((SampleValue*) sv_mindist) ;
+}
+
 std::string BmpPaletteSampleValue::getName () const
 {
 	char buf[128] ;
