@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.1 - a steganography program
+ * steghide 0.4.2 - a steganography program
  * Copyright (C) 2001 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -30,13 +30,15 @@
 
 void pmsg (char *fmt, ...)
 {
-	va_list ap ;
+	if (!args_quiet) {
+		va_list ap ;
 
-	va_start(ap, fmt) ;
-	vfprintf (stderr, fmt, ap) ;
-	va_end (ap) ;
+		va_start(ap, fmt) ;
+		vfprintf (stderr, fmt, ap) ;
+		va_end (ap) ;
 
-	putc ('\n', stderr) ;
+		putc ('\n', stderr) ;
+	}
 
 	return ;
 }
@@ -66,15 +68,17 @@ int pquestion (char *fmt, ...)
 
 void pwarn (char *fmt, ...)
 {
-	va_list ap ;
+	if (!args_quiet) {
+		va_list ap ;
 
-	fprintf (stderr, "%s: warning: ", PROGNAME) ;
+		fprintf (stderr, "%s: warning: ", PROGNAME) ;
 
-	va_start(ap, fmt) ;
-	vfprintf (stderr, fmt, ap) ;
-	va_end (ap) ;
+		va_start(ap, fmt) ;
+		vfprintf (stderr, fmt, ap) ;
+		va_end (ap) ;
 
-	putc ('\n', stderr) ;
+		putc ('\n', stderr) ;
+	}
 
 	return ;
 }

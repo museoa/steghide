@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.1 - a steganography program
+ * steghide 0.4.2 - a steganography program
  * Copyright (C) 2001 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -44,7 +44,12 @@ void wav_readheaders (CVRFILE *file, unsigned long rifflen)
 
 	wav_getchhdr (file->stream, &file->headers->wav.fmtchhdr) ;
 	if ((file->headers->wav.fmtch.FormatTag = read16_le (file->stream)) != WAV_FORMAT_PCM) {
-		exit_err ("the wav file \"%s\" has a format that is not supported.", file->filename) ;
+		if (file->filename == NULL) {
+			exit_err ("the wav file from standard input has a format that is not supported.") ;
+		}
+		else {
+			exit_err ("the wav file \"%s\" has a format that is not supported.", file->filename) ;
+		}
 	}
 	file->headers->wav.fmtch.Channels = read16_le (file->stream) ;
 	file->headers->wav.fmtch.SamplesPerSec = read32_le (file->stream) ;
@@ -53,7 +58,12 @@ void wav_readheaders (CVRFILE *file, unsigned long rifflen)
 	/* if a number other than a multiple of 8 is used, we cannot hide data,
 	   because the least significant bits are always set to zero */
 	if ((file->headers->wav.fmtch.BitsPerSample = read16_le (file->stream)) % 8 != 0) {
-		exit_err ("the bits/sample rate of the wav file \"%s\" is not a multiple of eight.", file->filename) ;
+		if (file->filename == NULL) {
+			exit_err ("the bits/sample rate of the wav file from standard input is not a multiple of eight.") ;
+		}
+		else {
+			exit_err ("the bits/sample rate of the wav file \"%s\" is not a multiple of eight.", file->filename) ;
+		}
 	}
 
 	file->unsupdata1 = NULL ;
@@ -82,7 +92,12 @@ void wav_readheaders (CVRFILE *file, unsigned long rifflen)
 	file->headers->wav.datachhdr.len = tmpchhdr.len ;
 
 	if (ferror (file->stream)) {
-		exit_err ("an error occured while reading the headers of the file \"%s\".", file->filename) ;
+		if (file->filename == NULL) {
+			exit_err ("an error occured while reading the headers of the wav file from standard input.") ;
+		}
+		else {
+			exit_err ("an error occured while reading the headers of the wav file \"%s\".", file->filename) ;
+		}
 	}
 
 	return ;
@@ -115,7 +130,12 @@ void wav_writeheaders (CVRFILE *file)
 	wav_putchhdr (file->stream, &file->headers->wav.datachhdr) ;
 
 	if (ferror (file->stream)) {
-		exit_err ("an error occured while writing the headers to the file \"%s\".", file->filename) ;
+		if (file->filename == NULL) {
+			exit_err ("an error occured while writing the wav headers to standard output.") ;
+		}
+		else {
+			exit_err ("an error occured while writing the wav headers to the file \"%s\".", file->filename) ;
+		}
 	}
 
 	return ;
@@ -156,7 +176,12 @@ void wav_readfile (CVRFILE *file)
 	}
 
 	if (ferror (file->stream)) {
-		exit_err ("an error occured while reading the audio data of the file \"%s\".", file->filename) ;
+		if (file->filename == NULL) {
+			exit_err ("an error occured while reading the audio data from standard input.") ;
+		}
+		else {
+			exit_err ("an error occured while reading the audio data of the file \"%s\".", file->filename) ;
+		}
 	}
 
 	return ;
@@ -190,7 +215,12 @@ void wav_writefile (CVRFILE *file)
 	}
 
 	if (ferror (file->stream)) {
-		exit_err ("an error occured while writing the audio data to the file \"%s\".", file->filename) ;
+		if (file->filename == NULL) {
+			exit_err ("an error occured while writing the audio data to standard output.") ;
+		}
+		else {
+			exit_err ("an error occured while writing the audio data to the file \"%s\".", file->filename) ;
+		}
 	}
 
 	return ;

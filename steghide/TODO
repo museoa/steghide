@@ -11,11 +11,7 @@ These are things that I plan to implement in the future:
 
 * interval length of distribution method should default to the maximum possible
 
-* verbosity switch
-
 * switch to en/disable embedding of plain file name
-
-* prompt for passphrase if not given on command line
 
 * gui frontend (this should not really be in the steghide TODO because I want
   to keep possible frontends separate from the steghide code)

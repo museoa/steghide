@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.1 - a steganography program
+ * steghide 0.4.2 - a steganography program
  * Copyright (C) 2001 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -65,11 +65,21 @@ void readheaders (CVRFILE *file)
 				wav_readheaders (file, rifflen) ;
 			}
 			else {
-				exit_err ("the file format of the file \"%s\" is not supported.", file->filename) ;
+				if (file->filename == NULL) {
+					exit_err ("the file format of the data from standard input is not supported.") ;
+				}
+				else {
+					exit_err ("the file format of the file \"%s\" is not supported.", file->filename) ;
+				}
 			}
 		}
 		else {
-			exit_err ("the file format of the file \"%s\" is not supported.", file->filename) ;
+			if (file->filename == NULL) {
+				exit_err ("the file format of the data from standard input is not supported.") ;
+			}
+			else {
+				exit_err ("the file format of the file \"%s\" is not supported.", file->filename) ;
+			}
 		}
 	}
 
@@ -83,18 +93,18 @@ CVRFILE *createstgfile (CVRFILE *cvrfile, const char *stgfilename)
 
 	stgfile = s_malloc (sizeof *stgfile) ;
 	
-	if (strcmp (stgfilename, "-") == 0) {
+	if (stgfilename == NULL) {
 		stgfile->stream = stdout ;
+		stgfile->filename = NULL ;
 	}
 	else {
 		if ((stgfile->stream = fopen (stgfilename, "wb")) == NULL) {
 			exit_err ("could not create stego file \"%s\".", stgfilename) ;
 		}
+		stgfile->filename = s_malloc (strlen (stgfilename) + 1) ;
+		strcpy (stgfile->filename, stgfilename) ;
 	}
 	
-	stgfile->filename = s_malloc (strlen (stgfilename) + 1) ;
-	strcpy (stgfile->filename, stgfilename) ;
-
 	stgfile->fileformat = cvrfile->fileformat ;
 	stgfile->headers = cvrfile->headers ;
 	stgfile->unsupdata1 = cvrfile->unsupdata1 ;
@@ -288,17 +298,18 @@ CVRFILE *readcvrfile (const char *filename)
 	/* fill cvrfile structure */
 	cvrfile = s_malloc (sizeof *cvrfile) ;
 
-	if (strcmp (filename, "-") == 0)
+	if (filename == NULL) {
 		cvrfile->stream = stdin ;
+		cvrfile->filename = NULL ;
+	}
 	else {
 		if ((cvrfile->stream = fopen (filename, "rb")) == NULL) {
 			free (cvrfile) ;
 			exit_err ("could not open the file \"%s\".", filename) ;
 		}
+		cvrfile->filename = s_malloc (strlen (filename) + 1) ;
+		strcpy (cvrfile->filename, filename) ;
 	}
-
-	cvrfile->filename = s_malloc (strlen (filename) + 1) ;
-	strcpy (cvrfile->filename, filename) ;
 
 	cvrfile->headers = s_malloc (sizeof *cvrfile->headers) ;
 
@@ -355,6 +366,20 @@ void writecvrfile (CVRFILE *cvrfile)
 		break ;
 	}
 
+	if (args_action == ACTN_EMBED) {
+		if (cvrfile->filename == NULL) {
+			if (args_verbose) {
+				pmsg ("wrote stego file to standard output.") ;
+			}
+		}
+		else {
+			pmsg ("wrote stego file to \"%s\".", cvrfile->filename) ;
+		}
+	}
+	else {
+		assert (0) ;
+	}
+
 	return ;
 }
 	
@@ -367,11 +392,9 @@ PLNFILE *readplnfile (const char *filename)
 
 	plnfile = s_malloc (sizeof *plnfile) ;
 
-	if (filename == NULL) {
+	if ((filename == NULL) || (strcmp (filename, "-") == 0)) {
 		plnfile->stream = stdin ;
-	}
-	else if (strcmp (filename, "-") == 0) {
-		plnfile->stream = stdin ;
+		plnfile->filename = NULL ;
 	}
 	else {
 		if ((plnfile->stream = fopen (filename, "rb")) == NULL) {
@@ -389,7 +412,12 @@ PLNFILE *readplnfile (const char *filename)
 	}
 
 	if (ferror (plnfile->stream)) {
-		exit_err ("an error occured while reading the file \"%s\".", filename) ;
+		if ((plnfile->filename == NULL) || (strcmp (plnfile->filename, "-") == 0)) {
+			exit_err ("an error occured while reading the plain data from standard input.") ;
+		}
+		else {
+			exit_err ("an error occured while reading the file \"%s\".", filename) ;
+		}
 	}
 
 	assemble_plndata (plnfile) ;
@@ -412,8 +440,22 @@ void writeplnfile (PLNFILE *plnfile)
 		bufpos++ ;
 	}
 
+	if ((plnfile->filename == NULL) || (strcmp (plnfile->filename, "-") == 0)) {
+		if (args_verbose) {
+			pmsg ("wrote plain file to standard output.") ;
+		}
+	}
+	else {
+		pmsg ("wrote plain file to \"%s\".", plnfile->filename) ;
+	}
+
 	if (ferror (plnfile->stream)) {
-		exit_err ("an error occured while writing to the file \"%s\".", plnfile->filename) ;
+		if ((plnfile->filename == NULL) || (strcmp (plnfile->filename, "-") == 0)) {
+			exit_err ("an error occured while writing the plain data to standard output.") ;
+		}
+		else {
+			exit_err ("an error occured while writing to the file \"%s\".", plnfile->filename) ;
+		}
 	}
 
 	return ;

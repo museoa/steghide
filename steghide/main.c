@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.1 - a steganography program
+ * steghide 0.4.2 - a steganography program
  * Copyright (C) 2001 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -46,6 +46,8 @@ char *args_passphrase = NULL ;
 char *args_fn_cvr = NULL ;
 char *args_fn_stg = NULL ;
 char *args_fn_pln = NULL ;
+int args_quiet = 0 ;
+int args_verbose = 0 ;
 
 /* indicates which arguments have already been parsed */
 int arggiven_method = 0 ;
@@ -77,7 +79,7 @@ int main (int argc, char *argv[])
 		break ;
 
 		case ACTN_VERSION:
-		printf ("steghide version 0.4.1\n") ;
+		printf ("steghide version 0.4.2\n") ;
 		break ;
 
 		case ACTN_LICENSE:
@@ -241,26 +243,30 @@ static void parsearguments (int argc, char* argv[])
 			}
 
 			if (++i == argc) {
-				exit_err ("the \"%s\" argument must be followed by name of the container file. type \"%s --help\" for help.", argv[i], argv[0]) ;
+				exit_err ("the \"%s\" argument must be followed by the container file name. type \"%s --help\" for help.", argv[i - 1], argv[0]) ;
 			}
-			args_fn_cvr = s_malloc (strlen (argv[i]) + 1) ;
-			strcpy (args_fn_cvr, argv[i]) ;
+
+			if (strcmp (argv[i], "-") != 0) {
+				args_fn_cvr = s_malloc (strlen (argv[i]) + 1) ;
+				strcpy (args_fn_cvr, argv[i]) ;
+			}
 		}
 
 		else if ((strncmp (argv[i], "-sf\0", 4) == 0) || (strncmp (argv[i], "--stegofile\0", 12) == 0)) {
 			if (++i == argc) {
-				exit_err ("the \"%s\" argument must be followed by the stego file name. type \"%s --help\" for help.", argv[i], argv[0]) ;
+				exit_err ("the \"%s\" argument must be followed by the stego file name. type \"%s --help\" for help.", argv[i - 1], argv[0]) ;
 			}
-			args_fn_stg = s_malloc (strlen (argv[i]) + 1) ;
-			strcpy (args_fn_stg, argv[i]) ;
+
+			if (strcmp (argv[i], "-") != 0) {
+				args_fn_stg = s_malloc (strlen (argv[i]) + 1) ;
+				strcpy (args_fn_stg, argv[i]) ;
+			}
 		}
 
 		else if ((strncmp (argv[i], "-pf\0", 4) == 0) || (strncmp (argv[i], "--plainfile\0", 12) == 0)) {
 			if (++i == argc) {
-				exit_err ("the \"%s\" argument must be followed by the plain file name. type \"%s --help\" for help.", argv[i], argv[0]) ;
+				exit_err ("the \"%s\" argument must be followed by the plain file name. type \"%s --help\" for help.", argv[i - 1], argv[0]) ;
 			}
-			args_fn_pln = s_malloc (strlen (argv[i]) + 1) ;
-			strcpy (args_fn_pln, argv[i]) ;
 
 			if (strcmp (argv[i], "-") == 0) {
 				sthdr.plnfilename = NULL ;
@@ -269,6 +275,16 @@ static void parsearguments (int argc, char* argv[])
 				sthdr.plnfilename = s_malloc (strlen (argv[i]) + 1) ;
 				strcpy (sthdr.plnfilename, argv[i]) ;
 			}
+			args_fn_pln = s_malloc (strlen (argv[i]) + 1) ;
+			strcpy (args_fn_pln, argv[i]) ;
+		}
+
+		else if ((strncmp (argv[i], "-q\0", 3) == 0) || (strncmp (argv[i], "--quiet\0", 8) == 0)) {
+			args_quiet = 1 ;
+		}
+
+		else if ((strncmp (argv[i], "-v\0", 3) == 0) || (strncmp (argv[i], "--verbose\0", 10) == 0)) {
+			args_verbose = 1 ;
 		}
 
 		else {
@@ -286,7 +302,7 @@ static void parsearguments (int argc, char* argv[])
 	if (arggiven_passphrase == 0) {
 		/* prompt for passphrase */
 		if (args_action == ACTN_EMBED) {
-			if ((args_fn_cvr == NULL) || (args_fn_pln == NULL)) {
+			if ((args_fn_cvr == NULL) || ((args_fn_pln == NULL) || (strcmp (args_fn_pln, "-") == 0))) {
 				exit_err ("if standard input is used, the passphrase must be specified on the command line.") ;
 			}
 			args_passphrase = get_passphrase (PP_DOUBLECHECK) ;
@@ -299,16 +315,8 @@ static void parsearguments (int argc, char* argv[])
 		}
 	}
 
-	if (args_fn_cvr == NULL) {
-		if (args_action == ACTN_EMBED) {
-			args_fn_cvr = s_malloc (2) ;
-			strcpy (args_fn_cvr, "-") ;
-		}
-	}
-
-	if (args_fn_stg == NULL) {
-		args_fn_stg = s_malloc (2) ;
-		strcpy (args_fn_stg, "-") ;
+	if (args_quiet && args_verbose) {
+		exit_err ("can not be quiet and verbose at the same time.") ;
 	}
 
 	if (args_fn_pln == NULL) {
@@ -337,7 +345,7 @@ static void setdefaults (void)
 	sthdr.encryption = ENC_MCRYPT ;
 
 	/* compression and checksum are not yet implemented but included
-	   to enable 0.4.1 to read not compressed post 0.4.1 files */
+	   to enable 0.4.2 to read not compressed post 0.4.2 files */
 	sthdr.compression = COMPR_NONE ;
 	sthdr.checksum = CKSUM_NONE ;
 
@@ -346,7 +354,7 @@ static void setdefaults (void)
 
 static void usage (void)
 {
-	printf ("steghide version 0.4.1\n\n") ;
+	printf ("steghide version 0.4.2\n\n") ;
 
 	printf ("the first argument must be one of the following:\n") ;
 	printf (" embed, --embed          embed plain data in cover data\n") ;
@@ -375,6 +383,8 @@ static void usage (void)
 	printf ("   -pf <filename>        use <filename> as plain file\n") ;
 	printf (" -h, --sthdrencryption   encrypt stego header before embedding (default)\n") ;
 	printf (" -H, --nosthdrencryption do not encrypt stego header before embedding\n") ;
+	printf (" -q, --quiet             suppress messages and warnings\n") ;
+	printf (" -v, --verbose           display detailed information\n") ;
 
 	printf ("\nIf a <filename> is \"-\", stdin or stdout is used.\n\n") ;
 
@@ -413,25 +423,57 @@ static void embedfile (const char *cvrfilename, const char *stgfilename, const c
 	PLNFILE *plnfile = NULL ;
 	unsigned long firstplnpos = 0 ;
 
+	if (args_verbose) {
+		if (cvrfilename == NULL) {
+			pmsg ("reading cover file from standard input.") ;
+		}
+		else {
+			pmsg ("reading cover file \"%s\".", cvrfilename) ;
+		}
+	}
 	cvrfile = readcvrfile (cvrfilename) ;
 
+	if (args_verbose) {
+		if ((plnfilename == NULL) || (strcmp (plnfilename, "-") == 0)) {
+			pmsg ("reading plain file from standard input.") ;
+		}
+		else {
+			pmsg ("reading plain file \"%s\".", plnfilename) ;
+		}
+	}
 	plnfile = readplnfile (plnfilename) ;
 
 	if (sthdr.encryption) {
+		if (args_verbose) {
+			pmsg ("encrypting plain data.") ;
+		}
 		encrypt_plnfile (plnfile, args_passphrase) ;
 	}
 
+	if (args_verbose) {
+		pmsg ("embedding plain data.") ;
+	}
 	embedsthdr (cvrfile->cvrbuflhead, sthdr_dmtd, sthdr_dmtdinfo, args_sthdrenc, args_passphrase, &firstplnpos) ;
-
 	embeddata (cvrfile->cvrbuflhead, firstplnpos, plnfile->plnbuflhead) ;
 
+	if (args_verbose) {
+		if (stgfilename == NULL) {
+			pmsg ("writing stego file to standard output.") ;
+		}
+		else {
+			pmsg ("writing stego file \"%s\".", stgfilename) ;
+		}
+	}
 	stgfile = createstgfile (cvrfile, stgfilename) ;
-
 	writecvrfile (stgfile) ;
 
 	cleanupcvrfile (cvrfile, FSS_NO) ;
 	cleanupcvrfile (stgfile, FSS_YES) ;
 	cleanupplnfile (plnfile) ;
+
+	if (args_verbose) {
+		pmsg ("done.") ;
+	}
 
 	return ;
 }
@@ -443,18 +485,29 @@ static void extractfile (const char *stgfilename, const char *plnfilename)
 	PLNFILE *plnfile = NULL ;
 	unsigned long firstplnpos = 0 ;
 
+	if (args_verbose) {
+		pmsg ("reading stego file \"%s\".", stgfilename) ;
+	}
 	stgfile = readcvrfile (stgfilename) ;
 
+	if (args_verbose) {
+		pmsg ("extracting plain data.") ;
+	}
 	extractsthdr (stgfile->cvrbuflhead, sthdr_dmtd, sthdr_dmtdinfo, args_sthdrenc, args_passphrase, &firstplnpos) ;
 
 	plnfile = createplnfile () ;
-
 	plnfile->plnbuflhead = extractdata (stgfile->cvrbuflhead, firstplnpos) ;
 
 	if (sthdr.encryption) {
+		if (args_verbose) {
+			pmsg ("decrypting plain data.") ;
+		}
 		decrypt_plnfile (plnfile, args_passphrase) ;
 	}
 
+	if (args_verbose) {
+		pmsg ("writing plain file \"%s\".", plnfilename) ;
+	}
 	writeplnfile (plnfile) ;
 
 	cleanupcvrfile (stgfile, FSS_YES) ;

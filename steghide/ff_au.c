@@ -1,5 +1,5 @@
 /*
- * steghide 0.4.1 - a steganography program
+ * steghide 0.4.2 - a steganography program
  * Copyright (C) 2001 Stefan Hetzl <shetzl@teleweb.at>
  *
  * This program is free software; you can redistribute it and/or
@@ -51,7 +51,12 @@ void au_readheaders (CVRFILE *file)
 	}
 		
 	if (ferror (file->stream)) {
-		exit_err ("an error occured while reading the headers of the file \"%s\".", file->filename) ;
+		if (file->filename == NULL) {
+			exit_err ("an error occured while reading the au headers from standard input.") ;
+		}
+		else {
+			exit_err ("an error occured while reading the au headers from the file \"%s\".", file->filename) ;
+		}
 	}
 
 	return ;
@@ -79,7 +84,12 @@ void au_writeheaders (CVRFILE *file)
 	}
 
 	if (ferror (file->stream)) {
-		exit_err ("an error occured while writing the au headers to the file \"%s\".", file->filename) ;
+		if (file->filename == NULL) {
+			exit_err ("an error occured while writing the au headers to standard output.") ;
+		}
+		else {
+			exit_err ("an error occured while writing the au headers to the file \"%s\".", file->filename) ;
+		}
 	}
 
 	return ;
@@ -96,7 +106,12 @@ void au_readfile (CVRFILE *file)
 	}
 
 	if (ferror (file->stream)) {
-		exit_err ("an error occured while reading the audio data from the file \"%s\".", file->filename) ;
+		if (file->filename == NULL) {
+			exit_err ("an error occured while reading the audio data from standard input.") ;
+		}
+		else {
+			exit_err ("an error occured while reading the audio data from the file \"%s\".", file->filename) ;
+		}
 	}
 
 	return ;
@@ -115,7 +130,12 @@ void au_writefile (CVRFILE *file)
 	}
 
 	if (ferror (file->stream)) {
-		exit_err ("an error occured while writing the audio data to the file \"%s\".", file->filename) ;
+		if (file->filename == NULL) {
+			exit_err ("an error occured while writing the audio data to standard output.") ;
+		}
+		else {
+			exit_err ("an error occured while writing the audio data to the file \"%s\".", file->filename) ;
+		}
 	}
 
 	return ;
