@@ -337,8 +337,13 @@ void writecvrfile (CVRFILE *cvrfile)
 		if (!args_force) {
 			/* check if file already exists */
 			if (fileexists (cvrfile->filename)) {
-				if (!pquestion ("file \"%s\" does already exits. overwrite ?", cvrfile->filename)) {
-					exit_err ("did not write to file \"%s\".", cvrfile->filename) ;
+				if ((args_fn_cvr == NULL) || ((args_fn_pln == NULL) || (strcmp (args_fn_pln, "-") == 0))) {
+					exit_err ("file \"%s\" does already exist.", cvrfile->filename) ;
+				}
+				else {
+					if (!pquestion ("file \"%s\" does already exist. overwrite ?", cvrfile->filename)) {
+						exit_err ("did not write to file \"%s\".", cvrfile->filename) ;
+					}
 				}
 			}
 		}
@@ -442,8 +447,13 @@ void writeplnfile (PLNFILE *plnfile)
 		if (!args_force) {
 			/* check if file already exists */
 			if (fileexists (plnfile->filename)) {
-				if (!pquestion ("file \"%s\" does already exits. overwrite ?", plnfile->filename)) {
-					exit_err ("did not write to file \"%s\".", plnfile->filename) ;
+				if (args_fn_stg == NULL) {
+					exit_err ("file \"%s\" does already exist.", plnfile->filename) ;
+				}
+				else {
+					if (!pquestion ("file \"%s\" does already exist. overwrite ?", plnfile->filename)) {
+						exit_err ("did not write to file \"%s\".", plnfile->filename) ;
+					}
 				}
 			}
 		}

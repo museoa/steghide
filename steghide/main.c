@@ -122,14 +122,23 @@ static void parsearguments (int argc, char* argv[])
 	}
 	else if ((strncmp (argv[1], "version\0", 8) == 0) || (strncmp (argv[1], "--version\0", 10) == 0)) {
 		args_action = ACTN_VERSION ;
+		if (argc > 2) {
+			pwarn ("you cannot use arguments with the version command") ;
+		}
 		return ;
 	}
 	else if ((strncmp (argv[1], "license\0", 8) == 0) || (strncmp (argv[1], "--license\0", 10) == 0)) {
 		args_action = ACTN_LICENSE ;
+		if (argc > 2) {
+			pwarn ("you cannot use arguments with the license command") ;
+		}
 		return ;
 	}
 	else if ((strncmp (argv[1], "help\0", 5) == 0) || (strncmp (argv[1], "--help\0", 7) == 0)) {
 		args_action = ACTN_HELP ;
+		if (argc > 2) {
+			pwarn ("you cannot use arguments with the help command") ;
+		}
 		return ;
 	}
 #ifdef DEBUG
@@ -407,10 +416,10 @@ static void usage (void)
 
 	printf ("The arguments default to reasonable values.\n") ;
 	printf ("For embedding the following line is enough:\n") ;
-	printf ("steghide embed -cf cvr.bmp -sf stg.bmp -pf pln.txt -p \"my passphrase\"\n\n") ;
+	printf ("steghide embed -cf cvr.bmp -sf stg.bmp -pf pln.txt\n\n") ;
 
 	printf ("For extracting it is sufficient to use:\n") ;
-	printf ("steghide extract -sf stg.bmp -p \"my passphrase\"\n\n") ;
+	printf ("steghide extract -sf stg.bmp\n\n") ;
 
 }
 

@@ -9,8 +9,6 @@ These are things that I plan to implement in the future:
 
 * support for other file formats (mp3, gif, jpeg, png)
 
-* interval length of distribution method should default to the maximum possible
-
 * switch to en/disable embedding of plain file name
 
 * gui frontend (this should not really be in the steghide TODO because I want
