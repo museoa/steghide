@@ -8,13 +8,9 @@ These are things that I plan to implement in the future:
 
 * support for other file formats (gif, mp3, avi, png)
 
-* use permutation as distribution function
-
 * gui frontend
 
 * user's guide (sgml?, gnu texinfo?)
-
-* take random data from /dev/random or /dev/urandom if available
 
 * support for RLE-encoded bmps
 

@@ -19,7 +19,6 @@
  */
 
 #include <cstdio>
-#include <sstream>
 
 #include "binaryio.h"
 #include "common.h"
@@ -99,11 +98,11 @@ bool BinaryIO::Fileexists (string fn)
 {
 	bool retval = false ;
 	FILE *fd = fopen (fn.c_str(), "r") ;
-    if (fd != NULL) {
-        retval = true ;
-        fclose (fd) ;
-    }
-    return retval ;
+	if (fd != NULL) {
+		retval = true ;
+		fclose (fd) ;
+	}
+	return retval ;
 }
 
 void BinaryIO::checkForce (string fn)
@@ -282,11 +281,20 @@ unsigned long BinaryIO::read_le (unsigned short n)
 
 std::string BinaryIO::readstring (unsigned int len)
 {
+	// FIXME - test this
+	char retval[len + 1] ;
+	for (unsigned int i = 0 ; i < len ; i++) {
+		retval[i] = (char) read8() ;
+	}
+	retval[len] = '\0' ;
+	return std::string (retval) ;
+#if 0
 	std::ostringstream ost ;
 	for (unsigned int i = 0 ; i < len ; i++) {
 		ost << read8() ;
 	}
 	return ost.str() ;
+#endif
 }
 
 void BinaryIO::write8 (unsigned char val)

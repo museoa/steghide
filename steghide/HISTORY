@@ -1,6 +1,12 @@
 steghide 0.5.1 :
 ================
 
+* use of permutation as distribution function
+
+* random data can be taken from /dev/urandom
+
+* compilation without libmcrypt is possible
+
 
 steghide 0.4.6b :
 =================
