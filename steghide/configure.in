@@ -11,7 +11,6 @@ AC_PROG_AWK
 AC_PROG_LN_S
 
 dnl GNU gettext
-ALL_LINGUAS="de fr"
 AC_CHECK_FUNCS(strchr)
 AM_GNU_GETTEXT
 AM_CONDITIONAL(USE_INTLDIR, test "$nls_cv_use_gnu_gettext" = yes)
