@@ -1,14 +1,14 @@
-Stefan Hetzl <shetzl@chello.at>                 author, maintainer
-Julien Catanese <julien_catanese@yahoo.fr>      french translation
-Cedric Gross <cgross@wanadoo.fr>				french translation
-Rasputin <rara.rasputin@virgin.net>             freebsd port
-Tilman Linneweh <e0025974@student.tuwien.ac.at> freebsd port
-Guenter Bechly <gbechly@gmx.de>                 debian package
-Brian Russo <wolfie@debian.org>                 debian package
-Joergen Pihlflyckt <Jorgen.Pihlflyckt@hut.fi>   bug report
-Snafutz <snafutz@excite.com>                    bug report
-Dave S <shewy.four@cox.net>                     bug report
-Christopher Laux <christopher.laux@gmx.net>     bug report
-Dan Frezza <dan@frezza.org>                     bug report
-Evin Miles <evin@evinmiles.com>                 bug report
-Joe Dollard <joedollard@optushome.com.au>       bug report
+Stefan Hetzl <shetzl@chello.at>             author, maintainer
+
+I would like to thank...
+
+Petra Mutzel <mutzel@ads.tuwien.ac.at>      for being a great guide trough graph theory
+Cedric Gross <cgross@wanadoo.fr>            french translation
+Julien Catanese <julien_catanese@yahoo.fr>  french translation
+Tilman Linneweh <arved@freebsd.org>         freebsd port
+Rasputin <rara.rasputin@virgin.net>         freebsd port
+Brian Russo <wolfie@debian.org>             debian package
+Guenter Bechly <gbechly@gmx.de>             debian package
+
+and numerous others who have contributed by sending bug reports
+or interesting suggestions.

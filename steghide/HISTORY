@@ -1,7 +1,7 @@
 steghide 0.5.1 :
 ================
 
-* maintains first-order statistics for all file formats
+* new algorithm that maintains first-order statistics for all file formats
 
 * support for all types of jpeg files (using libjpeg)
 

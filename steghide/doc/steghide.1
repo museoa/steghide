@@ -18,40 +18,35 @@ tests.
 Features include the compression of the embedded data, encryption of the embedded
 data and automatic integrity checking using a checksum. The JPEG, BMP, WAV and AU
 file formats are supported for use as
-cover file. There are - of course - no restrictions on the format of the secret
+cover file. There are no restrictions on the format of the secret
 data.
 
-Steghide uses a graph-theoretic approach to steganography. Of course you do not need
-to know anything about graph theory to use steghide and you can safely skip the rest of this section if you are 
-not interested in the technical details.
-
-The embedding algorithm roughly works as follows: At first, the secret data
-is compressed and encrypted. Then a sequence of postions of pixels/samples in the cover file
+Steghide uses a graph-theoretic approach to steganography. You do not need
+to know anything about graph theory to use steghide and you can safely skip the rest of this paragraph if you are 
+not interested in the technical details. The embedding algorithm roughly works as follows: At first, the secret data
+is compressed and encrypted. Then a sequence of postions of pixels in the cover file
 is created based on a pseudo-random number generator initialized with the
-passphrase (the secret data will be embedded in the pixels/samples at these positions). Of these positions
+passphrase (the secret data will be embedded in the pixels at these positions). Of these positions
 those that do not need to be changed (because they already contain the correct
 value by chance) are sorted out. Then a graph-theoretic matching algorithm finds pairs of positions
 such that exchanging their values has the effect of embedding the corresponding
 part of the secret data. If the algorithm cannot find any more such pairs all exchanges are actually performed.
-The pixels/samples at the remaining positions (the positions that are not part of such a pair) are also modified to
-contain the embedded data. When you start steghide you will notice a percentage that is continually rising.
-This percentage indicates the rate of positions that are members of pairs (as mentioned above). This value
-can also be seen as the percentage of the secret data that can be embedded without changing the
-color- respectivly sample-frequencies. Having a high percentage there means that the frequencies are
-not changed much and that therefore the embedding is secure against detection by statistical tests
-that analyze the color- or sample-frequencies.
+The pixels at the remaining positions (the positions that are not part of such a pair) are also modified to
+contain the embedded data (but this is done by overwriting them, not by exchanging them with other pixels).
+The fact that (most of) the embedding is done by exchanging pixel values implies that the first-order
+statistics (i.e. the number of times a color occurs in the picture) is not changed. For audio files
+the algorithm is the same, except that audio samples are used instead of pixels.
 
 The default encryption algorithm is rijndael with a key size of 128 bits (which is AES \- 
 the advanced encryption standard) in the cipher block chaining mode. If you do not trust
 this combination for whatever reason feel free to choose another algorithm/mode combination
 (information about all possible algorithms and modes is displayed by the encinfo command).
-key generation !? algorithm
 The checksum is calculated using CRC32.
 
 .SH COMMANDS
 In this section the commands for steghide are listed. The first argument must
 always be one of these commands. You can supply arguments to the embed,
-extract and info commands.
+extract and info commands. The other commands to not take any arguments.
 .TP
 .B "embed, --embed"
 Embed secret data in a cover file thereby creating a stego file
@@ -180,7 +175,6 @@ Supress information messages.
 Always overwrite existing files.
 
 .SH FILE NAME OPTIONS
-.TP
 All file name arguments (-cf, -ef, -sf, -xf) also accept \- as a filename which makes steghide
 use standard input or standard output (whichever makes sense). Omitting the corresponding file
 name argument will have the same effect with two exceptions: If -sf is omitted for the embed command,
@@ -190,7 +184,45 @@ So when you want to be sure that standard input/output is used, use - as filenam
 
 .SH EXAMPLES
 
-take from README !
+The basic usage is as follows:
+
+  $ steghide embed -cf picture.jpg -ef secret.txt
+  Enter passphrase:
+  Re-Enter passphrase:
+  embedding "secret.txt" in "picture.jpg"... done
+
+This command will embed the file secret.txt in the cover file picture.jpg.
+
+After you have embedded your secret data as shown above you can send the file
+picture.jpg to the person who should receive the secret message. The receiver
+has to use steghide in the following way:
+
+  $ steghide extract -sf picture.jpg
+  Enter passphrase:
+  wrote extracted data to "secret.txt".
+
+If the supplied passphrase is correct, the contents of the original file
+secret.txt will be extracted from the stego file picture.jpg and saved
+in the current directory.
+
+If you have received a file that contains embedded data and you want to get
+some information about it before extracting it, use the info command:
+
+  $ steghide info received_file.wav
+  "received_file.wav":
+    format: wave audio, PCM encoding
+    capacity: 3.5 KB
+  Try to get information about embedded data ? (y/n) y
+  Enter passphrase:
+    embedded file "secret.txt":
+      size: 1.6 KB
+      encrypted: rijndael-128, cbc
+      compressed: yes
+
+After printing some general information about the stego file (format, capacity) you will be
+asked if steghide should try to get information about the embedded data. If you answer with
+yes you have to supply a passphrase. Steghide will then try to extract the embedded data
+with that passphrase and - if it succeeds - print some information about it.
 
 .SH RETURN VALUE
 Steghide returns 0 on success and 1 if a failure occured and it had to terminate

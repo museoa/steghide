@@ -55,7 +55,7 @@ You should have the following libraries installed to use steghide.
   before embedding nor to extract compressed data from a stego-file.
   Available at: http://www.gzip.org/zlib/
 
-Libmhash is absolutly required to compile steghide. While you can compile it
+Libmhash is absolutely required to compile steghide. While you can compile it
 without the other libraries they are highly recommended as major functionality
 will not be available without them.
 
@@ -98,36 +98,31 @@ manpage.
 The basic usage is as follows:
 
   $ steghide embed -cf picture.jpg -ef secret.txt
-  Enter passhrase:
+  Enter passphrase:
   Re-Enter passphrase:
-  embedding secret.txt in picture.jpg...100.0% done
+  embedding "secret.txt" in "picture.jpg"... done
 
-This command will embed the file secret.txt in the cover-file picture.jpg. If the
-percentage at the end of the output is not 100%, you do not have to worry. It does
-does not mean that less than 100% of the secret data
-have been embedded but rather that less than 100% of the secret data have been embedded
-just by exchanging pixels. The rest of the secret data had to be embedded by overwriting pixels.
-The higher this percentage the less likely is it that
-the embedded data is detected by a statistical test that is based on pixel/sample frequencies.
+This command will embed the file secret.txt in the cover file picture.jpg.
 
-After you have embedded your secret data as shown above you can send picture.jpg to the designated receiver of the secret
-message. The receiver has to call steghide in the following way:
+After you have embedded your secret data as shown above you can send the file
+picture.jpg to the person who should receive the secret message. The receiver
+has to use steghide in the following way:
 
   $ steghide extract -sf picture.jpg
   Enter passphrase:
-  wrote embedded data to "secret.txt".
+  wrote extracted data to "secret.txt".
 
 If the supplied passphrase is correct, the contents of the original file
-secret.txt will be extracted from the stego-file picture.jpg and saved under
-the same file name in the current directory.
+secret.txt will be extracted from the stego file picture.jpg and saved
+in the current directory.
 
-If you have received a file that contains embedded data and you want to get some information
-about it before extracting it, use the info command:
+If you have received a file that contains embedded data and you want to get
+some information about it before extracting it, use the info command:
 
   $ steghide info received_file.wav
   "received_file.wav":
     format: wave audio, PCM encoding
-    capacity: 7.6 KB
+    capacity: 3.5 KB
   Try to get information about embedded data ? (y/n) y
   Enter passphrase:
     embedded file "secret.txt":
@@ -139,13 +134,6 @@ After printing some general information about the stego file (format, capacity) 
 asked if steghide should try to get information about the embedded data. If you answer with
 yes you have to supply a passphrase. Steghide will then try to extract the embedded data
 with that passphrase and - if it succeeds - print some information about it.
-
-Especially when embedding large amounts of data you will notice that steghide takes some time
-to finish. If you are impatient you can use the -a option to speed things up. The -a option must
-be followed by a number between 0 and 3 and selects the algorithm to be used to calculate
-the embedding, where 0 is the fastest and 3 the most secure algorithm. You will notice that
-the exchange percentage won't be very high if you select a fast algorithm. This increases
-the probability that the embedding can be detected with a pixel/sample frequency based statistical test.
 
 Contact :
 =========
