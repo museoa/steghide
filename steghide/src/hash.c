@@ -21,6 +21,8 @@
 #include <string.h>
 
 #include <mhash.h>
+#include <libintl.h>
+#define _(S) gettext (S)
 
 #include "bufmanag.h"
 #include "io.h"
@@ -36,7 +38,7 @@ unsigned long getseed (char *passphrase)
 	int i = 0 ;
 
 	if ((hashd = mhash_init (MHASH_MD5)) == MHASH_FAILED) {
-		exit_err ("could not initialize libmhash MD5 algorithm.") ;
+		exit_err (_("could not initialize libmhash MD5 algorithm.")) ;
 	}
 	mhash (hashd, passphrase, strlen (passphrase)) ;
 	hash = mhash_end (hashd) ;
@@ -57,7 +59,7 @@ void *getcrc32 (PLNFILE *plnfile)
 	unsigned char c ;
 
 	if ((hashd = mhash_init (MHASH_CRC32)) == MHASH_FAILED) {
-		exit_err ("could not initialize libmhash CRC32 algorithm.") ;
+		exit_err (_("could not initialize libmhash CRC32 algorithm.")) ;
 	}
 
 	n = plnfile->plndata->length ;
@@ -89,7 +91,7 @@ void *getblowfishkey (char *passphrase)
 	MHASH hashd ;
 
 	if ((hashd = mhash_init (MHASH_MD5)) == MHASH_FAILED) {
-		exit_err ("could not initialize libmhash MD5 algorithm.") ;
+		exit_err (_("could not initialize libmhash MD5 algorithm.")) ;
 	}
 
 	mhash (hashd, passphrase, strlen (passphrase)) ;

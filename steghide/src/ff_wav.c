@@ -23,6 +23,9 @@
 #include <string.h>
 #include <assert.h>
 
+#include <libintl.h>
+#define _(S) gettext (S)
+
 #include "main.h"
 #include "io.h"
 #include "bufmanag.h"
@@ -45,10 +48,10 @@ void wav_readheaders (CVRFILE *file, unsigned long rifflen)
 	wav_getchhdr (file->stream, &file->headers->wav.fmtchhdr) ;
 	if ((file->headers->wav.fmtch.FormatTag = read16_le (file->stream)) != WAV_FORMAT_PCM) {
 		if (file->filename == NULL) {
-			exit_err ("the wav file from standard input has a format that is not supported.") ;
+			exit_err (_("the wav file from standard input has a format that is not supported.")) ;
 		}
 		else {
-			exit_err ("the wav file \"%s\" has a format that is not supported.", file->filename) ;
+			exit_err (_("the wav file \"%s\" has a format that is not supported."), file->filename) ;
 		}
 	}
 	file->headers->wav.fmtch.Channels = read16_le (file->stream) ;
@@ -59,10 +62,10 @@ void wav_readheaders (CVRFILE *file, unsigned long rifflen)
 	   because the least significant bits are always set to zero */
 	if ((file->headers->wav.fmtch.BitsPerSample = read16_le (file->stream)) % 8 != 0) {
 		if (file->filename == NULL) {
-			exit_err ("the bits/sample rate of the wav file from standard input is not a multiple of eight.") ;
+			exit_err (_("the bits/sample rate of the wav file from standard input is not a multiple of eight.")) ;
 		}
 		else {
-			exit_err ("the bits/sample rate of the wav file \"%s\" is not a multiple of eight.", file->filename) ;
+			exit_err (_("the bits/sample rate of the wav file \"%s\" is not a multiple of eight."), file->filename) ;
 		}
 	}
 
@@ -93,10 +96,10 @@ void wav_readheaders (CVRFILE *file, unsigned long rifflen)
 
 	if (ferror (file->stream)) {
 		if (file->filename == NULL) {
-			exit_err ("an error occured while reading the headers of the wav file from standard input.") ;
+			exit_err (_("an error occured while reading the headers of the wav file from standard input.")) ;
 		}
 		else {
-			exit_err ("an error occured while reading the headers of the wav file \"%s\".", file->filename) ;
+			exit_err (_("an error occured while reading the headers of the wav file \"%s\"."), file->filename) ;
 		}
 	}
 
@@ -131,10 +134,10 @@ void wav_writeheaders (CVRFILE *file)
 
 	if (ferror (file->stream)) {
 		if (file->filename == NULL) {
-			exit_err ("an error occured while writing the wav headers to standard output.") ;
+			exit_err (_("an error occured while writing the wav headers to standard output.")) ;
 		}
 		else {
-			exit_err ("an error occured while writing the wav headers to the file \"%s\".", file->filename) ;
+			exit_err (_("an error occured while writing the wav headers to the file \"%s\"."), file->filename) ;
 		}
 	}
 
@@ -177,10 +180,10 @@ void wav_readfile (CVRFILE *file)
 
 	if (ferror (file->stream)) {
 		if (file->filename == NULL) {
-			exit_err ("an error occured while reading the audio data from standard input.") ;
+			exit_err (_("an error occured while reading the audio data from standard input.")) ;
 		}
 		else {
-			exit_err ("an error occured while reading the audio data of the file \"%s\".", file->filename) ;
+			exit_err (_("an error occured while reading the audio data of the file \"%s\"."), file->filename) ;
 		}
 	}
 
@@ -216,10 +219,10 @@ void wav_writefile (CVRFILE *file)
 
 	if (ferror (file->stream)) {
 		if (file->filename == NULL) {
-			exit_err ("an error occured while writing the audio data to standard output.") ;
+			exit_err (_("an error occured while writing the audio data to standard output.")) ;
 		}
 		else {
-			exit_err ("an error occured while writing the audio data to the file \"%s\".", file->filename) ;
+			exit_err (_("an error occured while writing the audio data to the file \"%s\"."), file->filename) ;
 		}
 	}
 

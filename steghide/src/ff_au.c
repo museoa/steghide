@@ -23,6 +23,9 @@
 #include <string.h>
 #include <assert.h>
 
+#include <libintl.h>
+#define _(S) gettext (S)
+
 #include "main.h"
 #include "io.h"
 #include "bufmanag.h"
@@ -52,10 +55,10 @@ void au_readheaders (CVRFILE *file)
 		
 	if (ferror (file->stream)) {
 		if (file->filename == NULL) {
-			exit_err ("an error occured while reading the au headers from standard input.") ;
+			exit_err (_("an error occured while reading the au headers from standard input.")) ;
 		}
 		else {
-			exit_err ("an error occured while reading the au headers from the file \"%s\".", file->filename) ;
+			exit_err (_("an error occured while reading the au headers from the file \"%s\"."), file->filename) ;
 		}
 	}
 
@@ -85,10 +88,10 @@ void au_writeheaders (CVRFILE *file)
 
 	if (ferror (file->stream)) {
 		if (file->filename == NULL) {
-			exit_err ("an error occured while writing the au headers to standard output.") ;
+			exit_err (_("an error occured while writing the au headers to standard output.")) ;
 		}
 		else {
-			exit_err ("an error occured while writing the au headers to the file \"%s\".", file->filename) ;
+			exit_err (_("an error occured while writing the au headers to the file \"%s\"."), file->filename) ;
 		}
 	}
 
@@ -107,10 +110,10 @@ void au_readfile (CVRFILE *file)
 
 	if (ferror (file->stream)) {
 		if (file->filename == NULL) {
-			exit_err ("an error occured while reading the audio data from standard input.") ;
+			exit_err (_("an error occured while reading the audio data from standard input.")) ;
 		}
 		else {
-			exit_err ("an error occured while reading the audio data from the file \"%s\".", file->filename) ;
+			exit_err (_("an error occured while reading the audio data from the file \"%s\"."), file->filename) ;
 		}
 	}
 
@@ -131,10 +134,10 @@ void au_writefile (CVRFILE *file)
 
 	if (ferror (file->stream)) {
 		if (file->filename == NULL) {
-			exit_err ("an error occured while writing the audio data to standard output.") ;
+			exit_err (_("an error occured while writing the audio data to standard output.")) ;
 		}
 		else {
-			exit_err ("an error occured while writing the audio data to the file \"%s\".", file->filename) ;
+			exit_err (_("an error occured while writing the audio data to the file \"%s\"."), file->filename) ;
 		}
 	}
 

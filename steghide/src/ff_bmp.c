@@ -22,6 +22,9 @@
 #include <stdlib.h>
 #include <assert.h>
 
+#include <libintl.h>
+#define _(S) gettext (S)
+
 #include "main.h"
 #include "io.h"
 #include "bufmanag.h"
@@ -46,10 +49,10 @@ void bmp_readheaders (CVRFILE *file)
 		file->headers->bmp.bmxh.BitCount = read16_le (file->stream) ;
 		if ((file->headers->bmp.bmxh.Compression = read32_le (file->stream)) != BMP_BI_RGB) {
 			if (file->filename == NULL) {
-				exit_err ("the bitmap data from standard input is compressed which is not supported.") ;
+				exit_err (_("the bitmap data from standard input is compressed which is not supported.")) ;
 			}
 			else {
-				exit_err ("the bitmap data in \"%s\" is compressed which is not supported.", file->filename) ;
+				exit_err (_("the bitmap data in \"%s\" is compressed which is not supported."), file->filename) ;
 			}
 		}
 		file->headers->bmp.bmxh.SizeImage = read32_le (file->stream) ;
@@ -68,10 +71,10 @@ void bmp_readheaders (CVRFILE *file)
 
 		default:
 		if (file->filename == NULL) {
-			exit_err ("the bmp data from standard input has a format that is not supported.") ;
+			exit_err (_("the bmp data from standard input has a format that is not supported.")) ;
 		}
 		else {
-			exit_err ("the bmp file \"%s\" has a format that is not supported.", file->filename) ;
+			exit_err (_("the bmp file \"%s\" has a format that is not supported."), file->filename) ;
 		}
 		break ;
 	}
@@ -96,10 +99,10 @@ void bmp_readheaders (CVRFILE *file)
 
 	if (ferror (file->stream)) {
 		if (file->filename == NULL) {
-			exit_err ("an error occured while reading the bmp headers from standard input.") ;
+			exit_err (_("an error occured while reading the bmp headers from standard input.")) ;
 		}
 		else {
-			exit_err ("an error occured while reading the bmp headers of the file \"%s\".", file->filename) ;
+			exit_err (_("an error occured while reading the bmp headers of the file \"%s\"."), file->filename) ;
 		}
 	}
 
@@ -150,10 +153,10 @@ void bmp_writeheaders (CVRFILE *file)
 
 	if (ferror (file->stream)) {
 		if (file->filename == NULL) {
-			exit_err ("an error occured while writing the bmp headers to standard output.") ;
+			exit_err (_("an error occured while writing the bmp headers to standard output.")) ;
 		}
 		else {
-			exit_err ("an error occured while writing the bmp headers to the file \"%s\".", file->filename) ;
+			exit_err (_("an error occured while writing the bmp headers to the file \"%s\"."), file->filename) ;
 		}
 	}
 
@@ -171,10 +174,10 @@ void bmp_readfile (CVRFILE *file)
 		while (posinline < file->headers->bmp.bmxh.BitCount * file->headers->bmp.bmxh.Width / 8) {
 			if ((c = getc (file->stream)) == EOF) {
 				if (file->filename == NULL) {
-					exit_err ("premature end of bmp data from standard input.") ;
+					exit_err (_("premature end of bmp data from standard input.")) ;
 				}
 				else {
-					exit_err ("premature end of bmp file \"%s\".", file->filename) ;
+					exit_err (_("premature end of bmp file \"%s\"."), file->filename) ;
 				}
 			}
 			bufsetbyte (file->cvrdata, bufpos, c) ;
@@ -193,10 +196,10 @@ void bmp_readfile (CVRFILE *file)
 
 	if (ferror (file->stream)) {
 		if (file->filename == NULL) {
-			exit_err ("an error occured while reading the bitmap data from standard input.") ;
+			exit_err (_("an error occured while reading the bitmap data from standard input.")) ;
 		}
 		else {
-			exit_err ("an error occured while reading the bitmap data of the file \"%s\".", file->filename) ;
+			exit_err (_("an error occured while reading the bitmap data of the file \"%s\"."), file->filename) ;
 		}
 	}
 	
@@ -229,13 +232,12 @@ void bmp_writefile (CVRFILE *file)
 
 	if (ferror (file->stream)) {
 		if (file->filename == NULL) {
-			exit_err ("an error occured while writing the bitmap data to standard output.") ;
+			exit_err (_("an error occured while writing the bitmap data to standard output.")) ;
 		}
 		else {
-			exit_err ("an error occured while writing the bitmap data to the file \"%s\".", file->filename) ;
+			exit_err (_("an error occured while writing the bitmap data to the file \"%s\"."), file->filename) ;
 		}
 	}
 
 	return ;
 }
-

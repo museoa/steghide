@@ -1,0 +1,12 @@
+# List of source files containing translatable strings.
+
+src/crypto.c
+src/ff_au.c
+src/ff_bmp.c
+src/ff_wav.c
+src/hash.c
+src/io.c
+src/main.c
+src/msg.c
+src/stegano.c
+src/support.c

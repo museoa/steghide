@@ -24,6 +24,9 @@
 
 #include <termios.h>
 
+#include <libintl.h>
+#define _(S) gettext (S)
+
 #include "msg.h"
 #include "support.h"
 #include "main.h"
@@ -68,6 +71,7 @@ int pquestion (char *fmt, ...)
 	vfprintf (stderr, fmt, ap) ;
 	va_end (ap) ;
 
+	/* FIXME l10n !!! */
 	fprintf (stderr, " (y/n) ") ;
 
 	oldattr = termios_singlekey_on () ;
@@ -85,7 +89,7 @@ void pwarn (char *fmt, ...)
 {
 	va_list ap ;
 
-	fprintf (stderr, "%s: warning: ", PROGNAME) ;
+	fprintf (stderr, _("%s: warning: "), PROGNAME) ;
 
 	va_start(ap, fmt) ;
 	vfprintf (stderr, fmt, ap) ;

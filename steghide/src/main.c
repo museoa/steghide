@@ -25,6 +25,9 @@
 #include <time.h>
 #include <assert.h>
 
+#include <libintl.h>
+#define _(S) gettext (S)
+
 #include "main.h"
 #include "io.h"
 #include "crypto.h"
@@ -56,6 +59,11 @@ static void cleanup (void) ;
 
 int main (int argc, char *argv[])
 {
+	/* initialize gettext */
+	setlocale (LC_ALL, "") ;
+	bindtextdomain (PACKAGE, LOCALEDIR) ;
+	textdomain (PACKAGE) ;
+
 	/* 	the C "rand" generator is used if random numbers need not be reproduceable,
 		the random number generator in support.c "rnd" is used if numbers must be reproduceable */
 	srand ((unsigned int) time (NULL)) ;
@@ -115,21 +123,21 @@ static void parsearguments (int argc, char* argv[])
 	else if ((strncmp (argv[1], "version\0", 8) == 0) || (strncmp (argv[1], "--version\0", 10) == 0)) {
 		args.action.value = ARGS_ACTION_VERSION ;
 		if (argc > 2) {
-			pwarn ("you cannot use arguments with the version command") ;
+			pwarn (_("you cannot use arguments with the \"version\" command")) ;
 		}
 		return ;
 	}
 	else if ((strncmp (argv[1], "license\0", 8) == 0) || (strncmp (argv[1], "--license\0", 10) == 0)) {
 		args.action.value = ARGS_ACTION_LICENSE ;
 		if (argc > 2) {
-			pwarn ("you cannot use arguments with the license command") ;
+			pwarn (_("you cannot use arguments with the \"license\" command")) ;
 		}
 		return ;
 	}
 	else if ((strncmp (argv[1], "help\0", 5) == 0) || (strncmp (argv[1], "--help\0", 7) == 0)) {
 		args.action.value = ARGS_ACTION_HELP ;
 		if (argc > 2) {
-			pwarn ("you cannot use arguments with the help command") ;
+			pwarn (_("you cannot use arguments with the \"help\" command")) ;
 		}
 		return ;
 	}
@@ -140,7 +148,7 @@ static void parsearguments (int argc, char* argv[])
 	}
 #endif
 	else {
-		exit_err ("unknown command \"%s\". type \"%s --help\" for help.", argv[1], argv[0]) ;
+		exit_err (_("unknown command \"%s\". type \"%s --help\" for help."), argv[1], argv[0]) ;
 	}
 
 	/* check rest of arguments */
@@ -149,18 +157,18 @@ static void parsearguments (int argc, char* argv[])
 			unsigned int tmp = 0 ;
 
 			if (args.action.value != ARGS_ACTION_EMBED) {
-				exit_err ("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help.", argv[i], argv[0]) ;
+				exit_err (_("the argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], argv[0]) ;
 			}
 
 			if (args.dmtd.dmtd_is_set) {
-				exit_err ("the distribution argument can be used only once. type \"%s --help\" for help.", argv[0]) ;
+				exit_err (_("the distribution argument can be used only once. type \"%s --help\" for help."), argv[0]) ;
 			}
 			else {
 				args.dmtd.dmtd_is_set = 1 ;
 			}
 
 			if (++i == argc) {
-				exit_err ("the argument \"%s\" is incomplete. type \"%s --help\" for help.", argv[i - 1], argv[0]) ;
+				exit_err (_("the argument \"%s\" is incomplete. type \"%s --help\" for help."), argv[i - 1], argv[0]) ;
 			}
 
 			if (strncmp (argv[i], "cnsti\0", 6) == 0) {
@@ -172,7 +180,7 @@ static void parsearguments (int argc, char* argv[])
 				else {
 					i++ ;
 					if ((tmp = readnum (argv[i])) > DMTD_CNSTI_MAX_ILEN) {
-						exit_err ("the interval length for the cnsti method must be smaller than %d.", DMTD_CNSTI_MAX_ILEN + 1) ;
+						exit_err (_("the interval length for the cnsti method must be smaller than %d."), DMTD_CNSTI_MAX_ILEN + 1) ;
 					}
 
 					args.dmtd.dmtdinfo.cnsti.interval_len = tmp ;
@@ -189,7 +197,7 @@ static void parsearguments (int argc, char* argv[])
 				else {
 					i++ ;
 					if ((tmp = readnum (argv[i])) > DMTD_PRNDI_MAX_IMLEN) {
-						exit_err ("the maximum interval length for the prndi method must be smaller than %d.", DMTD_PRNDI_MAX_IMLEN + 1) ;
+						exit_err (_("the maximum interval length for the prndi method must be smaller than %d."), DMTD_PRNDI_MAX_IMLEN + 1) ;
 					}
 
 					args.dmtd.dmtdinfo.prndi.interval_maxlen = tmp ;
@@ -198,17 +206,17 @@ static void parsearguments (int argc, char* argv[])
 				}
 			}
 			else {
-				exit_err ("unknown distribution method \"%s\". type \"%s --help\" for help.", argv[i], argv[0]) ;
+				exit_err (_("unknown distribution method \"%s\". type \"%s --help\" for help."), argv[i], argv[0]) ;
 			}
 		}
 
 		else if ((strncmp (argv[i], "-e\0", 3) == 0) || (strncmp (argv[i], "--encryption\0", 13) == 0)) {
 			if (args.action.value != ARGS_ACTION_EMBED) {
-				exit_err ("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help.", argv[i], argv[0]) ;
+				exit_err (_("the argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], argv[0]) ;
 			}
 
 			if (args.encryption.is_set) {
-				exit_err ("the encryption argument can be used only once. type \"%s --help\" for help.", argv[0]) ;
+				exit_err (_("the encryption argument can be used only once. type \"%s --help\" for help."), argv[0]) ;
 			}
 			else {
 				args.encryption.is_set = 1 ;
@@ -219,11 +227,11 @@ static void parsearguments (int argc, char* argv[])
 
 		else if ((strncmp (argv[i], "-E\0", 3) == 0) || (strncmp (argv[i], "--noencryption\0", 15) == 0)) {
 			if (args.action.value != ARGS_ACTION_EMBED) {
-				exit_err ("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help.", argv[i], argv[0]) ;
+				exit_err (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], argv[0]) ;
 			}
 
 			if (args.encryption.is_set) {
-				exit_err ("the encryption argument can be used only once. type \"%s --help\" for help.", argv[0]) ;
+				exit_err (_("the encryption argument can be used only once. type \"%s --help\" for help."), argv[0]) ;
 			}
 			else {
 				args.encryption.is_set = 1 ;
@@ -234,7 +242,7 @@ static void parsearguments (int argc, char* argv[])
 
 		else if ((strncmp (argv[i], "-h\0", 3) == 0) || (strncmp (argv[i], "--sthdrencryption\0", 18) == 0)) {
 			if (args.sthdrencryption.is_set) {
-				exit_err ("the stego header encryption argument can be used only once. type \"%s --help\" for help.", argv[0]) ;
+				exit_err (_("the stego header encryption argument can be used only once. type \"%s --help\" for help."), argv[0]) ;
 			}
 			else {
 				args.sthdrencryption.is_set = 1 ;
@@ -245,7 +253,7 @@ static void parsearguments (int argc, char* argv[])
 
 		else if ((strncmp (argv[i], "-H\0", 3) == 0) || (strncmp (argv[i], "--nosthdrencryption\0", 20) == 0)) {
 			if (args.sthdrencryption.is_set) {
-				exit_err ("the stego header encryption argument can be used only once. type \"%s --help\" for help.", argv[0]) ;
+				exit_err (_("the stego header encryption argument can be used only once. type \"%s --help\" for help."), argv[0]) ;
 			}
 			else {
 				args.sthdrencryption.is_set = 1 ;
@@ -256,11 +264,11 @@ static void parsearguments (int argc, char* argv[])
 
 		else if ((strncmp (argv[i], "-k\0", 3) == 0) || (strncmp (argv[i], "--checksum\0", 11) == 0)) {
 			if (args.action.value != ARGS_ACTION_EMBED) {
-				exit_err ("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help.", argv[i], argv[0]) ;
+				exit_err (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], argv[0]) ;
 			}
 
 			if (args.checksum.is_set) {
-				exit_err ("the checksum argument can be used only once. type \"%s --help\" for help.", argv[0]) ;
+				exit_err (_("the checksum argument can be used only once. type \"%s --help\" for help."), argv[0]) ;
 			}
 			else {
 				args.checksum.is_set = 1 ;
@@ -271,11 +279,11 @@ static void parsearguments (int argc, char* argv[])
 
 		else if ((strncmp (argv[i], "-K\0", 3) == 0) || (strncmp (argv[i], "--nochecksum\0", 13) == 0)) {
 			if (args.action.value != ARGS_ACTION_EMBED) {
-				exit_err ("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help.", argv[i], argv[0]) ;
+				exit_err (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], argv[0]) ;
 			}
 
 			if (args.checksum.is_set) {
-				exit_err ("the checksum argument can be used only once. type \"%s --help\" for help.", argv[0]) ;
+				exit_err (_("the checksum argument can be used only once. type \"%s --help\" for help."), argv[0]) ;
 			}
 			else {
 				args.checksum.is_set = 1 ;
@@ -286,11 +294,11 @@ static void parsearguments (int argc, char* argv[])
 
 		else if ((strncmp (argv[i], "-n\0", 3) == 0) || (strncmp (argv[i], "--embedplainname\0", 17) == 0)) {
 			if (args.action.value != ARGS_ACTION_EMBED) {
-				exit_err ("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help.", argv[i], argv[0]) ;
+				exit_err (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], argv[0]) ;
 			}
 
 			if (args.embedplnfn.is_set) {
-				exit_err ("the plain file name embedding argument can be used only once. type \"%s --help\" for help.", argv[0]) ;
+				exit_err (_("the plain file name embedding argument can be used only once. type \"%s --help\" for help."), argv[0]) ;
 			}
 			else {
 				args.embedplnfn.is_set = 1 ;
@@ -301,11 +309,11 @@ static void parsearguments (int argc, char* argv[])
 
 		else if ((strncmp (argv[i], "-N\0", 3) == 0) || (strncmp (argv[i], "--notembedplainname\0", 20) == 0)) {
 			if (args.action.value != ARGS_ACTION_EMBED) {
-				exit_err ("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help.", argv[i], argv[0]) ;
+				exit_err (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], argv[0]) ;
 			}
 
 			if (args.embedplnfn.is_set) {
-				exit_err ("the plain file name embedding argument can be used only once. type \"%s --help\" for help.", argv[0]) ;
+				exit_err (_("the plain file name embedding argument can be used only once. type \"%s --help\" for help."), argv[0]) ;
 			}
 			else {
 				args.embedplnfn.is_set = 1 ;
@@ -318,18 +326,18 @@ static void parsearguments (int argc, char* argv[])
 			int j = 0 ;
 
 			if (args.passphrase.is_set) {
-				exit_err ("the passphrase argument can be used only once. type \"%s --help\" for help.", argv[0]) ;
+				exit_err (_("the passphrase argument can be used only once. type \"%s --help\" for help."), argv[0]) ;
 			}
 			else {
 				args.passphrase.is_set = 1 ;
 			}
 
 			if (++i == argc) {
-				exit_err ("the \"%s\" argument must be followed by the passphrase. type \"%s --help\" for help.", argv[i], argv[0]) ;
+				exit_err (_("the \"%s\" argument must be followed by the passphrase. type \"%s --help\" for help."), argv[i], argv[0]) ;
 			}
 
 			if (strlen (argv[i]) > PASSPHRASE_MAXLEN) {
-				exit_err ("the maximum length of the passphrase is %d characters.", PASSPHRASE_MAXLEN) ;
+				exit_err (_("the maximum length of the passphrase is %d characters."), PASSPHRASE_MAXLEN) ;
 			}
 			args.passphrase.value = s_malloc (strlen (argv[i]) + 1) ;
 			strcpy (args.passphrase.value, argv[i]) ;
@@ -342,15 +350,15 @@ static void parsearguments (int argc, char* argv[])
 
 		else if ((strncmp (argv[i], "-cf\0", 4) == 0) || (strncmp (argv[i], "--coverfile\0", 16) == 0)) {
 			if (args.action.value != ARGS_ACTION_EMBED) {
-				exit_err ("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help.", argv[i], argv[0]) ;
+				exit_err (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], argv[0]) ;
 			}
 
 			if (++i == argc) {
-				exit_err ("the \"%s\" argument must be followed by the cover file name. type \"%s --help\" for help.", argv[i - 1], argv[0]) ;
+				exit_err (_("the \"%s\" argument must be followed by the cover file name. type \"%s --help\" for help."), argv[i - 1], argv[0]) ;
 			}
 
 			if (args.cvrfn.is_set) {
-				exit_err ("the cover file name argument can be used only once. type \"%s --help\" for help.", argv[0]) ;
+				exit_err (_("the cover file name argument can be used only once. type \"%s --help\" for help."), argv[0]) ;
 			}
 			else {
 				args.cvrfn.is_set = 1 ;
@@ -367,11 +375,11 @@ static void parsearguments (int argc, char* argv[])
 
 		else if ((strncmp (argv[i], "-sf\0", 4) == 0) || (strncmp (argv[i], "--stegofile\0", 12) == 0)) {
 			if (++i == argc) {
-				exit_err ("the \"%s\" argument must be followed by the stego file name. type \"%s --help\" for help.", argv[i - 1], argv[0]) ;
+				exit_err (_("the \"%s\" argument must be followed by the stego file name. type \"%s --help\" for help."), argv[i - 1], argv[0]) ;
 			}
 
 			if (args.stgfn.is_set) {
-				exit_err ("the stego file name argument can be used only once. type \"%s --help\" for help.", argv[0]) ;
+				exit_err (_("the stego file name argument can be used only once. type \"%s --help\" for help."), argv[0]) ;
 			}
 			args.stgfn.is_set = 1 ;
 
@@ -386,11 +394,11 @@ static void parsearguments (int argc, char* argv[])
 
 		else if ((strncmp (argv[i], "-pf\0", 4) == 0) || (strncmp (argv[i], "--plainfile\0", 12) == 0)) {
 			if (++i == argc) {
-				exit_err ("the \"%s\" argument must be followed by the plain file name. type \"%s --help\" for help.", argv[i - 1], argv[0]) ;
+				exit_err (_("the \"%s\" argument must be followed by the plain file name. type \"%s --help\" for help."), argv[i - 1], argv[0]) ;
 			}
 
 			if (args.plnfn.is_set) {
-				exit_err ("the plain file name argument can be used only once. type \"%s --help\" for help.", argv[0]) ;
+				exit_err (_("the plain file name argument can be used only once. type \"%s --help\" for help."), argv[0]) ;
 			}
 			args.plnfn.is_set = 1 ;
 
@@ -409,7 +417,7 @@ static void parsearguments (int argc, char* argv[])
 
 		else if ((strncmp (argv[i], "-q\0", 3) == 0) || (strncmp (argv[i], "--quiet\0", 8) == 0)) {
 			if (args.verbosity.is_set) {
-				exit_err ("the \"%s\" argument cannot be used here because the verbosity has already been set.", argv[i]) ;
+				exit_err (_("the \"%s\" argument cannot be used here because the verbosity has already been set."), argv[i]) ;
 			}
 			else {
 				args.verbosity.is_set = 1 ;
@@ -419,7 +427,7 @@ static void parsearguments (int argc, char* argv[])
 
 		else if ((strncmp (argv[i], "-v\0", 3) == 0) || (strncmp (argv[i], "--verbose\0", 10) == 0)) {
 			if (args.verbosity.is_set) {
-				exit_err ("the \"%s\" argument cannot be used here because the verbosity has already been set.", argv[i]) ;
+				exit_err (_("the \"%s\" argument cannot be used here because the verbosity has already been set."), argv[i]) ;
 			}
 			else {
 				args.verbosity.is_set = 1 ;
@@ -428,14 +436,14 @@ static void parsearguments (int argc, char* argv[])
 		}
 
 		else {
-			exit_err ("unknown argument \"%s\". type \"%s --help\" for help.", argv[i], argv[0]) ;
+			exit_err (_("unknown argument \"%s\". type \"%s --help\" for help."), argv[i], argv[0]) ;
 		}
 	}
 
 	/* argument post-processing */
 	if (args.action.value == ARGS_ACTION_EMBED) {
 		if ((args.cvrfn.value == NULL) && (args.plnfn.value == NULL)) {
-			exit_err ("standard input can not be used for cover AND plain data. type \"%s --help\" for help.", argv[0]) ;
+			exit_err (_("standard input cannot be used for cover AND plain data. type \"%s --help\" for help."), argv[0]) ;
 		}
 	}
 
@@ -443,13 +451,13 @@ static void parsearguments (int argc, char* argv[])
 		/* prompt for passphrase */
 		if (args.action.value == ARGS_ACTION_EMBED) {
 			if ((args.cvrfn.value == NULL) || (args.plnfn.value == NULL)) {
-				exit_err ("if standard input is used, the passphrase must be specified on the command line.") ;
+				exit_err (_("if standard input is used, the passphrase must be specified on the command line.")) ;
 			}
 			args.passphrase.value = get_passphrase (PP_DOUBLECHECK) ;
 		}
 		else if (args.action.value == ARGS_ACTION_EXTRACT) {
 			if (args.stgfn.value == NULL) {
-				exit_err ("if standard input is used, the passphrase must be specified on the command line.") ;
+				exit_err (_("if standard input is used, the passphrase must be specified on the command line.")) ;
 			}
 			args.passphrase.value = get_passphrase (PP_NODOUBLECHECK) ;
 		}
@@ -574,6 +582,7 @@ static void fillsthdr (unsigned long nbytescvrbuf, unsigned long nbytesplain, un
 
 static void version (void)
 {
+	/* FIXME - mit VERSION von autoconf */
 	printf ("steghide version 0.4.4\n") ;
 
 	return ;
@@ -581,71 +590,72 @@ static void version (void)
 
 static void usage (void)
 {
-	printf ("steghide version 0.4.4\n\n") ;
+	printf (_(
+		"steghide version 0.4.4\n\n" /* FIXME - mit VERSION von autoconf */
 
-	printf ("the first argument must be one of the following:\n") ;
-	printf (" embed, --embed          embed plain data in cover data\n") ;
-	printf (" extract, --extract      extract plain data from stego data\n") ;
-	printf (" version, --version      display version information\n") ;
-	printf (" license, --license      display steghide's license\n") ;
-	printf (" help, --help            display this usage information\n") ;
+		"the first argument must be one of the following:\n"
+		" embed, --embed          embed plain data in cover data\n"
+		" extract, --extract      extract plain data from stego data\n"
+		" version, --version      display version information\n"
+		" license, --license      display steghide's license\n"
+		" help, --help            display this usage information\n"
 
-	printf ("\noptions for data embedding only:\n") ;
+		"\noptions for data embedding only:\n"
 
-	printf (" -d, --distribution      distribution method for secret bits in cover bits\n") ;
-	printf ("   -d cnsti <n>          constant intervals, length: <n>\n") ;
-	printf ("   -d prndi <n>          pseudo-random intervals, maximum interval length: <n>\n") ;
-	printf (" -cf, --coverfile        select cover file\n") ;
-	printf ("   -cf <filename>        use <filename> as cover file\n") ;
-	printf (" -e, --encryption        encrypt plain data before embedding (default)\n") ;
-	printf (" -E, --noencryption      do not encrypt plain data before embedding\n") ;
-	printf (" -k, --checksum          embed crc32 checksum of plain data (default)\n") ;
-	printf (" -K, --nochecksum        do not embed crc32 checksum of plain data\n") ;
-	printf (" -n, --embedplainname    embed the name of the plain file (default)\n") ;
-	printf (" -N, --notembedplainname do not embed the name of the plain file\n") ;
+		" -d, --distribution      distribution method for secret bits in cover bits\n"
+		"   -d cnsti <n>          constant intervals, length: <n>\n"
+		"   -d prndi <n>          pseudo-random intervals, maximum interval length: <n>\n"
+		" -cf, --coverfile        select cover file\n"
+		"   -cf <filename>        use <filename> as cover file\n"
+		" -e, --encryption        encrypt plain data before embedding (default)\n"
+		" -E, --noencryption      do not encrypt plain data before embedding\n"
+		" -k, --checksum          embed crc32 checksum of plain data (default)\n"
+		" -K, --nochecksum        do not embed crc32 checksum of plain data\n"
+		" -n, --embedplainname    embed the name of the plain file (default)\n"
+		" -N, --notembedplainname do not embed the name of the plain file\n"
 
-	printf ("\noptions for embedding and extracting:\n") ;
+		"\noptions for embedding and extracting:\n"
 
-	printf (" -p, --passphrase        specify passphrase (mandatory)\n") ;
-	printf ("   -p <passphrase>       use <passphrase> as passphrase\n") ;
-	printf (" -sf, --stegofile        select stego file\n") ;
-	printf ("   -sf <filename>        use <filename> as stego file\n") ;
-	printf (" -pf, --plainfile        select plain file\n") ;
-	printf ("   -pf <filename>        use <filename> as plain file\n") ;
-	printf (" -h, --sthdrencryption   encrypt stego header before embedding (default)\n") ;
-	printf (" -H, --nosthdrencryption do not encrypt stego header before embedding\n") ;
-	printf (" -f, --force             overwrite existing files\n") ;
-	printf (" -q, --quiet             suppress information messages\n") ;
-	printf (" -v, --verbose           display detailed information\n") ;
+		" -p, --passphrase        specify passphrase (mandatory)\n"
+		"   -p <passphrase>       use <passphrase> as passphrase\n"
+		" -sf, --stegofile        select stego file\n"
+		"   -sf <filename>        use <filename> as stego file\n"
+		" -pf, --plainfile        select plain file\n"
+		"   -pf <filename>        use <filename> as plain file\n"
+		" -h, --sthdrencryption   encrypt stego header before embedding (default)\n"
+		" -H, --nosthdrencryption do not encrypt stego header before embedding\n"
+		" -f, --force             overwrite existing files\n"
+		" -q, --quiet             suppress information messages\n"
+		" -v, --verbose           display detailed information\n"
 
-	printf ("\nIf a <filename> is \"-\", stdin or stdout is used.\n\n") ;
+		"\nIf a <filename> is \"-\", stdin or stdout is used.\n\n"
 
-	printf ("The arguments default to reasonable values.\n") ;
-	printf ("For embedding the following line is enough:\n") ;
-	printf ("steghide embed -cf cvr.bmp -sf stg.bmp -pf pln.txt\n\n") ;
+		"The arguments default to reasonable values.\n"
+		"For embedding the following line is enough:\n"
+		"steghide embed -cf cvr.bmp -sf stg.bmp -pf pln.txt\n\n"
 
-	printf ("For extracting it is sufficient to use:\n") ;
-	printf ("steghide extract -sf stg.bmp\n\n") ;
-
+		"For extracting it is sufficient to use:\n"
+		"steghide extract -sf stg.bmp\n\n")) ;
 }
 
 static void license ()
 {
- 	printf ("Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>\n\n") ;
+ 	printf (
+		"Copyright (C) 2002 Stefan Hetzl <shetzl@teleweb.at>\n\n"
 
- 	printf ("This program is free software; you can redistribute it and/or\n") ;
- 	printf ("modify it under the terms of the GNU General Public License\n") ;
- 	printf ("as published by the Free Software Foundation; either version 2\n") ;
- 	printf ("of the License, or (at your option) any later version.\n\n") ;
+ 		"This program is free software; you can redistribute it and/or\n"
+ 		"modify it under the terms of the GNU General Public License\n"
+ 		"as published by the Free Software Foundation; either version 2\n"
+ 		"of the License, or (at your option) any later version.\n\n"
 
- 	printf ("This program is distributed in the hope that it will be useful,\n") ;
- 	printf ("but WITHOUT ANY WARRANTY; without even the implied warranty of\n") ;
- 	printf ("MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n") ;
- 	printf ("GNU General Public License for more details.\n\n") ;
+ 		"This program is distributed in the hope that it will be useful,\n"
+ 		"but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+ 		"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+ 		"GNU General Public License for more details.\n\n"
 
- 	printf ("You should have received a copy of the GNU General Public License\n") ;
- 	printf ("along with this program; if not, write to the Free Software\n") ;
- 	printf ("Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.\n") ;
+ 		"You should have received a copy of the GNU General Public License\n"
+ 		"along with this program; if not, write to the Free Software\n"
+ 		"Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.\n") ;
 }
 
 /* calls functions to embed plain data in cover data and save as stego data */
@@ -683,7 +693,7 @@ static void embedfile (char *cvrfilename, char *stgfilename, char *plnfilename)
 	cleanupcvrfile (stgfile, FSS_YES) ;
 	cleanupplnfile (plnfile) ;
 
-	pverbose ("done.") ;
+	pverbose (_("done.")) ;
 
 	return ;
 }
@@ -715,7 +725,7 @@ static void extractfile (char *stgfilename, char *plnfilename)
 	cleanupcvrfile (stgfile, FSS_YES) ;
 	cleanupplnfile (plnfile) ;
 
-	pverbose ("done.") ;
+	pverbose (_("done.")) ;
 
 	return ;
 }

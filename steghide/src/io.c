@@ -23,6 +23,9 @@
 #include <string.h>
 #include <assert.h>
 
+#include <libintl.h>
+#define _(S) gettext (S)
+
 #include "main.h"
 #include "io.h"
 #include "bufmanag.h"
@@ -74,19 +77,19 @@ void readheaders (CVRFILE *file)
 			}
 			else {
 				if (file->filename == NULL) {
-					exit_err ("the file format of the data from standard input is not supported.") ;
+					exit_err (_("the file format of the data from standard input is not supported.")) ;
 				}
 				else {
-					exit_err ("the file format of the file \"%s\" is not supported.", file->filename) ;
+					exit_err (_("the file format of the file \"%s\" is not supported."), file->filename) ;
 				}
 			}
 		}
 		else {
 			if (file->filename == NULL) {
-				exit_err ("the file format of the data from standard input is not supported.") ;
+				exit_err (_("the file format of the data from standard input is not supported.")) ;
 			}
 			else {
-				exit_err ("the file format of the file \"%s\" is not supported.", file->filename) ;
+				exit_err (_("the file format of the file \"%s\" is not supported."), file->filename) ;
 			}
 		}
 	}
@@ -100,10 +103,10 @@ CVRFILE *createstgfile (CVRFILE *cvrfile, char *stgfilename)
 	CVRFILE *stgfile = NULL ;
 
 	if (stgfilename == NULL) {
-		pverbose ("writing stego file to standard output.") ;
+		pverbose (_("writing stego file to standard output.")) ;
 	}
 	else {
-		pverbose ("writing stego file \"%s\".", stgfilename) ;
+		pverbose (_("writing stego file \"%s\"."), stgfilename) ;
 	}
 
 	stgfile = s_malloc (sizeof *stgfile) ;
@@ -153,7 +156,7 @@ void assemble_plndata (PLNFILE *plnfile)
 		tmp = stripdir (args.plnfn.value) ;
 
 		if ((nbytes_plnfilename = strlen (tmp)) > PLNFILENAME_MAXLEN) {
-			exit_err ("the maximum length for the plain file name is %d characters.", PLNFILENAME_MAXLEN) ;
+			exit_err (_("the maximum length for the plain file name is %d characters."), PLNFILENAME_MAXLEN) ;
 		}
 		bufsetbyte (buf, pos++, nbytes_plnfilename) ;
 		
@@ -210,7 +213,7 @@ void deassemble_plndata (PLNFILE *plnfile)
 		assert (args.plnfn.value == NULL) ;
 
 		if (nbytes_plnfilename == 0) {
-			exit_err ("please specify a name for the plain file (there is none embedded in the stego file).") ;
+			exit_err (_("please specify a name for the plain file (there is none embedded in the stego file).")) ;
 		}
 
 		plnfile->filename = s_malloc (strlen (plnfilename) + 1) ;
@@ -231,10 +234,10 @@ void deassemble_plndata (PLNFILE *plnfile)
 
 	if (sthdr.checksum == CHECKSUM_CRC32) {
 		if (checkcrc32 (plnfile, uc_crc32)) {
-			pverbose ("crc32 checksum test ok.") ;
+			pverbose (_("crc32 checksum test ok.")) ;
 		}
 		else {
-			pwarn ("crc32 checksum failed! extracted data is probably corrupted.") ;
+			pwarn (_("crc32 checksum failed! extracted data is probably corrupted.")) ;
 		}
 	}
 
@@ -302,18 +305,18 @@ CVRFILE *readcvrfile (char *filename)
 
 	if (args.action.value == ARGS_ACTION_EMBED) {
 		if (filename == NULL) {
-			pverbose ("reading cover file from standard input.") ;
+			pverbose (_("reading cover file from standard input.")) ;
 		}
 		else {
-			pverbose ("reading cover file \"%s\".", filename) ;
+			pverbose (_("reading cover file \"%s\"."), filename) ;
 		}
 	}
 	else if (args.action.value == ARGS_ACTION_EXTRACT) {
 		if (filename == NULL) {
-			pverbose ("reading stego file from standard input.") ;
+			pverbose (_("reading stego file from standard input.")) ;
 		}
 		else {
-			pverbose ("reading stego file \"%s\".", filename) ;
+			pverbose (_("reading stego file \"%s\"."), filename) ;
 		}
 	}
 	else {
@@ -330,7 +333,7 @@ CVRFILE *readcvrfile (char *filename)
 	else {
 		if ((cvrfile->stream = fopen (filename, "rb")) == NULL) {
 			free (cvrfile) ;
-			exit_err ("could not open the file \"%s\".", filename) ;
+			exit_err (_("could not open the file \"%s\"."), filename) ;
 		}
 		cvrfile->filename = filename ;
 	}
@@ -380,18 +383,18 @@ void writestgfile (CVRFILE *stgfile)
 			/* check if file already exists */
 			if (fileexists (stgfile->filename)) {
 				if ((args.cvrfn.value == NULL) || (args.plnfn.value == NULL)) {
-					exit_err ("file \"%s\" does already exist.", stgfile->filename) ;
+					exit_err (_("file \"%s\" does already exist."), stgfile->filename) ;
 				}
 				else {
-					if (!pquestion ("file \"%s\" does already exist. overwrite ?", stgfile->filename)) {
-						exit_err ("did not write to file \"%s\".", stgfile->filename) ;
+					if (!pquestion (_("file \"%s\" does already exist. overwrite ?"), stgfile->filename)) {
+						exit_err (_("did not write to file \"%s\"."), stgfile->filename) ;
 					}
 				}
 			}
 		}
 
 		if ((stgfile->stream = fopen (stgfile->filename, "wb")) == NULL) {
-			exit_err ("could not create stego file \"%s\".", stgfile->filename) ;
+			exit_err (_("could not create stego file \"%s\"."), stgfile->filename) ;
 		}
 	}
 	
@@ -415,10 +418,10 @@ void writestgfile (CVRFILE *stgfile)
 
 	if (args.action.value == ARGS_ACTION_EMBED) {
 		if (stgfile->filename == NULL) {
-			pverbose ("wrote stego file to standard output.") ;
+			pverbose (_("wrote stego file to standard output.")) ;
 		}
 		else {
-			pmsg ("wrote stego file to \"%s\".", stgfile->filename) ;
+			pmsg (_("wrote stego file to \"%s\"."), stgfile->filename) ;
 		}
 	}
 	else {
@@ -436,10 +439,10 @@ PLNFILE *readplnfile (char *filename)
 	unsigned long bufpos = 0 ;
 
 	if (filename == NULL) {
-		pverbose ("reading plain file from standard input.") ;
+		pverbose (_("reading plain file from standard input.")) ;
 	}
 	else {
-		pverbose ("reading plain file \"%s\".", filename) ;
+		pverbose (_("reading plain file \"%s\"."), filename) ;
 	}
 
 	plnfile = s_malloc (sizeof *plnfile) ;
@@ -450,7 +453,7 @@ PLNFILE *readplnfile (char *filename)
 	}
 	else {
 		if ((plnfile->stream = fopen (filename, "rb")) == NULL) {
-			exit_err ("could not open file \"%s\".", filename) ;
+			exit_err (_("could not open file \"%s\"."), filename) ;
 		}
 		plnfile->filename = filename ;
 	}
@@ -464,10 +467,10 @@ PLNFILE *readplnfile (char *filename)
 
 	if (ferror (plnfile->stream)) {
 		if (plnfile->filename == NULL) {
-			exit_err ("an error occured while reading the plain data from standard input.") ;
+			exit_err (_("an error occured while reading the plain data from standard input.")) ;
 		}
 		else {
-			exit_err ("an error occured while reading the file \"%s\".", filename) ;
+			exit_err (_("an error occured while reading the file \"%s\"."), filename) ;
 		}
 	}
 
@@ -481,10 +484,10 @@ void writeplnfile (PLNFILE *plnfile)
 	unsigned long bufpos = 0 ;
 
 	if (plnfile->filename == NULL) {
-		pverbose ("writing plain file to standard output.") ;
+		pverbose (_("writing plain file to standard output.")) ;
 	}
 	else {
-		pmsg ("writing plain file to \"%s\".", plnfile->filename) ;
+		pmsg (_("writing plain file to \"%s\"."), plnfile->filename) ;
 	}
 
 	if (plnfile->filename == NULL) {
@@ -495,18 +498,18 @@ void writeplnfile (PLNFILE *plnfile)
 			/* check if file already exists */
 			if (fileexists (plnfile->filename)) {
 				if (args.stgfn.value == NULL) {
-					exit_err ("file \"%s\" does already exist.", plnfile->filename) ;
+					exit_err (_("file \"%s\" does already exist."), plnfile->filename) ;
 				}
 				else {
-					if (!pquestion ("file \"%s\" does already exist. overwrite ?", plnfile->filename)) {
-						exit_err ("did not write to file \"%s\".", plnfile->filename) ;
+					if (!pquestion (_("file \"%s\" does already exist. overwrite ?"), plnfile->filename)) {
+						exit_err (_("did not write to file \"%s\"."), plnfile->filename) ;
 					}
 				}
 			}
 		}
 
 		if ((plnfile->stream = fopen (plnfile->filename, "wb")) == NULL) {
-			exit_err ("could not create plain file \"%s\".", plnfile->filename) ;
+			exit_err (_("could not create plain file \"%s\"."), plnfile->filename) ;
 		}
 	}
 
@@ -517,10 +520,10 @@ void writeplnfile (PLNFILE *plnfile)
 
 	if (ferror (plnfile->stream)) {
 		if (plnfile->filename == NULL) {
-			exit_err ("an error occured while writing the plain data to standard output.") ;
+			exit_err (_("an error occured while writing the plain data to standard output.")) ;
 		}
 		else {
-			exit_err ("an error occured while writing to the file \"%s\".", plnfile->filename) ;
+			exit_err (_("an error occured while writing to the file \"%s\"."), plnfile->filename) ;
 		}
 	}
 

@@ -25,6 +25,9 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <libintl.h>
+#define _(S) gettext (S)
+
 #include "crypto.h"
 #include "support.h"
 #include "msg.h"
@@ -84,11 +87,11 @@ char *get_passphrase (int doublecheck)
 	p1 = s_malloc (PASSPHRASE_MAXLEN) ;
 	p2 = s_malloc (PASSPHRASE_MAXLEN) ;
 
-	fprintf (stderr, "Enter passphrase: ") ;
+	fprintf (stderr, _("Enter passphrase: ")) ;
 	oldattr = termios_echo_off () ;
 	while ((c = getchar ()) != '\n') {
 		if (i == PASSPHRASE_MAXLEN) {
-			exit_err ("the maximum length of the passphrase is %d characters.", PASSPHRASE_MAXLEN) ;
+			exit_err (_("the maximum length of the passphrase is %d characters."), PASSPHRASE_MAXLEN) ;
 		}
 		p1[i++] = c ;
 	}
@@ -97,12 +100,12 @@ char *get_passphrase (int doublecheck)
 	printf ("\n") ;
 
 	if (doublecheck == PP_DOUBLECHECK) {
-		fprintf (stderr, "Re-Enter passphrase: ") ;
+		fprintf (stderr, _("Re-Enter passphrase: ")) ;
 		oldattr = termios_echo_off () ;
 		i = 0 ;
 		while ((c = getchar ()) != '\n') {
 			if (i == PASSPHRASE_MAXLEN) {
-				exit_err ("the maximum length of the passphrase is %d characters.", PASSPHRASE_MAXLEN) ;
+				exit_err (_("the maximum length of the passphrase is %d characters."), PASSPHRASE_MAXLEN) ;
 			}
 			p2[i++] = c ;
 		}
@@ -111,7 +114,7 @@ char *get_passphrase (int doublecheck)
 		printf ("\n") ;
 
 		if (strcmp (p1, p2) != 0) {
-			exit_err ("the passphrases do not match.") ;
+			exit_err (_("the passphrases do not match.")) ;
 		}
 	}
 
@@ -123,14 +126,14 @@ struct termios termios_echo_off (void)
 	struct termios attr, retval ;
 
 	if ((tcgetattr (STDIN_FILENO, &attr)) != 0) {
-		exit_err ("could not get terminal attributes.") ;
+		exit_err (_("could not get terminal attributes.")) ;
 	}
 	retval = attr ;
 
 	attr.c_lflag &= ~ECHO ;
 
 	if ((tcsetattr (STDIN_FILENO, TCSAFLUSH, &attr)) != 0) {
-		exit_err ("could not set terminal attributes.") ;
+		exit_err (_("could not set terminal attributes.")) ;
 	}
 
 	return retval ;
@@ -141,7 +144,7 @@ struct termios termios_singlekey_on (void)
 	struct termios attr, retval ;
 
 	if ((tcgetattr (STDIN_FILENO, &attr)) != 0) {
-		exit_err ("could not get terminal attributes.") ;
+		exit_err (_("could not get terminal attributes.")) ;
 	}
 	retval = attr ;
 
@@ -150,7 +153,7 @@ struct termios termios_singlekey_on (void)
 	attr.c_cc[VMIN] = 1 ;
 
 	if ((tcsetattr (STDIN_FILENO, TCSAFLUSH, &attr)) != 0) {
-		exit_err ("could not set terminal attributes.") ;
+		exit_err (_("could not set terminal attributes.")) ;
 	}
 
 	return retval ;
@@ -159,7 +162,7 @@ struct termios termios_singlekey_on (void)
 void termios_reset (struct termios attr)
 {
 	if ((tcsetattr (STDIN_FILENO, TCSANOW, &attr)) != 0) {
-		exit_err ("could not set terminal attributes.") ;
+		exit_err (_("could not set terminal attributes.")) ;
 	}
 }
 
@@ -214,7 +217,7 @@ void *s_malloc (size_t size)
 	void *retval = NULL ;
 
 	if ((retval = malloc (size)) == NULL) {
-		exit_err ("could not allocate memory.") ;
+		exit_err (_("could not allocate memory.")) ;
 	}
 
 	return retval ;
@@ -225,7 +228,7 @@ void *s_calloc (size_t nmemb, size_t size)
 	void *retval = NULL ;
 
 	if ((retval = calloc (nmemb, size)) == NULL) {
-		exit_err ("could not allocate memory.") ;
+		exit_err (_("could not allocate memory.")) ;
 	}
 
 	return retval ;
@@ -236,7 +239,7 @@ void *s_realloc (void *ptr, size_t size)
 	void *retval = NULL ;
 
 	if ((retval = realloc (ptr, size)) == NULL) {
-		exit_err ("could not reallocate memory.") ;
+		exit_err (_("could not reallocate memory.")) ;
 	}
 
 	return retval ;
