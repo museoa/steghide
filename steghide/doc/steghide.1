@@ -1,4 +1,4 @@
-.\" Steghide 0.4.6b man page
+.\" Steghide 0.5.1 man page
 .TH steghide 1 "14 May 2002"
 .SH NAME
 steghide \- a steganography program
@@ -30,31 +30,68 @@ is used to verify the integrity of the embedded message during extraction.
 
 .SH COMMANDS
 In this section the commands for steghide are listed. The first argument must
-always be one of these commands. You can supply some arguments to the embed and
-extract commands. For a detailed description of these arguments see section
-.B ARGUMENTS.
+always be one of these commands. You can supply arguments to the embed,
+extract and info commands.
+#For a detailed description of these arguments see section
+#.B ARGUMENTS.
 .TP
 .B "embed, --embed"
-The embed command embeds the plain file in the cover file, resulting in the
-stego file. This command needs the following arguments: the name of the cover
-file (-cf), the name of the plain file (-pf), a name for the stego file that
-will be created (-sf).
+Embed secret data in a cover file thereby creating a stego file
 .TP
 .B "extract, --extract"
-The extract command extracts the plain data from a stego file. This command
-needs the following arguments: the name of the stego file (-sf), the name of
-the plain file that will be created (-pf).
+Extract the secret data from a stego file.
+.TP
+.B "info, --info"
+Display information about a cover or stego file.
+.TP
+.B "encinfo, --encinfo"
+Display a list of encryption algorithms and modes that can be used. No arguments required.
 .TP
 .B "version, --version"
-Displays a short version information. No arguments required.
+Display a short version information. No arguments required.
 .TP
 .B "license, --license"
-Displays steghide's license. No arguments required.
+Display steghide's license. No arguments required.
 .TP
 .B "help, --help"
-Displays a help screen. No arguments required.
+Display a help screen. No arguments required.
 
-.SH ARGUMENTS
+.SH FILE NAMES
+.TP
+All file name arguments (-cf, -ef, -sf, -xf) also accept \- as a filename which makes steghide
+use standard input or standard output (whichever makes sense). Omitting the corresponding file
+name argument will have the same effect with two exceptions: If -sf is omitted for the embed command,
+then the modifications will be done directly in the cover file. If -xf is omitted for extraction,
+the file name that is embedded in the stego file will be used. So when you want to be sure
+that standard input/output is used, use - as filename.
+
+.SH EMBEDDING OPTIONS
+.TP
+.B "-ef, --embedfile"
+Specify the file that will be embedded, i.e. that contains the secret message. Note that
+steghide embeds the original file name in the stego file. If you omit the -xf argument
+when extracting data (see below), the embedded file will be saved to the current directory
+under its original name.
+
+.TP
+.B "-cf, --coverfile"
+Specify the cover file that will be used to embed data. The cover file must be in one
+of the following formats: AU, BMP, JPEG or WAV. The file-format will be detected
+automatically based on header information (the extension is not relevant).
+
+.TP
+.B "-sf, --stegofile"
+Specify the name for the stego file that will be created. If this argument is omitted
+when calling steghide with the embed command, then the modifications to embed the secret
+data will be made to the cover file without saving it under a new name.
+
+.TP
+.B "-e, --encryption"
+Specify encryption parameters. This option must be followed by one or two strings that identify
+an encryption algorithm and/or mode. You can get the names of all available algorithms and
+modes with the encinfo command. The default encryption is rijndael-128 (AES) in the cbc mode.
+
+.SH EXTRACTING OPTIONS
 .TP
 .B "-pf, --plainfile"
 This argument can be used with the embed and the extract command. When used
@@ -91,14 +128,6 @@ The file format of the cover file (and the stego file) is detected automatically
 based on header information (the extension is not relevant). The current version
 of steghide supports the jpeg, bmp, wav and au file formats.
 
-.TP
-.B "-p, --passphrase"
-Use the string that is following this argument as the passphrase. If your
-passphrase is more that one word long you have to enclose it in quotes, e.g.
--p "a very long passphrase".
-
-If the passphrase is not given with the -p argument, a prompt to enter the
-passphrase will be displayed.
 
 .TP
 .B "-d, --distribution"
@@ -171,19 +200,6 @@ this switch if you have a libmcrypt version >= 2.4.9 and want to read a message
 that has been embedded by a person with a libmcrypt version < 2.4.9.
 
 .TP
-.B "-v, --verbose"
-Display detailed information about the status of the embedding or extracting
-process.
-
-.TP
-.B "-q, --quiet"
-Supress information messages.
-
-.TP
-.B "-f, --force"
-Always overwrite existing files.
-
-.TP
 .B "-e, --encryption"
 Encrypt the plain data before embedding. This is the default anyway, so you will
 not need this argument. You can use it to specify explicitly that encryption
@@ -217,6 +233,28 @@ Important Note: If the sender of a stego file has not encrypted the stego
 header (i.e. has used the -H argument) then the receiver of the message must
 also use the -H argument with the extract command. Otherwise steghide will
 assume that the stego header is encrypted and will fail.
+
+.SH COMMON OPTIONS
+The following options can be used with all commands (where it makes sense).
+
+.TP
+.B "-p, --passphrase"
+Use the string following this argument as the passphrase. If your
+passphrase contains whitespace, you have to enclose it in quotes, e.g.
+-p "a very long passphrase".
+
+.TP
+.B "-v, --verbose"
+Display detailed information about the status of the embedding or extracting
+process.
+
+.TP
+.B "-q, --quiet"
+Supress information messages.
+
+.TP
+.B "-f, --force"
+Always overwrite existing files.
 
 .SH EXAMPLES
 To embed the file secret.txt in the jpeg file cvr.jpg and save the resulting
