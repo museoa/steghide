@@ -44,10 +44,7 @@ void wav_readheaders (CVRFILE *file, unsigned long rifflen)
 
 	wav_getchhdr (file->stream, &file->headers->wav.fmtchhdr) ;
 	if ((file->headers->wav.fmtch.FormatTag = read16_le (file->stream)) != WAV_FORMAT_PCM) {
-		if (args_action == ACTN_EMBED)
-			perr (ERR_CVRUNSUPWAVFILE) ;
-		else if (args_action == ACTN_EXTRACT)
-			perr (ERR_STGUNSUPWAVFILE) ;
+		exit_err ("the wav file \"%s\" has a format that is not supported.", file->filename) ;
 	}
 	file->headers->wav.fmtch.Channels = read16_le (file->stream) ;
 	file->headers->wav.fmtch.SamplesPerSec = read32_le (file->stream) ;
@@ -56,12 +53,7 @@ void wav_readheaders (CVRFILE *file, unsigned long rifflen)
 	/* if a number other than a multiple of 8 is used, we cannot hide data,
 	   because the least significant bits are always set to zero */
 	if ((file->headers->wav.fmtch.BitsPerSample = read16_le (file->stream)) % 8 != 0) {
-		if (args_action == ACTN_EMBED) {
-			perr (ERR_CVRBPSNOTMULTOF8) ;
-		}
-		else if (args_action == ACTN_EXTRACT) {
-			perr (ERR_STGBPSNOTMULTOF8) ;
-		}
+		exit_err ("the bits/sample rate of the wav file \"%s\" is not a multiple of eight.", file->filename) ;
 	}
 
 	file->unsupdata1 = NULL ;
@@ -70,9 +62,7 @@ void wav_readheaders (CVRFILE *file, unsigned long rifflen)
 	while (strncmp (tmpchhdr.id, "data", 4) != 0) {
 		unsigned char *ptrunsupdata1 ;
 
-		if ((file->unsupdata1 = realloc (file->unsupdata1, (file->unsupdata1len + 8 + tmpchhdr.len))) == NULL) {
-			perr (ERR_MEMALLOC) ;
-		}
+		file->unsupdata1 = s_realloc (file->unsupdata1, (file->unsupdata1len + 8 + tmpchhdr.len)) ;
 
 		ptrunsupdata1 = file->unsupdata1 ;
 		for (i = 0; i < 4; i++) {
@@ -92,12 +82,7 @@ void wav_readheaders (CVRFILE *file, unsigned long rifflen)
 	file->headers->wav.datachhdr.len = tmpchhdr.len ;
 
 	if (ferror (file->stream)) {
-		if (args_action == ACTN_EMBED) {
-			perr (ERR_CVRREAD) ;
-		}
-		else if (args_action == ACTN_EXTRACT) {
-			perr (ERR_STGREAD) ;
-		}
+		exit_err ("an error occured while reading the headers of the file \"%s\".", file->filename) ;
 	}
 
 	return ;
@@ -130,12 +115,7 @@ void wav_writeheaders (CVRFILE *file)
 	wav_putchhdr (file->stream, &file->headers->wav.datachhdr) ;
 
 	if (ferror (file->stream)) {
-		if (args_action == ACTN_EMBED) {
-			perr (ERR_STGWRITE) ;
-		}
-		else {
-			assert (0) ;
-		}
+		exit_err ("an error occured while writing the headers to the file \"%s\".", file->filename) ;
 	}
 
 	return ;
@@ -169,21 +149,14 @@ void wav_readfile (CVRFILE *file)
 
 		while ((c = getc (file->stream)) != EOF) {
 			file->unsupdata2len++ ;
-			if ((file->unsupdata2 = realloc (file->unsupdata2, file->unsupdata2len)) == NULL) {
-				perr (ERR_MEMALLOC) ;
-			}
+			file->unsupdata2 = s_realloc (file->unsupdata2, file->unsupdata2len) ;
 			ptrunsupdata2 = file->unsupdata2 ;
 			ptrunsupdata2[file->unsupdata2len - 1] = c ;
 		}			
 	}
 
 	if (ferror (file->stream)) {
-		if (args_action == ACTN_EMBED) {
-			perr (ERR_CVRREAD) ;
-		}
-		else if (args_action == ACTN_EXTRACT) {
-			perr (ERR_STGREAD) ;
-		}
+		exit_err ("an error occured while reading the audio data of the file \"%s\".", file->filename) ;
 	}
 
 	return ;
@@ -217,12 +190,7 @@ void wav_writefile (CVRFILE *file)
 	}
 
 	if (ferror (file->stream)) {
-		if (args_action == ACTN_EMBED) {
-			perr (ERR_STGWRITE) ;
-		}
-		else {
-			assert (0) ;
-		}
+		exit_err ("an error occured while writing the audio data to the file \"%s\".", file->filename) ;
 	}
 
 	return ;

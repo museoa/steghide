@@ -43,22 +43,22 @@ void encrypt_sthdr (void *buf, int buflen, char *passphrase)
 	assert (buflen % BLOCKSIZE_BLOWFISH == 0) ;
 
     if ((mcryptd = mcrypt_module_open (CRYPTOALGO_STHDR, CRYPTOALGODIR, CRYPTOMODE_STHDR, CRYPTOMODEDIR)) == MCRYPT_FAILED) {
-		perr (ERR_LIBMCRYPT) ;
+		exit_err ("could not open libmcrypt module \"%s\",\"%s\".", CRYPTOALGO_STHDR, CRYPTOMODE_STHDR) ;
     }
 
     key = getblowfishkey (passphrase) ;
 
     if ((err = mcrypt_generic_init (mcryptd, key, SIZE_BLOWFISHKEY, NULL)) < 0) {
 		mcrypt_perror (err) ;
-		perr (ERR_LIBMCRYPT) ;
+		exit_err ("could not initialize libmcrypt encryption. see above error messages if any.") ;
     }
 
     if (mcrypt_generic (mcryptd, buf, buflen) != 0) {
-		perr (ERR_LIBMCRYPT) ;
+		exit_err ("could not encrypt stego header.") ;
     }
 
     if (mcrypt_generic_end (mcryptd) < 0) {
-		perr (ERR_LIBMCRYPT) ;
+		exit_err ("could not finish encryption of stego header.") ;
     }
 }
 
@@ -71,22 +71,22 @@ void decrypt_sthdr (void *buf, int buflen, char *passphrase)
 	assert (buflen % BLOCKSIZE_BLOWFISH == 0) ;
 
     if ((mcryptd = mcrypt_module_open (CRYPTOALGO_STHDR, CRYPTOALGODIR, CRYPTOMODE_STHDR, CRYPTOMODEDIR)) == MCRYPT_FAILED) {
-		perr (ERR_LIBMCRYPT) ;
+		exit_err ("could not open libmcrypt module \"%s\",\"%s\".", CRYPTOALGO_STHDR, CRYPTOMODE_STHDR) ;
     }
 
     key = getblowfishkey (passphrase) ;
 
     if ((err = mcrypt_generic_init (mcryptd, key, SIZE_BLOWFISHKEY, NULL)) < 0) {
 		mcrypt_perror (err) ;
-		perr (ERR_LIBMCRYPT) ;
+		exit_err ("could not initialize libmcrypt decryption. see above error messages if any.") ;
     }
 
     if (mdecrypt_generic (mcryptd, buf, buflen) != 0) {
-		perr (ERR_LIBMCRYPT) ;
+		exit_err ("could not decrypt stego header.") ;
     }
 
     if (mcrypt_generic_end (mcryptd) < 0) {
-		perr (ERR_LIBMCRYPT) ;
+		exit_err ("could not finish decryption of stego header.") ;
     }
 }
 
@@ -107,14 +107,14 @@ void encrypt_plnfile (PLNFILE *plnfile, char *passphrase)
 	}
 
 	if ((mcryptd = mcrypt_module_open (CRYPTOALGO_DATA, CRYPTOALGODIR, CRYPTOMODE_DATA, CRYPTOMODEDIR)) == MCRYPT_FAILED) {
-		perr (ERR_LIBMCRYPT) ;
+		exit_err ("could not open libmcrypt module \"%s\",\"%s\".", CRYPTOALGO_STHDR, CRYPTOMODE_STHDR) ;
 	}
 
 	key = getblowfishkey (passphrase) ;
 
 	if ((err = mcrypt_generic_init (mcryptd, key, SIZE_BLOWFISHKEY, IV)) < 0) {
 		mcrypt_perror (err) ;
-		perr (ERR_LIBMCRYPT) ;
+		exit_err ("could not initialize libmcrypt encryption. see above error messages if any.") ;
 	}
 
 	while (plnpos < buflength (plnfile->plnbuflhead)) {
@@ -132,7 +132,7 @@ void encrypt_plnfile (PLNFILE *plnfile, char *passphrase)
 		}
 
 		if (mcrypt_generic (mcryptd, buf, BLOCKSIZE_BLOWFISH) != 0) {
-			perr (ERR_LIBMCRYPT) ;
+			exit_err ("could not encrypt plain data. failed at block number %lu", blocknum) ;
 		}
 
 		for (i = 0 ; i < BLOCKSIZE_BLOWFISH ; i++) {
@@ -143,7 +143,7 @@ void encrypt_plnfile (PLNFILE *plnfile, char *passphrase)
 	}
 
 	if (mcrypt_generic_end (mcryptd) < 0) {
-		perr (ERR_LIBMCRYPT) ;
+		exit_err ("could not finish encryption of plain data.") ;
 	}
 
 	buffree (plnfile->plnbuflhead) ;
@@ -168,14 +168,14 @@ void decrypt_plnfile (PLNFILE *plnfile, char *passphrase)
 	}
 
 	if ((mcryptd = mcrypt_module_open (CRYPTOALGO_DATA, CRYPTOALGODIR, CRYPTOMODE_DATA, CRYPTOMODEDIR)) == MCRYPT_FAILED) {
-		perr (ERR_LIBMCRYPT) ;
+		exit_err ("could not open libmcrypt module \"%s\",\"%s\".", CRYPTOALGO_STHDR, CRYPTOMODE_STHDR) ;
 	}
 
 	key = getblowfishkey (passphrase) ;
 
 	if ((err = mcrypt_generic_init (mcryptd, key, SIZE_BLOWFISHKEY, IV)) < 0) {
 		mcrypt_perror (err) ;
-		perr (ERR_LIBMCRYPT) ;
+		exit_err ("could not initialize libmcrypt decryption. see above error messages if any.") ;
 	}
 
 	while (plnpos < buflength (plnfile->plnbuflhead)) {
@@ -185,7 +185,7 @@ void decrypt_plnfile (PLNFILE *plnfile, char *passphrase)
 		}
 
 		if (mdecrypt_generic (mcryptd, buf, BLOCKSIZE_BLOWFISH) != 0) {
-			perr (ERR_LIBMCRYPT) ;
+			exit_err ("could not decrypt plain data. failed at block number %ul", blocknum) ;
 		}
 
 		for (i = 0 ; i < BLOCKSIZE_BLOWFISH ; i++) {
@@ -198,7 +198,7 @@ void decrypt_plnfile (PLNFILE *plnfile, char *passphrase)
 	}	
 
 	if (mcrypt_generic_end (mcryptd) < 0) {
-		perr (ERR_LIBMCRYPT) ;
+		exit_err ("could not finish decryption of plain data.") ;
 	}
 	
 	buffree (plnfile->plnbuflhead) ;

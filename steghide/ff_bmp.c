@@ -45,12 +45,7 @@ void bmp_readheaders (CVRFILE *file)
 		file->headers->bmp.bmxh.Planes = read16_le (file->stream) ;
 		file->headers->bmp.bmxh.BitCount = read16_le (file->stream) ;
 		if ((file->headers->bmp.bmxh.Compression = read32_le (file->stream)) != BMP_BI_RGB) {
-			if (args_action == ACTN_EMBED) {
-				perr (ERR_CVRBMPWITHCOMPR) ;
-			}
-			else if (args_action == ACTN_EXTRACT) {
-				perr (ERR_STGBMPWITHCOMPR) ;
-			}
+			exit_err ("the bitmap data in \"%s\" is compressed which is not supported.", file->filename) ;
 		}
 		file->headers->bmp.bmxh.SizeImage = read32_le (file->stream) ;
 		file->headers->bmp.bmxh.XPelsPerMeter = read32_le (file->stream) ;
@@ -67,12 +62,8 @@ void bmp_readheaders (CVRFILE *file)
 		break ;
 
 		default:
-		if (args_action == ACTN_EMBED) {
-			perr (ERR_CVRUNSUPBMPFILE) ;
-		}
-		else if (args_action == ACTN_EXTRACT) {
-			perr (ERR_STGUNSUPBMPFILE) ;
-		}
+		exit_err ("the bmp file \"%s\" has a format that is not supported.", file->filename) ;
+		break ;
 	}
 
 	if (file->headers->bmp.bmxh.BitCount == 24) {
@@ -85,9 +76,7 @@ void bmp_readheaders (CVRFILE *file)
 
 		file->unsupdata1len = file->headers->bmp.bmfh.bfOffBits - (BMP_SIZE_BMFILEHEADER + file->headers->bmp.bmxh.Size) ;
 
-		if ((file->unsupdata1 = malloc (file->unsupdata1len)) == NULL) {
-			perr (ERR_MEMALLOC) ;
-		}
+		file->unsupdata1 = s_malloc (file->unsupdata1len) ;
 
 		ptrunsupdata1 = file->unsupdata1 ;
 		for (i = 0 ; i < file->unsupdata1len ; i++) {
@@ -96,12 +85,7 @@ void bmp_readheaders (CVRFILE *file)
 	}
 
 	if (ferror (file->stream)) {
-		if (args_action == ACTN_EMBED) {
-			perr (ERR_CVRREAD) ;
-		}
-		else if (args_action == ACTN_EXTRACT) {
-			perr (ERR_STGREAD) ;
-		}
+		exit_err ("an error occured while reading the headers of the file \"%s\".", file->filename) ;
 	}
 
 	return ;
@@ -150,12 +134,7 @@ void bmp_writeheaders (CVRFILE *file)
 	}
 
 	if (ferror (file->stream)) {
-		if (args_action == ACTN_EMBED) {
-			perr (ERR_STGWRITE) ;
-		}
-		else {
-			assert (0) ;
-		}
+		exit_err ("an error occured while writing the bmp headers to the file \"%s\".", file->filename) ;
 	}
 
 	return ;
@@ -184,12 +163,7 @@ void bmp_readfile (CVRFILE *file)
 	}
 
 	if (ferror (file->stream)) {
-		if (args_action == ACTN_EMBED) {
-			perr (ERR_CVRREAD) ;
-		}
-		else if (args_action == ACTN_EXTRACT) {
-			perr (ERR_STGREAD) ;
-		}
+		exit_err ("an error occured while reading the bitmap data of the file \"%s\".", file->filename) ;
 	}
 	
 	return ;
@@ -220,12 +194,7 @@ void bmp_writefile (CVRFILE *file)
 	}
 
 	if (ferror (file->stream)) {
-		if (args_action == ACTN_EMBED) {
-			perr (ERR_STGWRITE) ;
-		}
-		else {
-			assert (0) ;
-		}
+		exit_err ("an error occured while writing the bitmap data to the file \"%s\".", file->filename) ;
 	}
 
 	return ;

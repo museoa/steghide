@@ -29,10 +29,6 @@
 #include "support.h"
 #include "msg.h"
 
-/* function prototypes */
-static void echo_off (void) ;
-static void echo_on (void) ;
-
 /* used by the internal random number generator */
 #define RND_B		31415821UL
 #define RND_MAX		100000000UL
@@ -80,77 +76,88 @@ unsigned long readnum (char *s)
 
 char *get_passphrase (int doublecheck)
 {
+	struct termios oldattr ;
 	char *p1, *p2 ;
 	int i = 0 ;
 	int c = '\n' ;
 
-	if ((p1 = malloc (PASSPHRASE_MAXLEN)) == NULL) {
-		perr (ERR_MEMALLOC) ;
-	}
+	p1 = s_malloc (PASSPHRASE_MAXLEN) ;
+	p2 = s_malloc (PASSPHRASE_MAXLEN) ;
 
-	if ((p2 = malloc (PASSPHRASE_MAXLEN)) == NULL) {
-		perr (ERR_MEMALLOC) ;
-	}
-
-	printf ("Enter passphrase: ") ;
-	echo_off () ;
+	fprintf (stderr, "Enter passphrase: ") ;
+	oldattr = termios_echo_off () ;
 	while ((c = getchar ()) != '\n') {
 		if (i == PASSPHRASE_MAXLEN) {
-			perr (ERR_OTHER) ;
+			exit_err ("the maximum length of the passphrase is %d characters.", PASSPHRASE_MAXLEN) ;
 		}
 		p1[i++] = c ;
 	}
-	echo_on () ;
+	termios_reset (oldattr) ;
 	printf ("\n") ;
 
 	if (doublecheck == PP_DOUBLECHECK) {
-		printf ("Re-Enter passphrase: ") ;
-		echo_off () ;
+		fprintf (stderr, "Re-Enter passphrase: ") ;
+		oldattr = termios_echo_off () ;
 		i = 0 ;
 		while ((c = getchar ()) != '\n') {
 			if (i == PASSPHRASE_MAXLEN) {
-				perr (ERR_OTHER) ;
+				exit_err ("the maximum length of the passphrase is %d characters.", PASSPHRASE_MAXLEN) ;
 			}
 			p2[i++] = c ;
 		}
-		echo_on () ;
+		termios_reset (oldattr) ;
 		printf ("\n") ;
 
 		if (strcmp (p1, p2) != 0) {
-			perr (ERR_OTHER) ;
+			exit_err ("the passphrases do not match.") ;
 		}
 	}
 
 	return p1 ;
 }
 
-static void echo_off (void)
+struct termios termios_echo_off (void)
 {
-	struct termios attr ;
+	struct termios attr, retval ;
 
 	if ((tcgetattr (STDIN_FILENO, &attr)) != 0) {
-		perr (ERR_OTHER) ;
+		exit_err ("could not get terminal attributes.") ;
 	}
+	retval = attr ;
 
 	attr.c_lflag &= ~ECHO ;
 
-	if ((tcsetattr (STDIN_FILENO, TCSANOW, &attr)) != 0) {
-		perr (ERR_OTHER) ;
+	if ((tcsetattr (STDIN_FILENO, TCSAFLUSH, &attr)) != 0) {
+		exit_err ("could not set terminal attributes.") ;
 	}
+
+	return retval ;
 }
 
-static void echo_on (void)
+struct termios termios_singlekey_on (void)
 {
-	struct termios attr ;
+	struct termios attr, retval ;
 
 	if ((tcgetattr (STDIN_FILENO, &attr)) != 0) {
-		perr (ERR_OTHER) ;
+		exit_err ("could not get terminal attributes.") ;
+	}
+	retval = attr ;
+
+	attr.c_lflag &= ~ICANON ;
+	attr.c_cc[VTIME] = 0 ;
+	attr.c_cc[VMIN] = 1 ;
+
+	if ((tcsetattr (STDIN_FILENO, TCSAFLUSH, &attr)) != 0) {
+		exit_err ("could not set terminal attributes.") ;
 	}
 
-	attr.c_lflag |= ECHO ;
+	return retval ;
+}
 
+void termios_reset (struct termios attr)
+{
 	if ((tcsetattr (STDIN_FILENO, TCSANOW, &attr)) != 0) {
-		perr (ERR_OTHER) ;
+		exit_err ("could not set terminal attributes.") ;
 	}
 }
 
@@ -174,13 +181,44 @@ char *stripdir (char *filename)
 	}
 	start = i + 1 ;
 
-	if ((retval = malloc (end - start + 2)) == NULL) {
-		perr (ERR_MEMALLOC) ;
-	}
+	retval = s_malloc (end - start + 2) ;
 
 	j = 0 ;
 	for (i = start ; i <= end ; i++, j++) {
 		retval[j] = filename [i] ;
+	}
+
+	return retval ;
+}
+
+void *s_malloc (size_t size)
+{
+	void *retval = NULL ;
+
+	if ((retval = malloc (size)) == NULL) {
+		exit_err ("could not allocate memory.") ;
+	}
+
+	return retval ;
+}
+
+void *s_calloc (size_t nmemb, size_t size)
+{
+	void *retval = NULL ;
+
+	if ((retval = calloc (nmemb, size)) == NULL) {
+		exit_err ("could not allocate memory.") ;
+	}
+
+	return retval ;
+}
+
+void *s_realloc (void *ptr, size_t size)
+{
+	void *retval = NULL ;
+
+	if ((retval = realloc (ptr, size)) == NULL) {
+		exit_err ("could not reallocate memory.") ;
 	}
 
 	return retval ;

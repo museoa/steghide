@@ -108,8 +108,12 @@ This argument can only be used with the embed command.
 .TP
 .B "-sf, --stegofile"
 Defines the file that will be used as stego file. When this argument is used
-with the embed command a file of that name will be created. When used with the
+with the embed command, a file of that name will be created. When used with the
 extract command the file must already exist and contain an embedded message.
+
+The file format of the cover file (and the stego file) is detected automatically
+based on header information (the extension is not relevant). The current version
+of steghide supports BMP, WAV and AU files.
 
 .TP
 .B "-p, --passphrase"

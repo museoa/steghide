@@ -75,7 +75,7 @@ void embeddata (BUFFER *cvrbuflhead, unsigned long firstcvrpos, BUFFER *plnbuflh
 		cvrpos_byte = dmtd_nextpos () ;
 
 		if ((cvrpos_byte >= buflength (cvrbuflhead)) && (plnpos_byte < buflength (plnbuflhead))) {
-			perr (ERR_CVRTOOSHORT) ;
+			exit_err ("the cover file is too short to embed the plain data. try a smaller interval length.") ;
 		}
 	}
 
@@ -125,7 +125,7 @@ BUFFER *extractdata (BUFFER *stgbuflhead, unsigned long firststgpos)
 		stgpos_byte = dmtd_nextpos() ;
 
 		if ((stgpos_byte >= buflength (stgbuflhead)) && (plnpos_byte < size)) {
-			perr (ERR_STGTOOSHORT) ;
+			exit_err ("the stego file is to short to contain the plain data (file corruption ?).") ;
 		}
 	}
 
@@ -140,9 +140,7 @@ void embedsthdr (BUFFER *cvrbuflhead, int dmtd, DMTDINFO dmtdinfo, int enc, char
 	unsigned int bitval = 0 ;
 	unsigned long cvrbytepos = 0 ;
 
-	if ((hdrbuf = calloc (STHDR_NBYTES_BLOWFISH, 1)) == NULL) {
-		perr (ERR_MEMALLOC) ;
-	}
+	hdrbuf = s_calloc (STHDR_NBYTES_BLOWFISH, 1) ;
 
 	/* assemble bits that make up sthdr in a buffer */
 	bit = cp_bits_to_buf_le (hdrbuf, bit, (unsigned long) nbits (sthdr.nbytesplain), SIZE_NBITS_NBYTESPLAIN) ;
@@ -200,7 +198,7 @@ void embedsthdr (BUFFER *cvrbuflhead, int dmtd, DMTDINFO dmtdinfo, int enc, char
 		bufsetbit (cvrbuflhead, cvrbytepos, 0, bitval) ;
 		if (((cvrbytepos = dmtd_nextpos()) >= buflength (cvrbuflhead)) &&
 		   bit < sthdrbuflen) {
-			perr (ERR_CVRTOOSHORT) ;
+			exit_err ("the cover file is too short to embed the stego header. use another cover file.") ;
 		}
 	}
 
@@ -238,7 +236,7 @@ void extractsthdr (BUFFER *stgbuflhead, int dmtd, DMTDINFO dmtdinfo, int enc, ch
 		hdrbuf[bit / 8] |= bitval << (bit % 8) ;
 		if (((cvrbytepos = dmtd_nextpos()) >= buflength (stgbuflhead)) &&
 		   bit < hdrbuflen * 8) {
-			perr (ERR_STGTOOSHORT) ;
+			exit_err ("the stego file is too short to contain the stego header (file corruption ?).") ;
 		}
 	}
 	oldcvrbytepos[bit] = cvrbytepos ;
@@ -271,7 +269,7 @@ void extractsthdr (BUFFER *stgbuflhead, int dmtd, DMTDINFO dmtdinfo, int enc, ch
 		break ;
 
 		default:
-			perr (ERR_STHDRDMTDUNKNOWN) ;
+			exit_err ("the distribution method saved in the stego header is unknown (file corruption ?).") ;
 		break ;
 	}
 
@@ -279,7 +277,7 @@ void extractsthdr (BUFFER *stgbuflhead, int dmtd, DMTDINFO dmtdinfo, int enc, ch
 	if (tmp) {
 		bit = cp_bits_from_buf_le (hdrbuf, bit, &tmp, SIZE_MASK) ;
 		if (tmp == 0) {
-			perr (ERR_MASKZERO) ;
+			exit_err ("the mask saved in the stego header is zero (file corruption ?).") ;
 		}
 		sthdr.mask = (unsigned int) tmp ;
 	}
@@ -290,13 +288,13 @@ void extractsthdr (BUFFER *stgbuflhead, int dmtd, DMTDINFO dmtdinfo, int enc, ch
 	bit = cp_bits_from_buf_le (hdrbuf, bit, &tmp, SIZE_COMPRESSION) ;
 	sthdr.compression = (unsigned int) tmp ;
 	if (sthdr.compression != COMPR_NONE) {
-		perr (ERR_COMPRNOTIMPL) ;
+		exit_err ("the plain data is compressed. this is not implemented yet (file corruption ?).") ;
 	}
 
 	bit = cp_bits_from_buf_le (hdrbuf, bit, &tmp, SIZE_CHECKSUM) ;
 	sthdr.checksum = (unsigned int) tmp ;
 	if (sthdr.checksum != CKSUM_NONE) {
-		perr (ERR_CKSUMNOTIMPL) ;
+		exit_err ("the stego file contains a checksum. this is not implemented yet (file corruption ?).") ;
 	}
 
 	/* set *firstplnpos */

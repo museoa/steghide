@@ -34,7 +34,7 @@ unsigned long get32hash (char *passphrase)
 	int i = 0 ;
 
 	if ((hashd = mhash_init (MHASH_MD5)) == MHASH_FAILED) {
-		perr (ERR_MHASH) ;
+		exit_err ("could not initialize libmhash MD5 algorithm.") ;
 	}
 	mhash (hashd, passphrase, strlen (passphrase)) ;
 	hash = mhash_end (hashd) ;
@@ -53,7 +53,7 @@ void *getblowfishkey (char *passphrase)
 	MHASH hashd ;
 
 	if ((hashd = mhash_init (MHASH_MD5)) == MHASH_FAILED) {
-		perr (ERR_MHASH) ;
+		exit_err ("could not initialize libmhash MD5 algorithm.") ;
 	}
 
 	mhash (hashd, passphrase, strlen (passphrase)) ;

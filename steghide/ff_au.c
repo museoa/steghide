@@ -42,9 +42,7 @@ void au_readheaders (CVRFILE *file)
 		unsigned char *ptrunsupdata1 = NULL ;
 		int i = 0 ;
 
-		if ((file->unsupdata1 = malloc (file->unsupdata1len)) == NULL) {
-			perr (ERR_MEMALLOC) ;
-		}
+		file->unsupdata1 = s_malloc (file->unsupdata1len) ;
 
 		ptrunsupdata1 = file->unsupdata1 ;
 		for (i = 0 ; i < file->unsupdata1len ; i++) {
@@ -53,12 +51,7 @@ void au_readheaders (CVRFILE *file)
 	}
 		
 	if (ferror (file->stream)) {
-		if (args_action == ACTN_EMBED) {
-			perr (ERR_CVRREAD) ;
-		}
-		else if (args_action == ACTN_EXTRACT) {
-			perr (ERR_STGREAD) ;
-		}
+		exit_err ("an error occured while reading the headers of the file \"%s\".", file->filename) ;
 	}
 
 	return ;
@@ -86,12 +79,7 @@ void au_writeheaders (CVRFILE *file)
 	}
 
 	if (ferror (file->stream)) {
-		if (args_action == ACTN_EMBED) {
-			perr (ERR_STGWRITE) ;
-		}
-		else {
-			assert (0) ;
-		}
+		exit_err ("an error occured while writing the au headers to the file \"%s\".", file->filename) ;
 	}
 
 	return ;
@@ -108,12 +96,7 @@ void au_readfile (CVRFILE *file)
 	}
 
 	if (ferror (file->stream)) {
-		if (args_action == ACTN_EMBED) {
-			perr (ERR_CVRREAD) ;
-		}
-		else if (args_action == ACTN_EXTRACT) {
-			perr (ERR_STGREAD) ;
-		}
+		exit_err ("an error occured while reading the audio data from the file \"%s\".", file->filename) ;
 	}
 
 	return ;
@@ -132,12 +115,7 @@ void au_writefile (CVRFILE *file)
 	}
 
 	if (ferror (file->stream)) {
-		if (args_action == ACTN_EMBED) {
-			perr (ERR_STGWRITE) ;
-		}
-		else {
-			assert (0) ;
-		}
+		exit_err ("an error occured while writing the audio data to the file \"%s\".", file->filename) ;
 	}
 
 	return ;

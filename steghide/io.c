@@ -65,19 +65,11 @@ void readheaders (CVRFILE *file)
 				wav_readheaders (file, rifflen) ;
 			}
 			else {
-				if (args_action == ACTN_EMBED) {
-					perr (ERR_CVRUNKNOWNFFORMAT) ;
-				}
-				else if (args_action == ACTN_EXTRACT) {
-					perr (ERR_STGUNKNOWNFFORMAT) ;
-				}
+				exit_err ("the file format of the file \"%s\" is not supported.", file->filename) ;
 			}
 		}
 		else {
-			if (args_action == ACTN_EMBED)
-				perr (ERR_CVRUNKNOWNFFORMAT) ;
-			else if (args_action == ACTN_EXTRACT)
-				perr (ERR_STGUNKNOWNFFORMAT) ;
+			exit_err ("the file format of the file \"%s\" is not supported.", file->filename) ;
 		}
 	}
 
@@ -89,27 +81,18 @@ CVRFILE *createstgfile (CVRFILE *cvrfile, const char *stgfilename)
 {
 	CVRFILE *stgfile = NULL ;
 
-	if ((stgfile = malloc (sizeof *stgfile)) == NULL) {
-		perr (ERR_MEMALLOC) ;
-	}
+	stgfile = s_malloc (sizeof *stgfile) ;
 	
 	if (strcmp (stgfilename, "-") == 0) {
 		stgfile->stream = stdout ;
 	}
 	else {
 		if ((stgfile->stream = fopen (stgfilename, "wb")) == NULL) {
-			if (args_action == ACTN_EMBED) {
-				perr (ERR_STGOPEN) ;
-			}
-			else {
-				assert (0) ;
-			}
+			exit_err ("could not create stego file \"%s\".", stgfilename) ;
 		}
 	}
 	
-	if ((stgfile->filename = malloc (strlen (stgfilename) + 1)) == NULL) {
-		perr (ERR_MEMALLOC) ;
-	}
+	stgfile->filename = s_malloc (strlen (stgfilename) + 1) ;
 	strcpy (stgfile->filename, stgfilename) ;
 
 	stgfile->fileformat = cvrfile->fileformat ;
@@ -149,7 +132,7 @@ void assemble_plndata (PLNFILE *plnfile)
 		sthdr.plnfilename = tmp ;
 
 		if ((nbytes_plnfilename = strlen (sthdr.plnfilename)) > PLNFILENAME_MAXLEN) {
-			perr (ERR_PLNFILENAMELEN) ;
+			exit_err ("the maximum length for the plain file name is %d characters.", PLNFILENAME_MAXLEN) ;
 		}
 		bufsetbyte (buf, pos++, nbytes_plnfilename) ;
 		
@@ -177,7 +160,7 @@ void deassemble_plndata (PLNFILE *plnfile)
 		/* standard input was used for plnfile during embedding */
 		if (args_fn_pln == NULL) {
 			/* no -pf argument was given on command line */
-			perr (ERR_NOPLNFILENAME) ;
+			exit_err ("please specify a name for the plain file (there is none embedded in the stego file).") ;
 		}
 		else {
 			if (strcmp (args_fn_pln, "-") == 0) {
@@ -188,17 +171,13 @@ void deassemble_plndata (PLNFILE *plnfile)
 			else {
 				/* a name for the plain file has been specified on the command line */
 				if ((plnfile->stream = fopen (args_fn_pln, "wb")) == NULL) {
-					perr (ERR_PLNOPEN) ;
+					exit_err ("could not create plain file \"%s\".", args_fn_pln) ;
 				}
 
-				if ((plnfile->filename = malloc (strlen (args_fn_pln) + 1)) == NULL) {
-					perr (ERR_MEMALLOC) ;
-				}
+				plnfile->filename = s_malloc (strlen (args_fn_pln) + 1) ;
 				strcpy (plnfile->filename, args_fn_pln) ;
 
-				if ((sthdr.plnfilename = malloc (strlen (args_fn_pln) + 1)) == NULL) {
-					perr (ERR_MEMALLOC) ;
-				}
+				sthdr.plnfilename = s_malloc (strlen (args_fn_pln) + 1) ;
 				strcpy (sthdr.plnfilename, args_fn_pln) ;
 			}
 		}
@@ -211,18 +190,14 @@ void deassemble_plndata (PLNFILE *plnfile)
 
 		if (args_fn_pln == NULL) {
 			/* no -pf argument was given on command line */
-			if ((plnfile->filename = malloc (strlen (plnfilename) + 1)) == NULL) {
-				perr (ERR_MEMALLOC) ;
-			}
+			plnfile->filename = s_malloc (strlen (plnfilename) + 1) ;
 			strcpy (plnfile->filename, plnfilename) ;
 
 			if ((plnfile->stream = fopen (plnfilename, "wb")) == NULL) {
-				perr (ERR_PLNOPEN) ;
+				exit_err ("could not create plain file \"%s\".", args_fn_pln) ;
 			}
 
-			if ((sthdr.plnfilename = malloc (i + 1)) == NULL) {
-				perr (ERR_MEMALLOC) ;
-			}
+			sthdr.plnfilename = s_malloc (i + 1) ;
 			strcpy (sthdr.plnfilename, plnfilename) ;
 		}
 		else {
@@ -234,17 +209,13 @@ void deassemble_plndata (PLNFILE *plnfile)
 			else {
 				/* a name for the plain file has been specified on the command line */
 				if ((plnfile->stream = fopen (args_fn_pln, "wb")) == NULL) {
-					perr (ERR_PLNOPEN) ;
+					exit_err ("could not create plain file \"%s\".", args_fn_pln) ;
 				}
 
-				if ((plnfile->filename = malloc (strlen (args_fn_pln) + 1)) == NULL) {
-					perr (ERR_MEMALLOC) ;
-				}
+				plnfile->filename = s_malloc (strlen (args_fn_pln) + 1) ;
 				strcpy (plnfile->filename, args_fn_pln) ;
 
-				if ((sthdr.plnfilename = malloc (strlen (args_fn_pln) + 1)) == NULL) {
-					perr (ERR_MEMALLOC) ;
-				}
+				sthdr.plnfilename = s_malloc (strlen (args_fn_pln) + 1) ;
 				strcpy (sthdr.plnfilename, args_fn_pln) ;
 			}
 		}
@@ -260,12 +231,10 @@ PLNFILE *createplnfile (void)
 {
 	PLNFILE *plnfile = NULL ;
 
-	if ((plnfile = malloc (sizeof *plnfile)) == NULL)
-		perr (ERR_MEMALLOC) ;
+	plnfile = s_malloc (sizeof *plnfile) ;
 
 	plnfile->filename = NULL ;	/* will be filled later by deassemble_plndata() */
 	plnfile->stream = NULL ;	/* will be filled later be deassemble_plndata() */
-
 	plnfile->plnbuflhead = NULL ;	/* will be filled later by extractdata() */
 
 	return plnfile ;
@@ -317,29 +286,21 @@ CVRFILE *readcvrfile (const char *filename)
 	CVRFILE *cvrfile = NULL ;
 
 	/* fill cvrfile structure */
-	if ((cvrfile = malloc (sizeof *cvrfile)) == NULL)
-		perr (ERR_MEMALLOC) ;
+	cvrfile = s_malloc (sizeof *cvrfile) ;
 
 	if (strcmp (filename, "-") == 0)
 		cvrfile->stream = stdin ;
 	else {
 		if ((cvrfile->stream = fopen (filename, "rb")) == NULL) {
 			free (cvrfile) ;
-			if (args_action == ACTN_EMBED) {
-				perr (ERR_CVROPEN) ;
-			}
-			else if (args_action == ACTN_EXTRACT) {
-				perr (ERR_STGOPEN) ;
-			}
+			exit_err ("could not open the file \"%s\".", filename) ;
 		}
 	}
 
-	if ((cvrfile->filename = malloc (strlen (filename) + 1)) == NULL)
-		perr (ERR_MEMALLOC) ;
+	cvrfile->filename = s_malloc (strlen (filename) + 1) ;
 	strcpy (cvrfile->filename, filename) ;
 
-	if ((cvrfile->headers = malloc (sizeof *cvrfile->headers)) == NULL)
-		perr (ERR_MEMALLOC) ;
+	cvrfile->headers = s_malloc (sizeof *cvrfile->headers) ;
 
 	readheaders (cvrfile) ;
 
@@ -404,9 +365,7 @@ PLNFILE *readplnfile (const char *filename)
 	int c = EOF ;
 	unsigned long bufpos = 0 ;
 
-	if ((plnfile = malloc (sizeof *plnfile)) == NULL) {
-		perr (ERR_MEMALLOC) ;
-	}
+	plnfile = s_malloc (sizeof *plnfile) ;
 
 	if (filename == NULL) {
 		plnfile->stream = stdin ;
@@ -416,10 +375,9 @@ PLNFILE *readplnfile (const char *filename)
 	}
 	else {
 		if ((plnfile->stream = fopen (filename, "rb")) == NULL) {
-			perr (ERR_PLNOPEN) ;
+			exit_err ("could not open file \"%s\".", filename) ;
 		}
-		if ((plnfile->filename = malloc (strlen (filename) + 1)) == NULL)
-			perr (ERR_MEMALLOC) ;
+		plnfile->filename = s_malloc (strlen (filename) + 1) ;
 		strcpy (plnfile->filename, filename) ;
 	}
 
@@ -430,8 +388,9 @@ PLNFILE *readplnfile (const char *filename)
 		bufpos++ ;
 	}
 
-	if (ferror (plnfile->stream))
-		perr (ERR_PLNREAD) ;
+	if (ferror (plnfile->stream)) {
+		exit_err ("an error occured while reading the file \"%s\".", filename) ;
+	}
 
 	assemble_plndata (plnfile) ;
 
@@ -454,7 +413,7 @@ void writeplnfile (PLNFILE *plnfile)
 	}
 
 	if (ferror (plnfile->stream)) {
-		perr (ERR_PLNWRITE) ;
+		exit_err ("an error occured while writing to the file \"%s\".", plnfile->filename) ;
 	}
 
 	return ;

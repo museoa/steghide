@@ -24,6 +24,7 @@
 #include <assert.h>
 
 #include "bufmanag.h"
+#include "support.h"
 #include "msg.h"
 
 static BUFFER *appendnewbuf (BUFFER *buflhead) ;
@@ -55,13 +56,8 @@ static BUFFER *appendnewbuf (BUFFER *buflhead)
 		endbuf = endbuf->next ;
 	}
 
-	if ((newbuf = malloc (sizeof *newbuf)) == NULL) {
-		perr (ERR_MEMALLOC) ;
-	}
-
-	if ((newbuf->ptr = malloc (bufsize)) == NULL) {
-		perr (ERR_MEMALLOC) ;
-	}
+	newbuf = s_malloc (sizeof *newbuf) ;
+	newbuf->ptr = s_malloc (bufsize) ;
 	newbuf->nbytes = 0 ;
 	newbuf->nbytesalloc = bufsize ;
 	newbuf->next = NULL ;
