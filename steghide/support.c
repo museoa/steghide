@@ -161,6 +161,22 @@ void termios_reset (struct termios attr)
 	}
 }
 
+int fileexists (char *filename)
+{
+    FILE *fd = NULL ;
+    int retval = 0 ;
+
+    if ((fd = fopen (filename, "r")) == NULL) {
+        retval = 0 ;
+    }
+    else {
+        retval = 1 ;
+        fclose (fd) ;
+    }
+
+    return retval ;
+}
+
 void swap (unsigned long *x, unsigned long *y)
 {
 	unsigned long t ;

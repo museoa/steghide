@@ -94,13 +94,9 @@ CVRFILE *createstgfile (CVRFILE *cvrfile, const char *stgfilename)
 	stgfile = s_malloc (sizeof *stgfile) ;
 	
 	if (stgfilename == NULL) {
-		stgfile->stream = stdout ;
 		stgfile->filename = NULL ;
 	}
 	else {
-		if ((stgfile->stream = fopen (stgfilename, "wb")) == NULL) {
-			exit_err ("could not create stego file \"%s\".", stgfilename) ;
-		}
 		stgfile->filename = s_malloc (strlen (stgfilename) + 1) ;
 		strcpy (stgfile->filename, stgfilename) ;
 	}
@@ -175,15 +171,10 @@ void deassemble_plndata (PLNFILE *plnfile)
 		else {
 			if (strcmp (args_fn_pln, "-") == 0) {
 				/* a -pf - argument was given on command line */
-				plnfile->stream = stdout ;
 				plnfile->filename = NULL ;
 			}
 			else {
 				/* a name for the plain file has been specified on the command line */
-				if ((plnfile->stream = fopen (args_fn_pln, "wb")) == NULL) {
-					exit_err ("could not create plain file \"%s\".", args_fn_pln) ;
-				}
-
 				plnfile->filename = s_malloc (strlen (args_fn_pln) + 1) ;
 				strcpy (plnfile->filename, args_fn_pln) ;
 
@@ -203,25 +194,16 @@ void deassemble_plndata (PLNFILE *plnfile)
 			plnfile->filename = s_malloc (strlen (plnfilename) + 1) ;
 			strcpy (plnfile->filename, plnfilename) ;
 
-			if ((plnfile->stream = fopen (plnfilename, "wb")) == NULL) {
-				exit_err ("could not create plain file \"%s\".", args_fn_pln) ;
-			}
-
 			sthdr.plnfilename = s_malloc (i + 1) ;
 			strcpy (sthdr.plnfilename, plnfilename) ;
 		}
 		else {
 			if (strcmp (args_fn_pln, "-") == 0) {
 				/* a -pf - argument was given on command line */
-				plnfile->stream = stdout ;
 				plnfile->filename = NULL ;
 			}
 			else {
 				/* a name for the plain file has been specified on the command line */
-				if ((plnfile->stream = fopen (args_fn_pln, "wb")) == NULL) {
-					exit_err ("could not create plain file \"%s\".", args_fn_pln) ;
-				}
-
 				plnfile->filename = s_malloc (strlen (args_fn_pln) + 1) ;
 				strcpy (plnfile->filename, args_fn_pln) ;
 
@@ -348,6 +330,24 @@ CVRFILE *readcvrfile (const char *filename)
 /* writes the file described in the cvrfile structure to disk */
 void writecvrfile (CVRFILE *cvrfile)
 {
+	if (cvrfile->filename == NULL) {
+		cvrfile->stream = stdout ;
+	}
+	else {
+		if (!args_force) {
+			/* check if file already exists */
+			if (fileexists (cvrfile->filename)) {
+				if (!pquestion ("file \"%s\" does already exits. overwrite ?", cvrfile->filename)) {
+					exit_err ("did not write to file \"%s\".", cvrfile->filename) ;
+				}
+			}
+		}
+
+		if ((cvrfile->stream = fopen (cvrfile->filename, "wb")) == NULL) {
+			exit_err ("could not create stego file \"%s\".", cvrfile->filename) ;
+		}
+	}
+	
 	switch (cvrfile->fileformat) {
 		case FF_BMP:
 		bmp_writefile (cvrfile) ;
@@ -434,6 +434,24 @@ void writeplnfile (PLNFILE *plnfile)
 	unsigned long bufpos = 0 ;
 
 	deassemble_plndata (plnfile) ;
+
+	if (plnfile->filename == NULL) {
+		plnfile->stream = stdout ;
+	}
+	else {
+		if (!args_force) {
+			/* check if file already exists */
+			if (fileexists (plnfile->filename)) {
+				if (!pquestion ("file \"%s\" does already exits. overwrite ?", plnfile->filename)) {
+					exit_err ("did not write to file \"%s\".", plnfile->filename) ;
+				}
+			}
+		}
+
+		if ((plnfile->stream = fopen (plnfile->filename, "wb")) == NULL) {
+			exit_err ("could not create plain file \"%s\".", plnfile->filename) ;
+		}
+	}
 
 	while ((c = bufgetbyte (plnfile->plnbuflhead, bufpos)) != ENDOFBUF) {
 		putc (c, plnfile->stream) ;

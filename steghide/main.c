@@ -46,6 +46,7 @@ char *args_passphrase = NULL ;
 char *args_fn_cvr = NULL ;
 char *args_fn_stg = NULL ;
 char *args_fn_pln = NULL ;
+int args_force = 0 ;
 int args_quiet = 0 ;
 int args_verbose = 0 ;
 
@@ -279,6 +280,10 @@ static void parsearguments (int argc, char* argv[])
 			strcpy (args_fn_pln, argv[i]) ;
 		}
 
+		else if ((strncmp (argv[i], "-f\0", 3) == 0) || (strncmp (argv[i], "--force\0", 8) == 0)) {
+			args_force = 1 ;
+		}
+
 		else if ((strncmp (argv[i], "-q\0", 3) == 0) || (strncmp (argv[i], "--quiet\0", 8) == 0)) {
 			args_quiet = 1 ;
 		}
@@ -383,6 +388,7 @@ static void usage (void)
 	printf ("   -pf <filename>        use <filename> as plain file\n") ;
 	printf (" -h, --sthdrencryption   encrypt stego header before embedding (default)\n") ;
 	printf (" -H, --nosthdrencryption do not encrypt stego header before embedding\n") ;
+	printf (" -f, --force             overwrite existing files\n") ;
 	printf (" -q, --quiet             suppress messages and warnings\n") ;
 	printf (" -v, --verbose           display detailed information\n") ;
 

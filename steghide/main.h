@@ -36,6 +36,7 @@ extern char *args_passphrase ;
 extern char *args_fn_cvr ;
 extern char *args_fn_stg ;
 extern char *args_fn_pln ;
+extern int args_force ;
 extern int args_quiet ;
 extern int args_verbose ;
 

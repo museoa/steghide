@@ -40,6 +40,7 @@ char *get_passphrase (int doublecheck) ;
 struct termios termios_echo_off (void) ;
 struct termios termios_singlekey_on (void) ;
 void termios_reset (struct termios attr) ;
+int fileexists (char *filename) ;
 unsigned long readnum (char *s) ;
 void *s_malloc (size_t size) ;
 void *s_calloc (size_t nmemb, size_t size) ;
