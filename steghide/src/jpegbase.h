@@ -30,8 +30,7 @@
  * \class JpegObject
  * \brief any object in a jpeg file
  *
- * This class serves as an abstract base class to provide the
- * read/write interface for every object in a jpeg file.
+ * This class serves as an abstract base class for every object in a jpeg file.
  **/
 class JpegObject {
 	public:
@@ -46,6 +45,28 @@ class JpegObject {
 	 * \param io the jpeg stream
 	 **/
 	virtual void write (BinaryIO *io) = 0 ;
+
+	protected:
+	/**
+	 * splits a byte into its two halves
+	 * \param byte the byte to split
+	 * \param high the adress where the more significant half should be put
+	 * \param low the adress where the less significant half should be put
+	 *
+	 * This function is useful when dealing with 4-bit fields in jpeg files.
+	 **/
+	void splitByte (unsigned char byte, unsigned char *high, unsigned char *low) ;
+
+	/**
+	 * merges two halves of a byte into one byte
+	 * \param high the more significant half
+	 * \param low the less significant half
+	 * \return the merged byte
+	 *
+	 * This function is useful when dealing with 4-bit fields in jpeg files.
+	 **/
+	unsigned char mergeByte (unsigned char high, unsigned char low) ;
+
 } ;
 
 typedef unsigned char JpegMarker ;
@@ -90,7 +111,16 @@ class JpegElement : public JpegObject {
 	void write (BinaryIO *io) ;	
 
 	protected:
+	/**
+	 * return the marker of this JpegElement
+	 * \return the 1-byte marker code
+	 **/
 	JpegMarker getMarker (void) ;
+
+	/**
+	 * set the marker of this JpegElement
+	 * \param m the 1-byte marker code
+	 **/
 	void setMarker (JpegMarker m) ;
 
 	private:
@@ -138,26 +168,6 @@ class JpegSegment : public JpegElement {
 	 **/
 	void setLength (unsigned int l) ;
 
-	/**
-	 * splits a byte into its two halves
-	 * \param byte the byte to split
-	 * \param high the adress where the more significant half should be put
-	 * \param low the adress where the less significant half should be put
-	 *
-	 * This function is useful when dealing with 4-bit fields in jpeg files.
-	 **/
-	void splitByte (unsigned char byte, unsigned char *high, unsigned char *low) ;
-
-	/**
-	 * merges two halves of a byte into one byte
-	 * \param high the more significant half
-	 * \param low the less significant half
-	 * \return the merged byte
-	 *
-	 * This function is useful when dealing with 4-bit fields in jpeg files.
-	 **/
-	unsigned char mergeByte (unsigned char high, unsigned char low) ;
-
 	private:
 	bool length_isset ;
 	unsigned int length ;
@@ -175,7 +185,16 @@ class JpegContainer : public JpegObject, public CvrStgObject {
 	JpegContainer (void) ;
 	virtual ~JpegContainer (void) ;
 
+	/**
+	 * get all objects of this container
+	 * \return a vector containing all JpegObjects of this container
+	 **/
 	vector<JpegObject*> getJpegObjects (void) ;
+
+	/**
+	 * get all objects that can hold embedded data of this container
+	 * \return a vector containing all CvrStgObjects of this container
+	 **/
 	vector<CvrStgObject*> getCvrStgObjects (void) ;
 
 	void read (BinaryIO *io) ;
@@ -186,12 +205,28 @@ class JpegContainer : public JpegObject, public CvrStgObject {
 	int extractBit (unsigned long pos) ;
 
 	protected:
+	/**
+	 * appends a JpegObject
+	 * \param o the jpeg object to append
+	 *
+	 * This functions append o to the vector jpegobjs and if o is a CvrStgObject
+	 * also appends it to the vector cvrstgobjs.
+	 **/
 	void appendObj (JpegObject *o) ;
 
 	private:
 	CvrStgObject *calcCvrStgObject (unsigned long *pos) ;
 
+	/**
+	 * contains all JpegObjects in this JpegContainer
+	 * (in the same order as they appeared in the original file)
+	 **/
 	vector<JpegObject*> jpegobjs ;
+
+	/**
+	 * contains all CvrStgObjects in this JpegContainer
+	 * (in the same order as they appeared in the original file)
+	 **/
 	vector<CvrStgObject*> cvrstgobjs ;
 } ;
 

@@ -18,6 +18,8 @@
  *
  */
 
+#include <assert.h>
+
 #include "binaryio.h"
 #include "jpegbase.h"
 #include "jpeghufftable.h"
@@ -37,11 +39,63 @@ JpegHuffmanTable::~JpegHuffmanTable ()
 {
 }
 
+JpegHuffmanTable::Class JpegHuffmanTable::getClass ()
+{
+	Class retval ;
+
+	switch (tableclass) {
+		case 0:
+		retval = DCTABLE ;
+		break ;
+
+		case 1:
+		retval = ACTABLE ;
+		break ;
+
+		default:
+		assert (0) ;
+		break ;
+	}
+
+	return retval ;
+}
+
+unsigned int JpegHuffmanTable::getDestId ()
+{
+	return tabledestid ;
+}
+
+unsigned char JpegHuffmanTable::getHuffVal (unsigned int i)
+{
+	assert (i < huffval.size()) ;
+	return huffval[i] ;
+}
+
+int JpegHuffmanTable::getMinCode (unsigned char l)
+{
+	assert (l < mincode.size()) ;
+	assert (mincode[l] >= 0) ;
+	return mincode[l] ;
+}
+
+int JpegHuffmanTable::getMaxCode (unsigned char l)
+{
+	assert (l < maxcode.size()) ;
+	return maxcode[l] ;
+}
+
+unsigned int JpegHuffmanTable::getValPtr (unsigned char l)
+{
+	assert (l < valptr.size()) ;
+	assert (valptr[l] >= 0) ;
+	return ((unsigned int) valptr[l]) ;
+}
+
 void JpegHuffmanTable::read (BinaryIO *io)
 {
 	JpegSegment::read (io) ;
 
-	splitByte (io->read8(), &tableclass, &tableid) ;
+	splitByte (io->read8(), &tableclass, &tabledestid) ;
 	for (unsigned char i = 0 ; i < Len_bits ; i++) {
 		bits.push_back (io->read8()) ;
 	}
@@ -51,14 +105,14 @@ void JpegHuffmanTable::read (BinaryIO *io)
 		}
 	}
 
-	calcTable() ;
+	calcTables() ;
 }
 
 void JpegHuffmanTable::write (BinaryIO *io)
 {
 	JpegSegment::write (io) ;
 
-	io->write8 (mergeByte (tableclass, tableid)) ;
+	io->write8 (mergeByte (tableclass, tabledestid)) ;
 	for (unsigned char i = 0 ; i < Len_bits ; i++) {
 		io->write8 (bits[i]) ;
 	}
@@ -71,7 +125,7 @@ void JpegHuffmanTable::write (BinaryIO *io)
 	}
 }
 
-void JpegHuffmanTable::calcTable ()
+void JpegHuffmanTable::calcTables ()
 {
 	// generate huffsize
 	for (unsigned char i = 0 ; i < Len_bits ; i++) {
@@ -92,5 +146,25 @@ void JpegHuffmanTable::calcTable ()
 		code++ ;
 	}
 
-	return ;
+	// generate mincode, maxcode and valptr
+	// FIXME - bei tables - off by one - wo fängt table an ??
+	unsigned char i = 0 ;
+	unsigned int j = 0 ;
+	while (i <= 16) {
+		if (bits[i] == 0) {
+			maxcode.push_back (-1) ;
+
+			// mincode, valptr should not be used for i anyway
+			mincode.push_back (-1) ;
+			valptr.push_back (-1) ;
+		}
+		else {
+			valptr.push_back (j) ;
+			mincode.push_back (huffcode[j]) ;
+			j += bits[i] - 1 ;
+			maxcode.push_back (huffcode[j]) ;
+			j++ ;
+		}
+		i++ ;
+	}
 }

@@ -21,8 +21,13 @@
 #ifndef SH_JPEGSCAN_H
 #define SH_JPEGSCAN_H
 
+#include <vector>
+
 #include "binaryio.h"
 #include "jpegbase.h"
+#include "jpegentropycoded.h"
+#include "jpeghufftable.h"
+#include "jpegscanhdr.h"
 
 /**
  * \class JpegScan
@@ -36,8 +41,18 @@ class JpegScan : public JpegContainer {
 
 	void read (BinaryIO *io) ;
 
+	JpegMarker getTerminatingMarker (void) ;
+
 	private:
-	//JpegScanHeader *hdr ;
+	JpegScanHeader *scanhdr ;
+	// TODO support more than one ecs
+	JpegEntropyCoded *ecs ;
+
+	// FIXME? - gibt es DCTables[0..4] UND ACTables[0..4] oder Tables[0..4] von denen jeder DC oder AC sein kann ?? - siehe JPEGSTANDARD S. 104 u. S.111
+	vector<JpegHuffmanTable*> ACTables ;
+	vector<JpegHuffmanTable*> DCTables ;
+
+	JpegMarker termmarker ;
 } ;
 
 #endif // ndef SH_JPEGSCAN_H

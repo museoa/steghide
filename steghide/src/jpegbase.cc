@@ -24,6 +24,23 @@
 #include "jpegbase.h"
 
 //
+// class JpegObject
+//
+void JpegObject::splitByte (unsigned char byte, unsigned char *high, unsigned char *low)
+{
+	*high = (0xF0 & byte) >> 4 ;
+	*low = (0x0F & byte) ;
+}
+
+unsigned char JpegObject::mergeByte (unsigned char high, unsigned char low)
+{
+	assert (high <= 15) ;
+	assert (low <= 15) ;
+
+	return ((high << 4) | low) ;
+}
+
+//
 // class JpegElement
 //
 JpegElement::JpegElement ()
@@ -92,20 +109,6 @@ void JpegSegment::write (BinaryIO *io)
 	io->write16_be (getLength()) ;
 }
 
-void JpegSegment::splitByte (unsigned char byte, unsigned char *high, unsigned char *low)
-{
-	*high = (0xF0 & byte) >> 4 ;
-	*low = (0x0F & byte) ;
-}
-
-unsigned char JpegSegment::mergeByte (unsigned char high, unsigned char low)
-{
-	assert (high <= 15) ;
-	assert (low <= 15) ;
-
-	return ((high << 4) | low) ;
-}
-
 unsigned int JpegSegment::getLength (void)
 {
 	assert (length_isset) ;
@@ -126,6 +129,7 @@ JpegContainer::JpegContainer ()
 {
 }
 
+// FIXME - wo werden jpegobjs wieder freigegeben, d.h. zerstört ? - hier ?
 JpegContainer::~JpegContainer ()
 {
 }

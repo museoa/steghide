@@ -32,6 +32,8 @@
  **/
 class JpegHuffmanTable : public JpegSegment {
 	public:
+	enum Class { DCTABLE, ACTABLE } ;
+
 	JpegHuffmanTable (void) ;
 	JpegHuffmanTable (BinaryIO *io) ;
 	virtual ~JpegHuffmanTable (void) ;
@@ -48,18 +50,41 @@ class JpegHuffmanTable : public JpegSegment {
 	 **/
 	void write (BinaryIO *io) ;
 
+	/**
+	 * returns the class of this table
+	 **/
+	Class getClass (void) ;
+
+	/**
+	 * returns the table destination identifier
+	 **/
+	unsigned int getDestId (void) ;
+
+	// FIXME - ??Datentypen
+	int getMinCode (unsigned char l) ;
+	int getMaxCode (unsigned char l) ;
+	unsigned int getValPtr (unsigned char l) ;
+	unsigned char getHuffVal (unsigned int i) ;
+
 	private:
 	static const unsigned char Len_bits = 16 ;
 
-	void calcTable (void) ;
+	void calcTables (void) ;
 
 	unsigned char tableclass ;
-	unsigned char tableid ;
+	unsigned char tabledestid ;
 	vector<unsigned char> bits ;
 	vector<unsigned char> huffval ;
 
+	// FIXME - ??Datentypen
 	vector<unsigned char> huffsize ;
 	vector<unsigned int> huffcode ;
+	/// mincode[l] contains the smallest code value for the length l
+	vector<int> mincode ;
+	/// maxcode[l] contains the largest code value for the length l
+	vector<int> maxcode ;
+	/// valptr[l] contains the index to the start of the list of values in huffval which are decoded by code word of length l
+	vector<int> valptr ;
 } ;
 
 #endif // ndef SH_JPEGHUFFTABLE_H

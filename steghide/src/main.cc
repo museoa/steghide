@@ -147,7 +147,7 @@ static void gettext_init (void)
 
 #ifdef WIN32
 	/* using the Windows API to find out which language should be used
-	   (as there is no environment variable indicating the language set) */
+	   (as there is no environment variable indicating the language) */
 	{
 		LCID localeID = GetThreadLocale () ;	
 		int i = 0 ;

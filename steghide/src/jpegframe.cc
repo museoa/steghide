@@ -85,12 +85,9 @@ void JpegFrame::read (BinaryIO *io)
 			appendObj (next) ;
 			// TODO - support more than one scan
 			next = new JpegScan (io) ;
-			break ;
-
-			// FIXME wo wird eoi gefunden ??
-			case JpegElement::MarkerEOI:
-			cerr << "found EOI" << endl ;
-			eoifound = true ;
+			if (((JpegScan*) next)->getTerminatingMarker() == JpegElement::MarkerEOI) {
+				eoifound = true ;
+			}
 			break ;
 
 			default:
