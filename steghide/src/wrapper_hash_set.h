@@ -28,7 +28,8 @@
 #ifdef __GNUC__
 # if __GNUC__ < 3
 #  include <hash_set.h>
-    namespace sgi { using ::hash_set ; } ;
+    namespace sgi { using ::hash ; using ::hash_set ; } ;
+#   define NAMESPACE_SGI std
 # else
 #  include <ext/hash_set>
 #  if __GNUC_MINOR__ == 0

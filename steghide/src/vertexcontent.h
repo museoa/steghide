@@ -106,10 +106,10 @@ struct VertexContentsEqual : std::binary_function<VertexContent*, VertexContent*
 	bool operator() (const VertexContent *vc1, const VertexContent* vc2) const ;
 } ;
 
-namespace __gnu_cxx
+namespace NAMESPACE_SGI
 {
 
-struct hash<VertexContent*> {
+struct sgi::hash<VertexContent*> {
 	size_t operator() (const VertexContent *vc) const ;
 } ;
 
