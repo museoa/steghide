@@ -18,35 +18,44 @@
  *
  */
 
+#include <cfloat>
+
 #include "Edge.h"
 #include "SampleValue.h"
 #include "Vertex.h"
 #include "common.h"
 
 Edge::Edge (Vertex *v1, unsigned short idx1, Vertex *v2, unsigned short idx2)
-	: Vertex1(v1), Index1(idx1), Vertex2(v2), Index2(idx2)
+	: Vertex1(v1), Index1(idx1), Vertex2(v2), Index2(idx2), Weight(FLT_MAX)
 {
-	myassert (v1->getLabel() != v2->getLabel()) ;
-	SampleValue *sv1 = v1->getSampleValue(idx1) ;
-	SampleValue *sv2 = v2->getSampleValue(idx2) ;
-	Weight = sv1->calcDistance(sv2) ;
+	myassert (*v1 != *v2) ;
 }
 
 Edge::Edge (Vertex *v1, unsigned short idx1, Vertex *v2, unsigned short idx2, float w)
 	: Vertex1(v1), Index1(idx1), Vertex2(v2), Index2(idx2), Weight(w)
 {
-	myassert (v1->getLabel() != v2->getLabel()) ;
+	myassert (*v1 != *v2) ;
+}
+
+float Edge::getWeight (void)
+{
+	if (Weight == FLT_MAX) {
+		SampleValue *sv1 = Vertex1->getSampleValue(Index1) ;
+		SampleValue *sv2 = Vertex2->getSampleValue(Index2) ;
+		Weight = sv1->calcDistance(sv2) ;
+	}
+	return Weight ;
 }
 
 bool Edge::operator== (const Edge& e) const
 {
 	bool eq1 = false, eq2 = false ;
-	if ((*Vertex1 == *(e.Vertex1)) && (*Vertex2 == *(e.Vertex2)) &&
-		(Index1 == e.Index1) && (Index2 == e.Index2) && (Weight == e.Weight)) {
+	if ((*getVertex1() == *(e.getVertex1())) && (*getVertex2() == *(e.getVertex2())) &&
+		(getIndex1() == e.getIndex1()) && (getIndex2() == e.getIndex2())) {
 		eq1 = true ;
 	}
-	if ((*Vertex1 == *(e.Vertex2)) && (*Vertex2 == *(e.Vertex1)) &&
-		(Index1 == e.Index2) && (Index2 == e.Index1) && (Weight == e.Weight)) {
+	if ((*getVertex1() == *(e.getVertex2())) && (*getVertex2() == *(e.getVertex1())) &&
+		(getIndex1() == e.getIndex2()) && (getIndex2() == e.getIndex1())) {
 		eq2 = true ;
 	}
 	return (eq1 || eq2) ;
@@ -71,11 +80,11 @@ bool Edge::contains (const Vertex* v) const
 Vertex *Edge::getOtherVertex (const Vertex *v) const
 {
 	Vertex *retval = NULL ;
-	if (v->getLabel() == Vertex1->getLabel()) {
-		retval = Vertex2 ;
+	if (*v == *getVertex1()) {
+		retval = getVertex2() ;
 	}
-	else if (v->getLabel() == Vertex2->getLabel()) {
-		retval = Vertex1 ;
+	else if (*v == *getVertex2()) {
+		retval = getVertex1() ;
 	}
 	else {
 		myassert (0) ;
@@ -129,7 +138,7 @@ SampleValue *Edge::getReplacingSampleValue (Vertex *v) const
 }
 
 #ifdef DEBUG
-void Edge::print (unsigned short spc) const
+void Edge::print (unsigned short spc)
 {
 	char* space = new char[spc + 1] ;
 	for (unsigned short i = 0 ; i < spc ; i++) {

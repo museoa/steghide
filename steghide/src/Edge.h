@@ -40,8 +40,13 @@ class Edge {
 	Vertex *getVertex2 (void) const
 		{ return Vertex2 ; } ;
 
-	float getWeight (void) const
-		{ return Weight ; } ;
+	unsigned short getIndex1 (void) const
+		{ return Index1 ; } ;
+
+	unsigned short getIndex2 (void) const
+		{ return Index2 ; } ;
+
+	float getWeight (void) ;
 
 	bool operator== (const Edge& e) const ;
 
@@ -76,7 +81,7 @@ class Edge {
 	SampleValue *getReplacingSampleValue (Vertex *v) const ;
 
 #ifdef DEBUG
-	void print (unsigned short spc = 0) const ;
+	void print (unsigned short spc = 0) ;
 #endif
 	
 	private:
@@ -88,7 +93,7 @@ class Edge {
 	/// contains the index of the sample (of those in Vertex2) that will be changed (if this edge is used)
 	unsigned short Index2 ;
 
-	/// contains the weight of this edge
+	/// contains the weight of this edge or FLT_MAX if it has not been calculated yet
 	float Weight ;
 } ;
 

@@ -151,12 +151,15 @@ void Graph::constructEdges (const sgi::hash_set<VertexContent*,sgi::hash<VertexC
 
 	// fill SampleOccurences
 	SampleOccurences = std::vector<std::list<SampleOccurence> > (SampleValues.size()) ;
+	std::vector<unsigned long> NumSampleOccurences (SampleValues.size()) ; // save number of sample occurences temporarily
+
 	DeletedSampleOccurences = std::vector<std::list<SampleOccurence> > (SampleValues.size()) ;
 	for (std::vector<Vertex*>::iterator it = Vertices.begin() ; it != Vertices.end() ; it++) {
 		for (unsigned short j = 0 ; j < SamplesPerEBit ; j++) {
 			SampleOccurence occ (*it, j) ;
 			SampleValueLabel lbl = (*it)->getSampleValue(j)->getLabel() ;
 			std::list<SampleOccurence>::iterator occit = SampleOccurences[lbl].insert (SampleOccurences[lbl].end(), occ) ;
+			NumSampleOccurences[lbl]++ ;
 			(*it)->setSampleOccurenceIt (j, occit) ;
 		}
 	}
@@ -166,8 +169,7 @@ void Graph::constructEdges (const sgi::hash_set<VertexContent*,sgi::hash<VertexC
 		unsigned long numedges = 0 ;
 		unsigned long noppneighs = SampleValueOppNeighs[lbl].size() ;
 		for (unsigned long i = 0 ; i < noppneighs ; i++) {
-			// FIXME - .size() needs linear time!
-			numedges += SampleOccurences[SampleValueOppNeighs[lbl][i]->getLabel()].size() ;
+			numedges += NumSampleOccurences[SampleValueOppNeighs[lbl][i]->getLabel()] ;
 		}
 		SampleValues[lbl]->setNumEdges (numedges) ;
 	}

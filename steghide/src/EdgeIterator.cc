@@ -136,7 +136,7 @@ void EdgeIterator::findNextEdge ()
 bool EdgeIterator::isDestSampleValueOK (const SampleValue *sv)
 {
 	bool found = false ;
-	std::list<SampleOccurence> socc = TheGraph->SampleOccurences[sv->getLabel()] ;
+	const std::list<SampleOccurence>& socc = TheGraph->SampleOccurences[sv->getLabel()] ;
 	std::list<SampleOccurence>::const_iterator it = socc.begin() ;
 	while (!found && it != socc.end()) {
 		if (*(it->getVertex()) == *SrcVertex) {
