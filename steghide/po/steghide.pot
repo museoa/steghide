@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-02-24 10:59+0100\n"
+"POT-Creation-Date: 2002-02-26 21:18+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,522 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: ENCODING\n"
 
-#: src/crypto.c:48 src/crypto.c:76 src/crypto.c:121 src/crypto.c:184
-#, c-format
-msgid "could not open libmcrypt module \"%s\",\"%s\"."
-msgstr ""
-
-#: src/crypto.c:55 src/crypto.c:128
-msgid ""
-"could not initialize libmcrypt encryption. see above error messages if any."
-msgstr ""
-
-#: src/crypto.c:59
-msgid "could not encrypt stego header."
-msgstr ""
-
-#: src/crypto.c:63
-msgid "could not finish encryption of stego header."
-msgstr ""
-
-#: src/crypto.c:83 src/crypto.c:191
-msgid ""
-"could not initialize libmcrypt decryption. see above error messages if any."
-msgstr ""
-
-#: src/crypto.c:87
-msgid "could not decrypt stego header."
-msgstr ""
-
-#: src/crypto.c:91
-msgid "could not finish decryption of stego header."
-msgstr ""
-
-#: src/crypto.c:105
-msgid "encrypting plain data."
-msgstr ""
-
-#: src/crypto.c:146
-#, c-format
-msgid "could not encrypt plain data. failed at block number %lu"
-msgstr ""
-
-#: src/crypto.c:157
-msgid "could not finish encryption of plain data."
-msgstr ""
-
-#: src/crypto.c:173
-msgid "decrypting plain data."
-msgstr ""
-
-#: src/crypto.c:201
-#, c-format
-msgid "could not decrypt plain data. failed at block number %ul"
-msgstr ""
-
-#: src/crypto.c:214
-msgid "could not finish decryption of plain data."
-msgstr ""
-
-#: src/ff_au.c:58
-msgid "an error occured while reading the au headers from standard input."
-msgstr ""
-
-#: src/ff_au.c:61
-#, c-format
-msgid "an error occured while reading the au headers from the file \"%s\"."
-msgstr ""
-
-#: src/ff_au.c:91
-msgid "an error occured while writing the au headers to standard output."
-msgstr ""
-
-#: src/ff_au.c:94
-#, c-format
-msgid "an error occured while writing the au headers to the file \"%s\"."
-msgstr ""
-
-#: src/ff_au.c:113 src/ff_wav.c:183
-msgid "an error occured while reading the audio data from standard input."
-msgstr ""
-
-#: src/ff_au.c:116
-#, c-format
-msgid "an error occured while reading the audio data from the file \"%s\"."
-msgstr ""
-
-#: src/ff_au.c:137 src/ff_wav.c:222
-msgid "an error occured while writing the audio data to standard output."
-msgstr ""
-
-#: src/ff_au.c:140 src/ff_wav.c:225
-#, c-format
-msgid "an error occured while writing the audio data to the file \"%s\"."
-msgstr ""
-
-#: src/ff_bmp.c:52
-msgid ""
-"the bitmap data from standard input is compressed which is not supported."
-msgstr ""
-
-#: src/ff_bmp.c:55
-#, c-format
-msgid "the bitmap data in \"%s\" is compressed which is not supported."
-msgstr ""
-
-#: src/ff_bmp.c:74
-msgid "the bmp data from standard input has a format that is not supported."
-msgstr ""
-
-#: src/ff_bmp.c:77
-#, c-format
-msgid "the bmp file \"%s\" has a format that is not supported."
-msgstr ""
-
-#: src/ff_bmp.c:102
-msgid "an error occured while reading the bmp headers from standard input."
-msgstr ""
-
-#: src/ff_bmp.c:105
-#, c-format
-msgid "an error occured while reading the bmp headers of the file \"%s\"."
-msgstr ""
-
-#: src/ff_bmp.c:156
-msgid "an error occured while writing the bmp headers to standard output."
-msgstr ""
-
-#: src/ff_bmp.c:159
-#, c-format
-msgid "an error occured while writing the bmp headers to the file \"%s\"."
-msgstr ""
-
-#: src/ff_bmp.c:177
-msgid "premature end of bmp data from standard input."
-msgstr ""
-
-#: src/ff_bmp.c:180
-#, c-format
-msgid "premature end of bmp file \"%s\"."
-msgstr ""
-
-#: src/ff_bmp.c:199
-msgid "an error occured while reading the bitmap data from standard input."
-msgstr ""
-
-#: src/ff_bmp.c:202
-#, c-format
-msgid "an error occured while reading the bitmap data of the file \"%s\"."
-msgstr ""
-
-#: src/ff_bmp.c:235
-msgid "an error occured while writing the bitmap data to standard output."
-msgstr ""
-
-#: src/ff_bmp.c:238
-#, c-format
-msgid "an error occured while writing the bitmap data to the file \"%s\"."
-msgstr ""
-
-#: src/ff_wav.c:51
-msgid "the wav file from standard input has a format that is not supported."
-msgstr ""
-
-#: src/ff_wav.c:54
-#, c-format
-msgid "the wav file \"%s\" has a format that is not supported."
-msgstr ""
-
-#: src/ff_wav.c:65
-msgid ""
-"the bits/sample rate of the wav file from standard input is not a multiple "
-"of eight."
-msgstr ""
-
-#: src/ff_wav.c:68
-#, c-format
-msgid "the bits/sample rate of the wav file \"%s\" is not a multiple of eight."
-msgstr ""
-
-#: src/ff_wav.c:99
-msgid ""
-"an error occured while reading the headers of the wav file from standard "
-"input."
-msgstr ""
-
-#: src/ff_wav.c:102
-#, c-format
-msgid "an error occured while reading the headers of the wav file \"%s\"."
-msgstr ""
-
-#: src/ff_wav.c:137
-msgid "an error occured while writing the wav headers to standard output."
-msgstr ""
-
-#: src/ff_wav.c:140
-#, c-format
-msgid "an error occured while writing the wav headers to the file \"%s\"."
-msgstr ""
-
-#: src/ff_wav.c:186
-#, c-format
-msgid "an error occured while reading the audio data of the file \"%s\"."
-msgstr ""
-
-#: src/hash.c:41 src/hash.c:94
-msgid "could not initialize libmhash MD5 algorithm."
-msgstr ""
-
-#: src/hash.c:62
-msgid "could not initialize libmhash CRC32 algorithm."
-msgstr ""
-
-#: src/io.c:80 src/io.c:89
-msgid "the file format of the data from standard input is not supported."
-msgstr ""
-
-#: src/io.c:83 src/io.c:92
-#, c-format
-msgid "the file format of the file \"%s\" is not supported."
-msgstr ""
-
-#: src/io.c:106
-msgid "writing stego file to standard output."
-msgstr ""
-
-#: src/io.c:109
-#, c-format
-msgid "writing stego file \"%s\"."
-msgstr ""
-
-#: src/io.c:159
-#, c-format
-msgid "the maximum length for the plain file name is %d characters."
-msgstr ""
-
-#: src/io.c:216
-msgid ""
-"please specify a name for the plain file (there is none embedded in the "
-"stego file)."
-msgstr ""
-
-#: src/io.c:237
-msgid "crc32 checksum test ok."
-msgstr ""
-
-#: src/io.c:240
-msgid "crc32 checksum failed! extracted data is probably corrupted."
-msgstr ""
-
-#: src/io.c:308
-msgid "reading cover file from standard input."
-msgstr ""
-
-#: src/io.c:311
-#, c-format
-msgid "reading cover file \"%s\"."
-msgstr ""
-
-#: src/io.c:316
-msgid "reading stego file from standard input."
-msgstr ""
-
-#: src/io.c:319
-#, c-format
-msgid "reading stego file \"%s\"."
-msgstr ""
-
-#: src/io.c:336
-#, c-format
-msgid "could not open the file \"%s\"."
-msgstr ""
-
-#: src/io.c:386 src/io.c:501
-#, c-format
-msgid "file \"%s\" does already exist."
-msgstr ""
-
-#: src/io.c:389 src/io.c:504
-#, c-format
-msgid "file \"%s\" does already exist. overwrite ?"
-msgstr ""
-
-#: src/io.c:390 src/io.c:505
-#, c-format
-msgid "did not write to file \"%s\"."
-msgstr ""
-
-#: src/io.c:397
-#, c-format
-msgid "could not create stego file \"%s\"."
-msgstr ""
-
-#: src/io.c:421
-msgid "wrote stego file to standard output."
-msgstr ""
-
-#: src/io.c:424
-#, c-format
-msgid "wrote stego file to \"%s\"."
-msgstr ""
-
-#: src/io.c:442
-msgid "reading plain file from standard input."
-msgstr ""
-
-#: src/io.c:445
-#, c-format
-msgid "reading plain file \"%s\"."
-msgstr ""
-
-#: src/io.c:456
-#, c-format
-msgid "could not open file \"%s\"."
-msgstr ""
-
-#: src/io.c:470
-msgid "an error occured while reading the plain data from standard input."
-msgstr ""
-
-#: src/io.c:473
-#, c-format
-msgid "an error occured while reading the file \"%s\"."
-msgstr ""
-
-#: src/io.c:487
-msgid "writing plain file to standard output."
-msgstr ""
-
-#: src/io.c:490
-#, c-format
-msgid "writing plain file to \"%s\"."
-msgstr ""
-
-#: src/io.c:512
-#, c-format
-msgid "could not create plain file \"%s\"."
-msgstr ""
-
-#: src/io.c:523
-msgid "an error occured while writing the plain data to standard output."
-msgstr ""
-
-#: src/io.c:526
-#, c-format
-msgid "an error occured while writing to the file \"%s\"."
-msgstr ""
-
-#: src/main.c:132
-msgid "you cannot use arguments with the \"version\" command"
-msgstr ""
-
-#: src/main.c:139
-msgid "you cannot use arguments with the \"license\" command"
-msgstr ""
-
-#: src/main.c:146
-msgid "you cannot use arguments with the \"help\" command"
-msgstr ""
-
-#: src/main.c:157
-#, c-format
-msgid "unknown command \"%s\". type \"%s --help\" for help."
-msgstr ""
-
-#: src/main.c:166 src/main.c:221
-#, c-format
-msgid ""
-"the argument \"%s\" can only be used with the \"embed\" command. type \"%s --"
-"help\" for help."
-msgstr ""
-
-#: src/main.c:170
-#, c-format
-msgid ""
-"the distribution argument can be used only once. type \"%s --help\" for help."
-msgstr ""
-
-#: src/main.c:177
-#, c-format
-msgid "the argument \"%s\" is incomplete. type \"%s --help\" for help."
-msgstr ""
-
-#: src/main.c:189
-#, c-format
-msgid "the interval length for the cnsti method must be smaller than %d."
-msgstr ""
-
-#: src/main.c:206
-#, c-format
-msgid ""
-"the maximum interval length for the prndi method must be smaller than %d."
-msgstr ""
-
-#: src/main.c:215
-#, c-format
-msgid "unknown distribution method \"%s\". type \"%s --help\" for help."
-msgstr ""
-
-#: src/main.c:225 src/main.c:240
-#, c-format
-msgid ""
-"the encryption argument can be used only once. type \"%s --help\" for help."
-msgstr ""
-
-#: src/main.c:236 src/main.c:273 src/main.c:288 src/main.c:303 src/main.c:318
-#: src/main.c:359
-#, c-format
-msgid ""
-"argument \"%s\" can only be used with the \"embed\" command. type \"%s --help"
-"\" for help."
-msgstr ""
-
-#: src/main.c:251 src/main.c:262
-#, c-format
-msgid ""
-"the stego header encryption argument can be used only once. type \"%s --help"
-"\" for help."
-msgstr ""
-
-#: src/main.c:277 src/main.c:292
-#, c-format
-msgid ""
-"the checksum argument can be used only once. type \"%s --help\" for help."
-msgstr ""
-
-#: src/main.c:307 src/main.c:322
-#, c-format
-msgid ""
-"the plain file name embedding argument can be used only once. type \"%s --"
-"help\" for help."
-msgstr ""
-
-#: src/main.c:335
-#, c-format
-msgid ""
-"the passphrase argument can be used only once. type \"%s --help\" for help."
-msgstr ""
-
-#: src/main.c:342
-#, c-format
-msgid ""
-"the \"%s\" argument must be followed by the passphrase. type \"%s --help\" "
-"for help."
-msgstr ""
-
-#: src/main.c:346 src/support.c:94 src/support.c:108
-#, c-format
-msgid "the maximum length of the passphrase is %d characters."
-msgstr ""
-
-#: src/main.c:363
-#, c-format
-msgid ""
-"the \"%s\" argument must be followed by the cover file name. type \"%s --help"
-"\" for help."
-msgstr ""
-
-#: src/main.c:367
-#, c-format
-msgid ""
-"the cover file name argument can be used only once. type \"%s --help\" for "
-"help."
-msgstr ""
-
-#: src/main.c:384
-#, c-format
-msgid ""
-"the \"%s\" argument must be followed by the stego file name. type \"%s --help"
-"\" for help."
-msgstr ""
-
-#: src/main.c:388
-#, c-format
-msgid ""
-"the stego file name argument can be used only once. type \"%s --help\" for "
-"help."
-msgstr ""
-
-#: src/main.c:403
-#, c-format
-msgid ""
-"the \"%s\" argument must be followed by the plain file name. type \"%s --help"
-"\" for help."
-msgstr ""
-
-#: src/main.c:407
-#, c-format
-msgid ""
-"the plain file name argument can be used only once. type \"%s --help\" for "
-"help."
-msgstr ""
-
-#: src/main.c:426 src/main.c:436
-#, c-format
-msgid ""
-"the \"%s\" argument cannot be used here because the verbosity has already "
-"been set."
-msgstr ""
-
-#: src/main.c:445
-#, c-format
-msgid "unknown argument \"%s\". type \"%s --help\" for help."
-msgstr ""
-
-#: src/main.c:452
-#, c-format
-msgid ""
-"standard input cannot be used for cover AND plain data. type \"%s --help\" "
-"for help."
-msgstr ""
-
-#: src/main.c:460 src/main.c:466
-msgid ""
-"if standard input is used, the passphrase must be specified on the command "
-"line."
-msgstr ""
-
-#: src/main.c:599
+#: main.c:622
 msgid ""
 "\n"
 "the first argument must be one of the following:\n"
@@ -562,6 +47,7 @@ msgid ""
 "   -pf <filename>        use <filename> as plain file\n"
 " -h, --sthdrencryption   encrypt stego header before embedding (default)\n"
 " -H, --nosthdrencryption do not encrypt stego header before embedding\n"
+" -c, --compatibility     compatibility with libmcrypt version < 2.4.9\n"
 " -f, --force             overwrite existing files\n"
 " -q, --quiet             suppress information messages\n"
 " -v, --verbose           display detailed information\n"
@@ -577,111 +63,634 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/main.c:700 src/main.c:732
-msgid "done."
-msgstr ""
-
-#: src/msg.c:69
-msgid "y"
-msgstr ""
-
-#: src/msg.c:69
-msgid "n"
-msgstr ""
-
-#: src/msg.c:95
+#: msg.c:95
 #, c-format
 msgid "%s: warning: "
 msgstr ""
 
-#: src/stegano.c:62
+#: support.c:90
+msgid "Enter passphrase: "
+msgstr ""
+
+#: support.c:103
+msgid "Re-Enter passphrase: "
+msgstr ""
+
+#: ff_au.c:58
+msgid "an error occured while reading the au headers from standard input."
+msgstr ""
+
+#: ff_au.c:61
+#, c-format
+msgid "an error occured while reading the au headers from the file \"%s\"."
+msgstr ""
+
+#: ff_au.c:113 ff_wav.c:183
+msgid "an error occured while reading the audio data from standard input."
+msgstr ""
+
+#: ff_au.c:116
+#, c-format
+msgid "an error occured while reading the audio data from the file \"%s\"."
+msgstr ""
+
+#: ff_wav.c:186
+#, c-format
+msgid "an error occured while reading the audio data of the file \"%s\"."
+msgstr ""
+
+#: ff_bmp.c:199
+msgid "an error occured while reading the bitmap data from standard input."
+msgstr ""
+
+#: ff_bmp.c:202
+#, c-format
+msgid "an error occured while reading the bitmap data of the file \"%s\"."
+msgstr ""
+
+#: ff_bmp.c:102
+msgid "an error occured while reading the bmp headers from standard input."
+msgstr ""
+
+#: ff_bmp.c:105
+#, c-format
+msgid "an error occured while reading the bmp headers of the file \"%s\"."
+msgstr ""
+
+#: io.c:473
+#, c-format
+msgid "an error occured while reading the file \"%s\"."
+msgstr ""
+
+#: ff_wav.c:102
+#, c-format
+msgid "an error occured while reading the headers of the wav file \"%s\"."
+msgstr ""
+
+#: ff_wav.c:99
+msgid ""
+"an error occured while reading the headers of the wav file from standard "
+"input."
+msgstr ""
+
+#: io.c:470
+msgid "an error occured while reading the plain data from standard input."
+msgstr ""
+
+#: ff_au.c:91
+msgid "an error occured while writing the au headers to standard output."
+msgstr ""
+
+#: ff_au.c:94
+#, c-format
+msgid "an error occured while writing the au headers to the file \"%s\"."
+msgstr ""
+
+#: ff_au.c:137 ff_wav.c:222
+msgid "an error occured while writing the audio data to standard output."
+msgstr ""
+
+#: ff_au.c:140 ff_wav.c:225
+#, c-format
+msgid "an error occured while writing the audio data to the file \"%s\"."
+msgstr ""
+
+#: ff_bmp.c:235
+msgid "an error occured while writing the bitmap data to standard output."
+msgstr ""
+
+#: ff_bmp.c:238
+#, c-format
+msgid "an error occured while writing the bitmap data to the file \"%s\"."
+msgstr ""
+
+#: ff_bmp.c:156
+msgid "an error occured while writing the bmp headers to standard output."
+msgstr ""
+
+#: ff_bmp.c:159
+#, c-format
+msgid "an error occured while writing the bmp headers to the file \"%s\"."
+msgstr ""
+
+#: io.c:523
+msgid "an error occured while writing the plain data to standard output."
+msgstr ""
+
+#: ff_wav.c:137
+msgid "an error occured while writing the wav headers to standard output."
+msgstr ""
+
+#: ff_wav.c:140
+#, c-format
+msgid "an error occured while writing the wav headers to the file \"%s\"."
+msgstr ""
+
+#: io.c:526
+#, c-format
+msgid "an error occured while writing to the file \"%s\"."
+msgstr ""
+
+#: main.c:236 main.c:273 main.c:288 main.c:303 main.c:318 main.c:370
+#, c-format
+msgid ""
+"argument \"%s\" can only be used with the \"embed\" command. type \"%s --help"
+"\" for help."
+msgstr ""
+
+#: support.c:220 support.c:231
+msgid "could not allocate memory."
+msgstr ""
+
+#: io.c:512
+#, c-format
+msgid "could not create plain file \"%s\"."
+msgstr ""
+
+#: io.c:397
+#, c-format
+msgid "could not create stego file \"%s\"."
+msgstr ""
+
+#: crypto.c:234
+#, c-format
+msgid "could not decrypt plain data. failed at block number %ul"
+msgstr ""
+
+#: crypto.c:104
+msgid "could not decrypt stego header."
+msgstr ""
+
+#: crypto.c:171
+#, c-format
+msgid "could not encrypt plain data. failed at block number %lu"
+msgstr ""
+
+#: crypto.c:68
+msgid "could not encrypt stego header."
+msgstr ""
+
+#: crypto.c:247
+msgid "could not finish decryption of plain data."
+msgstr ""
+
+#: crypto.c:108
+msgid "could not finish decryption of stego header."
+msgstr ""
+
+#: crypto.c:182
+msgid "could not finish encryption of plain data."
+msgstr ""
+
+#: crypto.c:72
+msgid "could not finish encryption of stego header."
+msgstr ""
+
+#: support.c:129 support.c:147
+msgid "could not get terminal attributes."
+msgstr ""
+
+#: crypto.c:100 crypto.c:224
+msgid ""
+"could not initialize libmcrypt decryption. see above error messages if any."
+msgstr ""
+
+#: crypto.c:64 crypto.c:153
+msgid ""
+"could not initialize libmcrypt encryption. see above error messages if any."
+msgstr ""
+
+#: hash.c:62
+msgid "could not initialize libmhash CRC32 algorithm."
+msgstr ""
+
+#: hash.c:41 hash.c:94
+msgid "could not initialize libmhash MD5 algorithm."
+msgstr ""
+
+#: io.c:456
+#, c-format
+msgid "could not open file \"%s\"."
+msgstr ""
+
+#: crypto.c:57 crypto.c:93 crypto.c:146 crypto.c:217
+#, c-format
+msgid "could not open libmcrypt module \"%s\",\"%s\"."
+msgstr ""
+
+#: io.c:336
+#, c-format
+msgid "could not open the file \"%s\"."
+msgstr ""
+
+#: support.c:242
+msgid "could not reallocate memory."
+msgstr ""
+
+#: support.c:136 support.c:156 support.c:165
+msgid "could not set terminal attributes."
+msgstr ""
+
+#: io.c:240
+msgid "crc32 checksum failed! extracted data is probably corrupted."
+msgstr ""
+
+#: io.c:237
+msgid "crc32 checksum test ok."
+msgstr ""
+
+#: crypto.c:199
+msgid "decrypting plain data."
+msgstr ""
+
+#: io.c:390 io.c:505
+#, c-format
+msgid "did not write to file \"%s\"."
+msgstr ""
+
+#: main.c:724 main.c:756
+msgid "done."
+msgstr ""
+
+#: stegano.c:62
 msgid "embedding plain data."
 msgstr ""
 
-#: src/stegano.c:87
+#: stegano.c:154
+msgid "embedding stego header."
+msgstr ""
+
+#: crypto.c:123
+msgid "encrypting plain data."
+msgstr ""
+
+#: stegano.c:103
+msgid "extracting plain data."
+msgstr ""
+
+#: stegano.c:235
+msgid "extracting stego header."
+msgstr ""
+
+#: io.c:386 io.c:501
+#, c-format
+msgid "file \"%s\" does already exist."
+msgstr ""
+
+#: io.c:389 io.c:504
+#, c-format
+msgid "file \"%s\" does already exist. overwrite ?"
+msgstr ""
+
+#: main.c:480 main.c:486
+msgid ""
+"if standard input is used, the passphrase must be specified on the command "
+"line."
+msgstr ""
+
+#: msg.c:69
+msgid "n"
+msgstr ""
+
+#: io.c:216
+msgid ""
+"please specify a name for the plain file (there is none embedded in the stego "
+"file)."
+msgstr ""
+
+#: ff_bmp.c:177
+msgid "premature end of bmp data from standard input."
+msgstr ""
+
+#: ff_bmp.c:180
+#, c-format
+msgid "premature end of bmp file \"%s\"."
+msgstr ""
+
+#: io.c:311
+#, c-format
+msgid "reading cover file \"%s\"."
+msgstr ""
+
+#: io.c:308
+msgid "reading cover file from standard input."
+msgstr ""
+
+#: io.c:445
+#, c-format
+msgid "reading plain file \"%s\"."
+msgstr ""
+
+#: io.c:442
+msgid "reading plain file from standard input."
+msgstr ""
+
+#: io.c:319
+#, c-format
+msgid "reading stego file \"%s\"."
+msgstr ""
+
+#: io.c:316
+msgid "reading stego file from standard input."
+msgstr ""
+
+#: stegano.c:438
+#, c-format
+msgid "setting interval length to %d."
+msgstr ""
+
+#: stegano.c:447
+#, c-format
+msgid "setting maximum interval length to %d."
+msgstr ""
+
+#: main.c:472
+#, c-format
+msgid ""
+"standard input cannot be used for cover AND plain data. type \"%s --help\" "
+"for help."
+msgstr ""
+
+#: main.c:444 main.c:455
+#, c-format
+msgid ""
+"the \"%s\" argument cannot be used here because the verbosity has already "
+"been set."
+msgstr ""
+
+#: main.c:374
+#, c-format
+msgid ""
+"the \"%s\" argument must be followed by the cover file name. type \"%s --help"
+"\" for help."
+msgstr ""
+
+#: main.c:353
+#, c-format
+msgid ""
+"the \"%s\" argument must be followed by the passphrase. type \"%s --help\" "
+"for help."
+msgstr ""
+
+#: main.c:414
+#, c-format
+msgid ""
+"the \"%s\" argument must be followed by the plain file name. type \"%s --help"
+"\" for help."
+msgstr ""
+
+#: main.c:395
+#, c-format
+msgid ""
+"the \"%s\" argument must be followed by the stego file name. type \"%s --help"
+"\" for help."
+msgstr ""
+
+#: main.c:166 main.c:221
+#, c-format
+msgid ""
+"the argument \"%s\" can only be used with the \"embed\" command. type \"%s --"
+"help\" for help."
+msgstr ""
+
+#: main.c:177
+#, c-format
+msgid "the argument \"%s\" is incomplete. type \"%s --help\" for help."
+msgstr ""
+
+#: ff_bmp.c:52
+msgid ""
+"the bitmap data from standard input is compressed which is not supported."
+msgstr ""
+
+#: ff_bmp.c:55
+#, c-format
+msgid "the bitmap data in \"%s\" is compressed which is not supported."
+msgstr ""
+
+#: ff_wav.c:68
+#, c-format
+msgid "the bits/sample rate of the wav file \"%s\" is not a multiple of eight."
+msgstr ""
+
+#: ff_wav.c:65
+msgid ""
+"the bits/sample rate of the wav file from standard input is not a multiple of "
+"eight."
+msgstr ""
+
+#: ff_bmp.c:74
+msgid "the bmp data from standard input has a format that is not supported."
+msgstr ""
+
+#: ff_bmp.c:77
+#, c-format
+msgid "the bmp file \"%s\" has a format that is not supported."
+msgstr ""
+
+#: main.c:277 main.c:292
+#, c-format
+msgid ""
+"the checksum argument can be used only once. type \"%s --help\" for help."
+msgstr ""
+
+#: main.c:333
+#, c-format
+msgid ""
+"the compatibility argument can be used only once. type \"%s --help\" for help."
+msgstr ""
+
+#: stegano.c:87
 msgid ""
 "the cover file is too short to embed the plain data. try a smaller interval "
 "length."
 msgstr ""
 
-#: src/stegano.c:103
-msgid "extracting plain data."
-msgstr ""
-
-#: src/stegano.c:139
+#: stegano.c:214
 msgid ""
-"the stego file is too short to contain the plain data (file corruption ?)."
+"the cover file is too short to embed the stego header. use another cover file."
 msgstr ""
 
-#: src/stegano.c:154
-msgid "embedding stego header."
-msgstr ""
-
-#: src/stegano.c:214
+#: main.c:378
+#, c-format
 msgid ""
-"the cover file is too short to embed the stego header. use another cover "
-"file."
+"the cover file name argument can be used only once. type \"%s --help\" for "
+"help."
 msgstr ""
 
-#: src/stegano.c:235
-msgid "extracting stego header."
-msgstr ""
-
-#: src/stegano.c:254
+#: main.c:170
+#, c-format
 msgid ""
-"the stego file is too short to contain the stego header (file corruption ?)."
+"the distribution argument can be used only once. type \"%s --help\" for help."
 msgstr ""
 
-#: src/stegano.c:287
+#: stegano.c:287
 msgid ""
 "the distribution method saved in the stego header is unknown (file "
 "corruption ?)."
 msgstr ""
 
-#: src/stegano.c:295
+#: main.c:225 main.c:240
+#, c-format
+msgid ""
+"the encryption argument can be used only once. type \"%s --help\" for help."
+msgstr ""
+
+#: io.c:80 io.c:89
+msgid "the file format of the data from standard input is not supported."
+msgstr ""
+
+#: io.c:83 io.c:92
+#, c-format
+msgid "the file format of the file \"%s\" is not supported."
+msgstr ""
+
+#: main.c:433
+#, c-format
+msgid "the force argument can be used only once. type \"%s --help\" for help."
+msgstr ""
+
+#: main.c:189
+#, c-format
+msgid "the interval length for the cnsti method must be smaller than %d."
+msgstr ""
+
+#: stegano.c:295
 msgid "the mask saved in the stego header is zero (file corruption ?)."
 msgstr ""
 
-#: src/stegano.c:309
+#: main.c:206
+#, c-format
 msgid ""
-"the plain data is compressed. this is not implemented yet (file "
-"corruption ?)."
+"the maximum interval length for the prndi method must be smaller than %d."
 msgstr ""
 
-#: src/stegano.c:438
+#: io.c:159
 #, c-format
-msgid "setting interval length to %d."
+msgid "the maximum length for the plain file name is %d characters."
 msgstr ""
 
-#: src/stegano.c:447
+#: main.c:357 support.c:94 support.c:108
 #, c-format
-msgid "setting maximum interval length to %d."
+msgid "the maximum length of the passphrase is %d characters."
 msgstr ""
 
-#: src/support.c:90
-msgid "Enter passphrase: "
+#: main.c:346
+#, c-format
+msgid ""
+"the passphrase argument can be used only once. type \"%s --help\" for help."
 msgstr ""
 
-#: src/support.c:103
-msgid "Re-Enter passphrase: "
-msgstr ""
-
-#: src/support.c:117
+#: support.c:117
 msgid "the passphrases do not match."
 msgstr ""
 
-#: src/support.c:129 src/support.c:147
-msgid "could not get terminal attributes."
+#: stegano.c:309
+msgid ""
+"the plain data is compressed. this is not implemented yet (file corruption ?)."
 msgstr ""
 
-#: src/support.c:136 src/support.c:156 src/support.c:165
-msgid "could not set terminal attributes."
+#: main.c:418
+#, c-format
+msgid ""
+"the plain file name argument can be used only once. type \"%s --help\" for "
+"help."
 msgstr ""
 
-#: src/support.c:220 src/support.c:231
-msgid "could not allocate memory."
+#: main.c:307 main.c:322
+#, c-format
+msgid ""
+"the plain file name embedding argument can be used only once. type \"%s --help"
+"\" for help."
 msgstr ""
 
-#: src/support.c:242
-msgid "could not reallocate memory."
+#: stegano.c:139
+msgid ""
+"the stego file is too short to contain the plain data (file corruption ?)."
+msgstr ""
+
+#: stegano.c:254
+msgid ""
+"the stego file is too short to contain the stego header (file corruption ?)."
+msgstr ""
+
+#: main.c:399
+#, c-format
+msgid ""
+"the stego file name argument can be used only once. type \"%s --help\" for "
+"help."
+msgstr ""
+
+#: main.c:251 main.c:262
+#, c-format
+msgid ""
+"the stego header encryption argument can be used only once. type \"%s --help"
+"\" for help."
+msgstr ""
+
+#: ff_wav.c:54
+#, c-format
+msgid "the wav file \"%s\" has a format that is not supported."
+msgstr ""
+
+#: ff_wav.c:51
+msgid "the wav file from standard input has a format that is not supported."
+msgstr ""
+
+#: main.c:465
+#, c-format
+msgid "unknown argument \"%s\". type \"%s --help\" for help."
+msgstr ""
+
+#: main.c:157
+#, c-format
+msgid "unknown command \"%s\". type \"%s --help\" for help."
+msgstr ""
+
+#: main.c:215
+#, c-format
+msgid "unknown distribution method \"%s\". type \"%s --help\" for help."
+msgstr ""
+
+#: io.c:490
+#, c-format
+msgid "writing plain file to \"%s\"."
+msgstr ""
+
+#: io.c:487
+msgid "writing plain file to standard output."
+msgstr ""
+
+#: io.c:109
+#, c-format
+msgid "writing stego file \"%s\"."
+msgstr ""
+
+#: io.c:106
+msgid "writing stego file to standard output."
+msgstr ""
+
+#: io.c:424
+#, c-format
+msgid "wrote stego file to \"%s\"."
+msgstr ""
+
+#: io.c:421
+msgid "wrote stego file to standard output."
+msgstr ""
+
+#: msg.c:69
+msgid "y"
+msgstr ""
+
+#: main.c:146
+msgid "you cannot use arguments with the \"help\" command"
+msgstr ""
+
+#: main.c:139
+msgid "you cannot use arguments with the \"license\" command"
+msgstr ""
+
+#: main.c:132
+msgid "you cannot use arguments with the \"version\" command"
 msgstr ""
