@@ -74,7 +74,7 @@ typedef UWORD32 SampleKey ;
 
 //
 // gettext support
-#include <libintl.h>
+#include "gettext.h" 
 #define _(S) gettext (S)
 
 //

@@ -14,6 +14,7 @@ dnl GNU gettext
 ALL_LINGUAS="de fr"
 AC_CHECK_FUNCS(strchr)
 AM_GNU_GETTEXT
+AM_CONDITIONAL(USE_INTLDIR, test "$nls_cv_use_gnu_gettext" = yes)
 
 dnl check if debugging support is requested
 AC_MSG_CHECKING([wether to enable debugging])
@@ -216,4 +217,4 @@ then
 fi
 
 dnl create Makefiles
-AC_OUTPUT([Makefile doc/Makefile intl/Makefile po/Makefile.in src/Makefile tests/Makefile tests/data/Makefile])
+AC_OUTPUT([Makefile doc/Makefile po/Makefile.in src/Makefile tests/Makefile tests/data/Makefile m4/Makefile intl/Makefile])

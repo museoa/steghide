@@ -40,4 +40,5 @@ unittests_LDADD = \
 ../src/Utils.o ../src/Vertex.o ../src/WavChunk.o ../src/WavChunkHeader.o \
 ../src/WavChunkUnused.o ../src/WavFile.o ../src/WavFormatChunk.o \
 ../src/WavPCMSampleValue.o ../src/error.o ../src/msg.o ../src/SMDConstructionHeuristic.o
+LIBS = @LIBINTL@ @LIBS@
 MAINTAINERCLEANFILES = Makefile.in
