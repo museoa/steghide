@@ -43,6 +43,21 @@ unsigned long Edge::getWeight() const
 	return Weight ;
 }
 
+Vertex *Edge::getOtherVertex (Vertex *v) const
+{
+	Vertex *retval = NULL ;
+	if (v->getLabel() == Vertex1->getLabel()) {
+		retval = Vertex2 ;
+	}
+	else if (v->getLabel() == Vertex2->getLabel()) {
+		retval = Vertex1 ;
+	}
+	else {
+		assert (0) ;
+	}
+	return retval ;
+}
+
 SamplePos Edge::getSamplePos (Vertex *v) const
 {
 	SamplePos retval = 0 ;

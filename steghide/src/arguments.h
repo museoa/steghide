@@ -42,6 +42,8 @@ class Arguments {
 #ifdef DEBUG
 	ArgDebugCommand	DebugCommand ;
 	ArgFloat		Radius ;
+	ArgUInt			PriorityQueueRange ;
+	ArgUInt			NConstrHeur ;
 #endif
 
 	Arguments (void) ;
@@ -60,7 +62,9 @@ class Arguments {
 	static const VERBOSITY	Default_Verbosity = NORMAL ;
 #ifdef DEBUG
 	static const DEBUGCOMMAND	Default_DebugCommand = NONE ;
-	static const float		Default_Radius = 0.0 ; // there is no default radius for all file formats
+	static const float			Default_Radius = 0.0 ; // there is no default radius for all file formats
+	static const unsigned int	Default_PriorityQueueRange = 0 ; // is never used
+	static const unsigned int	Default_NConstrHeur = 0 ; // is never used
 #endif
 
 	static const unsigned int	PassphraseMaxLen = 255 ;

@@ -58,24 +58,29 @@ class Graph {
 	void calcMatching (void) ;
 
 	private:
-	/* TODO - implement this
-	static const unsigned short ShortestEdgesRange = 10 ;
-	*/
+	static const unsigned int PriorityQueueRange = 1 ;
+	static const unsigned int NConstrHeur = 1 ;
 
 	void setupConstrHeuristic (void) ;
-	void doConstrHeuristic (void) ;
+	Vertex *findVertexDeg1 (unsigned int k) ;
+	Vertex *findVertexDegG (unsigned int k) ;
+	vector<Edge*> *doConstrHeuristic (void) ;
+
+	/**
+	 * insert the edge e into the matching m and invalidate the two vertices for the matching algorithm
+	 **/
+	void insertInMatching (vector<Edge*> *m, Edge *e) ;
 
 	void updateShortestEdge (Vertex *v) ;
 
+	void replaceShortestEdge (Vertex *v1, Edge *e) ;
+	void replaceMatchingEdge (Vertex *v1, Vertex *v2, Edge *e) ;
+
+	void printVOutputVertices (void) ;
+	void printVOutputEdges (void) ;
+	void printVOutputMatching (vector<Edge*> *m) ;
+
 	unsigned long absdiff (unsigned long a, unsigned long b) ;
-
-	/**
-	 * insert the edge e into matching and invalidate the two vertices for the matching algorithm
-	 **/
-	void insertInMatching (Edge *e) ;
-
-	/// contains the calculated matching
-	vector<Edge*> Matching ;
 
 	/// contains the vertices in this graph - Vertices[i] is the vertex with label i
 	vector<Vertex*> Vertices ;
@@ -128,7 +133,7 @@ class Graph {
 
 	unsigned long check_degree (Vertex *v) const ;
 
-	bool check_matching (void) const ;
+	bool check_matching (vector<Edge*> *m) const ;
 
 	bool check_ds (void) const ;
 	bool check_sizes (void) const ;

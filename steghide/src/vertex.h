@@ -80,10 +80,10 @@ class Vertex {
 	void setLabel (VertexLabel l) ;
 
 	Edge *getShortestEdge (void) const ;
-	void replaceShortestEdge (Edge *e) ;
+	void setShortestEdge (Edge *e) ;
 
 	Edge *getMatchingEdge (void) const ;
-	void replaceMatchingEdge (Edge *e) ;
+	void setMatchingEdge (Edge *e) ;
 	bool isMatched (void) const ;
 
 #ifdef DEBUG

@@ -29,10 +29,16 @@ class Vertex ;
 class Edge {
 	public:
 	Edge (Vertex *v1, unsigned short idx1, Vertex *v2, unsigned short idx2, unsigned long w) ;
+	~Edge (void) {} ;
 
 	Vertex *getVertex1 (void) const ;
 	Vertex *getVertex2 (void) const ;
 	unsigned long getWeight (void) const ;
+
+	/**
+	 * get the vertex on this edge that is not equal to v
+	 **/
+	Vertex *getOtherVertex (Vertex *v) const ;
 
 	/**
 	 * get the position of the sample that should be changed to embed the bit represented by the vertex v

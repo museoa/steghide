@@ -49,6 +49,7 @@ typedef Arg<bool> ArgBool ;
 typedef Arg<string> ArgString ;
 #ifdef DEBUG
 typedef Arg<float> ArgFloat ;
+typedef Arg<unsigned int> ArgUInt ;
 typedef Arg<DEBUGCOMMAND> ArgDebugCommand ;
 #endif
 

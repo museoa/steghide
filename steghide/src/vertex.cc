@@ -119,11 +119,8 @@ Edge *Vertex::getShortestEdge() const
 	return ShortestEdge ;
 }
 
-void Vertex::replaceShortestEdge (Edge *e)
+void Vertex::setShortestEdge (Edge *e)
 {
-	if (MatchingEdge != NULL) {
-		delete ShortestEdge ;
-	}
 	ShortestEdge = e ;
 }
 
@@ -132,11 +129,8 @@ Edge *Vertex::getMatchingEdge() const
 	return MatchingEdge ;
 }
 
-void Vertex::replaceMatchingEdge (Edge *e)
+void Vertex::setMatchingEdge (Edge *e)
 {
-	if (MatchingEdge != NULL) {
-		delete MatchingEdge ;
-	}
 	MatchingEdge = e ;
 }
 

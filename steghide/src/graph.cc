@@ -91,7 +91,6 @@ void Graph::finishAdding()
 		label++ ;
 	}
 
-	
 	// partition the samples into those with getBit()==1 and those with getBit()==0
 	unsigned long nsamples = Samples.size() ;
 	vector<CvrStgSample*> Samples0 = vector<CvrStgSample*>() ;
@@ -138,9 +137,13 @@ Vertex *Graph::getVertex(unsigned long i) const
 
 void Graph::updateShortestEdge (Vertex *v1)
 {
-	Edge *e = NULL ;
-
-	if (v1->getDegree() > 0) {
+	if (v1->getDegree() == 0) {
+		if (v1->getShortestEdge() != NULL) {
+			delete v1->getShortestEdge() ;
+		}
+		v1->setShortestEdge (NULL) ;
+	}
+	else {
 		bool found = false ;
 		unsigned short v1_idx = 0 , v2_idx = 0 ;
 		Vertex *v2 = NULL ;
@@ -199,22 +202,50 @@ void Graph::updateShortestEdge (Vertex *v1)
 
 		assert (found) ;
 		assert (v1->getLabel() != v2->getLabel()) ;
-		e = new Edge (v1, v1_idx, v2, v2_idx, min_weight) ;
+		Edge *e = new Edge (v1, v1_idx, v2, v2_idx, min_weight) ;
+		replaceShortestEdge (v1, e) ;
 	}
-
-	v1->replaceShortestEdge (e) ;
 }
 
-void Graph::insertInMatching (Edge *e)
+void Graph::replaceShortestEdge (Vertex *v1, Edge *e)
+{
+	Edge *oldedge_v1 = v1->getShortestEdge() ;
+	if (oldedge_v1 != NULL) {
+		Vertex *oldmate_v1 = oldedge_v1->getOtherVertex(v1) ;
+		if (oldmate_v1->getShortestEdge() == oldedge_v1) {
+			oldmate_v1->setShortestEdge (NULL) ;
+		}
+		delete oldedge_v1 ;
+	}
+
+	v1->setShortestEdge (e) ;
+}
+
+void Graph::replaceMatchingEdge (Vertex *v1, Vertex *v2, Edge *e)
+{
+	Edge *oldedge_v1 = v1->getMatchingEdge(), *oldedge_v2 = v2->getMatchingEdge() ;
+	if (oldedge_v1 != NULL) {
+		oldedge_v1->getOtherVertex(v1)->setMatchingEdge (NULL) ;
+		delete oldedge_v1 ;
+	}
+	if (oldedge_v2 != NULL) {
+		oldedge_v2->getOtherVertex(v2)->setMatchingEdge (NULL) ;
+		delete oldedge_v2 ;
+	}
+
+	v1->setMatchingEdge (e) ;
+	v2->setMatchingEdge (e) ;
+}
+
+void Graph::insertInMatching (vector<Edge*> *m, Edge *e)
 {
 	Vertex *v1 = e->getVertex1() ;
 	Vertex *v2 = e->getVertex2() ;
 
 	assert (!v1->isMatched() && !v2->isMatched()) ;
 
-	v1->replaceMatchingEdge (e) ;
-	v2->replaceMatchingEdge (e) ;
-	Matching.push_back (e) ;
+	replaceMatchingEdge (v1, v2, e) ;
+	m->push_back (e) ;
 
 	// delete samples of these vertices from SampleOccurences
 	for (unsigned short i = 0 ; i < SamplesPerEBit ; i++) {
@@ -252,19 +283,38 @@ void Graph::insertInMatching (Edge *e)
 	v2->deleteFromContent() ;
 }
 
-void Graph::calcMatching()
+void Graph::printVOutputVertices()
 {
-	setupConstrHeuristic() ;
-
-	unsigned long nvertices = Vertices.size() ;
-
-	if (Args.Verbosity.getValue() == VERBOSE) { // don't do something needing linear time if it is not useful
+#ifdef DEBUG
+	if (Args.Verbosity.getValue() == VERBOSE || Args.DebugCommand.getValue() == PRINTSTATS) {
+#else
+	if (Args.Verbosity.getValue() == VERBOSE) {
+#endif
 		VerboseMessage vmsg1 (_("number of distinct samples: %lu"), Samples.size()) ;
 		vmsg1.printMessage() ;
 
-		VerboseMessage vmsg2 (_("number of vertices: %lu"), nvertices) ;
+		VerboseMessage vmsg2 (_("number of vertices: %lu"), Vertices.size()) ;
 		vmsg2.printMessage() ;
 
+#ifdef DEBUG
+		if (Args.DebugCommand.getValue() == PRINTSTATS) {
+			printf ("%lu:%lu:",
+					(unsigned long) Samples.size(),	// number of distinct samples
+					(unsigned long) Vertices.size()	// number of vertices
+				   ) ;
+		}
+#endif
+	}
+
+}
+
+void Graph::printVOutputEdges()
+{
+#ifdef DEBUG
+	if (Args.Verbosity.getValue() == VERBOSE || Args.DebugCommand.getValue() == PRINTSTATS) {
+#else
+	if (Args.Verbosity.getValue() == VERBOSE) {
+#endif
 		unsigned long sumdeg = 0 ;
 		unsigned long mindeg = ULONG_MAX ;
 		unsigned long maxdeg = 0 ;
@@ -279,7 +329,7 @@ void Graph::calcMatching()
 				maxdeg = deg ;
 			}
 		}
-		float avgdeg = ((float) sumdeg / (float) nvertices) ;
+		float avgdeg = ((float) sumdeg / (float) Vertices.size()) ;
 
 		VerboseMessage vmsg3 (_("average vertex degree: %.1f"), avgdeg) ;
 		vmsg3.printMessage() ;
@@ -294,54 +344,91 @@ void Graph::calcMatching()
 		vmsg6.printMessage() ;
 		VerboseMessage vmsg7 (_("calculating the matching...")) ;
 		vmsg7.printMessage() ;
-#ifdef STAT
-		unsigned long nvertexcontents = 0 ;
-		for (vector<list<VertexContent*> >::iterator i = VertexContents.begin() ; i != VertexContents.end() ; i++) {
-			nvertexcontents += i->size() ; // is linear
-		}
-		assert (nvertexcontents % SamplesPerEBit == 0) ;
-		nvertexcontents /= SamplesPerEBit ;
-
-		printf ("%lu:%lu:%lu:%lu:%lu:%.1f:%lu:",
-				(unsigned long) Samples.size(),	// number of distinct samples
-				nvertices, // number of vertices
-				sumdeg / 2, // number of edges
-				mindeg, // minimum vertex degree
-				maxdeg, // maximum vertex degree
-				avgdeg, // average vertex degree
-				nvertexcontents // number of distinct vertex contents
-			   ) ;
-#endif
-	}
-
-	doConstrHeuristic() ;
 
 #ifdef DEBUG
-	//check_matching() ;
-#endif
+		if (Args.DebugCommand.getValue() == PRINTSTATS) {
+			unsigned long nvertexcontents = 0 ;
+			for (vector<list<VertexContent*> >::iterator i = VertexContents.begin() ; i != VertexContents.end() ; i++) {
+				nvertexcontents += i->size() ; // is linear
+			}
+			assert (nvertexcontents % SamplesPerEBit == 0) ;
+			nvertexcontents /= SamplesPerEBit ;
 
+			printf ("%lu:%lu:%lu:%.1f:%lu:",
+					sumdeg / 2, // number of edges
+					mindeg, // minimum vertex degree
+					maxdeg, // maximum vertex degree
+					avgdeg, // average vertex degree
+					nvertexcontents // number of distinct vertex contents
+				   ) ;
+		}
+#endif
+	}
+}
+
+void Graph::printVOutputMatching (vector<Edge*> *m)
+{
+#ifdef DEBUG
+	if (Args.Verbosity.getValue() == VERBOSE || Args.DebugCommand.getValue() == PRINTSTATS) {
+#else
 	if (Args.Verbosity.getValue() == VERBOSE) {
-		VerboseMessage vmsg8 (_("size of the matching after construction heuristic: %lu"), Matching.size()) ;
+#endif
+		VerboseMessage vmsg8 (_("size of the matching: %lu"), m->size()) ;
 		vmsg8.printMessage() ;
-		unsigned long numvertices = nvertices - (2 * Matching.size()) ;
-		VerboseMessage vmsg9 (_("number of unmatched vertices: %lu (%.1f%)"), numvertices, 100.0 * ((float) numvertices / (float) nvertices)) ;
+		unsigned long numvertices = Vertices.size() - (2 * m->size()) ;
+		VerboseMessage vmsg9 (_("number of unmatched vertices: %lu (%.1f%)"), numvertices, 100.0 * ((float) numvertices / (float) Vertices.size())) ;
 		vmsg9.printMessage() ;
 
 		unsigned long sumweights = 0 ;
-		for (vector<Edge*>::iterator i = Matching.begin() ; i != Matching.end() ; i++) {
+		for (vector<Edge*>::iterator i = m->begin() ; i != m->end() ; i++) {
 			sumweights += (*i)->getWeight() ;
 		}
 
-		VerboseMessage vmsg10 (_("average edge weight: %.1f"), ((float) sumweights / (float) Matching.size())) ;
+		VerboseMessage vmsg10 (_("average edge weight: %.1f"), ((float) sumweights / (float) m->size())) ;
 		vmsg10.printMessage() ;
 
-#ifdef STAT
-		printf ("%.3f:%.1f:",
-				((float) numvertices / (float) nvertices), // ratio of unmatched vertices
-				((float) sumweights / (float) Matching.size()) // average edge weight
-			   ) ;
+#ifdef DEBUG
+		if (Args.DebugCommand.getValue() == PRINTSTATS) {
+			printf ("%.3f:%.1f:",
+					((float) numvertices / (float) Vertices.size()), // ratio of unmatched vertices
+					((float) sumweights / (float) m->size()) // average edge weight
+				   ) ;
+		}
 #endif
 	}
+}
+
+void Graph::calcMatching()
+{
+	vector<Edge*> *bestmatching = new vector<Edge*>(), *curmatching = NULL ;
+	unsigned int nconstrheur = NConstrHeur ;
+#ifdef DEBUG
+	if (Args.NConstrHeur.is_set()) {
+		nconstrheur = Args.NConstrHeur.getValue() ;
+	}
+#endif
+
+	printVOutputVertices() ;
+
+	bool firsttime = true ;
+	for (unsigned int i = 0 ; i < nconstrheur ; i++) {
+		setupConstrHeuristic() ;
+		if (firsttime) {
+			printVOutputEdges() ;
+			firsttime = false ;
+		}
+		curmatching = doConstrHeuristic() ;
+		if (curmatching->size() > bestmatching->size()) {
+			delete bestmatching ;
+			bestmatching = curmatching ;
+		}
+	}
+
+	printVOutputMatching (bestmatching) ;
+
+#ifdef DEBUG
+	//check_matching (bestmatching) ;
+#endif
 }
 
 //
@@ -413,6 +500,7 @@ void Graph::setupConstrHeuristic()
 	// calculate the shortest edge for each vertex
 	for (vector<Vertex*>::iterator i = Vertices.begin() ; i != Vertices.end() ; i++) {
 		updateShortestEdge (*i) ;
+		(*i)->setMatchingEdge (NULL) ; // FIXME - only needed after matching has been done at least once
 	}
 
 	// fill the VerticesDeg1 and VerticesDegG priority queues
@@ -431,7 +519,6 @@ void Graph::setupConstrHeuristic()
 		}
 	}
 
-	Matching = vector<Edge*>() ;
 
 #ifdef DEBUG
 	if (Args.DebugCommand.getValue() == PRINTGRAPH) {
@@ -448,50 +535,128 @@ void Graph::setupConstrHeuristic()
 	
 }
 
-void Graph::doConstrHeuristic()
+Vertex *Graph::findVertexDeg1 (unsigned int k)
 {
-	while (!(VerticesDegG.empty() && VerticesDeg1.empty())) {
-		bool usethisvertex = false ;
-		Vertex *v = NULL ;
+	Vertex *v = NULL ;
+	vector<Vertex*> topk ;
+	bool usethisvertex = false ;
 
-		if (!VerticesDeg1.empty()) {
-			do { // get the vertex that is nearest to top and still has degree 1
-				v = VerticesDeg1.top() ;
-				VerticesDeg1.pop() ;
-				assert (v->getDegree() <= 1) ;
-				// implicitly delete vertices that have degree zero or have already been matched
-				if ((v->getDegree() == 1) && (!v->isMatched())) {
-					updateShortestEdge (v) ;
+	// get the vertex that is the k-nearest to top and still has degree 1
+	do {
+		assert (!VerticesDeg1.empty()) ;
+		v = VerticesDeg1.top() ;
+		VerticesDeg1.pop() ;
+		assert (v->getDegree() <= 1) ;
+
+		if ((v->getDegree() == 1) && (!v->isMatched())) { // implicitly delete vertices that have degree zero or have already been matched
+			// v is valid vertex
+			updateShortestEdge (v) ; // FIXME - wozu ?
+			if (topk.size() == k - 1) {
+				for (unsigned int i = 0 ; i < k - 1 ; i++) {
+					VerticesDeg1.push (topk[i]) ;
+				}
+				usethisvertex = true ;	// v is the vertex k-nearest to top with degree 1
+			}
+			else {
+				topk.push_back (v) ;
+			}
+		}
+
+		if (k != 1 && VerticesDeg1.empty()) {	// there were less than k vertices with degree 1 in VerticesDegree1
+			assert (!usethisvertex) ;
+			unsigned int nfound = topk.size() ;
+			if (nfound > 0) {
+				usethisvertex = true ;
+				v = topk[nfound - 1] ;
+				for (unsigned int i = 0 ; i < nfound - 1 ; i++) {
+					VerticesDeg1.push (topk[i]) ;
+				}
+			}
+		}
+	} while (!(usethisvertex || VerticesDeg1.empty())) ;
+
+	return (usethisvertex ? v : NULL) ;
+}
+
+Vertex *Graph::findVertexDegG (unsigned int k)
+{
+	Vertex *v = NULL ;
+	vector<Vertex*> topk ;
+	bool usethisvertex = false ;
+
+	// get the vertex that is the k-nearest to top (with updated len of shortest edge) and has degree > 1
+	do {
+		assert (!VerticesDegG.empty()) ;
+		v = VerticesDegG.top() ;
+		VerticesDegG.pop() ;
+
+		if ((v->getDegree() > 1) && (!v->isMatched())) { // implicitly delete vertices that have been moved to VerticesDeg1 or have already been matched
+			// v is valid vertex
+			unsigned long weight_before = v->getShortestEdge()->getWeight() ;
+			updateShortestEdge (v) ;
+			if (v->getShortestEdge()->getWeight() == weight_before) {
+				if (topk.size() == k - 1) {
+					for (unsigned int i = 0 ; i < k - 1 ; i++) {
+						VerticesDegG.push (topk[i]) ;
+					}
 					usethisvertex = true ;
 				}
-			} while ((!usethisvertex) && (!VerticesDeg1.empty())) ;
+				else {
+					topk.push_back (v) ;
+				}
+			}
+			else {
+				assert (v->getShortestEdge()->getWeight() > weight_before) ;	// weight can only rise
+				VerticesDegG.push (v) ; // push v into a position that is further away from top
+			}
+		}
+
+		if (k != 1 && VerticesDegG.empty()) { // there were less than k valid vertices in VerticesDegree1
+			assert (!usethisvertex) ;
+			unsigned int nfound = topk.size() ;
+			if (nfound > 0) {
+				usethisvertex = true ;
+				v = topk[nfound - 1] ;
+				for (unsigned int i = 0 ; i < nfound - 1 ; i++) {
+					VerticesDegG.push (topk[i]) ;
+				}
+			}
+		}
+	} while (!(usethisvertex || VerticesDegG.empty())) ;
+
+	return (usethisvertex ? v : NULL) ;
+}
+
+vector<Edge*> *Graph::doConstrHeuristic()
+{
+	vector<Edge*> *Matching = new vector<Edge*> ;
+	unsigned int pqr = PriorityQueueRange ;
+#ifdef DEBUG
+	if (Args.PriorityQueueRange.is_set()) {
+		pqr = Args.PriorityQueueRange.getValue() ;
+	}
+#endif
+
+	while (!(VerticesDegG.empty() && VerticesDeg1.empty())) {
+		Vertex *v = NULL ;
+		unsigned int k = 1 ;
+		if (pqr > 1) {
+			k = RndSrc.getValue (pqr) + 1 ;
+		}
+
+		if (!VerticesDeg1.empty()) {
+			v = findVertexDeg1 (k) ;
 		}
 		else {
-			// TODO !! - unsigned short nvertex = RndSrc.getValue (ShortestEdgesRange) ;
-
-			do { // get the vertex that is at the top (with updated len of shortest edge) and has a degree > 1
-				v = VerticesDegG.top() ;
-				VerticesDegG.pop() ;
-				// implicitly delete vertices that have been moved to VerticesDeg1 or have already been matched
-				if ((v->getDegree() > 1) && (!v->isMatched())) {
-					unsigned long weight_before = v->getShortestEdge()->getWeight() ;
-					updateShortestEdge (v) ;
-					if (v->getShortestEdge()->getWeight() == weight_before) {
-						usethisvertex = true ;
-					}
-					else {
-						assert (v->getShortestEdge()->getWeight() > weight_before) ;	// weight can only rise
-						VerticesDegG.push (v) ;
-					}
-				}
-
-			} while ((!usethisvertex) && (!VerticesDegG.empty())) ;
+			v = findVertexDegG (k) ;
 		}
 
-		if (usethisvertex) {
-			insertInMatching (v->getShortestEdge()) ;
+		if (v != NULL) {
+			insertInMatching (Matching, v->getShortestEdge()) ;
 		}
 	}
+
+	return Matching ;
 }
 
 #ifdef DEBUG
@@ -542,13 +707,13 @@ void Graph::printUnmatchedVertices (void) const
 	cerr << num << " unmatched vertices found." << endl ;
 }
 
-bool Graph::check_matching (void) const
+bool Graph::check_matching (vector<Edge*> *m) const
 {
 	bool retval = true ;
 
 	cerr << "checking if vector<Edge*> Matching is a matching (without loops)" << endl ;
 	vector<bool> inmatching (Vertices.size(), false) ;
-	for (vector<Edge*>::const_iterator i = Matching.begin() ; i != Matching.end() ; i++) {
+	for (vector<Edge*>::const_iterator i = m->begin() ; i != m->end() ; i++) {
 		VertexLabel v1lbl = (*i)->getVertex1()->getLabel() ;
 		VertexLabel v2lbl = (*i)->getVertex2()->getLabel() ;
 		if (v1lbl == v2lbl) {

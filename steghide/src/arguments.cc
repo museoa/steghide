@@ -381,6 +381,50 @@ void Arguments::parse (int argc, char *argv[])
 				DebugCommand.setValue (PRINTGRAPH) ;
 			}
 
+			else if (string (argv[i]) == "--printstats")  {
+				if (DebugCommand.is_set()) {
+					throw SteghideError (_("you cannot use more than one debug command at a time.")) ;
+				}
+
+				DebugCommand.setValue (PRINTSTATS) ;
+			}
+
+			else if (string (argv[i]) == "--priorityqueuerange") {
+				if (Command.getValue() != EMBED) {
+					throw SteghideError (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
+				}
+
+				if (PriorityQueueRange.is_set()) {
+					throw SteghideError (_("the priority queue range argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
+				}
+
+				if (++i == argc) {
+					throw SteghideError (_("the \"%s\" argument must be followed by the priority queue range. type \"%s --help\" for help."), argv[i - 1], PROGNAME) ;
+				}
+
+				unsigned int tmp = 0 ;
+				sscanf (argv[i], "%u", &tmp) ;
+				PriorityQueueRange.setValue (tmp) ;
+			}
+
+			else if (string (argv[i]) == "--nconstrheur") {
+				if (Command.getValue() != EMBED) {
+					throw SteghideError (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
+				}
+
+				if (NConstrHeur.is_set()) {
+					throw SteghideError (_("the number construction heuristic argument can be used only once. type \"%s --help\" for help."), PROGNAME) ;
+				}
+
+				if (++i == argc) {
+					throw SteghideError (_("the \"%s\" argument must be followed by the number of times the construction heuristic should be run. type \"%s --help\" for help."), argv[i - 1], PROGNAME) ;
+				}
+
+				unsigned int tmp = 0 ;
+				sscanf (argv[i], "%u", &tmp) ;
+				NConstrHeur.setValue (tmp) ;
+			}
+
 			else if (string (argv[i]) == "-r" || string (argv[i]) == "--radius") {
 				if (Command.getValue() != EMBED) {
 					throw SteghideError (_("argument \"%s\" can only be used with the \"embed\" command. type \"%s --help\" for help."), argv[i], PROGNAME) ;
@@ -398,12 +442,6 @@ void Arguments::parse (int argc, char *argv[])
 				sscanf (argv[i], "%f", &tmp) ;
 				Radius.setValue (tmp) ;
 			}
-
-			/*
-			else if (string (argv[i]) == "--printstats")  {
-				// TODO
-			}
-			*/
 		}
 #endif
 		
@@ -508,6 +546,9 @@ void Arguments::setDefaults (void)
 	Verbosity.setValue (Default_Verbosity, false) ;
 #ifdef DEBUG
 	DebugCommand.setValue (Default_DebugCommand, false) ;
+	Radius.setValue (Default_Radius, false) ;
+	PriorityQueueRange.setValue (Default_PriorityQueueRange, false) ;
+	NConstrHeur.setValue (Default_NConstrHeur, false) ;
 #endif
 }
 
