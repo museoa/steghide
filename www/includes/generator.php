@@ -240,7 +240,7 @@ function psection ($sec, $sectioninfo, $activesecid, $isfirst, $spc)
  **/
 function pnavarea ($activesec, $spc)
 {
-	global $DefSections;
+	global $DefSections, $ToRoot;
 
 	echo "$spc<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\"> <!-- start of navigation area -->\n";
 	$isfirst = TRUE ;
@@ -289,9 +289,8 @@ function pBodyPrologue ()
 	echo "   <td id=\"topleft\"><img src=\"" . $ToRoot . "images/logo.png" . "\" alt=\"steghide logo\"></td>\n"; // top left area (logo)
 	echo "   <td id=\"topright\">" . $sectioninfo["title"] . "</td>\n"; // top right area (title)
 	echo "  </tr>\n";
-	echo "  <tr>\n"; // lower areas (hierachy, text)
-	// FIXME WINFIX here height=100%
-	echo "   <td width=\"170\" valign=\"top\">\n"; // lower left area containing the hierachy table
+	echo "  <tr>\n"; // lower areas (navigation, text)
+	echo "   <td width=\"170\" height=\"100%\" valign=\"top\">\n"; // navigation area
 	pnavarea ($SectionID, "    ");
 	echo "   </td>\n";
 	echo "   <td>\n"; // lower right area containing the text
@@ -303,8 +302,6 @@ function pBodyPrologue ()
  **/
 function pBodyEpilogue ($ts_lastupdate)
 {
-	global $ToRoot ;
-
 	echo "     </td></tr></table> <!-- main text position -->\n"; // end of 1x1 table
 	echo "   </td>\n";
 	echo "  </tr>\n"; // end of second row in 3,2 table
