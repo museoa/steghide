@@ -156,7 +156,6 @@ void Graph::constructEdges ()
 
 Graph::~Graph()
 {
-	/* FIXME
 	for (std::vector<Vertex*>::iterator i = Vertices.begin() ; i != Vertices.end() ; i++) {
 		delete *i ;
 	}
@@ -168,7 +167,6 @@ Graph::~Graph()
 	for (EmbValue t = 0 ; t < File->getEmbValueModulus() ; t++) {
 		delete SVALists[t] ;
 	}
-	*/
 }
 
 void Graph::unmarkDeletedAllVertices ()

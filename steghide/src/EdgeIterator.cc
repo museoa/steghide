@@ -28,13 +28,13 @@
 EdgeIterator::EdgeIterator ()
 	: SrcVertex(NULL), SVALIndices(NULL)
 {
+	SVALIndices = new unsigned long[Globs.TheCvrStgFile->getSamplesPerVertex()] ;
 }
 
 EdgeIterator::EdgeIterator (Vertex *v, ITERATIONMODE m)
 {
-	SrcVertex = v ;
 	SVALIndices = new unsigned long[Globs.TheCvrStgFile->getSamplesPerVertex()] ;
-	reset(m) ;
+	reset(v, m) ;
 }
 
 EdgeIterator::EdgeIterator (const EdgeIterator& eit)
@@ -69,74 +69,18 @@ EdgeIterator& EdgeIterator::operator++ ()
 
 			bool cont = false ;
 			do {
-#if 0
-				if (SampleOccurenceIt->getVertex()->getSampleValue(SampleOccurenceIt->getIndex()) != destsv) {
-					std::cerr << "SampleOccurenceIt and destsv NOT CONSISTENT!" << std::endl ;
-					std::cerr << " destsv->getLabel(): " << destsv->getLabel() << std::endl ;
-					std::cerr << " occit->v->sv(occit->idx)->lbl: " << SampleOccurenceIt->getVertex()->getSampleValue(SampleOccurenceIt->getIndex())->getLabel() << std::endl ;
-				}
-				else {
-					std::cerr << "SampleOccurenceIt and destsv are consistent" << std::endl ;
-				}
-
-				if (SampleOccurenceIt == Globs.TheGraph->SampleOccurences[destsv->getLabel()].end()) {
-					std::cerr << "at end BEFORE incrementing" << std::endl ;
-				}
-				else {
-					std::cerr << "not at end before incrementing" << std::endl ;
-				}
-#endif
-				if (SrcVertex->getLabel() == 2) {
-					std::cerr << "before incrementing" << std::endl ;
-					std::cerr << " srcsv->getLabel(): " << srcsv->getLabel() << std::endl ;
-					std::cerr << " destsv->getLabel(): " << destsv->getLabel() << std::endl ;
-					std::cerr << " occit->v->sv(occit->idx)->lbl: " << SampleOccurenceIt->getVertex()->getSampleValue(SampleOccurenceIt->getIndex())->getLabel() << std::endl ;
-					std::cerr << " SampleOccurenceIt->getVertex() is now:" << std::endl ;
-					SampleOccurenceIt->getVertex()->print(2) ;
-				}
 				SampleOccurenceIt++ ;
 
 				cont = false ;
 				if (SampleOccurenceIt != Globs.TheGraph->SampleOccurences[destsv->getLabel()].end()) {
-#if 0
-					std::cerr << "not at end" << std::endl ;
-					std::cerr << "srcsv->getEmbeddedValue(): " << srcsv->getEmbeddedValue() << std::endl ;
-#endif
-					if (SrcVertex->getLabel() == 2) {
-						std::cerr << "after incrementing (not at end): " << std::endl ;
-						std::cerr << " srcsv->getLabel(): " << srcsv->getLabel() << std::endl ;
-						std::cerr << " destsv->getLabel(): " << destsv->getLabel() << std::endl ;
-						std::cerr << " occit->v->sv(occit->idx)->lbl: " << SampleOccurenceIt->getVertex()->getSampleValue(SampleOccurenceIt->getIndex())->getLabel() << std::endl ;
-						std::cerr << " incremented SampleOccurenceIt: SampleOccurenceIt->getVertex() is now:" << std::endl ;
-						SampleOccurenceIt->getVertex()->print(1) ;
-					}
-#if 0
-					std::cerr << "target match:" << (srcsv->getEmbeddedValue() == SampleOccurenceIt->getVertex()->getTargetValue(SampleOccurenceIt->getIndex())) << std::endl ;;
-					std::cerr << "loop edge: " << (SampleOccurenceIt->getVertex()->getLabel() == SrcVertex->getLabel()) << std::endl ;
-#endif
 					if ((srcsv->getEmbeddedValue() != SampleOccurenceIt->getVertex()->getTargetValue(SampleOccurenceIt->getIndex())) || (SampleOccurenceIt->getVertex()->getLabel() == SrcVertex->getLabel())) {
 						cont = true ;
 					}
 				}
-				else {
-					if (SrcVertex->getLabel() == 2) {
-						std::cerr << "after incrementing (at end): " << std::endl ;
-						std::cerr << " srcsv->getLabel(): " << srcsv->getLabel() << std::endl ;
-						std::cerr << " destsv->getLabel(): " << destsv->getLabel() << std::endl ;
-					}
-				}
-#if 0
-				std::cerr << "cont: " << cont << std::endl ;
-#endif
 			} while (cont) ;
-
-#if 0
-			std::cerr << "found soccit" << std::endl ;
-#endif
 
 			if (SampleOccurenceIt == Globs.TheGraph->SampleOccurences[destsv->getLabel()].end()) {
 				// search new destination sample value
-				std::cerr << "incrementing SVALIndices[" << SrcIndex << "]" << std::endl ;
 				SVALIndices[SrcIndex]++ ;
 				findNextEdge() ;
 			}
@@ -144,7 +88,6 @@ EdgeIterator& EdgeIterator::operator++ ()
 		}
 		case SAMPLEVALUE:
 		{
-			std::cerr << "SAMPLEVALUE MODE!!!" << std::endl ;
 			SVALIndices[SrcIndex]++ ;
 			findNextEdge() ;
 			break ;
@@ -157,15 +100,8 @@ EdgeIterator& EdgeIterator::operator++ ()
 	}
 
 	if (!Finished) {
-#if 0
-		std::cerr << "setting CurrentEdge" << std::endl ;
-#endif
 		CurrentEdge.set (SrcVertex, SrcIndex, SampleOccurenceIt->getVertex(), SampleOccurenceIt->getIndex()) ;
 	}
-
-#if 0
-	std::cerr << "++done" << std::endl ;
-#endif
 
 	return *this ;
 }
@@ -184,12 +120,14 @@ void EdgeIterator::reset (ITERATIONMODE m)
 	}
 }
 
+void EdgeIterator::reset (Vertex* v, ITERATIONMODE m)
+{
+	SrcVertex = v ;
+	reset(m) ;
+}
+
 void EdgeIterator::findNextEdge ()
 {
-	if (SrcVertex->getLabel() == 2) {
-		std::cerr << "EdgeIterator::findNextEdge called" << std::endl ;
-	}
-
 	UWORD32 mindist = UWORD32_MAX ;
 	for (unsigned short i = 0 ; i < Globs.TheCvrStgFile->getSamplesPerVertex() ; i++) {
 		SampleValue* srcsv = SrcVertex->getSampleValue(i) ;
@@ -236,13 +174,6 @@ void EdgeIterator::findNextEdge ()
 	if (mindist == UWORD32_MAX) {
 		// no edge has been found
 		Finished = true ;
-	}
-
-	if (SrcVertex->getLabel() == 2) {
-		std::cerr << "after findNextEdge:" << std::endl ;
-		for (unsigned short i = 0 ; i < Globs.TheCvrStgFile->getSamplesPerVertex() ; i++) {
-			std::cerr << " SVALIndices[" << i << "]: " << SVALIndices[i] << std::endl ;
-		}
 	}
 }
 

@@ -85,6 +85,12 @@ class EdgeIterator {
 	EdgeIterator& operator++ (void) ;
 
 	/**
+	 * set this iterator to first (shortest) edge of vertex v
+	 * \param v new vertex (don't change if it is NULL)
+	 **/
+	void reset (Vertex* v, ITERATIONMODE m = SAMPLEOCCURENCE) ;
+
+	/**
 	 * reset this iterator to first (shortest) edge
 	 **/
 	void reset (ITERATIONMODE m = SAMPLEOCCURENCE) ;

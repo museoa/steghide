@@ -153,7 +153,6 @@ void AugmentingPathHeuristicTest::cleanup ()
 
 void AugmentingPathHeuristicTest::testAlgorithm ()
 {
-	Args.DebugLevel.setValue(6) ;
 	{
 		Globs = gl1 ;
 		aph1->run() ;
@@ -172,9 +171,6 @@ void AugmentingPathHeuristicTest::testAlgorithm ()
 	}
 
 	{
-		std::cerr << "aph test - checking g3 (SampleOccurences)" << std::endl ;
-		g3->check_SampleOccurences() ;
-		std::cerr << "check done" << std::endl ;
 		Globs = gl3 ;
 		Edge* e01 = CREATEEDGE (g3, 0, 1) ;
 		Edge* e26 = CREATEEDGE (g3, 2, 6) ;

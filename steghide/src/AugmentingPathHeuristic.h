@@ -26,7 +26,7 @@
 #include "Vertex.h"
 
 class Edge ;
-class Graph ;
+#include "Graph.h"
 class Matching ;
 
 /**
@@ -79,7 +79,7 @@ class AugmentingPathHeuristic : public MatchingAlgorithm {
 		{ return isVisited(v->getLabel()) ; } ;
 
 	bool isVisited (VertexLabel vlbl) const
-		{ return (TimeCounters[vlbl] == TimeCounter) ; } ;
+		{ /* myassert (vlbl < TheGraph->getNumVertices) ;  FIXME DEBUG */ return (TimeCounters[vlbl] == TimeCounter) ; } ;
 
 	UWORD32 TimeCounter ;
 	UWORD32* TimeCounters ;

@@ -29,14 +29,16 @@ AugmentingPathHeuristic::AugmentingPathHeuristic (Graph* g, Matching* m, float g
 	: MatchingAlgorithm (g, m, goal)
 {
 	unsigned long numvertices = g->getNumVertices() ;
-	VertexOnPath = new bool[numvertices] ;
 
 	TimeCounter = 0 ;
-	TimeCounters = new UWORD32[numvertices] ;
 
+	TimeCounters = new UWORD32[numvertices] ;
+	VertexOnPath = new bool[numvertices] ;
 	EdgeIterators = new EdgeIterator[numvertices] ;
 	for (VertexLabel l = 0 ; l < numvertices ; l++) {
-		EdgeIterators[l] = EdgeIterator (g->getVertex(l), mo) ;
+		TimeCounters[l] = 0 ;
+		VertexOnPath[l] = false ;
+		EdgeIterators[l].reset (g->getVertex(l), mo) ;
 	}
 	EdgeIterator::setMaxNumEdges (mne) ;
 }
@@ -94,7 +96,7 @@ void AugmentingPathHeuristic::run ()
 		}
 	}
 
-	delete path ;
+	delete[] path ;
 }
 
 #ifdef DEBUG
@@ -197,11 +199,13 @@ unsigned long AugmentingPathHeuristic::searchAugmentingPath (Vertex *v0, const E
 	return pathlen ;
 }
 
+// FIXME - speed, readability !!
 const Edge* AugmentingPathHeuristic::getNextEdge (Vertex *v)
 {
 	if (isVisited(v)) {
-		std::cerr << "incrementing edgeit of visited vertex" << std::endl ;
-		EdgeIterators[v->getLabel()].print(1) ;
+		if (EdgeIterators[v->getLabel()].isFinished()) {
+			return NULL ;
+		}
 		++(EdgeIterators[v->getLabel()]) ;
 	}
 	else {
@@ -209,7 +213,6 @@ const Edge* AugmentingPathHeuristic::getNextEdge (Vertex *v)
 		markVisited(v) ;
 	}
 
-	std::cerr << "entering main search loop" << std::endl ;
 	const Edge* e = NULL ;
 	bool found = false ;
 	do {
