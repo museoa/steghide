@@ -26,14 +26,14 @@
 // the program name
 #define PROGNAME "steghide"
 
-// gettext support
-#include <libintl.h>
-#define _(S) gettext (S)
-
 // include config.h
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
+
+// gettext support
+#include <libintl.h>
+#define _(S) gettext (S)
 
 // every class should (be able to) do assertions
 #include <cassert>
@@ -47,6 +47,36 @@ extern Arguments Args ;
 extern RandomSource RndSrc ;
 
 // typedefs
+#ifdef HAVE_CONFIG_H
+
+# if SIZEOF_UNSIGNED_LONG_INT == 4
+typedef unsigned long WORD32;
+# elif SIZEOF_UNSIGNED_INT == 4
+typedef unsigned int WORD32;
+# else
+#  error "There is no int with a size of 32 bits on your system. Cannot compile."
+# endif
+
+# if SIZEOF_UNSIGNED_INT == 2
+typedef unsigned int WORD16;
+# elif SIZEOF_UNSIGNED_SHORT_INT == 2
+typedef unsigned short WORD16;
+# else
+#  error "There is no int with a size of 32 bits on your system. Cannot compile."
+# endif
+
+# if SIZEOF_UNSIGNED_CHAR == 1
+typedef unsigned char BYTE;
+# else
+#  error "There is no char with a size of 32 bits on your system. Cannot compile."
+# endif
+
+#else
+typedef unsigned long	WORD32 ;
+typedef unsigned int	WORD16 ;
+typedef unsigned char	BYTE ;
+#endif
+
 typedef int Bit ;
 typedef unsigned long SamplePos ;
 typedef unsigned long VertexLabel ;

@@ -29,6 +29,16 @@ dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 AC_TYPE_SIZE_T
 
+dnl Check size of unsigned types
+AC_CHECK_SIZEOF(unsigned long int)
+AC_CHECK_SIZEOF(unsigned int)
+AC_CHECK_SIZEOF(unsigned short int)
+AC_CHECK_SIZEOF(unsigned char)
+
+dnl Check for random sources	
+AC_CHECK_FILE(/dev/urandom, [AC_DEFINE(HAVE_DEV_URANDOM,1,/dev/urandom is available)])
+AC_CHECK_FILE(/dev/random, [AC_DEFINE(HAVE_DEV_RANDOM,1,/dev/random is available)])
+
 dnl Checks for library functions.
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS(tcgetattr)

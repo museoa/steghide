@@ -21,6 +21,7 @@
 #ifndef SH_RANDOMSOURCE_H
 #define SH_RANDOMSOURCE_H
 
+#include <cstdio>
 #include <vector>
 
 #include "bitstring.h"
@@ -32,6 +33,7 @@
 class RandomSource {
 	public:
 	RandomSource (void) ;
+	~RandomSource (void) ;
 
 	/**
 	 * get a random byte
@@ -69,6 +71,11 @@ class RandomSource {
 	private:
 	unsigned int RandomBytePos ;
 	unsigned char RandomByte ;
+	/**
+	 * determines the random input - is either opened file pointer to
+	 * /dev/urandom or NULL (the rand() function is then used as random source)
+	 **/
+	FILE *RandomInput ;
 } ;
 
 #endif // ndef SH_RANDOMSOURCE_H

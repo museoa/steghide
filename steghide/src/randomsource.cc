@@ -21,6 +21,9 @@
 #include <cstdlib>
 #include <ctime>
 
+#include "common.h"
+#include "error.h"
+#include "msg.h"
 #include "randomsource.h"
 
 // the global RandomSource object
@@ -28,17 +31,40 @@ RandomSource RndSrc ;
 
 RandomSource::RandomSource ()
 {
-	srand ((unsigned int) time (NULL)) ;
 	RandomBytePos = 8 ;
+#ifdef HAVE_DEV_URANDOM
+	if ((RandomInput = fopen ("/dev/urandom", "r")) == NULL) {
+		Warning w (_("could not open /dev/urandom, using standard library random numbers instead.")) ;
+		w.printMessage() ;
+		srand ((unsigned int) time (NULL)) ;
+	}
+#else
+	RandomInput = NULL ;
+	srand ((unsigned int) time (NULL)) ;
+#endif
 }
 
-unsigned char RandomSource::getByte ()
+RandomSource::~RandomSource()
 {
-#ifdef NORANDOMNESS
-	return 0 ;
-#else
-	return (unsigned char) (256.0 * (rand() / (RAND_MAX + 1.0))) ;
+	if (RandomInput != NULL) {
+		if (fclose (RandomInput) != 0) {
+			throw SteghideError (_("could not close random input file.")) ;
+		}
+	}
+}
+
+BYTE RandomSource::getByte ()
+{
+	BYTE retval = 0 ;
+#ifndef NORANDOM
+	if (RandomInput != NULL) {
+		retval = getc (RandomInput) ;
+	}
+	else {
+		retval = (BYTE) (256.0 * (rand() / (RAND_MAX + 1.0))) ;
+	}
 #endif
+	return retval ;
 }
 
 vector<unsigned char> RandomSource::getBytes (unsigned int n)
