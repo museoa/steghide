@@ -29,7 +29,7 @@ Compilation and Installation :
 
 Requirements :
 --------------
-The following libraries are requiered to compile and use steghide:
+The following libraries are required to compile and use steghide:
 
 * libmhash
 a library that provides hashing algorithms - available at:
@@ -52,12 +52,17 @@ http://steghide.sourceforge.net/index.html
  
 Windows :
 ---------
-You should download the precompiled binary from the steghide website at:
+The easiest way is to download the precompiled binary (including Windows
+versions of the necessary libraries) from the steghide website at:
 http://steghide.sourceforge.net/index.html
 
 If you want to compile the sources yourself you need a C compiler. How you need
 to compile the source code depends on the compiler you are using: Please
 consult your compiler's documentation.
+
+Steghide can be compiled with gcc in the cygwin environment
+(http://www.cygwin.com/) using the three steps mentioned above for the
+Linux/Unix compilation.
 
 Quick-Start Examples :
 ======================
@@ -122,7 +127,7 @@ Mailing Lists :
 If you have found a bug or if you have questions, comments, suggestions, etc.
 please send a mail to the development mailing list:
 steghide-devel@lists.sourceforge.net
-You can subscribe to the development mailing list at:
+To receive mails sent to this list, subscribe to it at:
 http://lists.sourceforge.net/lists/listinfo/steghide-devel
 
 If you want to be informed, when a new version of steghide is released please

@@ -161,6 +161,16 @@ Do not embed the name of the original plain file.
 The -n and -N arguments can only be used with the embed command.
 
 .TP
+.B "-c, --compatibility"
+This switch makes steghide use the blowfish-compat encryption module (from
+libmcrypt) thus providing compatibility with libmcrypt versions < 2.4.9.
+
+Use this switch if you have a libmcrypt version >= 2.4.9 and want to send an
+embedded message to a person that has a libmcrypt version < 2.4.9. Also use
+this switch if you have a libmcrypt version >= 2.4.9 and want to read a message
+that has been embedded by a person with a libmcrypt version < 2.4.9.
+
+.TP
 .B "-v, --verbose"
 Display detailed information about the status of the embedding or extracting
 process.
