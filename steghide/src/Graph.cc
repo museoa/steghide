@@ -41,6 +41,7 @@ Graph::Graph (CvrStgFile *cvr, const BitString& emb, Selector& sel)
 	Globs.TheGraph = this ;
 
 	File = cvr ;
+	EmbValueModulus = File->getEmbValueModulus() ;
 
 	// construct sposs and tvalues
 	std::vector<SamplePos*> sposs ;
@@ -164,7 +165,7 @@ Graph::~Graph()
 		delete *svit ;
 	}
 
-	for (EmbValue t = 0 ; t < File->getEmbValueModulus() ; t++) {
+	for (EmbValue t = 0 ; t < EmbValueModulus ; t++) {
 		delete SVALists[t] ;
 	}
 }
@@ -293,14 +294,30 @@ bool Graph::check_SampleValues (bool verbose) const
 
 	bool label_consistency = true ;
 	for (unsigned long i = 0 ; i < n ; i++) {
-		label_consistency = (SampleValues[i]->getLabel() == i) && label_consistency ;
+		if (SampleValues[i]->getLabel() != i) {
+			label_consistency = false ;
+			if (verbose) {
+				std::cerr << "----- FAILED: check_SampleValues -----" << std::endl ;
+				std::cerr << "SamplesValue[" << i << "]->getLabel(): " << SampleValues[i]->getLabel() << std::endl ;
+				std::cerr << "--------------------------------------" << std::endl ;
+			}
+		}
 	}
 
 	bool sv_uniqueness = true ;
 	for (unsigned long i = 0 ; i < n ; i++) {
 		for (unsigned long j = 0 ; j < n ; j++) {
 			if (i != j) {
-				sv_uniqueness = (*(SampleValues[i]) != *(SampleValues[j])) && sv_uniqueness ;
+				if (*(SampleValues[i]) == *(SampleValues[j])) {
+					sv_uniqueness = false ;
+					if (verbose) {
+						std::cerr << "----- FAILED: check_SampleValues -----" << std::endl ;
+						std::cerr << "uniqueness violated with the following two samples:" << std::endl ;
+						SampleValues[i]->print(1) ;
+						SampleValues[j]->print(1) ;
+						std::cerr << "--------------------------------------" << std::endl ;
+					}	
+				}
 			}
 		}
 	}

@@ -38,10 +38,8 @@ void SelectorTest::setup ()
 	s2 = new Selector (50, "another passphrase") ;
 	s3 = new Selector (10000, "a large Selector object") ;
 	s4 = new Selector (128, "a smaller object again") ;
-	std::cerr << "creating Selector in SelectorTest" << std::endl ;
 	sid1 = new Selector (16) ;
 	sid2 = new Selector (1234) ;
-	std::cerr << "done" << std::endl ;
 }
 
 void SelectorTest::cleanup ()

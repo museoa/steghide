@@ -192,6 +192,7 @@ class Graph {
 	void constructEdges (void) ;
 
 	CvrStgFile *File ;
+	EmbValue EmbValueModulus ;
 
 	bool check_SampleOccurences_size (bool verbose = false) const ;
 	bool check_SampleOccurences_correctness (bool verbose = false) const ;

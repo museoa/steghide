@@ -159,7 +159,7 @@ void GraphTest::cleanup ()
 	delete f11 ; delete bs11 ; delete s11 ; delete g11 ;
 	delete f12 ; delete bs12 ; delete s12 ; delete g12 ;
 	delete f13 ; delete bs13 ; delete s13 ; delete g13 ;
-	delete f_f ; delete bs_f ; delete s_f ; delete g_f ;
+	// *_f are not delted because inconsistencies might crash the destructors
 }
 
 void GraphTest::testVertices()
