@@ -183,15 +183,8 @@ BUFFER *bufcut (BUFFER *buf, unsigned long from, unsigned long to)
 void buffree (BUFFER *buf)
 {
 	unsigned long i = 0 ;
-	unsigned long nsubbufs = 0 ;
+	unsigned long nsubbufs = CALCNSUBBUFS (buf->length, buf->subbuflength) ;
 	
-	if (buf->length % buf->subbuflength == 0) {
-		nsubbufs = buf->length / buf->subbuflength ;
-	}
-	else {
-		nsubbufs = (buf->length / buf->subbuflength) + 1 ;
-	}
-
 	for (i = 0 ; i < nsubbufs ; i++) {
 		free (buf->subbufs[i]) ;
 	}

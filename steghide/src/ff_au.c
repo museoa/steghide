@@ -32,24 +32,79 @@
 #include "support.h"
 #include "msg.h"
 
-void au_readheaders (CVRFILE *file)
-{
-	strcpy (file->headers->au.id, ".snd") ;
-	file->headers->au.offset = read32_be (file->stream) ;
-	file->headers->au.size = read32_be (file->stream) ;
-	file->headers->au.encoding = read32_be (file->stream) ;
-	file->headers->au.samplerate = read32_be (file->stream) ;
-	file->headers->au.channels = read32_be (file->stream) ;
+static void au_readheaders (CVRFILE *file) ;
+static void au_writeheaders (CVRFILE *file) ;
+static void au_readdata (CVRFILE *file) ;
+static void au_writedata (CVRFILE *file) ;
 
-	if ((file->unsupdata1len = (file->headers->au.offset - AU_SIZE_HEADER)) != 0) {
-		unsigned char *ptrunsupdata1 = NULL ;
+/* TODO for au file format:
+   wieso wird audio enconding nicht verwendet - muss nicht immer 8 bit sein !! */
+void au_readfile (CVRFILE *file)
+{
+	file->contents = s_malloc (sizeof AU_CONTENTS) ;
+
+	au_readheader (file) ;
+	au_readdata (file) ;
+
+	return ;
+}
+
+void au_writefile (CVRFILE *file)
+{
+	au_writeheader (file) ;
+	au_writedata (file) ;
+
+	return ;
+}
+
+unsigned long au_capacity (CVRSTGFILE *file)
+{
+	return file->contents->data.length ;
+}
+
+void au_embedbit (CVRSTGFILE *file, unsigned long pos, int value)
+{
+	bufsetbit (file->contents->data, pos, 0, value) ;
+	return ;
+}
+
+int au_extractbit (CVRSTGFILE *file, unsigned long pos)
+{
+	return bufgetbit (file->contents->data, pos, 0) ;
+}
+
+void au_cleanup (CVRSTGFILE *file)
+{
+	free (file->contents->header) ;
+	free (file->contents->infofield) ;
+	buffree (file->contents->data) ;
+}
+
+static void au_readheaders (CVRFILE *file)
+{
+	file->contents->header = s_malloc (sizeof *file->contents->header) ;
+
+	file->contents->header->id[0] = getc (file->stream) ;
+	file->contents->header->id[1] = getc (file->stream) ;
+	file->contents->header->id[2] = getc (file->stream) ;
+	file->contents->header->id[3] = getc (file->stream) ;
+	assert (strncmp (file->contents->header->id, ".snd", 4) == 0) ;
+
+	file->contents->header->offset = read32_be (file->stream) ;
+	file->contents->header->size = read32_be (file->stream) ;
+	file->contents->header->encoding = read32_be (file->stream) ;
+	file->contents->header->samplerate = read32_be (file->stream) ;
+	file->contents->header->channels = read32_be (file->stream) ;
+
+	if ((file->contents->len_infofield = (file->contents->header->offset - AU_SIZE_HEADER)) != 0) {
+		unsigned char *ptr = NULL ;
 		int i = 0 ;
 
-		file->unsupdata1 = s_malloc (file->unsupdata1len) ;
+		file->infofield = s_malloc (file->len_infofield) ;
 
-		ptrunsupdata1 = file->unsupdata1 ;
-		for (i = 0 ; i < file->unsupdata1len ; i++) {
-			ptrunsupdata1[i] = (unsigned char) getc (file->stream) ;
+		ptr = file->infofield ;
+		for (i = 0 ; i < file->len_infofield ; i++) {
+			ptr[i] = (unsigned char) getc (file->stream) ;
 		}
 	}
 		
@@ -65,24 +120,24 @@ void au_readheaders (CVRFILE *file)
 	return ;
 }
 
-void au_writeheaders (CVRFILE *file)
+static void au_writeheaders (CVRFILE *file)
 {
-	putc (file->headers->au.id[0], file->stream) ;
-	putc (file->headers->au.id[1], file->stream) ;
-	putc (file->headers->au.id[2], file->stream) ;
-	putc (file->headers->au.id[3], file->stream) ;
-	write32_be (file->stream, file->headers->au.offset) ;
-	write32_be (file->stream, file->headers->au.size) ;
-	write32_be (file->stream, file->headers->au.encoding) ;
-	write32_be (file->stream, file->headers->au.samplerate) ;
-	write32_be (file->stream, file->headers->au.channels) ;
+	putc (file->contents->header->id[0], file->stream) ;
+	putc (file->contents->header->id[1], file->stream) ;
+	putc (file->contents->header->id[2], file->stream) ;
+	putc (file->contents->header->id[3], file->stream) ;
+	write32_be (file->stream, file->contents->header->offset) ;
+	write32_be (file->stream, file->contents->header->size) ;
+	write32_be (file->stream, file->contents->header->encoding) ;
+	write32_be (file->stream, file->contents->header->samplerate) ;
+	write32_be (file->stream, file->contents->header->channels) ;
 
-	if (file->unsupdata1len != 0) {
-		unsigned char *ptrunsupdata1 = file->unsupdata1 ;
+	if (file->len_infofield != 0) {
+		unsigned char *ptr = file->infofield ;
 		int i = 0 ;
 
-		for (i = 0 ; i < file->unsupdata1len ; i++) {
-			putc ((int) ptrunsupdata1[i], file->stream) ;
+		for (i = 0 ; i < file->len_infofield ; i++) {
+			putc ((int) ptr[i], file->stream) ;
 		}
 	}
 
@@ -98,10 +153,19 @@ void au_writeheaders (CVRFILE *file)
 	return ;
 }
 
-void au_readfile (CVRFILE *file)
+static void au_readdata (CVRFILE *file)
 {
 	int c = EOF ;
 	unsigned long bufpos = 0 ;
+
+	/* if available, use size of audio data (in bytes) to create buffer */
+	/* FIXME - wie oft 0xFFFFFFFF ?? */
+	if (file->contents->header->size == 0xFFFFFFFF) {
+		file->contents->data = bufcreate (0) ;
+	}
+	else {
+		file->contents->data = bufcreate (file->contents->header->size) ; /* FIXME - test this */
+	}
 
 	while ((c = getc (file->stream)) != EOF) {
 		bufsetbyte (file->cvrdata, bufpos, c) ;
@@ -120,12 +184,10 @@ void au_readfile (CVRFILE *file)
 	return ;
 }
 
-void au_writefile (CVRFILE *file)
+static void au_writedata (CVRFILE *file)
 {
 	int c = ENDOFBUF ;
 	unsigned long bufpos = 0 ;
-
-	au_writeheaders (file) ;
 
 	while ((c = bufgetbyte (file->cvrdata, bufpos)) != ENDOFBUF) {
 		putc (c, file->stream) ;

@@ -645,7 +645,7 @@ static void fillsthdr (unsigned long nbytescvrbuf, unsigned long nbytesplain, un
 		break ;
 
 		default:
-		assert (0) ;
+			assert (0) ;
 		break ;
 	}
 

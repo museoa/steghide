@@ -32,11 +32,132 @@
 #include "support.h"
 #include "msg.h"
 
+static void wav_readheaders (CVRFILE *file) ;
+static void wav_readdata (CVRSTGFILE *file) ;
+static void wav_writeheaders (CVRFILE *file) ;
+static void wav_writedata (CVRSTGFILE *file) ;
 static void wav_getchhdr (FILE *file, CHUNKHEADER *chhdr) ;
 static void wav_putchhdr (FILE *file, CHUNKHEADER *chhdr) ;
 
+void wav_readfile (CVRSTFILE *file)
+{
+	file->contents = s_malloc (sizeof WAV_CONTENTS) ;
+
+	wav_readheaders (file) ;
+	wav_readdata (file) ;
+
+	return ;
+}
+
+void wav_writefile (CVRSTGFILE *file)
+{
+	wav_writeheaders (file) ;
+	wav_writedata (file) ;
+
+	return ;
+}
+
+unsigned long wav_capacity (CVRSTGFILE *file)
+{
+}
+
+void wav_embedbit (CVRSTGFILE *file, unsigned long pos, int value)
+{
+}
+
+int wav_extractbit (CVRSTGFILE *file, unsigned long pos)
+{
+}
+
+void wav_cleanup (CVRSTGFILE *file)
+{
+}
+
+/* reads a wav file from disk into a CVRFILE structure */
+static void wav_readdata (CVRSTGFILE *file)
+{
+	int noncvrbytes, i ;
+	unsigned long cvrpos = 0, noncvrpos = 0 ;
+
+	noncvrbytes = (file->headers->wav.fmtch.BitsPerSample / 8) - 1 ;
+
+	while ((cvrpos + noncvrpos) < file->headers->wav.datachhdr.len) {
+		bufsetbyte (file->cvrdata, cvrpos, getc (file->stream)) ;
+		cvrpos++ ;
+
+		for (i = 0; i < noncvrbytes; i++) {
+			bufsetbyte (file->noncvrdata, noncvrpos, getc (file->stream)) ;
+			noncvrpos++ ;
+		}
+	}
+
+	file->unsupdata2 = NULL ;
+	file->unsupdata2len = 0 ;
+	if (getc (file->stream) != EOF) {
+		unsigned char *ptrunsupdata2 ;
+		int c = EOF ;
+
+		fseek (file->stream, -1, SEEK_CUR) ;
+
+		while ((c = getc (file->stream)) != EOF) {
+			file->unsupdata2len++ ;
+			file->unsupdata2 = s_realloc (file->unsupdata2, file->unsupdata2len) ;
+			ptrunsupdata2 = file->unsupdata2 ;
+			ptrunsupdata2[file->unsupdata2len - 1] = c ;
+		}			
+	}
+
+	if (ferror (file->stream)) {
+		if (file->filename == NULL) {
+			exit_err (_("an error occured while reading the audio data from standard input.")) ;
+		}
+		else {
+			exit_err (_("an error occured while reading the audio data of the file \"%s\"."), file->filename) ;
+		}
+	}
+
+	return ;
+}
+
+/* writes a wav file from a CVRFILE structure to disk */
+static void wav_writedata (CVRSTGFILE *file)
+{
+	int noncvrbytes = 0, i = 0 ;
+	unsigned long cvrpos = 0, noncvrpos = 0 ;
+
+	noncvrbytes = (file->headers->wav.fmtch.BitsPerSample / 8) - 1 ;
+
+	while ((cvrpos + noncvrpos) < file->headers->wav.datachhdr.len) {
+		putc (bufgetbyte (file->cvrdata, cvrpos), file->stream) ;
+		cvrpos++ ;
+
+		for (i = 0; i < noncvrbytes; i++) {
+			putc (bufgetbyte (file->noncvrdata, noncvrpos), file->stream) ;
+			noncvrpos++ ;
+		}
+	}
+
+	if (file->unsupdata2len > 0) {
+		unsigned char *ptrunsupdata2 = file->unsupdata2 ;
+		for (i = 0; i < file->unsupdata2len; i++) {
+			putc ((int) ptrunsupdata2[i], file->stream) ;
+		}
+	}
+
+	if (ferror (file->stream)) {
+		if (file->filename == NULL) {
+			exit_err (_("an error occured while writing the audio data to standard output.")) ;
+		}
+		else {
+			exit_err (_("an error occured while writing the audio data to the file \"%s\"."), file->filename) ;
+		}
+	}
+
+	return ;
+}
+
 /* reads the headers of a wav file from disk */
-void wav_readheaders (CVRFILE *file, unsigned long rifflen)
+static void wav_readheaders (CVRFILE *file)
 {
 	CHUNKHEADER tmpchhdr = { { '\0', '\0', '\0', '\0' }, 0 } ;
 	int i = 0;
@@ -107,7 +228,7 @@ void wav_readheaders (CVRFILE *file, unsigned long rifflen)
 }
 
 /* writes the headers of a wav file to disk */
-void wav_writeheaders (CVRFILE *file)
+static void wav_writeheaders (CVRFILE *file)
 {
 	int i = 0 ;
 
@@ -138,91 +259,6 @@ void wav_writeheaders (CVRFILE *file)
 		}
 		else {
 			exit_err (_("an error occured while writing the wav headers to the file \"%s\"."), file->filename) ;
-		}
-	}
-
-	return ;
-}
-
-/* reads a wav file from disk into a CVRFILE structure */
-void wav_readfile (CVRFILE *file)
-{
-	int noncvrbytes, i ;
-	unsigned long cvrpos = 0, noncvrpos = 0 ;
-
-	noncvrbytes = (file->headers->wav.fmtch.BitsPerSample / 8) - 1 ;
-
-	while ((cvrpos + noncvrpos) < file->headers->wav.datachhdr.len) {
-		bufsetbyte (file->cvrdata, cvrpos, getc (file->stream)) ;
-		cvrpos++ ;
-
-		for (i = 0; i < noncvrbytes; i++) {
-			bufsetbyte (file->noncvrdata, noncvrpos, getc (file->stream)) ;
-			noncvrpos++ ;
-		}
-	}
-
-	file->unsupdata2 = NULL ;
-	file->unsupdata2len = 0 ;
-	if (getc (file->stream) != EOF) {
-		unsigned char *ptrunsupdata2 ;
-		int c = EOF ;
-
-		fseek (file->stream, -1, SEEK_CUR) ;
-
-		while ((c = getc (file->stream)) != EOF) {
-			file->unsupdata2len++ ;
-			file->unsupdata2 = s_realloc (file->unsupdata2, file->unsupdata2len) ;
-			ptrunsupdata2 = file->unsupdata2 ;
-			ptrunsupdata2[file->unsupdata2len - 1] = c ;
-		}			
-	}
-
-	if (ferror (file->stream)) {
-		if (file->filename == NULL) {
-			exit_err (_("an error occured while reading the audio data from standard input.")) ;
-		}
-		else {
-			exit_err (_("an error occured while reading the audio data of the file \"%s\"."), file->filename) ;
-		}
-	}
-
-	return ;
-}
-
-/* writes a wav file from a CVRFILE structure to disk */
-void wav_writefile (CVRFILE *file)
-{
-	int noncvrbytes = 0, i = 0 ;
-	unsigned long cvrpos = 0, noncvrpos = 0 ;
-
-	wav_writeheaders (file) ;
-
-	noncvrbytes = (file->headers->wav.fmtch.BitsPerSample / 8) - 1 ;
-
-	while ((cvrpos + noncvrpos) < file->headers->wav.datachhdr.len) {
-		putc (bufgetbyte (file->cvrdata, cvrpos), file->stream) ;
-		cvrpos++ ;
-
-		for (i = 0; i < noncvrbytes; i++) {
-			putc (bufgetbyte (file->noncvrdata, noncvrpos), file->stream) ;
-			noncvrpos++ ;
-		}
-	}
-
-	if (file->unsupdata2len > 0) {
-		unsigned char *ptrunsupdata2 = file->unsupdata2 ;
-		for (i = 0; i < file->unsupdata2len; i++) {
-			putc ((int) ptrunsupdata2[i], file->stream) ;
-		}
-	}
-
-	if (ferror (file->stream)) {
-		if (file->filename == NULL) {
-			exit_err (_("an error occured while writing the audio data to standard output.")) ;
-		}
-		else {
-			exit_err (_("an error occured while writing the audio data to the file \"%s\"."), file->filename) ;
 		}
 	}
 

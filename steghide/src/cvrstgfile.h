@@ -18,8 +18,8 @@
  *
  */
 
-#ifndef SH_IO_H
-#define SH_IO_H
+#ifndef SH_CVRSTGFILE_H
+#define SH_CVRSTGFILE_H
 
 #include <stdio.h>
 
@@ -27,89 +27,34 @@
 #include <config.h>
 #endif
 
+typedef struct struct_CVRSTGFILE {
+	FILE *stream ;
+	char *filename ;
+	int fileformat ;
+	void *contents ;
+} CVRSTGFILE ;
+
+/* constants that indicate the cover file format */
+#define FF_UNKNOWN	0
+#define FF_BMP		1
+#define FF_WAV		2
+#define FF_AU		3
+
+/* function prototypes */
+CVRSTGFILE *cvrstg_readfile (char *filename) ;
+void cvrstg_writefile (CVRSTGFILE *file) ;
+void cvrstg_transform (CVRSTGFILE *file, char *stgfilename) ;
+unsigned long cvrstg_capacity (CVRSTGFILE *file) ;
+void cvrstg_embedbit (CVRSTGFILE *file, unsigned long pos, int value) ;
+int cvrstg_extractbit (CVRSTGFILE *file, unsigned long pos) ;
+void cvrstg_cleanup (CVRSTGFILE *file) ;
+
+#if 0
 extern int noncvrbufuse[] ;
 
 /* is used for parameter freesubstructs of cleanupcvrfile */
 #define FSS_NO	0
 #define FSS_YES	1
-
-/*** au file format ***/
-typedef struct struct_AUHEADERS {
-	char			id[4] ;
-	unsigned long	offset ;
-	unsigned long	size ;
-	unsigned long	encoding ;
-	unsigned long	samplerate ;
-	unsigned long	channels ;
-} AUHEADERS ;
-
-#define AU_SIZE_HEADER		24
-
-
-/*** bmp file format ***/
-#ifdef WIN32
-#include <windows.h>
-#else
-typedef struct struct_BITMAPFILEHEADER {
-	unsigned short	bfType ;
-	unsigned long	bfSize ;
-	unsigned short	bfReserved1 ;
-	unsigned short	bfReserved2 ;
-	unsigned long	bfOffBits ;
-} BITMAPFILEHEADER ;
-#endif /* WIN32 */
-
-typedef struct struct_BITMAPXHEADER { /* stores data from BITMAPINFO- and BITMAPCORE- HEADER */
-	unsigned long	Size ;
-	signed long		Width ;
-	signed long		Height ;
-	unsigned short	Planes ;
-	unsigned short	BitCount ;
-	unsigned long	Compression ;
-	unsigned long	SizeImage ;
-	signed long		XPelsPerMeter ;
-	signed long		YPelsPerMeter ;
-	unsigned long	ClrUsed ;
-	unsigned long	ClrImportant ;
-} BITMAPXHEADER ;
-
-typedef struct struct_BMPHEADERS {
-	BITMAPFILEHEADER	bmfh ;
-	BITMAPXHEADER		bmxh ;
-} BMPHEADERS ;
-
-#define BMP_SIZE_BMFILEHEADER	14
-#define BMP_SIZE_BMINFOHEADER	40
-#define BMP_SIZE_BMCOREHEADER	12
-#define BMP_ID_BM				19778
-#define BMP_BI_RGB				0
-
-
-/*** wav file format ***/
-typedef struct struct_CHUNKHEADER {
-	char			id[4] ;
-	unsigned long	len ;
-} CHUNKHEADER ;
-
-typedef struct struct_FMTCHUNK_PCM {
-	signed short	FormatTag ;
-	unsigned short	Channels ;
-	unsigned long	SamplesPerSec ;
-	unsigned long	AvgBytesPerSec ;
-	unsigned short	BlockAlign ;
-	unsigned short	BitsPerSample ;
-} FMTCHUNK_PCM ;
-
-typedef struct struct_WAVHEADERS {
-	CHUNKHEADER		riffchhdr ;
-	char			id_wave[4] ;
-	CHUNKHEADER		fmtchhdr ;
-	FMTCHUNK_PCM	fmtch ;
-	CHUNKHEADER		datachhdr ;
-} WAVHEADERS ;
-
-#define WAV_FORMAT_PCM		1
-#define WAV_SIZE_FMTCHUNK	16
 
 
 /*** general io ***/
@@ -119,12 +64,6 @@ typedef union union_CVRHEADERS {
 	WAVHEADERS		wav ;
 	AUHEADERS		au ;
 } CVRHEADERS ;
-
-/* constants that indicate the cover file format */
-#define FF_UNKNOWN	0
-#define FF_BMP		1
-#define FF_WAV		2
-#define FF_AU		3
 
 /* CVRFILE describes a coverdata file */
 #include "bufmanag.h"
@@ -164,7 +103,6 @@ typedef struct struct_PLNFILE {
 } PLNFILE ;
 
 /* general io function prototypes */
-void readheaders (CVRFILE *file) ;
 CVRFILE *createstgfile(CVRFILE *cvrfile, char *stgfilename) ;
 PLNFILE *createplnfile(void) ;
 void assemble_plndata (PLNFILE *plnfile) ;
@@ -193,5 +131,6 @@ void wav_readheaders (CVRFILE *file, unsigned long rifflen) ;
 void wav_writeheaders (CVRFILE *file) ;
 void wav_readfile (CVRFILE *file) ;
 void wav_writefile (CVRFILE *file) ;
+#endif /* if 0 */
 
-#endif /* ndef SH_IO_H */
+#endif /* ndef SH_CVRSTGFILE_H */
