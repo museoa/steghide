@@ -58,10 +58,6 @@ Matching& Matching::addEdge (Edge *e)
 
 Matching& Matching::augment (const std::vector<Edge*> &path)
 {
-	if (!check_ValidAugPath (path)) {
-		std::cerr << "did not get a valid augmenting path" << std::endl ;
-	}
-
 	assert (path.size() % 2 == 1) ;
 	bool e_was_matched = false ;
 	Edge *e = NULL ;

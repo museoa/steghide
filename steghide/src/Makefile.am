@@ -15,7 +15,7 @@ msg.h permutation.h randomsource.h rgbtriple.h \
 sampleoccurence.h samplevalue.h session.h svalueoppneigh.h \
 terminal.h vertex.h vertexcontent.h wavchunk.h \
 wavchunkheader.h wavchunkunused.h wavfile.h wavformatchunk.h \
-wavsamplevalue.h
+wavsamplevalue.h wrapper_hash_set.h
 steghide_SOURCES = \
 arg.cc arguments.cc aufile.cc augheur.cc \
 ausamplevalue.cc binaryio.cc bitstring.cc bmpfile.cc \

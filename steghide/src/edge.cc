@@ -25,10 +25,7 @@
 Edge::Edge (Vertex *v1, unsigned short idx1, Vertex *v2, unsigned short idx2)
 	: Vertex1(v1), Index1(idx1), Vertex2(v2), Index2(idx2)
 {
-	if (v1->getLabel() == v2->getLabel()) {
-		v1->print() ;
-		assert (v1->getLabel() != v2->getLabel()) ;
-	}
+	assert (v1->getLabel() != v2->getLabel()) ;
 	SampleValue *sv1 = v1->getSampleValue(idx1) ;
 	SampleValue *sv2 = v2->getSampleValue(idx2) ;
 	Weight = sv1->calcDistance(sv2) ;
