@@ -86,13 +86,14 @@ bool VertexContent::operator== (const VertexContent& vc) const
 
 unsigned long VertexContent::getDegree (void) const
 {
-	myassert (hasOccurences()) ;
 	unsigned long retval = 0 ;
 	for (unsigned short i = 0 ; i < SamplesPerVertex ; i++) {
 		retval += SampleValues[i]->getNumEdges() ;
 	}
-	myassert (SelfDegree <= retval) ;
-	retval -= SelfDegree ;
+	if (hasOccurences()) {
+		myassert (SelfDegree <= retval) ;
+		retval -= SelfDegree ;
+	}
 	return retval ;
 }
 

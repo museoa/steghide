@@ -67,7 +67,7 @@ class CvrStgFile : public CvrStgObject {
 	 *
 	 * This is equivalent to getSample(pos)->getBit().
 	 **/
-	Bit getSampleBit (const SamplePos pos) const ;
+	BIT getSampleBit (const SamplePos pos) const ;
 
 	protected:
 	void setBinIO (BinaryIO* io)

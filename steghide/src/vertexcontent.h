@@ -32,6 +32,15 @@
 class Graph ;
 class Vertex ;
 
+/**
+ * \class VertexContent
+ * \brief the content of a vertex
+ *
+ * A vertex content is essentially a k-tuple of sample values, where
+ * k is the number of samples per vertex. In a VertexContent object
+ * the sample values are sorted by their getKey()s to make it easier
+ * to compare two vertex contents.
+ **/
 class VertexContent : private GraphAccess {
 	public:
 	/**
@@ -53,11 +62,9 @@ class VertexContent : private GraphAccess {
 	bool operator!= (const VertexContent& vc) const
 		{ return !(operator==(vc)) ; } ;
 
-	// FIXME - ? operator [] - ? const return value
 	SampleValue *getSampleValue (unsigned short i) const
 		{ return SampleValues[i] ; } ; 
 
-	// FIXME - const return value
 	SampleValue **getSampleValues (void) const
 		{ return SampleValues ; } ;
 

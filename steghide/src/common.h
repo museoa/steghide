@@ -63,8 +63,7 @@ typedef unsigned short	UWORD16 ;
 typedef unsigned char	BYTE ;
 #endif
 
-// FIXME - define Bit as something needing less memory
-typedef int Bit ;
+typedef bool BIT ;
 typedef UWORD32 SamplePos ;
 typedef UWORD32 VertexLabel ;
 typedef UWORD32 SampleValueLabel ;

@@ -98,12 +98,9 @@ void Vertex::unmarkDeleted ()
 
 void Vertex::updateShortestEdge ()
 {
-#if 0
-FIXME - do this
 	if (ShortestEdge != NULL) {
 		delete ShortestEdge ;
 	}
-#endif
 
 	if (getDegree() == 0) {
 		ShortestEdge = NULL ;

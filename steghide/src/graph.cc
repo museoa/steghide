@@ -46,7 +46,7 @@ Graph::Graph (CvrStgFile *cvr, const BitString& emb)
 	unsigned long n = emb.getLength() ;
 	for (unsigned long i = 0 ; i < n ; i++) {
 		SamplePos *poss = new SamplePos[SamplesPerEBit] ;
-		Bit parity = 0 ;
+		BIT parity = 0 ;
 		for (unsigned int j = 0 ; j < SamplesPerEBit ; j++) {
 			poss[j] = *perm ;
 			parity ^= File->getSampleBit (*perm) ;
@@ -469,8 +469,8 @@ bool Graph::check_sampleoppositeneighbourhood (void) const
 	for (SampleValueLabel srclbl = 0 ; srclbl < SampleValues.size() ; srclbl++) {
 		const std::vector<SampleValue*> &oppneighs = SampleValueOppNeighs[srclbl] ;
 		for (std::vector<SampleValue*>::const_iterator destsv = oppneighs.begin() ; destsv != oppneighs.end() ; destsv++) {
-			Bit srcbit = SampleValues[srclbl]->getBit() ;
-			Bit destbit = (*destsv)->getBit() ;
+			BIT srcbit = SampleValues[srclbl]->getBit() ;
+			BIT destbit = (*destsv)->getBit() ;
 			if (srcbit == destbit) {
 				retval = false ;
 				std::cerr << "FAILED: SampleOppositeNeighbourhood contains a non-opposite sample" << std::endl ;

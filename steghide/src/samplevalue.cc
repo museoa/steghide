@@ -22,11 +22,23 @@
 #include "samplevalue.h"
 #include "cvrstgfile.h"
 
+SampleValue::SampleValue (const CvrStgFile* f)
+{
+	if (File == NULL) {
+		File = const_cast<CvrStgFile*>(f) ;
+	}
+	else {
+		myassert (File == f) ;
+	}
+}
+
 void SampleValue::decNumEdges ()
 {
 	myassert (NumEdges > 0) ;
 	NumEdges-- ;
 }
+
+CvrStgFile* SampleValue::File = NULL ;
 
 #ifdef DEBUG
 void SampleValue::print (unsigned short spc) const

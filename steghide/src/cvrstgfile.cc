@@ -91,10 +91,10 @@ void CvrStgFile::transform (const std::string& stgfn)
 }
 
 // FIXME - implement this in ...File to save some time - include tests: implementation in ...File is equivalent to getSample(pos)-> getBit()
-Bit CvrStgFile::getSampleBit (const SamplePos pos) const
+BIT CvrStgFile::getSampleBit (const SamplePos pos) const
 {
 	SampleValue* sv = getSampleValue(pos) ;
-	Bit retval = sv->getBit() ;
+	BIT retval = sv->getBit() ;
 	delete sv ;
 	return retval ;
 }

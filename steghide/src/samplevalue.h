@@ -58,8 +58,7 @@ class CvrStgFile ;
 class SampleValue {
 	public:
 	SampleValue (void) {} ;
-	SampleValue (const CvrStgFile* f)
-		: File(f) {} ;
+	SampleValue (const CvrStgFile* f) ;
 
 	/**
 	 * is the sample value s a neighbour of this sample value ?
@@ -91,7 +90,7 @@ class SampleValue {
 	 * get the bit that is embedded in this sample value
 	 * \return the embedded bit
 	 **/
-	Bit getBit (void) const
+	BIT getBit (void) const
 		{ return SBit ; } ;
 
 	/**
@@ -129,7 +128,7 @@ class SampleValue {
 	const CvrStgFile* getFile (void) const
 		{ return File ; } ;
 
-	void setFile (const CvrStgFile* f)
+	void setFile (CvrStgFile* f)
 		{ File = f ; } ;
 
 	unsigned long getLabel (void) const
@@ -146,13 +145,14 @@ class SampleValue {
 	// FIXME - SBit, Key speed vs. memory footprint !?
 
 	/// the bit that is embedded in this sample value - must be set in constructor of derived class
-	Bit SBit ;
+	BIT SBit ;
 
 	/// the key of this sample value - must be different for two different sample values - must be set in constructor of derived class
 	unsigned long Key ;
 
 	private:
-	const CvrStgFile* File ; // FIXME - use something similar to graph access
+	static CvrStgFile* File ;
+
 	unsigned long Label ;
 
 	/// the number of edges that are added to a vertex if this sample value is added to it

@@ -45,7 +45,7 @@ void Extractor::extract ()
 		unsigned long bitsneeded = embdata.getNumBitsNeeded() ;
 		BitString bits ;
 		for (unsigned long i = 0 ; i < bitsneeded ; i++) {
-			Bit xorresult = 0 ;
+			BIT xorresult = 0 ;
 			for (unsigned int j = 0 ; j < sam_ebit ; j++) {
 				xorresult ^= stgfile->getSampleBit (*perm) ;
 				++perm ;

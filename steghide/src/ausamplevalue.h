@@ -30,7 +30,7 @@ class AuSampleValue : public SampleValue {
 		: SampleValue(NULL) {} ;
 	AuSampleValue (const CvrStgFile* f, unsigned char v)
 		: SampleValue(f), Value(v)
-		{ SBit = (Bit) (Value & 1) ; Key = (unsigned long) Value ; } ;
+		{ SBit = (BIT) (Value & 1) ; Key = (unsigned long) Value ; } ;
 
 	bool isNeighbour (const SampleValue *s) const ;
 	SampleValue* getNearestOppositeSampleValue (void) const ;

@@ -173,7 +173,7 @@ void Embedder::embedExposedVertex (Vertex *v)
 
 	printDebug (1, "embedding vertex with sample position %lu.", samplepos) ;
 
-	Bit oldbit = TheCvrStgFile->getSampleBit (samplepos) ;
+	BIT oldbit = TheCvrStgFile->getSampleBit (samplepos) ;
 	TheCvrStgFile->replaceSample (samplepos, newsample) ;
 	myassert (oldbit != TheCvrStgFile->getSampleBit (samplepos)) ;
 	delete newsample ;

@@ -24,9 +24,13 @@
 #include <vector>
 #include <string>
 
+#if 0
 // common.h is not included here because randomsource.h is included in common.h
 // and bitstd::string.h is included in randomsource.h
 typedef int Bit ;
+#endif
+
+#include "common.h"
 
 class BitString {
 	public:
@@ -35,18 +39,21 @@ class BitString {
 	/**
 	 * construct a BitString containing l zeros
 	 **/
-	BitString (unsigned long l) ;
+	BitString (const unsigned long l) ;
 	
 	/**
 	 * construct a BitString containing the data in d
 	 **/
-	BitString (const std::vector<unsigned char> &d) ;
+	BitString (const std::vector<unsigned char>& d) ;
 	
 	/**
 	 * construct a BitString containing the characters in d as 8 bit unsigned chars
 	 **/
-	BitString (const std::string &d) ;
+	BitString (const std::string& d) ;
 	
+	/**
+	 * get the length of this bitstring (in bits)
+	 **/
 	unsigned long getLength (void) const ;
 
 	/**
@@ -57,46 +64,44 @@ class BitString {
 	/**
 	 * append the bit v to this BitString
 	 **/
-	BitString& append (bool v) ;
-
-	BitString& append (Bit v) ;
+	BitString& append (const BIT v) ;
 
 	/**
 	 * append n lower order bits (with MSB first) of v to this BitString
 	 * \param v the value to be appended
 	 * \param n the number of bits to be appended
 	 **/
-	BitString& append (unsigned char v, unsigned int n = 8) ;
+	BitString& append (const BYTE v, const unsigned short n = 8) ;
 	
 	/**
 	 * append n lower order bits (with MSB first) of v to this BitString
 	 * \param v the value to be appended
 	 * \param n the number of bits to be appended
 	 **/
-	BitString& append (unsigned int v, unsigned int n) ;
+	BitString& append (const UWORD16 v, const unsigned short n = 16) ;
 	
 	/**
 	 * append n lower order bits (with MSB first) of v to this BitString
 	 * \param v the value to be appended
 	 * \param n the number of bits to be appended
 	 **/
-	BitString& append (unsigned long v, unsigned int n = 32) ;
+	BitString& append (const UWORD32 v, const unsigned short n = 32) ;
 	
 	/**
 	 * append the std::string v to this BitString
 	 **/
-	BitString& append (const std::string &v) ;
+	BitString& append (const std::string& v) ;
 
 	/**
 	 * append the std::vector v byte-wise to this BitString
 	 **/
-	BitString& append (const std::vector<unsigned char> &v) ;
+	BitString& append (const std::vector<BYTE>& v) ;
 
 	/**
 	 * append the BitString v to this BitString
 	 * \param v the BitString to be appended
 	 **/
-	BitString& append (const BitString &v) ;
+	BitString& append (const BitString& v) ;
 
 	/**
 	 * get a BitString that is a part of this BitString
@@ -104,41 +109,41 @@ class BitString {
 	 * \param e the index of the last bit to be copied from this BitString
 	 * \return the BitString containing of the bits [s...e] of this BitString
 	 **/
-	BitString getBits (unsigned long s, unsigned long e) const ;
+	BitString getBits (const unsigned long s, const unsigned long e) const ;
 
 	/**
-	 * return an unsigned long value composed from bits in this BitString (msb first)
+	 * return a value composed from bits in this BitString (msb first)
 	 * \param s the index of the first bit to be used for the return value
 	 * \param l the total number of bits to be used for the return value (must be <= 32)
 	 * \return the unsigned long value (*this)[s],...,(*this)[s+l-1]
 	 **/
-	unsigned long getValue (unsigned long s, unsigned int l) const ;
+	UWORD32 getValue (const unsigned long s, const unsigned short l) const ;
 
 	/**
-	 * get the contents of this BitString as std::vector of unsigned char
-	 * \return the contents of this BitString as std::vector of unsigned char
+	 * get the contents of this BitString as vector of bytes
+	 * \return the contents of this BitString as vector of bytes
 	 *
 	 * getLength() % 8 must be 0 to call this function
 	 **/
-	std::vector<unsigned char> getBytes (void) const ;
+	const std::vector<BYTE>& getBytes (void) const ;
 
 	/**
 	 * pad this BitString with the value in v
 	 * \param mult this BitString is padded until size is a multiple of mult (given in bits)
 	 * \param v the value this BitString should be padded with
 	 **/
-	BitString& pad (unsigned long mult, Bit v) ;
+	BitString& pad (const unsigned long mult, const BIT v) ;
 
 	/**
 	 * pad this BitString with random data
 	 * \param mult this BitString is padded until size is a multiple of mult (given in bits)
 	 **/
-	BitString& padRandom (unsigned long mult) ;
+	BitString& padRandom (const unsigned long mult) ;
 
 	/**
 	 * get the value of the i-th bit
 	 **/
-	Bit operator[] (unsigned long i) const ;
+	BIT operator[] (const unsigned long i) const ;
 
 	/**
 	 * xor v with this BitString, saving the result in this Bitstd::string - the result has the same length as this BitString
@@ -149,14 +154,14 @@ class BitString {
 	 * compare this BitString with the BitString v
 	 * \return true iff the lengths are equal and for every valid index the value is equal
 	 **/
-	bool operator== (const BitString &v) const ;
+	bool operator== (const BitString& v) const ;
 
 	protected:
-	void _append (Bit v) ;
+	void _append (BIT v) ;
 
 	private:
-	unsigned long length ;
-	std::vector<unsigned char> data ;
+	unsigned long Length ;
+	std::vector<unsigned char> Data ;
 } ;
 
 #endif // ndef SH_BITSTRING_H

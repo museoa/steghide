@@ -203,3 +203,21 @@ Vertex *ConstructionHeuristic::findVertexDeg1 (unsigned int k)
 
 	return (usethisvertex ? v : NULL) ;
 }
+
+bool ConstructionHeuristic::LongerShortestEdge::operator() (const Vertex* v1, const Vertex* v2)
+{
+	bool retval = false ;
+	if (v1->getDegree() == 0 && v2->getDegree() == 0) {
+		retval = (v1->getLabel() > v2->getLabel()) ;
+	}
+	else if (v1->getDegree() == 0) {
+		retval = true ;
+	}
+	else if (v2->getDegree() == 0) {
+		retval = false ;
+	}
+	else {
+		retval = v1->getShortestEdge()->getWeight() > v2->getShortestEdge()->getWeight();
+	}
+	return retval ;
+}

@@ -28,7 +28,7 @@ JpegSampleValue::JpegSampleValue (const CvrStgFile* f, int c)
 	: SampleValue(f), DctCoeff (c)
 {
 	int dctcoeff = ((DctCoeff >= 0) ? DctCoeff : -DctCoeff) ;
-	SBit = (Bit) (dctcoeff % 2) ;
+	SBit = (BIT) (dctcoeff % 2) ;
 	Key = (unsigned long) DctCoeff ;
 }
 

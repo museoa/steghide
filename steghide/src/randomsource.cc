@@ -21,6 +21,7 @@
 #include <cstdlib>
 #include <ctime>
 
+#include "bitstring.h"
 #include "common.h"
 #include "error.h"
 #include "msg.h"
@@ -87,7 +88,7 @@ BitString RandomSource::getBits (unsigned int n)
 			rndbyte = getByte() ;
 			bitsused = 0 ;
 		}
-		retval.append ((Bit) (rndbyte & 1)) ;
+		retval.append ((BIT) (rndbyte & 1)) ;
 		rndbyte = rndbyte >> 1 ;
 		bitsused++ ;
 		n-- ;

@@ -24,7 +24,7 @@
 #include <cstdio>
 #include <vector>
 
-#include "bitstring.h"
+class BitString ;
 
 /**
  * \class RandomSource

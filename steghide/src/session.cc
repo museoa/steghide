@@ -135,8 +135,6 @@ void Session::printVersion ()
 	std::cout << "steghide version " << VERSION << std::endl ;
 }
 
-// TODO - test short und long arguments
-// FIXME - every error message should end with a "." - see .pot file
 void Session::printHelp ()
 {
 	printVersion() ;

@@ -290,7 +290,7 @@ BitString EmbData::getBitString ()
 		if (tmp.size() > EmbFileNameMaxSize) {
 			throw SteghideError (_("the maximum length for the embedded file's name is %d characters."), EmbFileNameMaxSize) ;
 		}
-		main.append (tmp.size(), NBitsLenOfFileName) ;
+		main.append ((UWORD16) tmp.size(), NBitsLenOfFileName) ;
 		main.append (tmp) ;
 	}
 	
@@ -298,9 +298,9 @@ BitString EmbData::getBitString ()
 
 	// put header together - nembbits contains main.getLength() before encryption
 	BitString hdr ;
-	hdr.append((unsigned int) EncAlgo.getIntegerRep(), EncryptionAlgorithm::IRep_size) ;
-	hdr.append((unsigned int) EncMode.getIntegerRep(), EncryptionMode::IRep_size) ;
-	hdr.append(nbits(main.getLength()), NBitsLenOfNEmbBits).append(main.getLength(), nbits(main.getLength())) ;
+	hdr.append((UWORD16) EncAlgo.getIntegerRep(), EncryptionAlgorithm::IRep_size) ;
+	hdr.append((UWORD16) EncMode.getIntegerRep(), EncryptionMode::IRep_size) ;
+	hdr.append((UWORD16) nbits(main.getLength()), NBitsLenOfNEmbBits).append(main.getLength(), nbits(main.getLength())) ;
 
 	// TODO - zlib deflate here
 	

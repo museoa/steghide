@@ -22,7 +22,7 @@
 #include "SteghideError.h"
 
 SteghideError::SteghideError (void)
-	: MessageBase(_("error, exiting. (no error message defined)"))
+	: MessageBase(_("error, exiting. (no error message defined)."))
 {
 }
 

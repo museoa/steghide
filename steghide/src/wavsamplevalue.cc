@@ -63,7 +63,7 @@ WavPCMSampleValue::WavPCMSampleValue (const CvrStgFile* f, int v)
 	myassert (MinValue <= Value) ;
 	myassert (Value <= MaxValue) ;
 
-	SBit = (Bit) (Value & 1) ;
+	SBit = (BIT) (Value & 1) ;
 	Key = (unsigned long) Value ;
 	if (Radius == 0.0) {
 		Radius = getRadius() ;

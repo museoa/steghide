@@ -91,7 +91,7 @@ BmpPaletteSampleValue::BmpPaletteSampleValue (const CvrStgFile* f, unsigned char
 	const BmpFile* bmpfile = dynamic_cast<const BmpFile*> (f) ;
 	myassert (bmpfile != NULL) ;
 	Palette = bmpfile->getPalette() ;
-	SBit = (Bit) (Index & 1) ;
+	SBit = (BIT) (Index & 1) ;
 	Key = ((unsigned long) getIndex() << 24) | ((unsigned long) getRed() << 16) |
 		  ((unsigned long) getGreen() << 8) | ((unsigned long) getBlue()) ;
 }
@@ -141,14 +141,14 @@ unsigned char BmpPaletteSampleValue::getBlue() const
 BmpRGBSampleValue::BmpRGBSampleValue (const CvrStgFile* f, unsigned char r, unsigned char g, unsigned char b)
 	: BmpSampleValue(f), Color(r, g, b)
 {
-	SBit = (Bit) ((r & 1) ^ (g & 1) ^ (b & 1)) ;
+	SBit = (BIT) ((r & 1) ^ (g & 1) ^ (b & 1)) ;
 	Key = ((unsigned long) r << 16) | ((unsigned long) g << 8) | ((unsigned long) b) ;
 }
 
 BmpRGBSampleValue::BmpRGBSampleValue (const CvrStgFile* f, RGBTriple t)
 	: BmpSampleValue(f), Color(t)
 {
-	SBit = (Bit) ((t.Red & 1) ^ (t.Green & 1) ^ (t.Blue & 1)) ;
+	SBit = (BIT) ((t.Red & 1) ^ (t.Green & 1) ^ (t.Blue & 1)) ;
 	Key = ((unsigned long) t.Red << 16) | ((unsigned long) t.Green << 8) | ((unsigned long) t.Blue) ;
 }
 

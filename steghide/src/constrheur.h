@@ -34,11 +34,19 @@ class ConstructionHeuristic : private GraphAccess {
 		{ return TheMatching ; } ;
 
 	private:
+	/**
+	 * \class LongerShortestEdge
+	 * \brief a comparison operator
+	 *
+	 * lse(v1, v2) is true if the length of the shortest edge of v1
+	 * is greater than the length of the shortest edge of v2. If a vertex
+	 * has Degree 0, the length of its shortest edge is defined to be +Infinity.
+	 * If both v1 and v2 have degree 0, then the vertex with the greater label
+	 * is defined to have the "longer shortest edge".
+	 **/
 	class LongerShortestEdge : public std::binary_function<Vertex*,Vertex*,bool> {
 		public:
-		// FIXME - what should be done when v1 or v2 has no edges ?!
-		bool operator() (const Vertex *v1, const Vertex *v2) 
-			{ return (v1->getShortestEdge()->getWeight() > v2->getShortestEdge()->getWeight()) ; } ;
+		bool operator() (const Vertex *v1, const Vertex *v2) ;
 	} ;
 
 	static const unsigned int PriorityQueueRange = 1 ;
