@@ -38,23 +38,3 @@ SampleValue* BmpPaletteSampleValue::getNearestOppositeSampleValue () const
 	unsigned int nosv_idx = Palette->getNearest (Index, (getBit() == 1 ? ColorPalette::EVENINDICES : ColorPalette::ODDINDICES)) ;
 	return ((SampleValue*) new BmpPaletteSampleValue (getFile(), nosv_idx)) ;
 }
-
-unsigned char BmpPaletteSampleValue::getIndex() const
-{
-	return Index ;
-}
-
-unsigned char BmpPaletteSampleValue::getRed() const
-{
-	return (*Palette)[Index].Red ;
-}
-
-unsigned char BmpPaletteSampleValue::getGreen() const
-{
-	return (*Palette)[Index].Green ;
-}
-
-unsigned char BmpPaletteSampleValue::getBlue() const
-{
-	return (*Palette)[Index].Blue ;
-}

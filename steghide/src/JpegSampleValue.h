@@ -33,9 +33,11 @@ class JpegSampleValue : public SampleValue {
 	SampleValue* getNearestOppositeSampleValue (void) const ;
 	float calcDistance (const SampleValue *s) const ;
 
-	float getRadius (void) const ;
+	float getRadius (void) const
+		{ return Radius ; } ;
 
-	int getDctCoeff (void) const ;
+	int getDctCoeff (void) const
+		{ return DctCoeff ; } ;
 
 	private:
 	static const float DefaultRadius = 1.0 ;

@@ -22,12 +22,12 @@
 #define SH_BMPPALETTESAMPLEVALUE_H
 
 #include "BmpSampleValue.h"
-
-class ColorPalette ;
+#include "ColorPalette.h"
+#include "common.h"
 
 /**
  * \class BmpPaletteSampleValue
- * \brief a sample in a bmp palette (i.e. 1-,4- or 8-bit) file
+ * \brief a sample in a bmp palette (i.e. in a 1-,4- or 8-bit) file
  **/
 class BmpPaletteSampleValue : public BmpSampleValue {
 	public:
@@ -37,14 +37,21 @@ class BmpPaletteSampleValue : public BmpSampleValue {
 
 	SampleValue* getNearestOppositeSampleValue (void) const ;
 
-	unsigned char getIndex (void) const ;
-	unsigned char getRed (void) const ;
-	unsigned char getGreen (void) const ;
-	unsigned char getBlue (void) const ;
+	BYTE getIndex (void) const
+		{ return Index ; } ;
+
+	BYTE getRed (void) const
+		{ return (*Palette)[Index].Red ; } ;
+
+	BYTE getGreen (void) const
+		{ return (*Palette)[Index].Green ; } ;
+
+	BYTE getBlue (void) const
+		{ return (*Palette)[Index].Blue ; } ;
 
 	private:
 	ColorPalette* Palette ;
-	unsigned char Index ;
+	BYTE Index ;
 } ;
 
 #endif // ndef SH_BMPPALETTESAMPLEVALUE_H

@@ -32,11 +32,6 @@ JpegSampleValue::JpegSampleValue (const CvrStgFile* f, int c)
 	Key = (unsigned long) DctCoeff ;
 }
 
-int JpegSampleValue::getDctCoeff() const
-{
-	return DctCoeff ;
-}
-
 bool JpegSampleValue::isNeighbour (const SampleValue *s) const
 {
 	return (calcDistance (s) <= Radius) ;
@@ -57,14 +52,12 @@ SampleValue *JpegSampleValue::getNearestOppositeSampleValue() const
 
 float JpegSampleValue::calcDistance (const SampleValue *s) const
 {
-	const JpegSampleValue *sample = dynamic_cast<const JpegSampleValue*> (s) ;
-	myassert (sample != NULL) ;
-	return (fabs (((float) DctCoeff) - ((float) sample->getDctCoeff()))) ;
-}
+	const JpegSampleValue *sample = (const JpegSampleValue*) s ;
+	/* If s is not a JpegSampleValue then we get into real trouble here.
+	But calcDistance is called very often, a dynamic_cast costs a lot of time and
+	it does not make sense to pass anything but a JpegSampleValue as s anyway. */
 
-float JpegSampleValue::getRadius () const
-{
-	return Radius ;
+	return (fabs (((float) DctCoeff) - ((float) sample->getDctCoeff()))) ;
 }
 
 float JpegSampleValue::Radius = JpegSampleValue::DefaultRadius ;

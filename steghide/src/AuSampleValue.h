@@ -37,7 +37,8 @@ class AuSampleValue : public SampleValue {
 
 	virtual float getRadius() const ;
 
-	unsigned char getValue (void) const ;
+	unsigned char getValue (void) const
+		{ return Value ; } ;
 
 	private:
 	/**

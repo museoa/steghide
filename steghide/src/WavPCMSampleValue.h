@@ -38,7 +38,8 @@ class WavPCMSampleValue : public SampleValue {
 
 	float getRadius (void) const ;
 
-	int getValue (void) const ;
+	int getValue (void) const
+		{ return Value ; } ;
 
 	private:
 	/**

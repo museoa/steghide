@@ -24,11 +24,6 @@
 #include "AuSampleValue.h"
 #include "common.h"
 
-unsigned char AuSampleValue::getValue () const
-{
-	return Value ;
-}
-
 bool AuSampleValue::isNeighbour (const SampleValue *s) const
 {
 	return (calcDistance (s) <= Radius) ;
@@ -56,8 +51,11 @@ SampleValue *AuSampleValue::getNearestOppositeSampleValue() const
 
 float AuSampleValue::calcDistance (const SampleValue *s) const
 {
-	const AuSampleValue* sample = dynamic_cast<const AuSampleValue*> (s) ;
-	myassert (sample != NULL) ;
+	const AuSampleValue* sample = (const AuSampleValue*) s ;
+	/* If s is not an AuSampleValue then we get into real trouble here.
+	But calcDistance is called very often, a dynamic_cast costs a lot of time and
+	it does not make sense to pass anything but an AuSampleValue as s anyway. */
+
 	return (fabs (((float) Value) - ((float) sample->getValue()))) ;
 }
 

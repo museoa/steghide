@@ -97,14 +97,12 @@ SampleValue *WavPCMSampleValue::getNearestOppositeSampleValue () const
 
 float WavPCMSampleValue::calcDistance (const SampleValue *s) const
 {
-	const WavPCMSampleValue *sample = dynamic_cast<const WavPCMSampleValue*> (s) ;
-	myassert (sample != NULL) ;
-	return (fabs ((float) Value - (float) sample->getValue())) ;
-}
+        const WavPCMSampleValue *sample = (const WavPCMSampleValue*) s ;
+        /* If s is not a WavPCMSampleValue then we get into real trouble here.
+        But calcDistance is called very often, a dynamic_cast costs a lot of time and
+        it does not make sense to pass anything but a WavPCMSampleValue as s anyway. */
 
-int WavPCMSampleValue::getValue() const
-{
-	return Value ;
+	return (fabs ((float) Value - (float) sample->getValue())) ;
 }
 
 float WavPCMSampleValue::getRadius () const
