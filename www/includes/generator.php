@@ -289,12 +289,14 @@ function pBodyPrologue ()
  **/
 function pBodyEpilogue ($ts_lastupdate)
 {
+	global $ToRoot ;
+
 	echo "     </td></tr></table> <!-- main text position -->\n"; // end of 1x1 table
 	echo "   </td>\n";
 	echo "  </tr>\n"; // end of second row in 3,2 table
 	echo "  <tr>\n"; // lower area (lastupdate)
 	echo "   <td id=\"lastupdate\" align=\"center\" valign=\"bottom\">\n" ;
-	echo "    <a href=\"http://validator.w3.org/check/referer\"><img border=\"0\" src=\"images/valid-html401.png\"\n";
+	echo "    <a href=\"http://validator.w3.org/check/referer\"><img border=\"0\" src=\"" . $ToRoot . "images/valid-html401.png\"\n";
 	echo "    alt=\"Valid HTML 4.01!\" height=\"31\" width=\"88\"></a>\n";
 	echo "    <p>\n";
 	echo "    hosted by:<br>\n";

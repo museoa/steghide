@@ -56,4 +56,4 @@ distribution and fill in the empty lines in the file <code>steghide.pot</code> t
 
 <?php pBodyEpilogue(getlastmod()); ?>
 </body>
-</html
+</html>
