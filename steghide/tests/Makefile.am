@@ -1,4 +1,4 @@
-TESTS = unittests
+TESTS = unittests systemtests.pl
 AM_CPPFLAGS = -I../src
 check_PROGRAMS = unittests
 noinst_HEADERS = \

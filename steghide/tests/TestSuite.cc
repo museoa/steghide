@@ -39,6 +39,9 @@ void TestSuite::addUnitTest (UnitTest* ut)
 void TestSuite::run()
 {
 	SuiteOk = true ;
+	*OutStream << "-----------------------" << std::endl << std::endl ;
+	*OutStream << "Running Unit Tests....." << std::endl << std::endl ;
+	*OutStream << "-----------------------" << std::endl << std::endl ;
 	for (std::vector<UnitTest*>::iterator it = UnitTests.begin() ; it != UnitTests.end() ; it++) {
 		(*it)->setup() ;
 		(*it)->run() ;
