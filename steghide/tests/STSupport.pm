@@ -1,5 +1,6 @@
 package STSupport;
 require Exporter;
+use File::Compare;
 
 our @ISA = qw(Exporter);
 our @EXPORT = qw(
@@ -77,14 +78,6 @@ sub addTestResult {
 }
 
 #
-# compare two files
-# returns true iff files are equal
-sub compare {
-	system "cmp -s $_[0] $_[1]" ;
-	return not $? ;
-}
-
-#
 # remove all files in the list passed to it
 sub remove {
 	while (@_) {
@@ -128,13 +121,17 @@ sub runEmbExtCmp {
 	) ;
 	$extcommand = STEGHIDE . " " . getArgString(%extargs) ;
 
-	system $embcommand ;
-	system $extcommand ;
+	# execute commands
+	`$embcommand 2>&1` ; # don't let it print to stderr or stdout
+	return 0 if $? ;
+	`$extcommand 2>&1` ; # don't let it print to stderr or stdout
+	return 0 if $? ;
 
-	$retval = compare ($embargs{ef}, $extargs{xf}) ;
+	# compare embfile and extfile
+	$filesequal = not compare ($embargs{ef}, $extargs{xf}) ;
 	remove ($embargs{sf}, $extargs{xf}) ;
 
-	return $retval ;
+	return $filesequal ;
 }
 
 1;

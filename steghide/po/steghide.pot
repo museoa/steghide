@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2003-03-13 12:16+0100\n"
+"POT-Creation-Date: 2003-04-03 10:08+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,237 +15,241 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/AssertionFailed.h:30
-#, c-format
-msgid "assertion failed in %s at line number %d."
-msgstr ""
-
-#: src/Arguments.cc:84
+#: src/Arguments.cc:85
 #, c-format
 msgid "unknown argument \"%s\"."
 msgstr ""
 
-#: src/Arguments.cc:90
+#: src/Arguments.cc:91
 msgid "standard input cannot be used for cover data AND data to be embedded."
 msgstr ""
 
-#: src/Arguments.cc:99
+#: src/Arguments.cc:100
 msgid "you have to supply a cover file name to calculate a capacity."
 msgstr ""
 
-#: src/Arguments.cc:108 src/Arguments.cc:114
+#: src/Arguments.cc:109 src/Arguments.cc:115
 msgid ""
 "if standard input is used, the passphrase must be specified on the command "
 "line."
 msgstr ""
 
-#: src/Arguments.cc:147
+#: src/Arguments.cc:149
 msgid "you cannot use arguments with the \"encinfo\" command."
 msgstr ""
 
-#: src/Arguments.cc:153
+#: src/Arguments.cc:155
 msgid "you cannot use arguments with the \"version\" command."
 msgstr ""
 
-#: src/Arguments.cc:159
+#: src/Arguments.cc:161
 msgid "you cannot use arguments with the \"license\" command."
 msgstr ""
 
-#: src/Arguments.cc:165
+#: src/Arguments.cc:167
 msgid "you cannot use arguments with the \"help\" command."
 msgstr ""
 
-#: src/Arguments.cc:169
+#: src/Arguments.cc:171
 #, c-format
 msgid "unknown command \"%s\"."
 msgstr ""
 
-#: src/Arguments.cc:181 src/Arguments.cc:331 src/Arguments.cc:345
-#: src/Arguments.cc:367 src/Arguments.cc:381 src/Arguments.cc:403
-#: src/Arguments.cc:505
+#: src/Arguments.cc:183 src/Arguments.cc:333 src/Arguments.cc:347
+#: src/Arguments.cc:369 src/Arguments.cc:383 src/Arguments.cc:405
+#: src/Arguments.cc:507 src/Arguments.cc:535
 #, c-format
 msgid "the argument \"%s\" can only be used with the \"embed\" command."
 msgstr ""
 
-#: src/Arguments.cc:185
+#: src/Arguments.cc:187
 msgid "the embed file name argument can be used only once."
 msgstr ""
 
-#: src/Arguments.cc:189
+#: src/Arguments.cc:191
 #, c-format
 msgid "the \"%s\" argument must be followed by the embed file name."
 msgstr ""
 
-#: src/Arguments.cc:212
+#: src/Arguments.cc:214
 #, c-format
 msgid "argument \"%s\" can only be used with the \"extract\" command."
 msgstr ""
 
-#: src/Arguments.cc:216
+#: src/Arguments.cc:218
 msgid "the extract file name argument can be used only once."
 msgstr ""
 
-#: src/Arguments.cc:220
+#: src/Arguments.cc:222
 #, c-format
 msgid "the \"%s\" argument must be followed by the plain file name."
 msgstr ""
 
-#: src/Arguments.cc:243
+#: src/Arguments.cc:245
 #, c-format
 msgid "the argument \"%s\" can not be used with the \"extract\" command."
 msgstr ""
 
-#: src/Arguments.cc:247
+#: src/Arguments.cc:249
 msgid "the cover file name argument can be used only once."
 msgstr ""
 
-#: src/Arguments.cc:251
+#: src/Arguments.cc:253
 #, c-format
 msgid "the \"%s\" argument must be followed by the cover file name."
 msgstr ""
 
-#: src/Arguments.cc:274 src/Arguments.cc:533 src/Arguments.cc:557
-#: src/Arguments.cc:571
+#: src/Arguments.cc:276 src/Arguments.cc:563 src/Arguments.cc:587
+#: src/Arguments.cc:601
 #, c-format
 msgid "the \"%s\" argument can not be used with the \"capacity\" command."
 msgstr ""
 
-#: src/Arguments.cc:278
+#: src/Arguments.cc:280
 msgid "the stego file name argument can be used only once."
 msgstr ""
 
-#: src/Arguments.cc:282
+#: src/Arguments.cc:284
 #, c-format
 msgid "the \"%s\" argument must be followed by the stego file name."
 msgstr ""
 
-#: src/Arguments.cc:305
+#: src/Arguments.cc:307
 #, c-format
 msgid "the \"%s\" argument cannot be used with the \"capacity\" command."
 msgstr ""
 
-#: src/Arguments.cc:309
+#: src/Arguments.cc:311
 msgid "the passphrase argument can be used only once."
 msgstr ""
 
-#: src/Arguments.cc:313
+#: src/Arguments.cc:315
 #, c-format
 msgid "the \"%s\" argument must be followed by the passphrase."
 msgstr ""
 
-#: src/Arguments.cc:335 src/Arguments.cc:349
+#: src/Arguments.cc:337 src/Arguments.cc:351
 msgid "the checksum argument can be used only once."
 msgstr ""
 
-#: src/Arguments.cc:371 src/Arguments.cc:385
+#: src/Arguments.cc:373 src/Arguments.cc:387
 msgid "the file name embedding argument can be used only once."
 msgstr ""
 
-#: src/Arguments.cc:407
+#: src/Arguments.cc:409
 msgid "the encryption argument can be used only once."
 msgstr ""
 
-#: src/Arguments.cc:411 src/Arguments.cc:416
+#: src/Arguments.cc:413 src/Arguments.cc:418
 #, c-format
 msgid "the \"%s\" argument must be followed by encryption information."
 msgstr ""
 
-#: src/Arguments.cc:448 src/Arguments.cc:457
+#: src/Arguments.cc:450 src/Arguments.cc:459
 #, c-format
 msgid "\"%s\" is neither an algorithm nor a mode supported by libmcrypt."
 msgstr ""
 
-#: src/Arguments.cc:462
+#: src/Arguments.cc:464
 #, c-format
 msgid ""
 "\"%s\" and \"%s\" are both libmcrypt algorithms. please specify only one."
 msgstr ""
 
-#: src/Arguments.cc:465
+#: src/Arguments.cc:467
 #, c-format
 msgid "\"%s\" and \"%s\" are both libmcrypt modes. please specify only one."
 msgstr ""
 
-#: src/Arguments.cc:482
+#: src/Arguments.cc:484
 #, c-format
 msgid "the encryption algorithm \"%s\" can not be used with the mode \"%s\"."
 msgstr ""
 
-#: src/Arguments.cc:488
+#: src/Arguments.cc:490
 msgid "steghide has been compiled without support for encryption."
 msgstr ""
 
-#: src/Arguments.cc:509
+#: src/Arguments.cc:511
 msgid "the radius argument can be used only once."
 msgstr ""
 
-#: src/Arguments.cc:513
+#: src/Arguments.cc:515
 #, c-format
 msgid "the \"%s\" argument must be followed by the neighbourhood radius."
 msgstr ""
 
-#: src/Arguments.cc:537
+#: src/Arguments.cc:539
+msgid "the goal argument can be used only once."
+msgstr ""
+
+#: src/Arguments.cc:543
+#, c-format
+msgid "the \"%s\" argument must be followed by a number between 0 and 100."
+msgstr ""
+
+#: src/Arguments.cc:567
 msgid "the force argument can be used only once."
 msgstr ""
 
-#: src/Arguments.cc:561 src/Arguments.cc:575
+#: src/Arguments.cc:591 src/Arguments.cc:605
 #, c-format
 msgid ""
 "the \"%s\" argument cannot be used here because the verbosity has already "
 "been set."
 msgstr ""
 
-#: src/Arguments.cc:593 src/Arguments.cc:603
+#: src/Arguments.cc:623 src/Arguments.cc:633
 msgid "you cannot use more than one debug command at a time."
 msgstr ""
 
-#: src/Arguments.cc:613
+#: src/Arguments.cc:643
 msgid "the debug level argument can be used only once."
 msgstr ""
 
-#: src/Arguments.cc:617
+#: src/Arguments.cc:647
 #, c-format
 msgid "the \"%s\" argument must be followed by the debug level."
 msgstr ""
 
-#: src/Arguments.cc:629 src/Arguments.cc:649
+#: src/Arguments.cc:659 src/Arguments.cc:679
 #, c-format
 msgid "argument \"%s\" can only be used with the \"embed\" command."
 msgstr ""
 
-#: src/Arguments.cc:633
+#: src/Arguments.cc:663
 msgid "the priority queue range argument can be used only once."
 msgstr ""
 
-#: src/Arguments.cc:637
+#: src/Arguments.cc:667
 #, c-format
 msgid "the \"%s\" argument must be followed by the priority queue range."
 msgstr ""
 
-#: src/Arguments.cc:653
+#: src/Arguments.cc:683
 msgid "the number construction heuristic argument can be used only once."
 msgstr ""
 
-#: src/Arguments.cc:657
+#: src/Arguments.cc:687
 #, c-format
 msgid ""
 "the \"%s\" argument must be followed by the number of times the construction "
 "heuristic should be run."
 msgstr ""
 
-#: src/Arguments.cc:678
+#: src/Arguments.cc:708
 msgid "unknown terminal. the passphrase you type now will be visible."
 msgstr ""
 
-#: src/Arguments.cc:682
+#: src/Arguments.cc:712
 msgid "Enter passphrase: "
 msgstr ""
 
-#: src/Arguments.cc:695
+#: src/Arguments.cc:725
 msgid "Re-Enter passphrase: "
 msgstr ""
 
-#: src/Arguments.cc:707
+#: src/Arguments.cc:737
 msgid "the passphrases do not match."
 msgstr ""
 
@@ -256,58 +260,41 @@ msgid ""
 "Steghide has to exit now. Sorry.\n"
 msgstr ""
 
-#: src/AuFile.cc:114
+#: src/AuFile.cc:91
+#, c-format
+msgid "the au file on standard input uses the unkown encoding %d."
+msgstr ""
+
+#: src/AuFile.cc:94
+#, c-format
+msgid "the au file \"%s\" uses the unknown encoding %d."
+msgstr ""
+
+#: src/AuFile.cc:104
 #, c-format
 msgid "an error occured while reading the au headers from the file \"%s\"."
 msgstr ""
 
-#: src/AuFile.cc:120
+#: src/AuFile.cc:110
 #, c-format
 msgid "premature end of file \"%s\" while reading au headers."
 msgstr ""
 
-#: src/AuFile.cc:126
+#: src/AuFile.cc:116
 msgid "an error occured while reading the au headers from standard input."
 msgstr ""
 
-#: src/AuFile.cc:132
+#: src/AuFile.cc:122
 msgid "premature end of data from standard input while reading au headers."
 msgstr ""
 
-#: src/AuFile.cc:164
+#: src/AuFile.cc:162
 #, c-format
 msgid "an error occured while writing the au headers to the file \"%s\"."
 msgstr ""
 
-#: src/AuFile.cc:170
+#: src/AuFile.cc:168
 msgid "an error occured while writing the au headers to standard output."
-msgstr ""
-
-#: src/AuFile.cc:196 src/WavFile.cc:193
-#, c-format
-msgid "an error occured while reading the audio data from the file \"%s\"."
-msgstr ""
-
-#: src/AuFile.cc:202 src/WavFile.cc:197
-#, c-format
-msgid "premature end of file \"%s\" while reading audio data."
-msgstr ""
-
-#: src/AuFile.cc:208 src/WavFile.cc:201
-msgid "an error occured while reading the audio data from standard input."
-msgstr ""
-
-#: src/AuFile.cc:214 src/WavFile.cc:205
-msgid "premature end of data from standard input while reading audio data."
-msgstr ""
-
-#: src/AuFile.cc:234 src/WavFile.cc:246
-#, c-format
-msgid "an error occured while writing the audio data to the file \"%s\"."
-msgstr ""
-
-#: src/AuFile.cc:240 src/WavFile.cc:250
-msgid "an error occured while writing the audio data to standard output."
 msgstr ""
 
 #: src/BinaryIO.cc:68
@@ -335,135 +322,135 @@ msgstr ""
 msgid "could not close the file \"%s\"."
 msgstr ""
 
-#: src/BmpFile.cc:270
+#: src/BmpFile.cc:264
 #, c-format
 msgid ""
 "the bmp data from standard input has a format that is not supported (biSize: "
 "%lu)."
 msgstr ""
 
-#: src/BmpFile.cc:273
+#: src/BmpFile.cc:267
 #, c-format
 msgid "the bmp file \"%s\" has a format that is not supported (biSize: %lu)."
 msgstr ""
 
-#: src/BmpFile.cc:281
+#: src/BmpFile.cc:275
 #, c-format
 msgid "an error occured while reading the bmp headers from the file \"%s\"."
 msgstr ""
 
-#: src/BmpFile.cc:285
+#: src/BmpFile.cc:279
 #, c-format
 msgid "premature end of file \"%s\" while reading bmp headers."
 msgstr ""
 
-#: src/BmpFile.cc:289
+#: src/BmpFile.cc:283
 msgid "an error occured while reading the bmp headers from standard input."
 msgstr ""
 
-#: src/BmpFile.cc:293
+#: src/BmpFile.cc:287
 msgid "premature end of data from standard input while reading bmp headers."
 msgstr ""
 
-#: src/BmpFile.cc:309
+#: src/BmpFile.cc:303
 #, c-format
 msgid ""
 "the bmp data from standard input has a format that is not supported "
 "(biBitCount: %d)."
 msgstr ""
 
-#: src/BmpFile.cc:312
+#: src/BmpFile.cc:306
 #, c-format
 msgid ""
 "the bmp file \"%s\" has a format that is not supported (biBitCount: %d)."
 msgstr ""
 
-#: src/BmpFile.cc:318
+#: src/BmpFile.cc:312
 msgid ""
 "the bitmap data from standard input is compressed which is not supported."
 msgstr ""
 
-#: src/BmpFile.cc:321
+#: src/BmpFile.cc:315
 #, c-format
 msgid "the bitmap data in \"%s\" is compressed which is not supported."
 msgstr ""
 
-#: src/BmpFile.cc:337 src/BmpFile.cc:396
+#: src/BmpFile.cc:331 src/BmpFile.cc:390
 msgid "using a black/white bitmap as cover is very insecure!"
 msgstr ""
 
-#: src/BmpFile.cc:345 src/BmpFile.cc:404
+#: src/BmpFile.cc:339 src/BmpFile.cc:398
 msgid "using a 16-color bitmap as cover is very insecure!"
 msgstr ""
 
-#: src/BmpFile.cc:368
+#: src/BmpFile.cc:362
 msgid "maybe corrupted windows bmp data (Reserved in RGBQUAD is non-zero)."
 msgstr ""
 
-#: src/BmpFile.cc:455
+#: src/BmpFile.cc:449
 #, c-format
 msgid "an error occured while writing the bmp headers to the file \"%s\"."
 msgstr ""
 
-#: src/BmpFile.cc:459
+#: src/BmpFile.cc:453
 msgid "an error occured while writing the bmp headers to standard output."
 msgstr ""
 
-#: src/BmpFile.cc:562
+#: src/BmpFile.cc:556
 #, c-format
 msgid "maybe corrupted bmp data (padding byte at 0x%lx set to non-zero)."
 msgstr ""
 
-#: src/BmpFile.cc:575
+#: src/BmpFile.cc:569
 #, c-format
 msgid "an error occured while reading the bmp data from the file \"%s\"."
 msgstr ""
 
-#: src/BmpFile.cc:579
+#: src/BmpFile.cc:573
 #, c-format
 msgid "premature end of file \"%s\" while reading bmp data."
 msgstr ""
 
-#: src/BmpFile.cc:583
+#: src/BmpFile.cc:577
 msgid "an error occured while reading the bmp data from standard input."
 msgstr ""
 
-#: src/BmpFile.cc:587
+#: src/BmpFile.cc:581
 msgid "premature end of bmp data from standard input."
 msgstr ""
 
-#: src/BmpFile.cc:625
+#: src/BmpFile.cc:619
 #, c-format
 msgid "an error occured while writing the bitmap data to the file \"%s\"."
 msgstr ""
 
-#: src/BmpFile.cc:629
+#: src/BmpFile.cc:623
 msgid "an error occured while writing the bitmap data to standard output."
 msgstr ""
 
-#: src/CvrStgFile.cc:56
+#: src/CvrStgFile.cc:54
 msgid "reading cover file from standard input."
 msgstr ""
 
-#: src/CvrStgFile.cc:60
+#: src/CvrStgFile.cc:58
 #, c-format
 msgid "reading cover file \"%s\"."
 msgstr ""
 
-#: src/CvrStgFile.cc:66
+#: src/CvrStgFile.cc:64
 msgid "reading stego file from standard input."
 msgstr ""
 
-#: src/CvrStgFile.cc:70
+#: src/CvrStgFile.cc:68
 #, c-format
 msgid "reading stego file \"%s\"."
 msgstr ""
 
-#: src/CvrStgFile.cc:79
+#: src/CvrStgFile.cc:77
 msgid "writing stego file to standard output."
 msgstr ""
 
-#: src/CvrStgFile.cc:83
+#: src/CvrStgFile.cc:81
 #, c-format
 msgid "writing stego file \"%s\"."
 msgstr ""
@@ -499,23 +486,23 @@ msgstr ""
 msgid "the maximum length for the embedded file's name is %d characters."
 msgstr ""
 
-#: src/Embedder.cc:54
+#: src/Embedder.cc:56
 msgid "the cover file is too short to embed the data."
 msgstr ""
 
-#: src/Embedder.cc:100
+#: src/Embedder.cc:102
 msgid "calculating the matching..."
 msgstr ""
 
-#: src/Embedder.cc:130
+#: src/Embedder.cc:136
 msgid "best matching after construction heuristic:"
 msgstr ""
 
-#: src/Embedder.cc:143
+#: src/Embedder.cc:149
 msgid "best matching after bounded augmenting path heuristic:"
 msgstr ""
 
-#: src/Embedder.cc:153
+#: src/Embedder.cc:159
 msgid "best matching after unbounded augmenting path heuristic:"
 msgstr ""
 
@@ -536,32 +523,32 @@ msgstr ""
 msgid "creating the graph..."
 msgstr ""
 
-#: src/Graph.cc:257
+#: src/Graph.cc:259
 #, c-format
 msgid "number of distinct sample values: %lu"
 msgstr ""
 
-#: src/Graph.cc:260
+#: src/Graph.cc:262
 #, c-format
 msgid "number of vertices: %lu"
 msgstr ""
 
-#: src/Graph.cc:263
+#: src/Graph.cc:265
 #, c-format
 msgid "average vertex degree: %.1f"
 msgstr ""
 
-#: src/Graph.cc:265
+#: src/Graph.cc:267
 #, c-format
 msgid "minimum vertex degree: %lu"
 msgstr ""
 
-#: src/Graph.cc:267
+#: src/Graph.cc:269
 #, c-format
 msgid "maximum vertex degree: %lu"
 msgstr ""
 
-#: src/Graph.cc:270
+#: src/Graph.cc:272
 #, c-format
 msgid "number of edges: %lu"
 msgstr ""
@@ -610,19 +597,33 @@ msgstr ""
 msgid "could not initialize libmhash %s algorithm."
 msgstr ""
 
-#: src/Matching.cc:156
+#: src/Matching.cc:183
 #, c-format
 msgid "size of the matching: %lu"
 msgstr ""
 
-#: src/Matching.cc:159
+#: src/Matching.cc:186
 #, c-format
 msgid "number of unmatched vertices: %lu (%.1f%%)"
 msgstr ""
 
-#: src/Matching.cc:167
+#: src/Matching.cc:194
 #, c-format
 msgid "average edge weight: %.1f"
+msgstr ""
+
+#: src/ProgressOutput.cc:30 src/ProgressOutput.cc:37
+msgid "standard input"
+msgstr ""
+
+#: src/ProgressOutput.cc:48
+#, c-format
+msgid "\rembedding %s in %s...%d%%"
+msgstr ""
+
+#: src/ProgressOutput.cc:54
+#, c-format
+msgid "\rembedding %s in %s...done\n"
 msgstr ""
 
 #: src/RandomSource.cc:38
@@ -676,6 +677,8 @@ msgid ""
 "   -e none               do not encrypt data before embedding\n"
 " -r, --radius            specify the neighbourhood-radius\n"
 "   -r <r>                use the real number <r> as radius\n"
+" -g, --goal              specify a goal for the matching algorithms\n"
+"   -g <p>                stop search when <p> percent are reached\n"
 " -k, --checksum          embed crc32 checksum of embedded data (default)\n"
 " -K, --nochecksum        do not embed crc32 checksum of embedded data\n"
 " -n, --embedname         embed the name of the original file (default)\n"
@@ -712,30 +715,57 @@ msgstr ""
 msgid "could not set terminal attributes."
 msgstr ""
 
-#: src/WavFile.cc:284
+#: src/WavFile.cc:187 src/AudioData.h:90
+#, c-format
+msgid "an error occured while reading the audio data from the file \"%s\"."
+msgstr ""
+
+#: src/WavFile.cc:191 src/AudioData.h:96
+#, c-format
+msgid "premature end of file \"%s\" while reading audio data."
+msgstr ""
+
+#: src/WavFile.cc:195 src/AudioData.h:102
+msgid "an error occured while reading the audio data from standard input."
+msgstr ""
+
+#: src/WavFile.cc:199 src/AudioData.h:108
+msgid "premature end of data from standard input while reading audio data."
+msgstr ""
+
+#: src/WavFile.cc:240 src/AudioData.h:130
+#, c-format
+msgid "an error occured while writing the audio data to the file \"%s\"."
+msgstr ""
+
+#: src/WavFile.cc:244 src/AudioData.h:136
+msgid "an error occured while writing the audio data to standard output."
+msgstr ""
+
+#: src/WavFile.cc:278
 #, c-format
 msgid "an error occured while reading the wav headers from the file \"%s\"."
 msgstr ""
 
-#: src/WavFile.cc:290
+#: src/WavFile.cc:284
 #, c-format
 msgid "premature end of file \"%s\" while reading wav headers."
 msgstr ""
 
-#: src/WavFile.cc:296
+#: src/WavFile.cc:290
 msgid "an error occured while reading the wav headers from standard input."
 msgstr ""
 
-#: src/WavFile.cc:302
+#: src/WavFile.cc:296
 msgid "premature end of data from standard input while reading wav headers."
 msgstr ""
 
-#: src/WavFile.cc:332
+#: src/WavFile.cc:326
 #, c-format
 msgid "an error occured while writing the wav headers to the file \"%s\"."
 msgstr ""
 
-#: src/WavFile.cc:338
+#: src/WavFile.cc:332
 msgid "an error occured while writing the wav headers to standard output."
 msgstr ""
 
@@ -909,4 +939,9 @@ msgstr ""
 
 #: src/msg.cc:187
 msgid "unknown terminal. you might need to press <Enter> after answering."
+msgstr ""
+
+#: src/AssertionFailed.h:30
+#, c-format
+msgid "assertion failed in %s at line number %d."
 msgstr ""

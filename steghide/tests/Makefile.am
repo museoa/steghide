@@ -1,6 +1,8 @@
+SUBDIRS = data
 TESTS = unittests systemtests.pl
 AM_CPPFLAGS = -I../src
 check_PROGRAMS = unittests
+EXTRA_DIST = systemtests.pl STSupport.pm st_fileformats.pl
 noinst_HEADERS = \
 AuFileTest.h BitStringTest.h BmpWinFileTest.h BmpOS2FileTest.h CvrStgFileTest.h \
 ColorPaletteTest.h DummyFile.h DummySampleValue.h MatchingTest.h MHashPPTest.h Test.h TestCategory.h \
