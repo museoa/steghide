@@ -8,11 +8,16 @@ init("documentation");
 </head>
 <body>
 <?php pBodyPrologue(); ?>
-<h2>What to Read:</h2>
+
+<?php pBoxHead("What to Read:"); ?>
 for the impantient: quick start, reference: man page, etc... (download in other formats)<p>
 doxygen ?
-<h2>How steghide works:</h2>
+<?php pBoxEnd(); ?>
+
+<?php pBoxHead("How steghide works:"); ?>
 explain basics of graph theoretic approach and why maintaining first order statistics is important
+<?php pBoxEnd(); ?>
+
 <?php pBodyEpilogue(getlastmod()); ?>
 </body>
 </html>

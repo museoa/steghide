@@ -8,9 +8,12 @@ init("steganography");
 </head>
 <body>
 <?php pBodyPrologue(); ?>
-<h2>What is steganography ?</h2>
+
+<?php pBoxHead("What is steganography ?"); ?>
 general introduction
 examples of images/audio files with data embedded by steghide
+<?php pBoxEnd(); ?>
+
 <?php pBodyEpilogue(getlastmod()); ?>
 </body>
 </html>
