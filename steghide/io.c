@@ -135,8 +135,9 @@ void assemble_plndata (PLNFILE *plnfile)
 
 	buf = createbuflist () ;
 	
-	if (args.plnfn.value == NULL) {
-		/* standard input is used */
+	if ((args.plnfn.value == NULL) || (!args.embedplnfn.value)) {
+		/* standard input is used or plain file name embedding has
+		   been turned off explicitly */
 		bufsetbyte (buf, pos++, 0) ;
 	}
 	else {

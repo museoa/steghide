@@ -273,7 +273,7 @@ static void parsearguments (int argc, char* argv[])
 
 		else if ((strncmp (argv[i], "-k\0", 3) == 0) || (strncmp (argv[i], "--checksum\0", 11) == 0)) {
 			if (args.checksum.is_set) {
-				exit_err ("the checksum argument can be used only once. type \"%s --help\" for help.", argv[i], argv[0]) ;
+				exit_err ("the checksum argument can be used only once. type \"%s --help\" for help.", argv[0]) ;
 			}
 			else {
 				args.checksum.is_set = 1 ;
@@ -284,13 +284,35 @@ static void parsearguments (int argc, char* argv[])
 
 		else if ((strncmp (argv[i], "-K\0", 3) == 0) || (strncmp (argv[i], "--nochecksum\0", 13) == 0)) {
 			if (args.checksum.is_set) {
-				exit_err ("the checksum argument can be used only once. type \"%s --help\" for help.", argv[i], argv[0]) ;
+				exit_err ("the checksum argument can be used only once. type \"%s --help\" for help.", argv[0]) ;
 			}
 			else {
 				args.checksum.is_set = 1 ;
 			}
 
 			args.checksum.value = 0 ;
+		}
+
+		else if ((strncmp (argv[i], "-n\0", 3) == 0) || (strncmp (argv[i], "--embedplainname\0", 17) == 0)) {
+			if (args.embedplnfn.is_set) {
+				exit_err ("the plain file name embedding argument can be used only once. type \"%s --help\" for help.", argv[0]) ;
+			}
+			else {
+				args.embedplnfn.is_set = 1 ;
+			}
+
+			args.embedplnfn.value = 1 ;
+		}
+
+		else if ((strncmp (argv[i], "-N\0", 3) == 0) || (strncmp (argv[i], "--notembedplainname\0", 20) == 0)) {
+			if (args.embedplnfn.is_set) {
+				exit_err ("the plain file name embedding argument can be used only once. type \"%s --help\" for help.", argv[0]) ;
+			}
+			else {
+				args.embedplnfn.is_set = 1 ;
+			}
+
+			args.embedplnfn.value = 0 ;
 		}
 
 		else if ((strncmp (argv[i], "-p\0", 3) == 0) || (strncmp (argv[i], "--passphrase\0", 13) == 0)) {
@@ -478,6 +500,9 @@ static void args_setdefaults (void)
 	args.checksum.is_set = 0 ;
 	args.checksum.value = DEFAULT_CHECKSUM ;
 
+	args.embedplnfn.is_set = 0 ;
+	args.embedplnfn.value = DEFAULT_EMBEDPLNFN ;
+
 	args.verbosity.is_set = 0 ;
 	args.verbosity.value = DEFAULT_VERBOSITY ;
 
@@ -552,7 +577,7 @@ static void fillsthdr (unsigned long nbytescvrbuf, unsigned long nbytesplain, un
 		sthdr.encryption = ENC_NONE ;
 	}
 
-	/* compression is not yet implemented but included FIXME
+	/* compression is not yet implemented but included
 	   to enable 0.4.2 to read not compressed post 0.4.2 files */
 	sthdr.compression = COMPR_NONE ;
 
@@ -593,6 +618,8 @@ static void usage (void)
 	printf (" -E, --noencryption      do not encrypt plain data before embedding\n") ;
 	printf (" -k, --checksum          embed crc32 checksum of plain data (default)\n") ;
 	printf (" -K, --nochecksum        do not embed crc32 checksum of plain data\n") ;
+	printf (" -n, --embedplainname    embed the name of the plain file (default)\n") ;
+	printf (" -N, --notembedplainname do not embed the name of the plain file\n") ;
 
 	printf ("\noptions for embedding and extracting:\n") ;
 
