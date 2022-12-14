@@ -9,10 +9,12 @@ AC_PROG_CXX
 AC_PROG_INSTALL
 AC_PROG_AWK
 AC_PROG_LN_S
+AM_PROG_LIBTOOL
 
 dnl GNU gettext
 AC_CHECK_FUNCS(strchr)
 AM_GNU_GETTEXT
+AM_GNU_GETTEXT_VERSION
 AM_CONDITIONAL(USE_INTLDIR, test "$nls_cv_use_gnu_gettext" = yes)
 
 dnl check if debugging support is requested

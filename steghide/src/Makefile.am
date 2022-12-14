@@ -34,5 +34,4 @@ WavPCMSampleValue.cc error.cc main.cc msg.cc SMDConstructionHeuristic.cc \
 MarkerRestricted.cc
 LIBS = @LIBINTL@ @LIBS@
 localedir = $(datadir)/locale
-LIBTOOL = $(SHELL) libtool
 MAINTAINERCLEANFILES = Makefile.in
